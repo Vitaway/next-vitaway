@@ -1,10 +1,11 @@
 import React from 'react'
 import Logo from '../logo'
+import Link from 'next/link'
 
 function BottomNavbar() {
     return (<>
-        <header className="bg-white px-4 py-3 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-20 lg:px-10 lg:py-3">
-            <div className="flex items-center justify-between h-16 lg:h-20">
+        <header className="bg-white px-4 py-1 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-20 lg:px-10 lg:py-3">
+            <div className="flex items-center justify-between h-14 lg:h-16">
                 <div className="flex-shrink-0">
                     <a href="#" title="" className="flex">
                         <Logo />
@@ -21,14 +22,20 @@ function BottomNavbar() {
                     </svg>
                 </button>
 
-                <div className="hidden lg:flex lg:items-center lg:justify-center lg:space-x-10 font-bold">
-                    <a href="#" title="" className="text-base text-black transition-all duration-200 hover:text-opacity-80"> Features </a>
-                    <a href="#" title="" className="text-base text-black transition-all duration-200 hover:text-opacity-80"> Solutions </a>
-                    <a href="#" title="" className="text-base text-black transition-all duration-200 hover:text-opacity-80"> Resources </a>
-                    <a href="#" title="" className="text-base text-black transition-all duration-200 hover:text-opacity-80"> Pricing </a>
+                <div className="hidden lg:flex lg:items-center lg:justify-center lg:space-x-10 font-medium text-slate-500">
+                    <Link href="/" title="" className="text-base text-black transition-all duration-200 hover:text-opacity-80 hover:text-slate-900"> Home </Link>
+                    <Link href="/who-we-server" title="" className="text-base text-black transition-all duration-200 hover:text-opacity-80 hover:text-slate-900"> Who we server </Link>
+                    <Link href="/indivituals" title="" className="text-base text-black transition-all duration-200 hover:text-opacity-80 hover:text-slate-900"> For Indivitual </Link>
+                    <Link href="/pricing" title="" className="text-base text-black transition-all duration-200 hover:text-opacity-80 hover:text-slate-900"> Pricing </Link>
+                    <Link href="/blogs" title="" className="text-base text-black transition-all duration-200 hover:text-opacity-80 hover:text-slate-900"> Blogs </Link>
                 </div>
 
-                <a href="#" title="" className="hidden lg:inline-flex items-center justify-center px-5 py-2.5 text-base transition-all duration-200 hover:bg-yellow-300 hover:text-black focus:text-black focus:bg-yellow-300 font-semibold text-white bg-black rounded-full" role="button"> Start Now </a>
+                <div className="hidden lg:flex lg:items-center lg:justify-center lg:space-x-10">
+                    <Link href="/contacts" title="" className="text-base text-black transition-all duration-200 hover:text-opacity-80 hover:text-slate-900"> Contact </Link>
+                    <Link href="/download" title="" className="hidden lg:inline-flex items-center justify-center px-5 py-2.5 text-base transition-all duration-200 hover:text-white hover:bg-indigo-800 focus:text-black focus:bg-indigo-300 font-semibold text-white bg-black rounded-full" role="button"> Download </Link>
+                </div>
+
+
             </div>
         </header>
     </>)
