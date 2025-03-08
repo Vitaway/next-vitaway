@@ -4,6 +4,26 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 function Indivituals() {
+    const cardData = [
+        {
+            imgSrc: "https://cdn-icons-png.flaticon.com/512/4436/4436450.png",
+            imgAlt: "Small steps, long-term change",
+            title: "Small steps, long-term change",
+            description: "When life happens, Vitaway helps you stay on track with a plan that constantly adapts to meet your needs."
+        },
+        {
+            imgSrc: "https://cdn-icons-png.flaticon.com/512/4288/4288923.png",
+            imgAlt: "Find your Joy",
+            title: "Find your Joy",
+            description: "Try new things you’ll actually enjoy, rather than avoiding foods you 'Can’t eat' or things you 'shouldn’t do'."
+        },
+        {
+            imgSrc: "https://cdn-icons-png.flaticon.com/512/1685/1685803.png",
+            imgAlt: "Virtual Care, uniquely yours",
+            title: "Virtual Care, Uniquely yours",
+            description: "Your health journey is unique to you. That’s why Vitaway offers personalized support and guidance."
+        }
+    ];
     return (<>
         <PageHeader
             sup_title='For Indivituals'
@@ -14,7 +34,7 @@ function Indivituals() {
 
         <section className="aligible-container relative p-10 bg-white z-[11]">
             <div className="px-4 py-16 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8 lg:py-20">
-                
+
                 <div className="p-8 absolute border border-gray-200 -top-20 right-20 left-20 rounded-xl bg-white shadow-sm sm:p-16">
                     <div className="flex flex-col lg:flex-row">
                         <div className="mb-6 lg:mb-0 lg:w-1/2 lg:pr-5">
@@ -38,55 +58,25 @@ function Indivituals() {
             </div>
         </section>
 
-        <section className="p-5">
-            <div className="container">
-                <div className="row text-center g-4">
-                    <div className="col-md">
-                        <div className="card bg-white border-0">
-                            <div className="card-body d-flex flex-column align-items-center">
+        <section className="px-4 py-20 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-20 lg:px-10 lg:py-20">
+            <div className="text-center grid grid-cols-3 gap-4">
+                {cardData.map((card, index) => (
+                    <div className="col-md" key={index}>
+                        <div className="bg-white border border-gray-200 rounded-xl p-8">
+                            <div className="flex items-center flex-col">
                                 <div className="icon bg-indigo-50 rounded-full p-5">
-                                    <Image src="https://cdn-icons-png.flaticon.com/512/4436/4436450.png" alt="" className="w-[100px]" width={100} height={100} />
+                                    <Image src={card.imgSrc} alt={card.imgAlt} className="w-[50px]" width={100} height={100} />
                                 </div>
-                                <h3 className="card-title mb-3 mt-5 text-xl font-normal font-patua">
-                                    Small steps, long-term change
+                                <h3 className="card-title mb-3 mt-5 text-xl font-semibold text-slate-700">
+                                    {card.title}
                                 </h3>
-                                <p className="card-text text-black font-medium">
-                                    When life happens, Vitaway helps you stay on track with a plan that constantly adapts to meet your needs.
+                                <p className="card-text text-black font-medium text-sm">
+                                    {card.description}
                                 </p>
                             </div>
                         </div>
                     </div>
-                    <div className="col-md">
-                        <div className="card bg-white border-0">
-                            <div className="card-body d-flex flex-column align-items-center">
-                                <div className="icon bg-indigo-50 rounded-full p-5">
-                                    <Image src="https://cdn-icons-png.flaticon.com/512/4288/4288923.png" alt="Find your Joy" className="w-[100px]" width={100} height={100} />
-                                </div>
-                                <h3 className="card-title mb-3 mt-5 text-xl font-normal font-patua">
-                                    Find your Joy
-                                </h3>
-                                <p className="card-text text-black font-medium">
-                                    Try new things you’ll actually enjoy, rather that avoiding foods you” Can’t eat” or things you “ shouldn’t do “
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-md">
-                        <div className="card bg-white border-0">
-                            <div className="card-body d-flex flex-column align-items-center">
-                                <div className="icon bg-indigo-50 rounded-full p-5">
-                                    <Image src="https://cdn-icons-png.flaticon.com/512/1685/1685803.png" alt="Virtual Care, uniquely yours" className="w-[100px]" width={100} height={100} />
-                                </div>
-                                <h3 className="card-title mb-3 mt-5 text-xl font-normal font-patua">
-                                    Virtual Care, Uniquely yours
-                                </h3>
-                                <p className="card-text text-black font-medium">
-                                    Your health journey is unique to you. That’s why Vitaway offers personalized support and guidance.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                ))}
             </div>
         </section>
     </>)

@@ -1,6 +1,7 @@
 import React from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
+import MobileFrame from '../design/mobile-frame';
+import PatternDesign from '../design/pattern-design';
 
 function DiabeteProgram() {
     const programs = [
@@ -31,51 +32,15 @@ function DiabeteProgram() {
             <div className="flex items-center justify-between">
                 <div className="max-w-2/5">
                     <div className="left-image relative ml-5">
-                        <div border-radius="50% 200% 40% 80%" className="css-1ueqzyg"></div>
-                        <div border-radius="50% 200% 40% 80%" className="css-10gqqxt"></div>
+                        <div className="absolute right-0 -bottom-20 z-[2]">
+                            <PatternDesign />
+                        </div>
 
-                        <span className="absolute right-0 bottom-8 z-10">
-                            <svg width="93" height="93" viewBox="0 0 93 93" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="2.5" cy="2.5" r="2.5" fill="#3056D3" />
-                                <circle cx="2.5" cy="24.5" r="2.5" fill="#3056D3" />
-                                <circle cx="2.5" cy="46.5" r="2.5" fill="#3056D3" />
-                                <circle cx="2.5" cy="68.5" r="2.5" fill="#3056D3" />
-                                <circle cx="2.5" cy="90.5" r="2.5" fill="#3056D3" />
-                                <circle cx="24.5" cy="2.5" r="2.5" fill="#3056D3" />
-                                <circle cx="24.5" cy="24.5" r="2.5" fill="#3056D3" />
-                                <circle cx="24.5" cy="46.5" r="2.5" fill="#3056D3" />
-                                <circle cx="24.5" cy="68.5" r="2.5" fill="#3056D3" />
-                                <circle cx="24.5" cy="90.5" r="2.5" fill="#3056D3" />
-                                <circle cx="46.5" cy="2.5" r="2.5" fill="#3056D3" />
-                                <circle cx="46.5" cy="24.5" r="2.5" fill="#3056D3" />
-                                <circle cx="46.5" cy="46.5" r="2.5" fill="#3056D3" />
-                                <circle cx="46.5" cy="68.5" r="2.5" fill="#3056D3" />
-                                <circle cx="46.5" cy="90.5" r="2.5" fill="#3056D3" />
-                                <circle cx="68.5" cy="2.5" r="2.5" fill="#3056D3" />
-                                <circle cx="68.5" cy="24.5" r="2.5" fill="#3056D3" />
-                                <circle cx="68.5" cy="46.5" r="2.5" fill="#3056D3" />
-                                <circle cx="68.5" cy="68.5" r="2.5" fill="#3056D3" />
-                                <circle cx="68.5" cy="90.5" r="2.5" fill="#3056D3" />
-                                <circle cx="90.5" cy="2.5" r="2.5" fill="#3056D3" />
-                                <circle cx="90.5" cy="24.5" r="2.5" fill="#3056D3" />
-                                <circle cx="90.5" cy="46.5" r="2.5" fill="#3056D3" />
-                                <circle cx="90.5" cy="68.5" r="2.5" fill="#3056D3" />
-                                <circle cx="90.5" cy="90.5" r="2.5" fill="#3056D3" />
-                            </svg>
-                        </span>
-
-                        <div className="z-10 relative animate__animated animate__fadeInUp animate__slow rotate-6 translate-x-10 border-gray-800 dark:border-gray-800 bg-gray-800 border-[14px] rounded-[2.5rem] h-[600px] w-[300px] shadow-xl">
-                            <div
-                                className="w-[148px] h-[20px] bg-gray-800 top-0 rounded-b-[1rem] left-1/2 -translate-x-1/2 absolute">
-                            </div>
-                            <div className="h-[46px] w-[3px] bg-gray-800 absolute -left-[3px] top-[124px] rounded-l-lg"></div>
-                            <div className="h-[46px] w-[3px] bg-gray-800 absolute -left-[3px] top-[178px] rounded-l-lg"></div>
-                            <div className="h-[64px] w-[3px] bg-gray-800 absolute -right-[3px] top-[142px] rounded-r-lg"></div>
-                            <div className="rounded-[2rem] overflow-hidden w-[274px] h-[572px] bg-white dark:bg-gray-800">
-                                <Image width={500} height={500} src="/images/screens/learn.png" className="dark:hidden w-[274px] h-[572px]" alt="vitaway programs and learning" />
-                                <Image width={500} height={500} src="/images/screens/learn.png" className="hidden dark:block w-[274px] h-[572px]" alt="vitaway programs and learning" />
-                            </div>
+                        <div className='z-[10]'>
+                            <MobileFrame 
+                                title='Vitaway Client Dashboard'
+                                image='/images/screens/learn.png'
+                            />
                         </div>
                     </div>
                 </div>

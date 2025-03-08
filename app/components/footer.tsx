@@ -1,35 +1,14 @@
 import React from 'react';
-import Image from 'next/image';
-import { CSSProperties } from 'react';
 import Logo from './logo';
-
-const imageStyle: CSSProperties = {
-    position: 'absolute',
-    height: '100%',
-    width: '100%',
-    left: 0,
-    top: 0,
-    right: 0,
-    bottom: 0,
-    color: 'transparent',
-};
+import BackgroundBlurImage from './design/background-blur-image';
 
 function Footer() {
     return (<>
         <section className="py-10 bg-white sm:pt-16 lg:pt-24 relative border-t border-gray-200">
             <div className="z-10 absolute left-1/2 top-0 aspect-[1204/394] w-full max-w-[1204px] -translate-x-1/2 opacity-35">
-                <Image
-                    alt="blur"
-                    loading="lazy"
-                    decoding="async"
-                    data-nimg="fill"
-                    className="max-w-none"
-                    style={imageStyle}
-                    width={100}
-                    height={100}
-                    src="https://ai-tool.nextjstemplates.com/images/blur/blur-02.svg"
-                />
+               <BackgroundBlurImage />
             </div>
+
             <div className="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
                 <div className="grid grid-cols-2 md:col-span-3 lg:grid-cols-6 gap-y-16 gap-x-12">
                     <div className="col-span-2 md:col-span-3 lg:col-span-2 lg:pr-8">

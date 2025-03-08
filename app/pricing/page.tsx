@@ -1,34 +1,57 @@
-import Image from 'next/image';
 import React from 'react'
-import { CSSProperties } from 'react';
+import BackgroundBlurImage from '../components/design/background-blur-image';
 
-const imageStyle: CSSProperties = {
-    position: 'absolute',
-    height: '100%',
-    width: '100%',
-    left: 0,
-    top: 0,
-    right: 0,
-    bottom: 0,
-    color: 'transparent',
-};
+const pricingTable = [
+    {
+        title: 'Free Plan',
+        short_desc: "Basic Features",
+        price: 'RWF 0.00',
+        features: [
+            'Virtual PT Appointment (non-member)',
+            'Edit Profile',
+            'Access to Blogs',
+            'Health Assessment'
+        ]
+    },
+    {
+        title: 'Standard Plan',
+        short_desc: "Popular Plan with Most Features",
+        price: 'RWF 10, 000.00',
+        highlighted: true,
+        features: [
+            'Virtual PT Appointment (member)',
+            'Access All Features (lessons, daily tracks, etc.)',
+            '24/7 Chat and Video Call with a Coach',
+            'Track Health Interactions',
+            'Personalized Meal Plan',
+            'Reminder Notifications',
+            'Ongoing Personal Support',
+            'Weekly Tasks (workouts, etc.)'
+        ]
+    },
+    {
+        title: 'Premium Plan',
+        short_desc: "All Features Included",
+        price: 'RWF 15, 000.00',
+        features: [
+            'All Standard Plan Features',
+            'Unlimited Video Calls',
+            'Personal Coach',
+            'Daily Challenges',
+            'Join Safe Space Group',
+            'Personalized Expert Consultations',
+            'Community Membership',
+            'Data Integration with PCP'
+        ]
+    }
+];
 
 function Pricing() {
     return (<>
         <div className="relative w-full h-full">
             <div className="absolute hidden w-full bg-gradient-to-b from-[#272749] to-[#111827] lg:block h-96"></div>
             <div className="z-[5] absolute left-1/2 top-0 aspect-[1204/394] w-full max-w-[1204px] -translate-x-1/2">
-                <Image
-                    alt="blur"
-                    loading="lazy"
-                    decoding="async"
-                    data-nimg="fill"
-                    className="max-w-none"
-                    style={imageStyle}
-                    width={100}
-                    height={100}
-                    src="https://ai-tool.nextjstemplates.com/images/blur/blur-02.svg"
-                />
+                <BackgroundBlurImage />
             </div>
 
             <div className="relative px-4 py-20 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8 lg:py-20">
@@ -58,236 +81,31 @@ function Pricing() {
                     </p>
                 </div>
 
-                <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-y-8 mt-8 max-md:max-w-sm max-md:mx-auto">
-                    <div className="bg-gray-100 text-slate-700 rounded-3xl overflow-hidden p-8" style={{ border: '1px solid #e7dfd7' }}>
-                        <div className="text-left">
-                            <h4 className="text-3xl font-normal ">Free</h4>
-                            <p className="text-md mt-2 text-gray-600">Only Basis Features</p>
-                            <h3 className="text-2xl font-normal  mt-4">$0.00<sub
-                                className="text-sm font-normal  text-gray-400 ml-2">/ Month</sub></h3>
-                            <button type="button"
-                                className="w-full mt-8 px-2 py-2.5 text-sm font-semibold bg-blue-600 text-white hover:bg-blue-700 rounded-full">Get
-                                Started</button>
+                <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-y-8 mt-10 max-md:max-w-sm max-md:mx-auto">
+                    {pricingTable.map((plan, index) => (
+                        <div key={index} className={`bg-gray-100 text-slate-700 rounded-3xl overflow-hidden p-8 ${plan.highlighted ? 'scale-[1.05] shadow-[0_2px_40px_-4px_rgba(93,96,127,0.2)]' : ''}`} style={{ border: '1px solid #e7dfd7' }}>
+                            <div className="text-left">
+                                <h4 className="text-3xl font-semibold">{plan.title}</h4>
+                                <p className="text-md mt-2 text-gray-600">{plan.short_desc}</p>
+                                <h3 className="text-xl font-semibold mt-4">{plan.price}<sub className="text-sm font-normal  text-gray-400 ml-2">/ Month</sub></h3>
+                                <button type="button" className="w-full mt-8 px-2 py-2.5 text-sm font-semibold bg-blue-600 text-white hover:bg-blue-700 rounded-full">Get Started</button>
+                            </div>
+                            <div className="mt-8">
+                                <h4 className="text-lg font-bold mb-4">Plan Included</h4>
+
+                                <ul className="space-y-4">
+                                    {plan.features.map((feature, index) => (
+                                        <li className="flex items-center text-sm" key={index}>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="17" className="mr-4 bg-gray-200 fill-[#333] rounded-full p-[3px]" viewBox="0 0 24 24">
+                                                <path d="M9.707 19.121a.997.997 0 0 1-1.414 0l-5.646-5.647a1.5 1.5 0 0 1 0-2.121l.707-.707a1.5 1.5 0 0 1 2.121 0L9 14.171l9.525-9.525a1.5 1.5 0 0 1 2.121 0l.707.707a1.5 1.5 0 0 1 0 2.121z" data-original="#000000" />
+                                            </svg>
+                                            {feature}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
                         </div>
-                        <div className="mt-8">
-                            <h4 className="text-lg font-bold mb-4">Plan Included</h4>
-                            <ul className="space-y-4">
-                                <li className="flex items-center text-sm">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="17"
-                                        className="mr-4 bg-gray-200 fill-[#333] rounded-full p-[3px]" viewBox="0 0 24 24">
-                                        <path
-                                            d="M9.707 19.121a.997.997 0 0 1-1.414 0l-5.646-5.647a1.5 1.5 0 0 1 0-2.121l.707-.707a1.5 1.5 0 0 1 2.121 0L9 14.171l9.525-9.525a1.5 1.5 0 0 1 2.121 0l.707.707a1.5 1.5 0 0 1 0 2.121z"
-                                            data-original="#000000" />
-                                    </svg>
-                                    Make an Virtual PT Appointment as a non-member
-                                </li>
-                                <li className="flex items-center text-sm">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="17"
-                                        className="mr-4 bg-gray-200 fill-[#333] rounded-full p-[3px]" viewBox="0 0 24 24">
-                                        <path
-                                            d="M9.707 19.121a.997.997 0 0 1-1.414 0l-5.646-5.647a1.5 1.5 0 0 1 0-2.121l.707-.707a1.5 1.5 0 0 1 2.121 0L9 14.171l9.525-9.525a1.5 1.5 0 0 1 2.121 0l.707.707a1.5 1.5 0 0 1 0 2.121z"
-                                            data-original="#000000" />
-                                    </svg>
-                                    Edit profile
-                                </li>
-                                <li className="flex items-center text-sm">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="17"
-                                        className="mr-4 bg-gray-200 fill-[#333] rounded-full p-[3px]" viewBox="0 0 24 24">
-                                        <path
-                                            d="M9.707 19.121a.997.997 0 0 1-1.414 0l-5.646-5.647a1.5 1.5 0 0 1 0-2.121l.707-.707a1.5 1.5 0 0 1 2.121 0L9 14.171l9.525-9.525a1.5 1.5 0 0 1 2.121 0l.707.707a1.5 1.5 0 0 1 0 2.121z"
-                                            data-original="#000000" />
-                                    </svg>
-                                    Access to blogs
-                                </li>
-                                <li className="flex items-center text-sm">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="17"
-                                        className="mr-4 bg-gray-200 fill-[#333] rounded-full p-[3px]" viewBox="0 0 24 24">
-                                        <path
-                                            d="M9.707 19.121a.997.997 0 0 1-1.414 0l-5.646-5.647a1.5 1.5 0 0 1 0-2.121l.707-.707a1.5 1.5 0 0 1 2.121 0L9 14.171l9.525-9.525a1.5 1.5 0 0 1 2.121 0l.707.707a1.5 1.5 0 0 1 0 2.121z"
-                                            data-original="#000000" />
-                                    </svg>
-                                    Health assessment
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div
-                        className="bg-white text-slate-700 scale-[1.05] shadow-[0_2px_40px_-4px_rgba(93,96,127,0.2)] rounded-3xl overflow-hidden p-8">
-                        <div className="text-left">
-                            <h4 className="text-2xl font-normal ">Medium</h4>
-                            <p className="text-md mt-2 text-gray-600">Most Popular plan with <br /> almost everything</p>
-                            <h3 className="text-2xl font-normal  mt-4">$10.00<sub
-                                className="text-sm font-normal  text-gray-400 ml-2">/ Month</sub></h3>
-                            <button type="button"
-                                className="w-full mt-8 px-2 py-2.5 text-sm font-semibold bg-blue-600 text-white hover:bg-blue-700 rounded-full">Get
-                                Started</button>
-                        </div>
-                        <div className="mt-8">
-                            <h4 className="text-lg font-bold mb-4">Plan Included</h4>
-                            <ul className="space-y-4">
-                                <li className="flex items-center text-sm">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="17"
-                                        className="mr-4 bg-gray-200 fill-[#333] rounded-full p-[3px]" viewBox="0 0 24 24">
-                                        <path
-                                            d="M9.707 19.121a.997.997 0 0 1-1.414 0l-5.646-5.647a1.5 1.5 0 0 1 0-2.121l.707-.707a1.5 1.5 0 0 1 2.121 0L9 14.171l9.525-9.525a1.5 1.5 0 0 1 2.121 0l.707.707a1.5 1.5 0 0 1 0 2.121z"
-                                            data-original="#000000" />
-                                    </svg>
-                                    Make a Virtual PT Appointment as a member
-                                </li>
-                                <li className="flex items-center text-sm">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="17"
-                                        className="mr-4 bg-gray-200 fill-[#333] rounded-full p-[3px]" viewBox="0 0 24 24">
-                                        <path
-                                            d="M9.707 19.121a.997.997 0 0 1-1.414 0l-5.646-5.647a1.5 1.5 0 0 1 0-2.121l.707-.707a1.5 1.5 0 0 1 2.121 0L9 14.171l9.525-9.525a1.5 1.5 0 0 1 2.121 0l.707.707a1.5 1.5 0 0 1 0 2.121z"
-                                            data-original="#000000" />
-                                    </svg>
-                                    Access all features like lessons, daily tracks etc…
-                                </li>
-                                <li className="flex items-center text-sm">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="17"
-                                        className="mr-4 bg-gray-200 fill-[#333] rounded-full p-[3px]" viewBox="0 0 24 24">
-                                        <path
-                                            d="M9.707 19.121a.997.997 0 0 1-1.414 0l-5.646-5.647a1.5 1.5 0 0 1 0-2.121l.707-.707a1.5 1.5 0 0 1 2.121 0L9 14.171l9.525-9.525a1.5 1.5 0 0 1 2.121 0l.707.707a1.5 1.5 0 0 1 0 2.121z"
-                                            data-original="#000000" />
-                                    </svg>
-                                    Chat, video call with a coach 24/7
-                                </li>
-                                <li className="flex items-center text-sm">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="17"
-                                        className="mr-4 bg-gray-200 fill-[#333] rounded-full p-[3px]" viewBox="0 0 24 24">
-                                        <path
-                                            d="M9.707 19.121a.997.997 0 0 1-1.414 0l-5.646-5.647a1.5 1.5 0 0 1 0-2.121l.707-.707a1.5 1.5 0 0 1 2.121 0L9 14.171l9.525-9.525a1.5 1.5 0 0 1 2.121 0l.707.707a1.5 1.5 0 0 1 0 2.121z"
-                                            data-original="#000000" />
-                                    </svg>
-                                    Track your health interactions
-                                </li>
-                                <li className="flex items-center text-sm">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="17"
-                                        className="mr-4 bg-gray-200 fill-[#333] rounded-full p-[3px]" viewBox="0 0 24 24">
-                                        <path
-                                            d="M9.707 19.121a.997.997 0 0 1-1.414 0l-5.646-5.647a1.5 1.5 0 0 1 0-2.121l.707-.707a1.5 1.5 0 0 1 2.121 0L9 14.171l9.525-9.525a1.5 1.5 0 0 1 2.121 0l.707.707a1.5 1.5 0 0 1 0 2.121z"
-                                            data-original="#000000" />
-                                    </svg>
-                                    Personalized meal plan
-                                </li>
-                                <li className="flex items-center text-sm">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="17"
-                                        className="mr-4 bg-gray-200 fill-[#333] rounded-full p-[3px]" viewBox="0 0 24 24">
-                                        <path
-                                            d="M9.707 19.121a.997.997 0 0 1-1.414 0l-5.646-5.647a1.5 1.5 0 0 1 0-2.121l.707-.707a1.5 1.5 0 0 1 2.121 0L9 14.171l9.525-9.525a1.5 1.5 0 0 1 2.121 0l.707.707a1.5 1.5 0 0 1 0 2.121z"
-                                            data-original="#000000" />
-                                    </svg>
-                                    Reminders notification
-                                </li>
-                                <li className="flex items-center text-sm">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="17"
-                                        className="mr-4 bg-gray-200 fill-[#333] rounded-full p-[3px]" viewBox="0 0 24 24">
-                                        <path
-                                            d="M9.707 19.121a.997.997 0 0 1-1.414 0l-5.646-5.647a1.5 1.5 0 0 1 0-2.121l.707-.707a1.5 1.5 0 0 1 2.121 0L9 14.171l9.525-9.525a1.5 1.5 0 0 1 2.121 0l.707.707a1.5 1.5 0 0 1 0 2.121z"
-                                            data-original="#000000" />
-                                    </svg>
-                                    Ongoing personal support
-                                </li>
-                                <li className="flex items-center text-sm">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="17"
-                                        className="mr-4 bg-gray-200 fill-[#333] rounded-full p-[3px]" viewBox="0 0 24 24">
-                                        <path
-                                            d="M9.707 19.121a.997.997 0 0 1-1.414 0l-5.646-5.647a1.5 1.5 0 0 1 0-2.121l.707-.707a1.5 1.5 0 0 1 2.121 0L9 14.171l9.525-9.525a1.5 1.5 0 0 1 2.121 0l.707.707a1.5 1.5 0 0 1 0 2.121z"
-                                            data-original="#000000" />
-                                    </svg>
-                                    A weekly task like workout and etc …
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div className="bg-gray-100 text-slate-700 rounded-3xl overflow-hidden p-8" style={{ border: '1px solid #e7dfd7' }}>
-                        <div className="text-left">
-                            <h4 className="text-2xl font-normal ">Premium</h4>
-                            <p className="text-md mt-2 text-gray-600">Access All Features</p>
-                            <h3 className="text-2xl font-normal  mt-4">$15.00<sub
-                                className="text-sm font-normal  text-gray-400 ml-2">/ Month</sub></h3>
-                            <button type="button"
-                                className="w-full mt-8 px-2 py-2.5 text-sm font-semibold bg-blue-600 text-white hover:bg-blue-700 rounded-full">Get
-                                Started</button>
-                        </div>
-                        <div className="mt-8">
-                            <h4 className="text-lg font-bold mb-4">Plan Included</h4>
-                            <ul className="space-y-4">
-                                <li className="flex items-center text-sm">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="17"
-                                        className="mr-4 bg-gray-200 fill-[#333] rounded-full p-[3px]" viewBox="0 0 24 24">
-                                        <path
-                                            d="M9.707 19.121a.997.997 0 0 1-1.414 0l-5.646-5.647a1.5 1.5 0 0 1 0-2.121l.707-.707a1.5 1.5 0 0 1 2.121 0L9 14.171l9.525-9.525a1.5 1.5 0 0 1 2.121 0l.707.707a1.5 1.5 0 0 1 0 2.121z"
-                                            data-original="#000000" />
-                                    </svg>
-                                    All medium packages
-                                </li>
-                                <li className="flex items-center text-sm">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="17"
-                                        className="mr-4 bg-gray-200 fill-[#333] rounded-full p-[3px]" viewBox="0 0 24 24">
-                                        <path
-                                            d="M9.707 19.121a.997.997 0 0 1-1.414 0l-5.646-5.647a1.5 1.5 0 0 1 0-2.121l.707-.707a1.5 1.5 0 0 1 2.121 0L9 14.171l9.525-9.525a1.5 1.5 0 0 1 2.121 0l.707.707a1.5 1.5 0 0 1 0 2.121z"
-                                            data-original="#000000" />
-                                    </svg>
-                                    Unlimited video call
-                                </li>
-                                <li className="flex items-center text-sm">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="17"
-                                        className="mr-4 bg-gray-200 fill-[#333] rounded-full p-[3px]" viewBox="0 0 24 24">
-                                        <path
-                                            d="M9.707 19.121a.997.997 0 0 1-1.414 0l-5.646-5.647a1.5 1.5 0 0 1 0-2.121l.707-.707a1.5 1.5 0 0 1 2.121 0L9 14.171l9.525-9.525a1.5 1.5 0 0 1 2.121 0l.707.707a1.5 1.5 0 0 1 0 2.121z"
-                                            data-original="#000000" />
-                                    </svg>
-                                    Personal coach
-                                </li>
-                                <li className="flex items-center text-sm">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="17"
-                                        className="mr-4 bg-gray-200 fill-[#333] rounded-full p-[3px]" viewBox="0 0 24 24">
-                                        <path
-                                            d="M9.707 19.121a.997.997 0 0 1-1.414 0l-5.646-5.647a1.5 1.5 0 0 1 0-2.121l.707-.707a1.5 1.5 0 0 1 2.121 0L9 14.171l9.525-9.525a1.5 1.5 0 0 1 2.121 0l.707.707a1.5 1.5 0 0 1 0 2.121z"
-                                            data-original="#000000" />
-                                    </svg>
-                                    Daily challenges
-                                </li>
-                                <li className="flex items-center text-sm">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="17"
-                                        className="mr-4 bg-gray-200 fill-[#333] rounded-full p-[3px]" viewBox="0 0 24 24">
-                                        <path
-                                            d="M9.707 19.121a.997.997 0 0 1-1.414 0l-5.646-5.647a1.5 1.5 0 0 1 0-2.121l.707-.707a1.5 1.5 0 0 1 2.121 0L9 14.171l9.525-9.525a1.5 1.5 0 0 1 2.121 0l.707.707a1.5 1.5 0 0 1 0 2.121z"
-                                            data-original="#000000" />
-                                    </svg>
-                                    Join the Safe Space group
-                                </li>
-                                <li className="flex items-center text-sm">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="17"
-                                        className="mr-4 bg-gray-200 fill-[#333] rounded-full p-[3px]" viewBox="0 0 24 24">
-                                        <path
-                                            d="M9.707 19.121a.997.997 0 0 1-1.414 0l-5.646-5.647a1.5 1.5 0 0 1 0-2.121l.707-.707a1.5 1.5 0 0 1 2.121 0L9 14.171l9.525-9.525a1.5 1.5 0 0 1 2.121 0l.707.707a1.5 1.5 0 0 1 0 2.121z"
-                                            data-original="#000000" />
-                                    </svg>
-                                    Personalized expert consultations
-                                </li>
-                                <li className="flex items-center text-sm">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="17"
-                                        className="mr-4 bg-gray-200 fill-[#333] rounded-full p-[3px]" viewBox="0 0 24 24">
-                                        <path
-                                            d="M9.707 19.121a.997.997 0 0 1-1.414 0l-5.646-5.647a1.5 1.5 0 0 1 0-2.121l.707-.707a1.5 1.5 0 0 1 2.121 0L9 14.171l9.525-9.525a1.5 1.5 0 0 1 2.121 0l.707.707a1.5 1.5 0 0 1 0 2.121z"
-                                            data-original="#000000" />
-                                    </svg>
-                                    Join the community member
-                                </li>
-                                <li className="flex items-center text-sm">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="17"
-                                        className="mr-4 bg-gray-200 fill-[#333] rounded-full p-[3px]" viewBox="0 0 24 24">
-                                        <path
-                                            d="M9.707 19.121a.997.997 0 0 1-1.414 0l-5.646-5.647a1.5 1.5 0 0 1 0-2.121l.707-.707a1.5 1.5 0 0 1 2.121 0L9 14.171l9.525-9.525a1.5 1.5 0 0 1 2.121 0l.707.707a1.5 1.5 0 0 1 0 2.121z"
-                                            data-original="#000000" />
-                                    </svg>
-                                    Integrating data with your PCP
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
+                    ))}
                 </div>
             </div>
         </div>

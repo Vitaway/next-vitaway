@@ -77,7 +77,7 @@ function Contact() {
               </ul>
             </div>
 
-            <div className="col-lg-12 more-detail-buttons mt-4">
+            <div className="col-lg-12 more-detail-buttons mt-10">
               <a href="https://wa.me/250787279560" rel="noopener" target="__blank">
                 <button type="button"
                   className="text-white  font-normal bg-green-600 hover:bg-green-600/90 focus:ring-4 focus:outline-none focus:ring-[#1da1f2]/50 rounded-lg text-md px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#1da1f2]/55 mr-2 mb-2">

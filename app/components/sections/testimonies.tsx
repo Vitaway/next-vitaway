@@ -1,33 +1,12 @@
 import Image from 'next/image'
 import React from 'react';
-import { CSSProperties } from 'react';
-
-const imageStyle: CSSProperties = {
-    position: 'absolute',
-    height: '100%',
-    width: '100%',
-    left: 0,
-    top: 0,
-    right: 0,
-    bottom: 0,
-    color: 'transparent',
-};
+import BackgroundBlurImage from '../design/background-blur-image';
 
 function Testimonies() {
     return (<>
         <section className="bg-gray-100 relative px-4 py-20 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-20 lg:px-10 lg:py-20">
             <div className="z-10 absolute left-1/2 top-0 aspect-[1204/394] w-full max-w-[1204px] -translate-x-1/2 opacity-35">
-                <Image
-                    alt="blur"
-                    loading="lazy"
-                    decoding="async"
-                    data-nimg="fill"
-                    className="max-w-none"
-                    style={imageStyle}
-                    width={100}
-                    height={100}
-                    src="https://ai-tool.nextjstemplates.com/images/blur/blur-02.svg"
-                />
+                <BackgroundBlurImage />
             </div>
 
             <div className="max-w-2xl mx-auto text-center">

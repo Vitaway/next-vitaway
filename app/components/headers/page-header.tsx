@@ -1,17 +1,6 @@
 import Image from 'next/image';
 import React from 'react'
-import { CSSProperties } from 'react';
-
-const imageStyle: CSSProperties = {
-    position: 'absolute',
-    height: '100%',
-    width: '100%',
-    left: 0,
-    top: 0,
-    right: 0,
-    bottom: 0,
-    color: 'transparent',
-};
+import BackgroundBlurImage from '../design/background-blur-image';
 
 interface PageHeaderProps {
     sup_title: string;
@@ -30,17 +19,7 @@ function PageHeader({ sup_title, title, description, backgroundImage }: PageHead
             </div>}
 
             <div className={`z-[5] absolute ${backgroundImage ? 'left-0' : 'left-1/2'} top-0 aspect-[1204/394] w-full max-w-[1204px] -translate-x-1/2`}>
-                <Image
-                    alt="blur"
-                    loading="lazy"
-                    decoding="async"
-                    data-nimg="fill"
-                    className="max-w-none"
-                    style={imageStyle}
-                    width={100}
-                    height={100}
-                    src="https://ai-tool.nextjstemplates.com/images/blur/blur-02.svg"
-                />
+                <BackgroundBlurImage />
             </div>
 
             <div className="relative z-10 px-4 py-16 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8 lg:py-20">
