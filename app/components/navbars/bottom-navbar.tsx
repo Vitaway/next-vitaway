@@ -24,7 +24,7 @@ function BottomNavbar() {
 
                 <div className="hidden lg:flex lg:items-center lg:justify-center lg:space-x-10 font-medium text-slate-500">
                     <Link href="/" title="" className="text-base text-black transition-all duration-200 hover:text-opacity-80 hover:text-slate-900"> Home </Link>
-                    <Link href="/who-we-server" title="" className="text-base text-black transition-all duration-200 hover:text-opacity-80 hover:text-slate-900"> Who we server </Link>
+                    <Link href="/serves" title="" className="text-base text-black transition-all duration-200 hover:text-opacity-80 hover:text-slate-900"> Who we server </Link>
                     <Link href="/indivituals" title="" className="text-base text-black transition-all duration-200 hover:text-opacity-80 hover:text-slate-900"> For Indivitual </Link>
                     <Link href="/pricing" title="" className="text-base text-black transition-all duration-200 hover:text-opacity-80 hover:text-slate-900"> Pricing </Link>
                     <Link href="/blogs" title="" className="text-base text-black transition-all duration-200 hover:text-opacity-80 hover:text-slate-900"> Blogs </Link>

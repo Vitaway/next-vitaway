@@ -1,13 +1,88 @@
 import Image from 'next/image'
+import Link from 'next/link';
 import React from 'react'
 
 function OurTeam() {
+  const team = [
+    {
+      name: 'Emmanuel HAKUZIMANA',
+      slug: 'emmanuel-hakuzimana',
+      role: 'Co-Founder & CEO',
+      description: 'Promoting health and wellness to the community through digital technology.',
+      image: '/images/members/member-1.jpg',
+      social_media: {
+        linkedin: 'https://www.linkedin.com/in/emmanuel-hakuzimana-rn-123309188/',
+        twitter: 'https://x.com/Heynemjtc1',
+        instagram: 'https://www.instagram.com/heynemjtc?igsh=cGZpYWQwYXpubjY4'
+      }
+    },
+    {
+      name: 'Eric NIYONGIRA',
+      slug: 'eric-niyongira',
+      role: 'Co-founder & Business Strategy Development',
+      description: 'Research and developing strategies to drive innovation in the fields of FinTech and HealthTech. 🚀',
+      image: '/images/members/member-2.jpeg',
+      social_media: {
+        linkedin: 'https://www.linkedin.com/in/eric-niyongira-b4a6b0193/',
+        twitter: 'https://x.com/EricNiyongira3',
+        instagram: ''
+      }
+    },
+    {
+      name: 'Steven SHIMIRWA',
+      slug: 'steven-shimirwa',
+      role: 'Co-founder & Head of Clinical Medicine',
+      description: 'Innovation powered by collaboration and critical thinking enhances and makes my work about health enhancement a success.',
+      image: '/images/members/member-3.jpg',
+      social_media: {
+        linkedin: 'https://www.linkedin.com/in/steven-shimirwa-0b4077178',
+        twitter: '',
+        instagram: ''
+      }
+    },
+    {
+      name: 'Patience H. MANIRABONA',
+      slug: 'patience-manirabona',
+      role: 'Software Engineer & Product Development',
+      description: 'Software developer dedicated to creating innovative solutions for advancing different societies.',
+      image: '/images/members/member-4.jpg',
+      social_media: {
+        linkedin: 'https://www.linkedin.com/in/manirabona-patience/',
+        twitter: 'https://x.com/ManirabonaW',
+        instagram: ''
+      }
+    },
+    {
+      name: '⁠Emmanuel Murindwa',
+      slug: 'emmanuel-murindwa',
+      role: 'Gender Equality Specialist',
+      description: 'Pursuing a Master\'s in Public Health at Umeå University, focusing on health economics and sustainable development.',
+      image: '/images/members/member-5.jpg',
+      social_media: {
+        linkedin: 'https://www.linkedin.com/in/no%C3%ABlla-lidvine-isingizwe-706702161/',
+        twitter: '',
+        instagram: ''
+      }
+    },
+    {
+      name: '⁠Nathanaella Hirwa',
+      slug: 'nathanaella-hirwa',
+      role: 'AI Data Engineer & Product Development',
+      description: 'Years of experience in machine learning models, retraining models, and generating data analytic.',
+      image: '/images/members/member-6.jpeg',
+      social_media: {
+        linkedin: 'https://www.linkedin.com/in/faustinnzitonda/?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app',
+        twitter: '',
+        instagram: ''
+      }
+    },
+  ];
   return (<>
     <div className="team-section relative w-full h-full">
-      <div className="absolute hidden w-full from-[#272749] bg-gradient-to-b lg:block h-96"></div>
+      <div className="absolute hidden w-full bg-gradient-to-b from-[#272749] to-[#111827] lg:block h-[500px]"></div>
 
       <div className="relative px-4 py-20 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-20 lg:px-10 lg:py-20">
-
+        {/* Header */}
         <div className="max-w-xl mb-20 md:mx-auto sm:text-center lg:max-w-2xl md:mb-20">
           <div>
             <p className="inline-block  font-normal px-3 py-px mb-4 text-xs tracking-wider text-white uppercase rounded-full bg-teal-accent-400">
@@ -33,222 +108,48 @@ function OurTeam() {
             </span>
             Meet The Dedicated Individuals Who Make Vitaway Tick.
           </h2>
-          <p className="text-base text-gray-900 md:text-lg font-merri font-normal">
+          <p className="text-base text-gray-200 md:text-lg font-merri font-normal">
             This dedicated group of individuals forms the backbone of Vitaway, and their collective expertise
             and commitment drive the mission forward.
           </p>
         </div>
 
-        <div className="grid gap-5 mx-auto lg:grid-cols-2 lg:max-w-screen-xl mt-5">
-          {/* {{-- Emmanuel HAKUZIMANA --}} */}
-          <div className="grid sm:grid-cols-6">
-            <div className="relative w-full !h-64 max-h-full rounded sm:h-auto sm:col-span-3 border-gray-200 border">
-              <Image width={100} height={100} className="absolute object-cover object-top w-full h-full rounded bg-top"
-                src="/images/members/member-1.jpg" alt="Emmanuel HAKUZIMANA" />
-            </div>
-            <div className="flex flex-col mt-2 sm:mt-0 sm:p-5 sm:col-span-3">
-              <p className="text-lg font-normal  mb-3 text-gray-900">Emmanuel HAKUZIMANA</p>
-              <p className="mb-4 text-lg leading-5 text-gray-600  font-normal">Co-Founder & CEO</p>
-              <p className="text-gray-700 leading-6">
-                Promoting health and wellness to the community through digital
-                technology.
-              </p>
-              <div className="flex items-center space-x-3 mt-4">
-                <a href="https://www.linkedin.com/in/emmanuel-hakuzimana-rn-123309188/"
-                  className="text-gray-600 transition-colors duration-300 hover:text-deep-purple-accent-400">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                    viewBox="0 0 24 24">
-                    <path
-                      d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
-                  </svg>
-                </a>
-                <a href="https://x.com/Heynemjtc1"
-                  className="text-gray-600 transition-colors duration-300 hover:text-deep-purple-accent-400">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                    viewBox="0 0 24 24">
-                    <path
-                      d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-.139 9.237c.209 4.617-3.234 9.765-9.33 9.765-1.854 0-3.579-.543-5.032-1.475 1.742.205 3.48-.278 4.86-1.359-1.437-.027-2.649-.976-3.066-2.28.515.098 1.021.069 1.482-.056-1.579-.317-2.668-1.739-2.633-3.26.442.246.949.394 1.486.411-1.461-.977-1.875-2.907-1.016-4.383 1.619 1.986 4.038 3.293 6.766 3.43-.479-2.053 1.08-4.03 3.199-4.03.943 0 1.797.398 2.395 1.037.748-.147 1.451-.42 2.086-.796-.246.767-.766 1.41-1.443 1.816.664-.08 1.297-.256 1.885-.517-.439.656-.996 1.234-1.639 1.697z" />
-                  </svg>
-                </a>
-                <a href="https://www.instagram.com/heynemjtc?igsh=cGZpYWQwYXpubjY4"
-                  className="text-gray-600 transition-colors duration-300 hover:text-deep-purple-accent-400">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                    viewBox="0 0 24 24">
-                    <path
-                      d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-3 7h-1.924c-.615 0-1.076.252-1.076.889v1.111h3l-.238 3h-2.762v8h-3v-8h-2v-3h2v-1.923c0-2.022 1.064-3.077 3.461-3.077h2.539v3z" />
-                  </svg>
-                </a>
-              </div>
-            </div>
-          </div>
+        <div className="relative bg-white rounded-xl px-10 py-5">
+          <div className="grid gap-5 mx-auto lg:grid-cols-2 lg:max-w-screen-xl mt-5">
+            {team && team.map((member, index) => (
+              <Link href={`/our-team/members/${member.slug}`} className="grid sm:grid-cols-6 hover:bg-gray-50 rounded-xl cursor-pointer" key={index}>
+                <div className="relative w-full !h-64 max-h-full rounded-xl sm:h-auto sm:col-span-3 border-gray-200 border">
+                  <Image width={100} height={100} className="absolute object-cover object-top w-full h-full rounded-xl bg-top" src={member.image} alt={member.name} />
+                </div>
+                <div className="flex flex-col mt-2 sm:mt-0 sm:p-5 sm:col-span-3">
+                  <p className="text-lg font-bold text-gray-900">{member.name}</p>
+                  <p className="mb-4 text-sm leading-5 text-slate-600 mt-2  font-normal">{member.role}</p>
+                  <p className="text-slate-700 text-base leading-6">{member.description}</p>
+                  <div className="flex items-center space-x-3 mt-4">
+                    {/* Linkendin */}
+                    <a href={member.social_media.linkedin} target="_blank" rel="noreferrer" className="text-gray-600 transition-colors duration-300 hover:text-deep-purple-accent-400">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                        <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+                      </svg>
+                    </a>
 
-          {/* {{-- Eric NIYONGIRA --}} */}
-          <div className="grid sm:grid-cols-6">
-            <div className="relative w-full !h-64 max-h-full rounded sm:h-auto sm:col-span-3 border-gray-200 border">
-              <Image width={100} height={100} className="absolute object-cover object-top w-full h-full rounded bg-top"
-                src="/images/members/member-2.jpeg" alt="Eric NIYONGIRA" />
-            </div>
-            <div className="flex flex-col mt-2 sm:mt-0 sm:p-5 sm:col-span-3">
-              <p className="text-lg font-bold text-gray-900">Eric NIYONGIRA</p>
-              <p className="mb-4 text-md leading-5 text-gray-600 mt-2  font-normal">Co-founder &
-                Business Strategy Development</p>
-              <p className="text-gray-700 leading-6">
-                Research and developing strategies to drive innovation in the
-                fields of FinTech and HealthTech. 🚀
-              </p>
-              <div className="flex items-center space-x-3 mt-4">
-                <a href="https://www.linkedin.com/in/eric-niyongira-b4a6b0193/"
-                  className="text-gray-600 transition-colors duration-300 hover:text-deep-purple-accent-400">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                    viewBox="0 0 24 24">
-                    <path
-                      d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
-                  </svg>
-                </a>
-                <a href="https://x.com/EricNiyongira3"
-                  className="text-gray-600 transition-colors duration-300 hover:text-deep-purple-accent-400">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                    viewBox="0 0 24 24">
-                    <path
-                      d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-.139 9.237c.209 4.617-3.234 9.765-9.33 9.765-1.854 0-3.579-.543-5.032-1.475 1.742.205 3.48-.278 4.86-1.359-1.437-.027-2.649-.976-3.066-2.28.515.098 1.021.069 1.482-.056-1.579-.317-2.668-1.739-2.633-3.26.442.246.949.394 1.486.411-1.461-.977-1.875-2.907-1.016-4.383 1.619 1.986 4.038 3.293 6.766 3.43-.479-2.053 1.08-4.03 3.199-4.03.943 0 1.797.398 2.395 1.037.748-.147 1.451-.42 2.086-.796-.246.767-.766 1.41-1.443 1.816.664-.08 1.297-.256 1.885-.517-.439.656-.996 1.234-1.639 1.697z" />
-                  </svg>
-                </a>
-                <a href="#"
-                  className="text-gray-600 transition-colors duration-300 hover:text-deep-purple-accent-400">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                    viewBox="0 0 24 24">
-                    <path
-                      d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-3 7h-1.924c-.615 0-1.076.252-1.076.889v1.111h3l-.238 3h-2.762v8h-3v-8h-2v-3h2v-1.923c0-2.022 1.064-3.077 3.461-3.077h2.539v3z" />
-                  </svg>
-                </a>
-              </div>
-            </div>
-          </div>
+                    {/* Twitter */}
+                    <a href={member.social_media.twitter} target="_blank" rel="noreferrer" className="text-gray-600 transition-colors duration-300 hover:text-deep-purple-accent-400">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                        <path d="M24 4.5c-.875.388-1.823.65-2.825.77 1.015-.609 1.8-1.574 2.165-2.723-.951.564-2.005.975-3.125 1.2-.896-.96-2.173-1.56-3.588-1.56-2.725 0-4.938 2.213-4.938 4.938 0 .388.044.766.125 1.125-4.1-.206-7.725-2.163-10.15-5.15-.425.725-.669 1.574-.669 2.475 0 1.7.863 3.2 2.175 4.075-.8-.025-1.55-.25-2.2-.625v.05c0 2.375 1.688 4.35 3.925 4.8-.413.113-.85.175-1.3.175-.313 0-.613-.038-.913-.1.613 1.925 2.388 3.325 4.5 3.363-1.65 1.3-3.738 2.075-6 2.075-.388 0-.775-.025-1.15-.075 2.138 1.375 4.675 2.175 7.4 2.175 8.85 0 13.725-7.35 13.725-13.725 0-.2-.013-.4-.025-.6.938-.675 1.75-1.525 2.4-2.475z" />
+                      </svg>
+                    </a>
 
-          {/* {{-- Steven SHIMIRWA --}} */}
-          <div className="grid sm:grid-cols-6">
-            <div className="relative w-full !h-64 max-h-full rounded sm:h-auto sm:col-span-3 border-gray-200 border">
-              <Image width={100} height={100} className="absolute object-cover object-top w-full h-full rounded bg-top"
-                src="/images/members/member-3.jpg" alt="Steven SHIMIRWA" />
-            </div>
-            <div className="flex flex-col mt-2 sm:mt-0 sm:p-5 sm:col-span-3">
-              <p className="text-lg font-bold text-gray-900">Steven SHIMIRWA</p>
-              <p className="mb-4 text-md leading-5 text-gray-600 mt-2  font-normal">Co-founder & Head
-                of Clinical Medicine</p>
-              <p className="text-gray-700 leading-6">
-                Innovation powered by collaboration and critical thinking enhances
-                and makes my work about health enhancement a success. </p>
-              <div className="flex items-center space-x-3 mt-4">
-                <a href="https://www.linkedin.com/in/steven-shimirwa-0b4077178"
-                  className="text-gray-600 transition-colors duration-300 hover:text-deep-purple-accent-400">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                    viewBox="0 0 24 24">
-                    <path
-                      d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
-                  </svg>
-                </a>
-              </div>
-            </div>
-          </div>
-
-          {/* {{-- MANIRABONA H. Patience --}} */}
-          <div className="grid sm:grid-cols-6">
-            <div
-              className="relative w-full !h-64 max-h-full rounded sm:h-auto sm:col-span-3 border-gray-200 border">
-              <Image width={100} height={100} className="absolute object-cover object-top w-full h-full rounded bg-top"
-                src="/images/members/member-4.jpg" alt="MANIRABONA H. Patience" />
-            </div>
-            <div className="flex flex-col mt-2 sm:mt-0 sm:p-5 sm:col-span-3">
-              <p className="text-lg font-bold text-gray-900">Patience H. MANIRABONA</p>
-              <p className="mb-4 text-md leading-5 text-gray-600 mt-2  font-normal">Software Engineer &
-                Product Development</p>
-              <p className="text-gray-700 leading-6">
-                Software developer dedicated to creating innovative solutions for
-                advancing different societies.
-              </p>
-              <div className="flex items-center space-x-3 mt-4">
-                <a href="https://www.linkedin.com/in/manirabona-patience/"
-                  className="text-gray-600 transition-colors duration-300 hover:text-deep-purple-accent-400">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                    viewBox="0 0 24 24">
-                    <path
-                      d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
-                  </svg>
-                </a>
-                <a href="https://x.com/ManirabonaW"
-                  className="text-gray-600 transition-colors duration-300 hover:text-deep-purple-accent-400">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                    viewBox="0 0 24 24">
-                    <path
-                      d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-.139 9.237c.209 4.617-3.234 9.765-9.33 9.765-1.854 0-3.579-.543-5.032-1.475 1.742.205 3.48-.278 4.86-1.359-1.437-.027-2.649-.976-3.066-2.28.515.098 1.021.069 1.482-.056-1.579-.317-2.668-1.739-2.633-3.26.442.246.949.394 1.486.411-1.461-.977-1.875-2.907-1.016-4.383 1.619 1.986 4.038 3.293 6.766 3.43-.479-2.053 1.08-4.03 3.199-4.03.943 0 1.797.398 2.395 1.037.748-.147 1.451-.42 2.086-.796-.246.767-.766 1.41-1.443 1.816.664-.08 1.297-.256 1.885-.517-.439.656-.996 1.234-1.639 1.697z" />
-                  </svg>
-                </a>
-                <a href=""
-                  className="text-gray-600 transition-colors duration-300 hover:text-deep-purple-accent-400">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                    viewBox="0 0 24 24">
-                    <path
-                      d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-3 7h-1.924c-.615 0-1.076.252-1.076.889v1.111h3l-.238 3h-2.762v8h-3v-8h-2v-3h2v-1.923c0-2.022 1.064-3.077 3.461-3.077h2.539v3z" />
-                  </svg>
-                </a>
-              </div>
-            </div>
-          </div>
-
-          {/* {{-- Noella Lidvine ISINGIZWE --}} */}
-          <div className="grid sm:grid-cols-6">
-            <div className="relative w-full !h-64 max-h-full rounded sm:h-auto sm:col-span-3 border-gray-200 border">
-              <Image width={100} height={100} className="absolute object-cover object-top w-full h-full rounded bg-top"
-                src="/images/members/member-5.jpg" alt="Noella Lidvine ISINGIZWE" />
-            </div>
-            <div className="flex flex-col mt-2 sm:mt-0 sm:p-5 sm:col-span-3">
-              <p className="text-lg font-bold text-gray-900">Noella Lidvine ISINGIZWE</p>
-              <p className="mb-4 text-md leading-5 text-gray-600 mt-2  font-normal">
-                Gender Equality Specialist
-              </p>
-              <p className="text-gray-700 leading-6">
-                Pursuing a Master&apos;s in Public Health at Umeå University,
-                focusing on health economics and sustainable development.
-              </p>
-              <div className="flex items-center space-x-3 mt-4">
-                <a href="https://www.linkedin.com/in/no%C3%ABlla-lidvine-isingizwe-706702161/"
-                  className="text-gray-600 transition-colors duration-300 hover:text-deep-purple-accent-400">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                    viewBox="0 0 24 24">
-                    <path
-                      d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
-                  </svg>
-                </a>
-              </div>
-            </div>
-          </div>
-
-          {/* {{-- Faustin NZITONDA --}} */}
-          <div className="grid sm:grid-cols-6">
-            <div
-              className="relative w-full !h-64 max-h-full rounded sm:h-auto sm:col-span-3 border-gray-200 border">
-              <Image width={100} height={100} className="absolute object-cover object-top w-full h-full rounded bg-top"
-                src="/images/members/member-6.jpeg" alt="Faustin NZITONDA" />
-            </div>
-            <div className="flex flex-col mt-2 sm:mt-0 sm:p-5 sm:col-span-3">
-              <p className="text-lg font-bold text-gray-900">Faustin NZITONDA</p>
-              <p className="mb-4 text-md leading-5 text-gray-600 mt-2  font-normal">AI Data Engineer &
-                Product Development</p>
-              <p className="text-gray-700 leading-6">
-                Years of experience in machine learning models, retraining models, and generating
-                data analytic.
-              </p>
-              <div className="flex items-center space-x-3 mt-4">
-                <a href="https://www.linkedin.com/in/faustinnzitonda/?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
-                  className="text-gray-600 transition-colors duration-300 hover:text-deep-purple-accent-400">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                    viewBox="0 0 24 24">
-                    <path
-                      d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
-                  </svg>
-                </a>
-              </div>
-            </div>
+                    {/* Instagram */}
+                    <a href={member.social_media.instagram} target="_blank" rel="noreferrer" className="text-gray-600 transition-colors duration-300 hover:text-deep-purple-accent-400">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                        <path d="M12 0c-3.313 0-3.7.013-5.013.075-1.313.063-2.238.288-3.113.563-.875.275-1.588.7-2.3 1.313-.613.713-1.038 1.425-1.313 2.3-.275.875-.5 1.8-.563 3.113-.062 1.313-.075 1.7-.075 5.013s.013 3.7.075 5.013c.063 1.313.288 2.238.563 3.113.275.875.7 1.588 1.313 2.3.713.613 1.425 1.038 2.3 1.313.875.275 1.8.5 3.113.563 1.313.062 1.7.075 5.013.075s3.7-.013 5.013-.075c1.313-.062 2.238-.288 3.113-.563.875-.275 1.588-.7 2.3-1.313.613-.713 1.038-1.425 1.313-2.3.275-.875.5-1.8.563-3.113.062-1.313.075-1.7.075-5.013s-.013-3.7-.075-5.013c-.063-1.313-.288-2.238-.563-3.113-.275-.875-.7-1.588-1.313-2.3-.713-.613-1.425-1.038-2.3-1.313-.875-.275-1.8-.5-3.113-.563-1.313-.062-1.7-.075-5.013-.075zm0 1.5c3.275 0 3.65.013 4.95.074 1.238.05 2.025.263 2.55.438.675.175 1.188.45 1.688.95.5.5.775 1.013.95 1.688.175.525.388 1.313.438 2.55.05 1.3.075 1.675.075 4.95s-.025 3.65-.075 4.95c-.05 1.238-.263 2.025-.438 2.55-.175.675-.45 1.188-.95 1.688-.5.5-1.013.775-1.688.95-.525.175-1.313.388-2.55.438-1.3.05-1.675.075-4.95.075s-3.65-.025-4.95-.075c-1.238-.05-2.025-.263-2.55-.438-.675-.175-1.188-.45-1.688-.95-.5-.5-.775-1.013-.95-1.688-.175-.525-.388-1.313-.438-2.55-.05-1.3-.075-1.675-.075-4.95s.025-3.65.075-4.95c.05-1.238.263-2.025.438-2.55.175-.675.45-1.188.95-1.688.5-.5 1.013-.775 1.688-.95.525-.175 1.313-.388 2.55-.438 1.3-.05 1.675-.075 4.95-.075zm0 3.75a8.25 8.25 0 0 0-8.25 8.25 8.25 8.25 0 0 0 8.25 8.25 8.25 8.25 0 0 0 8.25-8.25 8.25 8.25 0 0 0-8.25-8.25zm0 1.5a6.75 6.75 0 0 1 6.75 6.75 6.75 6.75 0 0 1-6.75 6.75 6.75 6.75 0 0 1-6.75-6.75 6.75 6.75 0 0 1 6.75-6.75zm0 1.5a5.25 5.25 0 0 0-5.25 5.25 5.25 5.25 0 0 0 5.25 5.25 5.25 5.25 0 0 0 5.25-5.25 5.25 5.25 0 0 0-5.25-5.25z" />
+                      </svg>
+                    </a>
+                  </div>
+                </div>
+              </Link>
+            ))}
           </div>
         </div>
       </div>

@@ -32,10 +32,10 @@ function Video() {
                             <div className="flex space-x-4 items-center text-white">
                                 <div className="flex items-center space-x-2">
                                     <div className="flex flex-shrink-0 -space-x-1">
-                                        <Image width={400} height={400} className="h-6 w-6 max-w-none rounded-full ring-2 ring-white" src="/images/Team/member-5.jpg" alt="Noela Lidvine" />
-                                        <Image width={400} height={400} className="h-6 w-6 max-w-none rounded-full ring-2 ring-white" src="/images/Team/member-1.jpg" alt="Hakuzimana Emmanuel" />
-                                        <Image width={400} height={400} className="h-6 w-6 max-w-none rounded-full ring-2 ring-white" src="/images/Team/member-6.jpeg" alt="Niyongira Eric" />
-                                        <Image width={400} height={400} className="h-6 w-6 max-w-none rounded-full ring-2 ring-white" src="/images/Team/member-3.jpg" alt="SHimirwa steven" />
+                                        <Image width={400} height={400} className="h-6 w-6 max-w-none rounded-full ring-2 ring-white" src="/images/members/member-1.jpg" alt="Noela Lidvine" />
+                                        <Image width={400} height={400} className="h-6 w-6 max-w-none rounded-full ring-2 ring-white" src="/images/members/member-2.jpeg" alt="Hakuzimana Emmanuel" />
+                                        <Image width={400} height={400} className="h-6 w-6 max-w-none rounded-full ring-2 ring-white" src="/images/members/member-3.jpg" alt="Niyongira Eric" />
+                                        <Image width={400} height={400} className="h-6 w-6 max-w-none rounded-full ring-2 ring-white" src="/images/members/member-4.jpg" alt="SHimirwa steven" />
                                     </div>
 
                                     <span className="flex-shrink-0 text-xs font-bold leading-5">+100</span>

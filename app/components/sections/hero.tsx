@@ -48,8 +48,6 @@ function Hero() {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                     </a>
-
-                    <p className="mt-5 text-gray-200">Already joined us? <a href="#" title="" className="text-white transition-all duration-200 hover:underline">Log in</a></p>
                 </div>
 
                 <div className="col-lg-6 relative mobile-view">

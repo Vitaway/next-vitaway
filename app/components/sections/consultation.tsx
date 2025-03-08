@@ -37,8 +37,8 @@ function Consultation() {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                             </svg>
                             <div className="ml-5">
-                                <h3 className="text-lg font-semibold text-black">Made for Developers</h3>
-                                <p className="mt-4 text-base text-gray-600">Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit.</p>
+                                <h3 className="text-lg font-semibold text-black">Diabetes</h3>
+                                <p className="mt-4 text-base text-gray-600">Comprehensive guide explores the various types of diabetes, their causes, symptoms, and management.</p>
                             </div>
                         </div>
 
@@ -47,8 +47,8 @@ function Consultation() {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                             </svg>
                             <div className="ml-5">
-                                <h3 className="text-lg font-semibold text-black">Helpful Video Tutorials</h3>
-                                <p className="mt-4 text-base text-gray-600">Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit.</p>
+                                <h3 className="text-lg font-semibold text-black">Hypertension</h3>
+                                <p className="mt-4 text-base text-gray-600">Learn how to measure your blood pressure, spot the warning signs, and discover practical steps to manage and prevent this silent but deadly health threat.</p>
                             </div>
                         </div>
 
@@ -62,8 +62,8 @@ function Consultation() {
                                 />
                             </svg>
                             <div className="ml-5">
-                                <h3 className="text-lg font-semibold text-black">120+ Coded Blocks</h3>
-                                <p className="mt-4 text-base text-gray-600">Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit.</p>
+                                <h3 className="text-lg font-semibold text-black">Weight Management</h3>
+                                <p className="mt-4 text-base text-gray-600">Comprehensive guide offers expert insights, practical tips, and personalized plans to help you achieve and maintain a weight that promotes your well-being</p>
                             </div>
                         </div>
 
