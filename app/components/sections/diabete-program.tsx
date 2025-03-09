@@ -8,22 +8,26 @@ function DiabeteProgram() {
         {
             title: 'EAT WELL GUIDE',
             description: 'The proportions of food groups been updated to take into account the new dietary recommendations for more fiber and less sugar.',
-            image: '/images/screens/learn.png'
+            image: '/images/screens/learn.png',
+            link: '/programs/eat-well-guide'
         },
         {
             title: 'Food Groups',
             description: 'Eating healthily helps us stay at the right weight and lowers the risk of diet-related illness. In this section',
-            image: '/images/screens/learn.png'
+            image: '/images/screens/learn.png',
+            link: '/programs/food-groups'
         },
         {
             title: 'LIFE STAGES',
             description: 'Eating healthily helps us stay at the right weight and lowers the risk of diet-related illness.',
-            image: '/images/screens/learn.png'
+            image: '/images/screens/learn.png',
+            link: '/programs/life-stages'
         },
         {
             title: 'Management Health Issue',
             description: 'The proportions of food groups been updated to take into account the new dietary recommendations for more fiber and less sugar.',
-            image: '/images/screens/learn.png'
+            image: '/images/screens/learn.png',
+            link: '/programs/well-being'
         }
     ];
 
@@ -53,7 +57,7 @@ function DiabeteProgram() {
                         </div>
                         <div className="-mx-4 mt-10 grid grid-cols-2 gap-2">
                             {programs.map((program, index) => (
-                                <Link href="/" key={index}>
+                                <Link href={program.link} key={index}>
                                     <div className="rounded-xl bg-white border border-gray-200 p-10">
                                         <div className="mb-8 flex h-[70px] w-[70px] items-center justify-center rounded-2xl bg-[#3268b9]">
                                             <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
