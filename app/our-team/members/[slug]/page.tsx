@@ -3,12 +3,21 @@ import path from "path";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
+interface Member {
+  slug: string;
+  name: string;
+  description: string;
+  role: string;
+  image: string;
+  bio: string;
+}
+
 export async function generateStaticParams() {
   const filePath = path.join(process.cwd(), "content", "members.json");
   const jsonData = fs.readFileSync(filePath, "utf-8");
-  const members = JSON.parse(jsonData);
+  const members: Member[] = JSON.parse(jsonData);
 
-  return members.map((member: { slug: string }) => ({
+  return members.map((member) => ({
     slug: member.slug,
   }));
 }
@@ -16,9 +25,9 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: { params: { slug: string } }) {
   const filePath = path.join(process.cwd(), "content", "members.json");
   const jsonData = fs.readFileSync(filePath, "utf-8");
-  const members = JSON.parse(jsonData);
+  const members: Member[] = JSON.parse(jsonData);
 
-  const member = members.find((m: { slug: string }) => m.slug === params.slug);
+  const member = members.find((m) => m.slug === params.slug);
 
   if (!member) return notFound();
 
@@ -47,13 +56,13 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 export default async function MemberPage({ params }: { params: { slug: string } }) {
   const filePath = path.join(process.cwd(), "content", "members.json");
   const jsonData = fs.readFileSync(filePath, "utf-8");
-  const members = JSON.parse(jsonData);
+  const members: Member[] = JSON.parse(jsonData);
 
-  const member = members.find((m: { slug: string }) => m.slug === params.slug);
+  const member = members.find((m) => m.slug === params.slug);
 
   if (!member) return notFound();
 
-  return (<>
+  return (
     <div className="team-section relative w-full h-full">
       <div className="absolute hidden w-full bg-gradient-to-b from-[#272749] to-[#111827] lg:block h-[500px]"></div>
 
@@ -90,5 +99,5 @@ export default async function MemberPage({ params }: { params: { slug: string } 
         </div>
       </div>
     </div>
-  </>);
+  );
 }

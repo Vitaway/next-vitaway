@@ -2,7 +2,6 @@
 import PageHeader from '@/app/components/headers/page-header'
 import Image from 'next/image'
 import React from 'react';
-import '../../programs.css';
 
 function Program() {
     return (<>
