@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import React from 'react'
 
 function Contact() {
@@ -84,14 +85,15 @@ function Contact() {
                   Use Whatsapp
                 </button>
               </a>
-              <a href="{{ route('get.download') }}">
+              <Link href="/download">
                 <button type="button"
                   className="text-gray-900  font-normal bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 rounded-lg text-md px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-gray-500 mr-2 mb-2">
                   Download The app
                 </button>
-              </a>
+              </Link>
             </div>
           </div>
+
           <div className="w-full max-w-xl xl:px-8 xl:w-5/12">
             <div className="relative">
               <svg viewBox="0 0 52 24" fill="currentColor"
@@ -105,7 +107,7 @@ function Contact() {
                 <rect fill="url(#766323e1-e594-4ffd-a688-e7275079d540)" width="52" height="24">
                 </rect>
               </svg>
-              <div className="relative bg-white rounded shadow-2xl p-7 sm:p-10 text-slate-700">
+              <div className="relative bg-white rounded-xl shadow-2xl p-7 sm:p-10 text-slate-700">
                 <h3 className="mb-4 text-xl font-normal  sm:text-center sm:mb-6 sm:text-2xl">
                   Connect With Vitaway
                 </h3>
@@ -121,7 +123,7 @@ function Contact() {
                     </div>
                     <div className="mb-1 sm:mb-2">
                       <label className="inline-block mb-1 font-normal ">Message</label>
-                      <textarea v-model="payload.message" placeholder="Write a Message..." className="flex-grow w-full h-12 px-4 mb-2 font-normal  transition duration-200 bg-white border border-gray-300 rounded appearance-none focus:border-deep-purple-accent-400 focus:outline-none focus:shadow-outline"></textarea>
+                      <textarea v-model="payload.message" placeholder="Write a Message..." className="flex-grow w-full h-14 px-4 py-3 mb-2 font-normal  transition duration-200 bg-white border border-gray-300 rounded appearance-none focus:border-deep-purple-accent-400 focus:outline-none focus:shadow-outline"></textarea>
                     </div>
                     <div className="mt-4 mb-2 sm:mb-4">
                       <button type="button" className="relative inline-flex items-center justify-center w-full h-12 px-6 font-normal  tracking-wide text-white transition duration-200 rounded bg-indigo-400 hover:bg-deep-purple-accent-700 focus:shadow-outline focus:outline-none">

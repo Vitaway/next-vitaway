@@ -2,35 +2,9 @@ import React from 'react';
 import Link from 'next/link';
 import MobileFrame from '../design/mobile-frame';
 import PatternDesign from '../design/pattern-design';
+import programs from '../../../content/programs.json';
 
 function DiabeteProgram() {
-    const programs = [
-        {
-            title: 'EAT WELL GUIDE',
-            description: 'The proportions of food groups been updated to take into account the new dietary recommendations for more fiber and less sugar.',
-            image: '/images/screens/learn.png',
-            link: '/programs/eat-well-guide'
-        },
-        {
-            title: 'Food Groups',
-            description: 'Eating healthily helps us stay at the right weight and lowers the risk of diet-related illness. In this section',
-            image: '/images/screens/learn.png',
-            link: '/programs/food-groups'
-        },
-        {
-            title: 'LIFE STAGES',
-            description: 'Eating healthily helps us stay at the right weight and lowers the risk of diet-related illness.',
-            image: '/images/screens/learn.png',
-            link: '/programs/life-stages'
-        },
-        {
-            title: 'Management Health Issue',
-            description: 'The proportions of food groups been updated to take into account the new dietary recommendations for more fiber and less sugar.',
-            image: '/images/screens/learn.png',
-            link: '/programs/well-being'
-        }
-    ];
-
     return (<>
         <div id="about" className="about-us px-4 py-20 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-20 lg:px-10 lg:py-20">
             <div className="flex items-center justify-between">
@@ -41,7 +15,7 @@ function DiabeteProgram() {
                         </div>
 
                         <div className='z-[10]'>
-                            <MobileFrame 
+                            <MobileFrame
                                 title='Vitaway Client Dashboard'
                                 image='/images/screens/learn.png'
                             />
@@ -67,7 +41,7 @@ function DiabeteProgram() {
                                             </svg>
                                         </div>
                                         <h4 className="text-md font-bold text-slate-700">{program.title}</h4>
-                                        <p className="text-slate-600 font-medium text-base leading-6 text-md mt-5">{program.description}</p>
+                                        <p className="text-slate-600 font-medium text-base leading-6 text-md mt-5 line-clamp-3">{program.description}</p>
                                     </div>
                                 </Link>
                             ))}

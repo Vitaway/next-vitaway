@@ -1,10 +1,11 @@
 import React from 'react';
 import Logo from './logo';
 import BackgroundBlurImage from './design/background-blur-image';
+import Link from 'next/link';
 
 function Footer() {
     return (<>
-        <section className="py-10 bg-white sm:pt-16 lg:pt-24 relative border-t border-gray-200">
+        <section className="pt-10 pb-5 bg-white sm:pt-16 lg:pt-24 relative border-t border-gray-200">
             <div className="z-10 absolute left-1/2 top-0 aspect-[1204/394] w-full max-w-[1204px] -translate-x-1/2 opacity-35">
                <BackgroundBlurImage />
             </div>
@@ -12,10 +13,8 @@ function Footer() {
             <div className="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
                 <div className="grid grid-cols-2 md:col-span-3 lg:grid-cols-6 gap-y-16 gap-x-12">
                     <div className="col-span-2 md:col-span-3 lg:col-span-2 lg:pr-8">
-                        <Logo />
-
-                        <p className="text-base leading-relaxed text-gray-600 mt-7">Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit.</p>
-
+                        <Link href="/"><Logo /></Link>
+                        <p className="text-base leading-relaxed text-gray-600 mt-7">Empowering Rwandans and youth globally with holistic healthcare via digital solutions. Focused on nutrition awareness and combating NCDs.</p>
                         <ul className="flex items-center space-x-3 mt-9">
                             <li>
                                 <a href="#" title="" className="flex items-center justify-center text-white transition-all duration-200 bg-gray-800 rounded-full w-7 h-7 hover:bg-blue-600 focus:bg-blue-600">
@@ -65,19 +64,16 @@ function Footer() {
 
                         <ul className="mt-6 space-y-4">
                             <li>
-                                <a href="#" title="" className="flex text-base text-black transition-all duration-200 hover:text-blue-600 focus:text-blue-600"> About </a>
+                                <Link href="/about-us" title="" className="flex text-base text-black transition-all duration-200 hover:text-blue-600 focus:text-blue-600"> About </Link>
                             </li>
-
                             <li>
-                                <a href="#" title="" className="flex text-base text-black transition-all duration-200 hover:text-blue-600 focus:text-blue-600"> Features </a>
+                                <Link href="/our-team" title="" className="flex text-base text-black transition-all duration-200 hover:text-blue-600 focus:text-blue-600"> Our Team </Link>
                             </li>
-
                             <li>
-                                <a href="#" title="" className="flex text-base text-black transition-all duration-200 hover:text-blue-600 focus:text-blue-600"> Works </a>
+                                <Link href="/pricing" title="" className="flex text-base text-black transition-all duration-200 hover:text-blue-600 focus:text-blue-600"> Pricings </Link>
                             </li>
-
                             <li>
-                                <a href="#" title="" className="flex text-base text-black transition-all duration-200 hover:text-blue-600 focus:text-blue-600"> Career </a>
+                                <Link href="/blogs" title="" className="flex text-base text-black transition-all duration-200 hover:text-blue-600 focus:text-blue-600"> Blogs </Link>
                             </li>
                         </ul>
                     </div>
@@ -88,10 +84,6 @@ function Footer() {
                         <ul className="mt-6 space-y-4">
                             <li>
                                 <a href="#" title="" className="flex text-base text-black transition-all duration-200 hover:text-blue-600 focus:text-blue-600"> Customer Support </a>
-                            </li>
-
-                            <li>
-                                <a href="#" title="" className="flex text-base text-black transition-all duration-200 hover:text-blue-600 focus:text-blue-600"> Delivery Details </a>
                             </li>
 
                             <li>
@@ -113,14 +105,14 @@ function Footer() {
                                 <input type="email" name="email" id="email" placeholder="Enter your email" className="block w-full p-4 text-black placeholder-gray-500 transition-all duration-200 bg-white border border-gray-200 rounded-md focus:outline-none focus:border-blue-600 caret-blue-600" />
                             </div>
 
-                            <button type="submit" className="inline-flex items-center justify-center px-6 py-4 mt-3 font-semibold text-white transition-all duration-200 bg-blue-600 rounded-md hover:bg-blue-700 focus:bg-blue-700">Subscribe</button>
+                            <button type="submit" className="inline-flex items-center justify-center px-6 py-3 mt-3 font-semibold text-white transition-all duration-200 bg-blue-600 rounded-md hover:bg-blue-700 focus:bg-blue-700">Subscribe</button>
                         </form>
                     </div>
                 </div>
 
-                <hr className="mt-16 mb-10 border-gray-200" />
+                <hr className="mt-10 mb-5 border-gray-200" />
 
-                <p className="text-sm text-center text-gray-600">© Copyright 2021, All Rights Reserved by Postcraft</p>
+                <p className="text-sm text-center text-gray-600 font-semibold">© Copyright 2025, All Rights Reserved by Vitaway</p>
             </div>
         </section>
     </>)

@@ -28,11 +28,6 @@ export const metadata: Metadata = {
       },
     ],
   },
-
-  // twitter card metadata
-  twitter: {
-    site: "@vitaway",
-  }
 };
 
 export default function Home() {

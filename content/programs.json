@@ -1,0 +1,26 @@
+[
+    {
+        "title": "EAT WELL GUIDE",
+        "description": "The proportions of food groups been updated to take into account the new dietary recommendations for more fiber and less sugar.",
+        "image": "/images/screens/learn.png",
+        "link": "/programs/eat-well-guide"
+    },
+    {
+        "title": "Food Groups",
+        "description": "Eating healthily helps us stay at the right weight and lowers the risk of diet-related illness. In this section",
+        "image": "/images/screens/learn.png",
+        "link": "/programs/food-groups"
+    },
+    {
+        "title": "LIFE STAGES",
+        "description": "Eating healthily helps us stay at the right weight and lowers the risk of diet-related illness.",
+        "image": "/images/screens/learn.png",
+        "link": "/programs/life-stages"
+    },
+    {
+        "title": "Management Health Issue",
+        "description": "The proportions of food groups been updated to take into account the new dietary recommendations for more fiber and less sugar.",
+        "image": "/images/screens/learn.png",
+        "link": "/programs/well-being"
+    }
+]

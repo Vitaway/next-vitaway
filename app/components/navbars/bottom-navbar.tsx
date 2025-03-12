@@ -7,9 +7,9 @@ function BottomNavbar() {
         <header className="bg-white px-4 py-1 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-20 lg:px-10 lg:py-3">
             <div className="flex items-center justify-between h-14 lg:h-16">
                 <div className="flex-shrink-0">
-                    <a href="#" title="" className="flex">
+                    <Link href="/" title="" className="flex">
                         <Logo />
-                    </a>
+                    </Link>
                 </div>
 
                 <button type="button" className="inline-flex p-2 text-black transition-all duration-200 rounded-md lg:hidden focus:bg-gray-100 hover:bg-gray-100">

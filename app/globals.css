@@ -46,3 +46,12 @@ body {
     hsla(0, 0%, 100%, 0.08)
   );
 }
+
+.text-ellipsis {
+  display: -webkit-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: var(--line-clamp, 3);
+  line-clamp: var(--line-clamp, 3);
+  -webkit-box-orient: vertical;
+}

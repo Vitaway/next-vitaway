@@ -15,10 +15,9 @@ function Video() {
                                         Early Access
                                     </span>
                                     <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl md:text-5xl">
-                                        <span className="sm:text-6xl"></span>Unlock Your Potential with a 
+                                        <span className="sm:text-6xl"></span>Unlock Your Potential with a
                                         <span className="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#0878de] to-white">14-day
-                                            Free Trial</span>
-                                        And Discover All Our Features.
+                                            Free Trial</span> And Discover All Our Features.
                                     </h1>
                                 </div>
 

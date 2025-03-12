@@ -26,7 +26,7 @@ function Consultation() {
                         Accessible Remote Doctor Consultation
                     </h2>
                     <p className="text-base text-gray-700 md:text-lg font-merri font-normal">
-                        Connect with qualified medical professionals from the comfort of your home, ensuring convenient, safe, and efficient healthcare access whenever you need it
+                        Experience the ease and convenience of connecting with qualified medical professionals from the comfort of your home. Our remote consultation service ensures you receive timely, safe, and efficient healthcare access whenever you need it.
                     </p>
                 </div>
 
@@ -38,7 +38,7 @@ function Consultation() {
                             </svg>
                             <div className="ml-5">
                                 <h3 className="text-lg font-semibold text-black">Diabetes</h3>
-                                <p className="mt-4 text-base text-gray-600">Comprehensive guide explores the various types of diabetes, their causes, symptoms, and management.</p>
+                                <p className="mt-4 text-base text-gray-600">Get expert advice on managing diabetes, understanding its types, causes, symptoms, and effective treatment options.</p>
                             </div>
                         </div>
 
@@ -48,7 +48,7 @@ function Consultation() {
                             </svg>
                             <div className="ml-5">
                                 <h3 className="text-lg font-semibold text-black">Hypertension</h3>
-                                <p className="mt-4 text-base text-gray-600">Learn how to measure your blood pressure, spot the warning signs, and discover practical steps to manage and prevent this silent but deadly health threat.</p>
+                                <p className="mt-4 text-base text-gray-600">Learn how to monitor your blood pressure, recognize warning signs, and take practical steps to manage and prevent hypertension.</p>
                             </div>
                         </div>
 
@@ -63,7 +63,7 @@ function Consultation() {
                             </svg>
                             <div className="ml-5">
                                 <h3 className="text-lg font-semibold text-black">Weight Management</h3>
-                                <p className="mt-4 text-base text-gray-600">Comprehensive guide offers expert insights, practical tips, and personalized plans to help you achieve and maintain a weight that promotes your well-being</p>
+                                <p className="mt-4 text-base text-gray-600">Receive personalized plans and expert tips to help you achieve and maintain a healthy weight, promoting overall well-being.</p>
                             </div>
                         </div>
 
@@ -73,7 +73,7 @@ function Consultation() {
                             </svg>
                             <div className="ml-5">
                                 <h3 className="text-lg font-semibold text-black">Secured Payments</h3>
-                                <p className="mt-4 text-base text-gray-600">Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit.</p>
+                                <p className="mt-4 text-base text-gray-600">Enjoy peace of mind with our secure payment options, ensuring your transactions are safe and protected.</p>
                             </div>
                         </div>
                     </div>

@@ -1,0 +1,30 @@
+[
+    {
+        "name": "Darrell Steward",
+        "username": "@darrels",
+        "image": "https://cdn.rareblocks.xyz/collection/celebration/images/testimonials/7/avatar-1.jpg",
+        "message": "You made it so simple. My new site is so much faster and easier to work with than my old site. I just choose the page, make the change and click save.",
+        "tag": "#another"
+    },
+    {
+        "name": "Leslie Alexander",
+        "username": "@lesslie",
+        "image": "https://cdn.rareblocks.xyz/collection/celebration/images/testimonials/7/avatar-2.jpg",
+        "message": "Simply the best. Better than all the rest. I’d recommend this product to beginners and advanced users.",
+        "tag": "#Celebration"
+    },
+    {
+        "name": "Jenny Wilson",
+        "username": "@jennywilson",
+        "image": "https://cdn.rareblocks.xyz/collection/celebration/images/testimonials/7/avatar-3.jpg",
+        "message": "This is a top quality product. No need to think twice before making it live on web.",
+        "tag": "#make_it_fast"
+    },
+    {
+        "name": "Kristin Watson",
+        "username": "@kristinwatson2",
+        "image": "https://cdn.rareblocks.xyz/collection/celebration/images/testimonials/7/avatar-4.jpg",
+        "message": "Finally, I’ve found a template that covers all bases for a bootstrapped startup. We were able to launch in days, not months.",
+        "tag": "#Celebration"
+    }
+]
