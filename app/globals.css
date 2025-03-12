@@ -47,11 +47,16 @@ body {
   );
 }
 
-.text-ellipsis {
-  display: -webkit-box;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  -webkit-line-clamp: var(--line-clamp, 3);
-  line-clamp: var(--line-clamp, 3);
-  -webkit-box-orient: vertical;
+/* Customize nprogress bar */
+#nprogress {
+  pointer-events: none;
+}
+
+#nprogress .bar {
+  background: #2563eb; /* Blue color */
+  height: 3px;
+}
+
+#nprogress .peg {
+  box-shadow: 0 0 10px #2563eb, 0 0 5px #2563eb;
 }

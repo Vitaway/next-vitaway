@@ -10,7 +10,7 @@ function Footer() {
                <BackgroundBlurImage />
             </div>
 
-            <div className="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
+            <div className="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl z-10 relative">  
                 <div className="grid grid-cols-2 md:col-span-3 lg:grid-cols-6 gap-y-16 gap-x-12">
                     <div className="col-span-2 md:col-span-3 lg:col-span-2 lg:pr-8">
                         <Link href="/"><Logo /></Link>
@@ -60,7 +60,7 @@ function Footer() {
                     </div>
 
                     <div>
-                        <p className="text-sm font-semibold tracking-widest text-gray-400 uppercase">Company</p>
+                        <p className="text-sm font-semibold tracking-widest text-slate-700 uppercase">Company</p>
 
                         <ul className="mt-6 space-y-4">
                             <li>
@@ -79,25 +79,25 @@ function Footer() {
                     </div>
 
                     <div>
-                        <p className="text-sm font-semibold tracking-widest text-gray-400 uppercase">Help</p>
+                        <p className="text-sm font-semibold tracking-widest text-slate-700 uppercase">Help</p>
 
                         <ul className="mt-6 space-y-4">
                             <li>
-                                <a href="#" title="" className="flex text-base text-black transition-all duration-200 hover:text-blue-600 focus:text-blue-600"> Customer Support </a>
+                                <Link href="/customer-support" title="" className="flex text-base text-black transition-all duration-200 hover:text-blue-600 focus:text-blue-600"> Customer Support </Link>
                             </li>
 
                             <li>
-                                <a href="#" title="" className="flex text-base text-black transition-all duration-200 hover:text-blue-600 focus:text-blue-600"> Terms & Conditions </a>
+                                <Link href="/terms-and-conditions" title="" className="flex text-base text-black transition-all duration-200 hover:text-blue-600 focus:text-blue-600"> Terms & Conditions </Link>
                             </li>
 
                             <li>
-                                <a href="#" title="" className="flex text-base text-black transition-all duration-200 hover:text-blue-600 focus:text-blue-600"> Privacy Policy </a>
+                                <Link href="/privacy-policy" title="" className="flex text-base text-black transition-all duration-200 hover:text-blue-600 focus:text-blue-600"> Privacy Policy </Link>
                             </li>
                         </ul>
                     </div>
 
                     <div className="col-span-2 md:col-span-1 lg:col-span-2 lg:pl-8">
-                        <p className="text-sm font-semibold tracking-widest text-gray-400 uppercase">Subscribe to newsletter</p>
+                        <p className="text-sm font-semibold tracking-widest text-slate-700 uppercase">Subscribe to newsletter</p>
 
                         <form action="#" method="POST" className="mt-6">
                             <div>
