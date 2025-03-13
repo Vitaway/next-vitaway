@@ -1,0 +1,47 @@
+[
+    {
+        "id": "1",
+        "title": "Free Plan",
+        "short_desc": "Basic Features",
+        "price": "RWF 0.00",
+        "features": [
+            "Virtual PT Appointment (non-member)",
+            "Edit Profile",
+            "Access to Blogs",
+            "Health Assessment"
+        ]
+    },
+    {
+        "id": "2",
+        "title": "Standard Plan",
+        "short_desc": "Popular Plan with Most Features",
+        "price": "RWF 10, 000.00",
+        "highlighted": true,
+        "features": [
+            "Virtual PT Appointment (member)",
+            "Access All Features (lessons, daily tracks, etc.)",
+            "24/7 Chat and Video Call with a Coach",
+            "Track Health Interactions",
+            "Personalized Meal Plan",
+            "Reminder Notifications",
+            "Ongoing Personal Support",
+            "Weekly Tasks (workouts, etc.)"
+        ]
+    },
+    {
+        "id": "3",
+        "title": "Premium Plan",
+        "short_desc": "All Features Included",
+        "price": "RWF 15, 000.00",
+        "features": [
+            "All Standard Plan Features",
+            "Unlimited Video Calls",
+            "Personal Coach",
+            "Daily Challenges",
+            "Join Safe Space Group",
+            "Personalized Expert Consultations",
+            "Community Membership",
+            "Data Integration with PCP"
+        ]
+    }
+]

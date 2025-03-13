@@ -1,27 +1,10 @@
 "use client";
-import React, { useState } from 'react'
+
+import React, { useState } from 'react';
+import faqs from '../../content/faqs.json'
 
 function FAQs() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
-
-  const faqs = [
-    {
-      question: "What services does the platform offer?",
-      answer: "Vitaway is a digital healthcare platform that offers a range of services including online consultations, prescription delivery, and health monitoring."
-    },
-    {
-      question: "Is the platform secure?",
-      answer: "Yes, Vitaway is a secure platform that uses end-to-end encryption to protect your data."
-    },
-    {
-      question: "Why should I choose Vitaway as a digital healthcare platform?",
-      answer: "Vitaway offers convenient, affordable, and reliable healthcare services that you can access from the comfort of your home."
-    },
-    {
-      question: "Is Vitaway platform free of use?",
-      answer: "Yes, Vitaway is a free platform that you can use to access healthcare services and information."
-    }
-  ];
 
   const handleToggle = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);

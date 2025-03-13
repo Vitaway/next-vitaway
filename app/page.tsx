@@ -12,8 +12,7 @@ export const metadata: Metadata = {
   title: "Healthcare Solutions From all walks of Life",
   description: "Empowering Rwandans and youth globally with holistic healthcare via digital solutions. Focused on nutrition awareness and combating NCDs.",
   keywords: "Rwanda, healthcare, digital health, nutrition, NCDs, youth health, Vitaway, e-clinic, health education, healthy lifestyle",
-
-  // opengraph metadata
+  metadataBase: new URL("https://www.vitaway.org"),
   openGraph: {
     title: "Healthcare Solutions From all walks of Life",
     description: "Empowering Rwandans and youth globally with holistic healthcare via digital solutions. Focused on nutrition awareness and combating NCDs.",
@@ -28,6 +27,11 @@ export const metadata: Metadata = {
       },
     ],
   },
+};
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1.0,
 };
 
 export default function Home() {

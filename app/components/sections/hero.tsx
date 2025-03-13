@@ -2,6 +2,7 @@ import React from 'react';
 import MobileFrame from '../design/mobile-frame';
 import PatternDesign from '../design/pattern-design';
 import BackgroundBlurImage from '../design/background-blur-image';
+import Link from 'next/link';
 
 function Hero() {
     return (<>
@@ -24,12 +25,12 @@ function Hero() {
 
                     <p className="mt-4 text-base text-wwhite lg:mt-8 sm:text-xl">Virtual healthcare solutions to empower individuals from all walks of life, promoting overall well-being and health equity.</p>
 
-                    <a href="#" title="" className="inline-flex items-center px-6 py-4 mt-8 font-semibold text-white transition-all duration-200 bg-[#0878de] rounded-full lg:mt-16 hover:bg-[#0878de]/50 focus:bg-[#0878de]/50" role="button">
+                    <Link href="/pricing" title="" className="inline-flex items-center px-6 py-4 mt-8 font-semibold text-white transition-all duration-200 bg-[#0878de] rounded-full lg:mt-16 hover:bg-[#0878de]/50 focus:bg-[#0878de]/50" role="button">
                         Join for free
                         <svg className="w-6 h-6 ml-8 -mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                    </a>
+                    </Link>
                 </div>
 
                 <div className="col-lg-6 relative mobile-view">

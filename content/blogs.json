@@ -1,23 +1,42 @@
 [
     {
+        "id": "1",
         "title": "How to manage your remote team?",
         "image": "https://cdn.rareblocks.xyz/collection/celebration/images/blog/1/blog-post-1.jpg",
         "category": "Technology",
         "date": "June 12, 2021",
-        "content": "Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit."
+        "caption": "Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit.",
+        "content": "Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit.",
+        "link": "./"
     },
     {
+        "id": "2",
         "title": "6 Product launching emails you want to use on next campaign.",
         "image": "https://cdn.rareblocks.xyz/collection/celebration/images/blog/1/blog-post-2.jpg",
         "category": "Marketing",
         "date": "June 12, 2021",
-        "content": "Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit."
+        "caption": "Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit.",
+        "content": "Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit.",
+        "link": "./"
     },
     {
+        "id": "3",
         "title": "Learn from the best: 7 email marketing ideas you can use",
         "image": "https://cdn.rareblocks.xyz/collection/celebration/images/blog/1/blog-post-3.jpg",
         "category": "Marketing",
         "date": "June 12, 2021",
-        "content": "Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit."
+        "caption": "Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit.",
+        "content": "Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit.",
+        "link": "./"
+    },
+    {
+        "id": "4",
+        "title": "Learn from the best: 7 email marketing ideas you can use",
+        "image": "https://cdn.rareblocks.xyz/collection/celebration/images/blog/1/blog-post-3.jpg",
+        "category": "Marketing",
+        "date": "June 12, 2021",
+        "caption": "Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit.",
+        "content": "Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit.",
+        "link": "./"
     }
 ]

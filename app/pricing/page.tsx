@@ -1,50 +1,33 @@
 import React from 'react'
 import BackgroundBlurImage from '../components/design/background-blur-image';
+import { Metadata } from 'next';
+import pricingTable from '../../content/pricing.json';
 
-const pricingTable = [
-    {
-        title: 'Free Plan',
-        short_desc: "Basic Features",
-        price: 'RWF 0.00',
-        features: [
-            'Virtual PT Appointment (non-member)',
-            'Edit Profile',
-            'Access to Blogs',
-            'Health Assessment'
-        ]
+export const metadata: Metadata = {
+    title: "Healthcare Solutions From all walks of Life",
+    description: "Empowering Rwandans and youth globally with holistic healthcare via digital solutions. Focused on nutrition awareness and combating NCDs.",
+    keywords: "Rwanda, healthcare, digital health, nutrition, NCDs, youth health, Vitaway, e-clinic, health education, healthy lifestyle",
+    metadataBase: new URL("https://www.vitaway.org"),
+    openGraph: {
+        title: "Healthcare Solutions From all walks of Life",
+        description: "Empowering Rwandans and youth globally with holistic healthcare via digital solutions. Focused on nutrition awareness and combating NCDs.",
+        type: "website",
+        url: "https://vitaway.com",
+        images: [
+            {
+                url: "https://vitaway.com/images/",
+                width: 1200,
+                height: 630,
+                alt: "Vitaway Logo",
+            },
+        ],
     },
-    {
-        title: 'Standard Plan',
-        short_desc: "Popular Plan with Most Features",
-        price: 'RWF 10, 000.00',
-        highlighted: true,
-        features: [
-            'Virtual PT Appointment (member)',
-            'Access All Features (lessons, daily tracks, etc.)',
-            '24/7 Chat and Video Call with a Coach',
-            'Track Health Interactions',
-            'Personalized Meal Plan',
-            'Reminder Notifications',
-            'Ongoing Personal Support',
-            'Weekly Tasks (workouts, etc.)'
-        ]
-    },
-    {
-        title: 'Premium Plan',
-        short_desc: "All Features Included",
-        price: 'RWF 15, 000.00',
-        features: [
-            'All Standard Plan Features',
-            'Unlimited Video Calls',
-            'Personal Coach',
-            'Daily Challenges',
-            'Join Safe Space Group',
-            'Personalized Expert Consultations',
-            'Community Membership',
-            'Data Integration with PCP'
-        ]
-    }
-];
+};
+
+export const viewport = {
+    width: "device-width",
+    initialScale: 1.0,
+};
 
 function Pricing() {
     return (<>

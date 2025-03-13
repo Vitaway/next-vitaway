@@ -2,9 +2,7 @@ import Image from 'next/image'
 import React from 'react'
 import PageHeader from '../components/headers/page-header'
 import { Metadata } from 'next';
-import Head from 'next/head';
 
-// metadata for the page
 export const metadata: Metadata = {
     title: "Vitaway | Our Pledge to You",
     description: "Discover the Vitaway difference as we pledge to provide you with the highest quality healthcare solutions, personalized to your unique well-being.",
@@ -20,26 +18,13 @@ export const metadata: Metadata = {
     }
 };
 
+export const viewport = {
+    width: "device-width",
+    initialScale: 1.0,
+};
+
 function AboutUs() {
     return (<>
-        {/* CEO */}
-        <Head>
-            <title>Vitaway | Our Pledge to You</title>
-            <meta name="description" content="Discover the Vitaway difference as we pledge to provide you with the highest quality healthcare solutions, personalized to your unique well-being." />
-            <meta property="og:type" content="website" />
-            <meta property="og:url" content="https://vitaway.org/about-us" />
-            <meta property="og:title" content="Vitaway | Our Pledge to You" />
-            <meta property="og:description" content="Discover the Vitaway difference as we pledge to provide you with the highest quality healthcare solutions, personalized to your unique well-being." />
-            <meta property="og:image" content="https://vitaway.org/images/Team/bg-1.jpeg" />
-            <meta property="og:image:width" content="800" />
-            <meta property="og:image:height" content="600" />
-            <meta property="twitter:card" content="summary_large_image" />
-            <meta property="twitter:url" content="https://vitaway.org/about-us" />
-            <meta property="twitter:title" content="Vitaway | Our Pledge to You" />
-            <meta property="twitter:description" content="Discover the Vitaway difference as we pledge to provide you with the highest quality healthcare solutions, personalized to your unique well-being." />
-            <meta property="twitter:image" content="https://vitaway.org/images/Team/bg-1.jpeg" />
-        </Head>
-
         <PageHeader
             sup_title='Our Pledge to You'
             title='Elevating Your Wellness - Your Journey with Our Commitment'

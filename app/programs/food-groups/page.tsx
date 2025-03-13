@@ -1,7 +1,46 @@
 import PageHeader from '@/app/components/headers/page-header'
+import Link from 'next/link';
 import React from 'react'
 
 function FoodGroup() {
+    const foodGroups = [
+        {
+            title: "Vegatables food group",
+            slug: 'vegetables',
+            caption: "There is strong evidence that for each serve of vegetables eaten each day the risk of coronary heart disease is reduced even further!  Also, by eating vegetables, especially colourful vegetables, there is a reduced risk of stroke and weight gain."
+        },
+        {
+            title: 'What is Dairy group',
+            slug: "dairy",
+            caption: "Our advice covers everything from getting the right amount of healthy food and cutting down on fat, salt and sugar to hydration and staying active."
+        },
+        {
+            title: "Grains Starch food",
+            slug: "grains-starch",
+            caption: 'Our advice covers everything from getting the right amount of healthy food and cutting down on fat, salt and sugar to hydration and staying active.'
+        },
+        {
+            title: "Proteins food group",
+            slug: 'proteins-food',
+            caption: "Did you know that adult males need to eat less red meat? Yet many children and some women may need to eat more?"
+        },
+        {
+            title: "Fruit and vegetables",
+            slug: 'fruit',
+            caption: "Our advice covers everything from getting the right amount of healthy food and cutting down on fat, salt and sugar to hydration and staying active."
+        },
+        {
+            title: "What is MyPlate",
+            slug: "myplate",
+            caption: "Our advice covers everything from getting the right amount of healthy food and cutting down on fat, salt and sugar to hydration and staying active."
+        },
+        {
+            title: "Hydration",
+            slug: "hydration",
+            caption: "Our advice covers everything from getting the right amount of healthy food and cutting down on fat, salt and sugar to hydration and staying active."
+        }
+    ];
+
     return (<>
         <PageHeader
             sup_title='Program'
@@ -11,137 +50,22 @@ function FoodGroup() {
         />
 
         <div className="px-4 py-16 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8 lg:py-20">
-            <div className="bg-white border rounded-lg shadow-sm">
-                <div className="flex flex-col md:justify-center lg:flex-row">
-                    <div className="flex flex-col justify-between p-5 border-b sm:p-10 lg:border-b-0 lg:border-r lg:w-1/2">
-                        <div>
-                            <h5 className="max-w-md mb-6 text-xl font-patua font-normal leading-none sm:text-2xl">
-                                Vegatables food group
-                            </h5>
-                            <p className="mb-6 text-base text-gray-700 md:text-lg sm:mb-8">
-                                Our advice covers everything from getting the right amount of healthy food and cutting down on fat, salt and sugar to hydration and staying active.
-                            </p>
-                        </div>
-                        <div className="flex items-center">
-                            <a href="{{ route('food-groups.vegetables') }}">
-                                <button type="submit" className="inline-flex font-patua font-normal items-center justify-center h-12 px-6 mr-6 tracking-wide text-white transition duration-200 rounded shadow-md bg-indigo-400 hover:bg-indigo-500 focus:shadow-outline focus:outline-none">
+            <div className='grid grid-cols-1 md:grid-cols-4 gap-3'>
+                {foodGroups.map((group, index) => (
+                    <div className="bg-white border rounded-lg shadow-sm" key={index}>
+                        <div className="p-8">
+                            <div>
+                                <h5 className="mb-6 text-xl font-semibold sm:text-xl text-slate-700">{group.title}</h5>
+                                <p className="mb-6 text-gray-700 md:text-lg sm:mb-8 text-sm line-clamp-3">{group.caption}</p>
+                            </div>
+                            <div className="flex items-center">
+                                <Link href={`/programs/food-groups/groups/${group.slug}`} className="inline-flex text-sm font-normal px-4 py-2 tracking-wide text-white transition duration-200 rounded bg-blue-400 hover:bg-blue-500">
                                     Read More
-                                </button>
-                            </a>
+                                </Link>
+                            </div>
                         </div>
                     </div>
-                    <div className="flex flex-col justify-between p-5 sm:p-10 lg:w-1/2">
-                        <div>
-                            <h5 className="max-w-md mb-6 text-xl font-patua font-normal leading-none sm:text-2xl">
-                                What is Dairy group
-                            </h5>
-                            <p className="mb-6 text-base text-gray-700 md:text-lg sm:mb-8">
-                                Our advice covers everything from getting the right amount of healthy food and cutting down on fat, salt and sugar to hydration and staying active.
-                            </p>
-                        </div>
-                        <div className="flex items-center">
-                            <a href="{{ route('food-groups.dairy') }}">
-                                <button type="submit" className="inline-flex font-patua font-normal items-center justify-center h-12 px-6 mr-6 tracking-wide text-white transition duration-200 rounded shadow-md bg-indigo-400 hover:bg-indigo-500 focus:shadow-outline focus:outline-none">
-                                    Read More
-                                </button>
-                            </a>
-                        </div>
-                    </div>
-                    <div className="flex flex-col justify-between p-5 sm:p-10 lg:w-1/2">
-                        <div>
-                            <h5 className="max-w-md mb-6 text-xl font-patua font-normal leading-none sm:text-2xl">
-                                Grains Starch food
-                            </h5>
-                            <p className="mb-6 text-base text-gray-700 md:text-lg sm:mb-8">
-                                Our advice covers everything from getting the right amount of healthy food and cutting down on fat, salt and sugar to hydration and staying active.
-                            </p>
-                        </div>
-                        <div className="flex items-center">
-                            <a href="{{ route('food-groups.grains') }}">
-                                <button type="submit" className="inline-flex font-patua font-normal items-center justify-center h-12 px-6 mr-6 tracking-wide text-white transition duration-200 rounded shadow-md bg-indigo-400 hover:bg-indigo-500 focus:shadow-outline focus:outline-none">
-                                    Read More
-                                </button>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="flex flex-col md:justify-center lg:flex-row">
-                    <div className="flex flex-col justify-between p-5 sm:p-10 lg:w-1/2">
-                        <div>
-                            <h5 className="max-w-md mb-6 text-xl font-patua font-normal leading-none sm:text-2xl">
-                                Proteins food group
-                            </h5>
-                            <p className="mb-6 text-base text-gray-700 md:text-lg sm:mb-8">
-                                Our advice covers everything from getting the right amount of healthy food and cutting down on fat, salt and sugar to hydration and staying active.
-                            </p>
-                        </div>
-                        <div className="flex items-center">
-                            <a href="{{ route('food-groups.proteins') }}">
-                                <button type="submit" className="inline-flex font-patua font-normal items-center justify-center h-12 px-6 mr-6 tracking-wide text-white transition duration-200 rounded shadow-md bg-indigo-400 hover:bg-indigo-500 focus:shadow-outline focus:outline-none">
-                                    Read More
-                                </button>
-                            </a>
-                        </div>
-                    </div>
-                    <div className="flex flex-col justify-between p-5 sm:p-10 lg:w-1/2">
-                        <div>
-                            <h5 className="max-w-md mb-6 text-xl font-patua font-normal leading-none sm:text-2xl">
-                                Fruit and vegetables
-                            </h5>
-                            <p className="mb-6 text-base text-gray-700 md:text-lg sm:mb-8">
-                                Our advice covers everything from getting the right amount of healthy food and cutting down on fat, salt and sugar to hydration and staying active.
-                            </p>
-                        </div>
-                        <div className="flex items-center">
-                            <a href="{{ route('food-groups.fruits') }}">
-                                <button type="submit" className="inline-flex font-patua font-normal items-center justify-center h-12 px-6 mr-6 tracking-wide text-white transition duration-200 rounded shadow-md bg-indigo-400 hover:bg-indigo-500 focus:shadow-outline focus:outline-none">
-                                    Read More
-                                </button>
-                            </a>
-                        </div>
-                    </div>
-
-                    <div className="flex flex-col justify-between p-5 sm:p-10 lg:w-1/2">
-                        <div>
-                            <h5 className="max-w-md mb-6 text-xl font-patua font-normal leading-none sm:text-2xl">
-                                What is MyPlate
-                            </h5>
-                            <p className="mb-6 text-base text-gray-700 md:text-lg sm:mb-8">
-                                Our advice covers everything from getting the right amount of healthy food and cutting down on fat, salt and sugar to hydration and staying active.
-                            </p>
-                        </div>
-                        <div className="flex items-center">
-                            <a href="{{ route('food-groups.myplate') }}">
-                                <button type="submit" className="inline-flex font-patua font-normal items-center justify-center h-12 px-6 mr-6 tracking-wide text-white transition duration-200 rounded shadow-md bg-indigo-400 hover:bg-indigo-500 focus:shadow-outline focus:outline-none">
-                                    Read More
-                                </button>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="flex flex-col md:justify-left lg:flex-row">
-
-                    <div className="flex flex-col justify-between p-5 sm:p-10 lg:w-1/2">
-                        <div>
-                            <h5 className="max-w-md mb-6 text-xl font-patua font-normal leading-none sm:text-2xl">
-                                Hydration
-                            </h5>
-                            <p className="mb-6 text-base text-gray-700 md:text-lg sm:mb-8">
-                                Our advice covers everything from getting the right amount of healthy food and cutting down on fat, salt and sugar to hydration and staying active.
-                            </p>
-                        </div>
-                        <div className="flex items-center">
-                            <a href="{{ route('food-groups.hydration') }}">
-                                <button type="submit" className="inline-flex font-patua font-normal items-center justify-center h-12 px-6 mr-6 tracking-wide text-white transition duration-200 rounded shadow-md bg-indigo-400 hover:bg-indigo-500 focus:shadow-outline focus:outline-none">
-                                    Read More
-                                </button>
-                            </a>
-                        </div>
-                    </div>
-
-                </div>
+                ))}
             </div>
         </div>
     </>)
