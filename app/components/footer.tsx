@@ -70,10 +70,13 @@ function Footer() {
                                 <Link href="/our-team" title="" className="flex text-base text-black transition-all duration-200 hover:text-blue-600 focus:text-blue-600"> Our Team </Link>
                             </li>
                             <li>
-                                <Link href="/pricing" title="" className="flex text-base text-black transition-all duration-200 hover:text-blue-600 focus:text-blue-600"> Pricings </Link>
+                                <Link href="/pricing" title="" className="flex text-base text-black transition-all duration-200 hover:text-blue-600 focus:text-blue-600"> Our Pricings </Link>
                             </li>
                             <li>
-                                <Link href="/blogs" title="" className="flex text-base text-black transition-all duration-200 hover:text-blue-600 focus:text-blue-600"> Blogs </Link>
+                                <Link href="/blogs" title="" className="flex text-base text-black transition-all duration-200 hover:text-blue-600 focus:text-blue-600"> All Blogs </Link>
+                            </li>
+                            <li>
+                                <Link href="/contact" title="" className="flex text-base text-black transition-all duration-200 hover:text-blue-600 focus:text-blue-600"> Contact us </Link>
                             </li>
                         </ul>
                     </div>
@@ -107,6 +110,12 @@ function Footer() {
 
                             <button type="submit" className="inline-flex items-center justify-center px-6 py-3 mt-3 font-semibold text-white transition-all duration-200 bg-blue-600 rounded-md hover:bg-blue-700 focus:bg-blue-700">Subscribe</button>
                         </form>
+
+                        <ul className="mt-6 space-y-2 text-slate-700 text-sm border-t pt-5 border-gray-200">
+                            <li><span><span className='font-bold'>Contact:</span> +250 795 767 405 /+250 787 279 560 </span></li>
+                            <li><span><span className='font-bold'>Email:</span> vitawayeclinic@gmail.com</span></li>
+                            <li><span><span className='font-bold'>Location:</span> KG 165 St 7, Kimironko, near the former KIE &quot;Remera Campus.&quot;</span></li>
+                        </ul>
                     </div>
                 </div>
 
