@@ -16,29 +16,29 @@ function Vegetables() {
         backgroundImage='https://plus.unsplash.com/premium_photo-1686285541215-015dfccebe27?auto=format&fit=crop&q=80&w=2940&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
       />
 
-      <section className="content-section">
+      <section className="px-20 py-20 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-32 lg:px-28 lg:py-20">
         <div className="container">
           <div className="flex items-center justify-center">
             <div className="col-lg-8">
               <div className="main-contents">
                 <div className="font-merri font-normal text-gray-900">
-                  <h2>Did you know most Australians eat only about half the recommended quantity of vegetables per day?</h2>
-                  <p>
+                  <h2 className='text-2xl font-semibold mt-5'>Did you know most Australians eat only about half the recommended quantity of vegetables per day?</h2>
+                  <p className="mt-5">
                     Strong evidence supports the idea that with every daily serving of vegetables you consume,
                     the risk of coronary heart disease decreases significantly. Moreover, the inclusion of colorful
                     vegetables in your diet not only further reduces the risk of heart disease but also lowers the chances
                     of stroke and unwanted weight gain.
                   </p>
-                  <p>
+                  <p className="mt-5">
                     Vegetables, including legumes/beans are nutrient dense, low in kilojoules, and are a good source of
                     minerals and vitamins (such as magnesium, vitamin C and folate), dietary fibre and a range of
                     phytochemicals including carotenoids.
                   </p>
-                  <p>
+                  <p className="mt-5">
                     Vegetables can be broken up into different groups, with each group providing their own unique nutrients.
                     The main sub-groups for vegetables are:
                   </p>
-                  <p>
+                  <p className="mt-5">
                     People wanting to lose weight will also find this information useful for planning meals and snacks.
                     Following the recommended number of serves from the Five Food Groups and avoiding the discretionary
                     foods will result in a gradual but healthy weight loss for most people. However, some people, particularly
@@ -46,8 +46,8 @@ function Vegetables() {
                     food groups.
                   </p>
 
-                  <h2>Eating Regularly</h2>
-                  <p>
+                  <h2 className='text-2xl font-semibold mt-5'>Eating Regularly</h2>
+                  <p className="mt-5">
                     It’s essential for weight control and especially weight loss, to recognise and act on the feedback
                     your body gives you about when and how much you need to eat. However it’s also important to aim for
                     a regular eating pattern of meals, or meals and mid meals.
@@ -57,13 +57,13 @@ function Vegetables() {
                     and important nutrients.
                   </p>
 
-                  <h2>Eat with other people not TV</h2>
-                  <p>
+                  <h2 className='text-2xl font-semibold mt-5'>Eat with other people not TV</h2>
+                  <p className="mt-5">
                     We also know that people who eat with others and eat at the dining table, are more likely to eat regularly
                     and eat well than those who eat alone or in front of the TV. Meals with others tend to include more foods
                     from the five food groups. For example, people often report that they can’t be bothered cooking vegetables just for themselves.
                   </p>
-                  <p>
+                  <p className="mt-5">
                     Television watching is associated with eating more discretionary choices like take-away or convenience foods and fewer foods from the five foods.
                     It also makes it much more difficult to recognise and respond to our body’s signals about hunger and satiety.
                     Good meal planning and making healthy choices can sometimes be tricky but a few useful tips can make it easier.
@@ -130,13 +130,13 @@ function Vegetables() {
         </div>
       </div>
 
-      <section className="content-section">
+      <section className="px-20 py-20 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-32 lg:px-28 lg:py-20">
         <div className="container">
           <div className="flex items-center justify-center">
             <div className="col-lg-8">
               <div className="main-contents">
                 <div className="font-merri font-normal text-gray-900">
-                  <h2>The main message of the Healthy Eating Plate is to focus on diet quality:</h2>
+                  <h2 className='text-2xl font-semibold mt-5'>The main message of the Healthy Eating Plate is to focus on diet quality:</h2>
                   <ul>
                     <li>
                       The type of carbohydrate in the diet is more important than the amount of carbohydrate in the diet, because some sources of carbohydrate—like vegetables (other than potatoes), fruits, whole grains, and beans—are healthier than others.
@@ -149,7 +149,7 @@ function Vegetables() {
                     </li>
                   </ul>
 
-                  <h2>Healthy Eating: Changing Your Eating Habits</h2>
+                  <h2 className='text-2xl font-semibold mt-5'>Healthy Eating: Changing Your Eating Habits</h2>
                   <p className="mt-2">
                     The food you eat can affect your health and your risk for certain diseases.
                     To eat healthier food, you may need to change some of your daily habits.
@@ -162,18 +162,18 @@ function Vegetables() {
                     can make a big difference in your health.
                   </p>
                   <p className="mt-2">This information will help you make useful changes for healthy eating.</p>
-                  <ul className="mt-2">
+                  <ul className='my-4 list-disc list-inside'>
                     <li>Changing your eating habits and your environment can help you eat healthier foods.</li>
                     <li>A healthy diet is good for your overall health. It also can help you reach a healthy weight and stay there.</li>
                     <li>To improve your eating habits, it's best to make small lifestyle changes that you can keep doing over time.</li>
                   </ul>
 
-                  <h2>How can you change your eating habits?</h2>
+                  <h2 className='text-2xl font-semibold mt-5'>How can you change your eating habits?</h2>
                   <p className="mt-2">
                     To eat a healthy diet, you may need to make some changes. Remember that you can change your eating habits a little bit at a time. Small changes are easier to make and can lead to better health.
                     Here are some ways to make healthy changes in your eating habits:
                   </p>
-                  <ul className="mt-2">
+                  <ul className='my-4 list-disc list-inside'>
                     <li>Keep more fruits, low-fat dairy products (low-fat milk and low-fat yogurt), vegetables, and whole-grain foods at home and at work. Focus on adding healthy food to your diet, rather than just taking unhealthy foods away</li>
                     <li>Try to eat a family meal every day at the kitchen or dining table. This will help you focus on eating healthy meals.</li>
                     <li>Buy a healthy-recipe book, and cook for yourself. Chew gum when you cook so you won't be tempted to snack on the ingredients.</li>

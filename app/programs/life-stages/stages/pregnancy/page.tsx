@@ -14,7 +14,7 @@ function Pregnancy() {
                 backgroundImage='https://images.unsplash.com/photo-1457342813143-a1ae27448a82?auto=format&fit=crop&q=80&w=2940&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
             />
 
-            <section className="content-section">
+            <section className="px-20 py-20 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-32 lg:px-28 lg:py-20">
                 <div className="container">
                     <div className="flex items-center justify-center">
                         <div className="col-lg-8">
@@ -43,7 +43,7 @@ function Pregnancy() {
                     </div>
                     <div className="flex flex-col justify-center p-8 bg-white lg:p-16 lg:pl-10 lg:w-1/2">
                         <p className="mb-5">
-                            <h3 className="font-patua font-normal text-lg leading-6 mb-2">Eat Healthy</h3>
+                            <h3 className="font-font text-slate-700 text-lg leading-6 mb-2">Eat Healthy</h3>
                             <p className="text-gray-800 leading-6 text-justify">
                                 Fruits, vegetables, whole grains, protein foods, and fat-free or low-fat dairy products are healthy choices.
                                 Include a variety of protein foods such as seafood, lean meats, poultry, beans, peas, lentils, nuts, and eggs.
@@ -56,14 +56,14 @@ function Pregnancy() {
                 </div>
             </div>
 
-            <section className="content-section">
+            <section className="px-20 py-20 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-32 lg:px-28 lg:py-20">
                 <div className="container">
                     <div className="flex items-center justify-center">
                         <div className="col-lg-8">
                             <div className="main-contents">
                                 <div className="font-merri font-normal text-gray-900">
-                                    <h2>Make Safe Choices</h2>
-                                    <ul>
+                                    <h2 className='text-2xl font-semibold mt-5'>Make Safe Choices</h2>
+                                    <ul className='my-4 list-disc list-inside'>
                                         <li className="mb-3">
                                             <b>Food Safety During Pregnancy</b> <br />
                                             You and your unborn child are more susceptible to the effects of foodborne illnesses. Take special care to keep foods safe and to avoid certain foods that increase your risk.

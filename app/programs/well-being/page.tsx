@@ -14,21 +14,21 @@ function WellBeing() {
                 backgroundImage='https://images.unsplash.com/photo-1565128401272-fcdd93cd3dc8?auto=format&fit=crop&q=80&w=2940&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
             />
 
-            <section className="content-section">
+            <section className="px-20 py-20 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-32 lg:px-28 lg:py-20">
                 <div className="container">
                     <div className="flex items-center justify-center">
                         <div className="col-lg-8">
                             <div className="main-contents">
                                 <div className="font-merri font-normal text-gray-900">
-                                    <h2>A healthy diet</h2>
-                                    <p>
+                                    <h2 className='text-2xl font-semibold mt-5'>A healthy diet</h2>
+                                    <p className='my-4'>
                                         Eating a healthy diet means you’re more likely to keep your body healthy.
                                         Otherwise, you risk various disorders including obesity, type 2 diabetes or
                                         cancer.
                                     </p>
 
-                                    <h2>Overweight and obesity</h2>
-                                    <p>
+                                    <h2 className='text-2xl font-semibold mt-5'>Overweight and obesity</h2>
+                                    <p className='my-4'>
                                         Obesity is being so overweight that it presents a serious threat to your health.
                                         It’s caused by too many calories, and not enough physical activity.
                                         Being overweight or obese increases the risk of developing heart disease, stroke,
@@ -36,20 +36,20 @@ function WellBeing() {
                                         around two-thirds of adults in Scotland are either overweight or obese.
                                     </p>
 
-                                    <h2>How to discover whether you’re overweight</h2>
-                                    <p>
+                                    <h2 className='text-2xl font-semibold mt-5'>How to discover whether you’re overweight</h2>
+                                    <p className='my-4'>
                                         If you’re worried about your weight, you can calculate your BMI (body mass index) using a BMI calculator.
                                     </p>
 
-                                    <h2>How to achieve a healthy weight</h2>
-                                    <p>
+                                    <h2 className='text-2xl font-semibold mt-5'>How to achieve a healthy weight</h2>
+                                    <p className='my-4'>
                                         You’ll be able to keep your weight healthy by following a healthy diet and
                                         staying physically active. Don’t use crash diets, but make small, permanent
                                         changes to the food you eat.
                                     </p>
 
-                                    <h2>Illnesses related to diet</h2>
-                                    <p>
+                                    <h2 className='text-2xl font-semibold mt-5'>Illnesses related to diet</h2>
+                                    <p className='my-4'>
                                         A poor diet – too much fat, not enough fibre and fruit and vegetables, or
                                         drinking too much alcohol – can cause a number of illnesses.
                                     </p>
@@ -109,21 +109,21 @@ function WellBeing() {
                 </div>
             </div>
 
-            <section className="content-section">
+            <section className="px-20 py-20 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-32 lg:px-28 lg:py-20">
                 <div className="container">
                     <div className="flex items-center justify-center">
                         <div className="col-lg-8">
                             <div className="main-contents">
                                 <div className="font-merri font-normal text-gray-900">
-                                    <h2>Types of diabetes</h2>
-                                    <p>
+                                    <h2 className='text-2xl font-semibold mt-5'>Types of diabetes</h2>
+                                    <p className='my-4'>
                                         There are two types of diabetes, Type 1 and Type 2.
                                         Type 1 develops when cells in the pancreas that produce insulin are destroyed.
                                         This type of diabetes is treated with insulin, a hormone that regulates the blood.
                                     </p>
 
-                                    <h2>Type 2 diabetes</h2>
-                                    <p className="mt-2">
+                                    <h2 className='text-2xl font-semibold mt-5'>Type 2 diabetes</h2>
+                                    <p className='my-4'>
                                         Type 2 diabetes occurs when the body doesn't produce enough of the hormone insulin to function properly,
                                         or the body's cells don't react to it.  It can cause high blood glucose levels which can cause damage to
                                         the body. If left untreated, type 2 diabetes can have serious consequences including kidney, eye and foot
@@ -132,11 +132,10 @@ function WellBeing() {
                                         The majority of type 2 diabetics in Scotland are overweight or obese.
                                     </p>
 
-                                    <p className="mt-2">
+                                    <p className='my-4'>
                                         Eating a healthy diet, achieving and maintaining a healthy weight and being active can reduce the risk of developing
                                         type 2 diabetes. More information on diabetes and maintaining a healthy diet can be found on diabetes.org.
                                     </p>
-
                                 </div>
                             </div>
                         </div>

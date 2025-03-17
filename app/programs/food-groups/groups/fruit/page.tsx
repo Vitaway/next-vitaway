@@ -12,24 +12,24 @@ function Fruit() {
         backgroundImage='https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=2874&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
       />
 
-      <section className="content-section">
+      <section className="px-20 py-20 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-32 lg:px-28 lg:py-20">
         <div className="container">
           <div className="flex items-center justify-center">
             <div className="col-lg-8">
               <div className="main-contents">
                 <div className="font-merri font-normal text-gray-900">
-                  <p>
+                  <p className='my-8'>
                     No single fruit or vegetable provides all of the nutrients you need to be healthy. Eat plenty every day.
                   </p>
 
-                  <h2>
+                  <h2 className='text-2xl font-semibold mt-5'>
                     How much should I eat ?
                   </h2>
-                  <p>
+                  <p className='my-8'>
                     You should eat at least five portions of fruit and vegetables a day. They contain important vitamins and minerals that help prevent disease as well as fibre which can lower cholesterol, keep the bowel healthy and help digestion.
                   </p>
-                  <p>It’s easy to get your five a day if you spread your portions through the day. Try:</p>
-                  <ul>
+                  <p className='my-8'>It’s easy to get your five a day if you spread your portions through the day. Try:</p>
+                  <ul className='my-4 list-disc list-inside'>
                     <li>adding chopped bananas to your cereal or toast at breakfast</li>
                     <li>enjoying a piece of fruit as a mid-morning snack</li>
                     <li>including a bowl of salad or vegetable soup with your lunch</li>
@@ -37,10 +37,10 @@ function Fruit() {
                     <li>adding a portion of veg to your evening meal.</li>
                   </ul>
 
-                  <h2>
+                  <h2 className='text-2xl font-semibold mt-5'>
                     What counts as a portion of fruit and vegetables?
                   </h2>
-                  <p>
+                  <p className='my-8'>
                     <ol>
                       <li>1 apple, banana, pear, orange or other similar sized fruit</li>
                       <li>2plums or similar sized fruit</li>
@@ -53,19 +53,19 @@ function Fruit() {
                     Fruit juice and smoothies contain a lot of sugar, so limit them to just 150ml a day – that’s around the same as a small glass. Dried fruit is also high in sugar so it’s best not to eat it in-between meals to help prevent tooth decay.
                   </p>
 
-                  <h2>
+                  <h2 className='text-2xl font-semibold mt-5'>
                     Why is it important to eat the Fruit and Vegetables?
                   </h2>
-                  <p>
+                  <p className='my-8'>
                     A diet rich in vegetables and fruits can lower blood pressure, reduce the risk of heart disease and stroke, prevent some types of cancer, lower risk of eye and digestive problems, and have a positive effect upon blood sugar, which can help keep appetite in check. Eating non-starchy vegetables and fruits like apples, pears, and green leafy vegetables may even promote weight loss. Their low glycemic loads prevent blood sugar spikes that can increase hunger (1) .
                   </p>
 
-                  <p>
+                  <p className='my-8'>
                     Protein Foods subgroups can help increase intake of important nutrients, including unsaturated fats, dietary fiber, and vitamin D and help to limit intake of sodium and saturated fats coming from processed meat and poultry.
                   </p>
 
                   <h3>Nutrients</h3>
-                  <ul>
+                  <ul className='my-4 list-disc list-inside'>
                     <li>Most fruits are naturally low in fat, sodium, and calories. None have cholesterol </li>
                     <li>Fruits are sources of many essential nutrients that many people don’t get enough of including potassium, dietary fiber, vitamin C, and folate.</li>
                     <li>Diets rich in potassium may help to maintain healthy blood pressure. Fruit sources of potassium include bananas, prunes and prune juice, dried peaches and apricots, cantaloupe, honeydew melon, orange juice, sapote, jack fruit,guava, and kiwi.</li>
@@ -74,7 +74,7 @@ function Fruit() {
                   </ul>
 
                   <h3>References</h3>
-                  <ul>
+                  <ul className='my-4 list-disc list-inside'>
                     <li>
                       1.Bertoia ML, Mukamal KJ, Cahill LE, Hou T, Ludwig DS, Mozaffarian D, Willett WC, Hu FB, Rimm EB. Changes in intake of fruits and vegetables and weight change in United States men and women followed for up to 24 years: analysis from three prospective cohort studies. PLoS medicine. 2015 Sep 22;12(9):e1001878.
                     </li>

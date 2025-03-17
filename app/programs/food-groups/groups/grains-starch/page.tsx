@@ -12,41 +12,41 @@ function GrainStarch() {
         backgroundImage='https://plus.unsplash.com/premium_photo-1667546569341-1136d35ab1fa?auto=format&fit=crop&q=80&w=2940&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
       />
 
-      <section className="content-section">
+      <section className="px-20 py-20 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-32 lg:px-28 lg:py-20">
         <div className="container">
           <div className="flex items-center justify-center">
             <div className="col-lg-8">
               <div className="main-contents">
                 <div className="font-merri font-normal text-gray-900">
-                  <p>
+                  <p className='my-8'>
                     Wholegrain foods usually have more fibre and nutrients. They take longer to digest so they can help you feel full for longer. Good examples of wholegrains are brown rice, wholewheat pasta, whole oats, wholegrain breakfast cereals and wholemeal bread, pitta and chapatti.
                   </p>
 
-                  <h2>How much should I eat from the Grain ( cereal ) group?</h2>
-                  <p>Consuming at least 4-6 serves of grain (cereal) foods per day is recommended for Australian adults, while the amount recommended for children and adolescents depends on their age and sex. Follow the links below to find out how many serves you need to eat per day.</p>
-                  <p>
+                  <h2 className='text-2xl font-semibold mt-5'>How much should I eat from the Grain ( cereal ) group?</h2>
+                  <p className='my-8'>Consuming at least 4-6 serves of grain (cereal) foods per day is recommended for Australian adults, while the amount recommended for children and adolescents depends on their age and sex. Follow the links below to find out how many serves you need to eat per day.</p>
+                  <p className='my-8'>
                     Minimum recommended average daily number of serves from each of the five food groups
-                    <ul>
+                    <ul className='my-4 list-disc list-inside'>
                       <li>Children, Adolescents and Toddlers</li>
                       <li>Adults</li>
                     </ul>
                   </p>
 
-                  <h2>
+                  <h2 className='text-2xl font-semibold mt-5'>
                     Health benefits of grain foods
                   </h2>
-                  <p>
+                  <p className='my-8'>
                     The nutrients provided by grains include carbohydrates/starch (energy), protein, fibre and a wide range of vitamins and minerals including the B vitamins folate, thiamin, riboflavin, niacin, iron, vitamin E, zinc, magnesium and phosphorus.
                   </p>
-                  <p>
+                  <p className='my-8'>
                     Cereals and wholegrain foods can reduce the risk of developing certain diseases including coronary heart disease, colon cancer, diabetes and diverticular disease. The high fibre in wholegrain cereals also assist in the maintenance of the digestive system and can help prevent constipation.
                   </p>
-                  <p>
+                  <p className='my-8'>
                     High fibre foods, such as wholegrain breads and cereals, can also be an effective part of any weight loss program. They take longer to digest and create a feeling of fullness, which discourages overeating. Whole grains are also naturally low in saturated fat and contain beneficial polyunsaturated fatty acids.
                   </p>
-                  <p>
+                  <p className='my-8'>
                     Nutrients:
-                    <ul>
+                    <ul className='my-4 list-disc list-inside'>
                       <li>Grains are important sources of many nutrients, including complex carbohydrates, dietary fiber, several B vitamins( thiamin, riboflavin, niacin, and folate), and minerals( iron, magnesium, and selenium).</li>
                       <li>Dietary fiber from whole grains or other foods, may help reduce blood cholesterol levels and may lower risk of heart disease. Fiber is also important for proper bowel function. </li>
                       <li>The B Vitamins thiamin, riboflavin, and niacin play a key role in metabolism- they help the body release enery from protein, fat, and carbohydrates, B vitamins are also essential for a healthy nervous system. Many refined gains are enriched with these B Vitamins.</li>
@@ -55,9 +55,9 @@ function GrainStarch() {
                     </ul>
                   </p>
 
-                  <h2>How much should I eat from the Grain ( cereal ) group?</h2>
-                  <p>Consuming at least 4-6 serves of grain (cereal) foods per day is recommended for Australian adults, while the amount recommended for children and adolescents depends on their age and sex. Follow the links below to find out how many serves you need to eat per day.</p>
-                  <p>
+                  <h2 className='text-2xl font-semibold mt-5'>How much should I eat from the Grain ( cereal ) group?</h2>
+                  <p className='my-8'>Consuming at least 4-6 serves of grain (cereal) foods per day is recommended for Australian adults, while the amount recommended for children and adolescents depends on their age and sex. Follow the links below to find out how many serves you need to eat per day.</p>
+                  <p className='my-8'>
                     Minimum recommended average daily number of serves from each of the five food groups
                   </p>
                 </div>

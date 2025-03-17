@@ -13,15 +13,15 @@ function Adult() {
                 backgroundImage='https://images.unsplash.com/photo-1534954553104-88cb75be7648?auto=format&fit=crop&q=80&w=2960&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
             />
 
-            <section className="content-section">
+            <section className="px-20 py-20 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-32 lg:px-28 lg:py-20">
                 <div className="container">
                     <div className="flex items-center justify-center">
                         <div className="col-lg-8">
                             <div className="main-contents">
                                 <div className="font-merri font-normal text-gray-900">
-                                    <h2>Managing a healthy weight</h2>
-                                    <p>Being overweight can make it harder to get around and increase your risk of heart disease and type 2 diabetes. Equally, any sudden loss of weight can also indicate a health problem. Talk to your GP if you’re worried about your weight.</p>
-                                    <p>The Eatwell Guide has lots of information about how to have a healthy, balanced diet. If you have any special dietary requirements or medical needs, talk to your GP or a registered dietician about adapting the Eatwell guidelines.</p>
+                                    <h2 className='text-2xl font-semibold mt-5'>Managing a healthy weight</h2>
+                                    <p className='my-8'>Being overweight can make it harder to get around and increase your risk of heart disease and type 2 diabetes. Equally, any sudden loss of weight can also indicate a health problem. Talk to your GP if you’re worried about your weight.</p>
+                                    <p className='my-8'>The Eatwell Guide has lots of information about how to have a healthy, balanced diet. If you have any special dietary requirements or medical needs, talk to your GP or a registered dietician about adapting the Eatwell guidelines.</p>
                                 </div>
                             </div>
                         </div>
@@ -63,17 +63,17 @@ function Adult() {
                 </div>
             </div>
 
-            <section className="content-section">
+            <section className="px-20 py-20 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-32 lg:px-28 lg:py-20">
                 <div className="container">
                     <div className="flex items-center justify-center">
                         <div className="col-lg-8">
                             <div className="main-contents">
                                 <div className="font-merri font-normal text-gray-900">
-                                    <h2>Staying active</h2>
-                                    <p>Physical activity helps you stay healthy, mobile and independent.
+                                    <h2 className='text-2xl font-semibold mt-5'>Staying active</h2>
+                                    <p className='my-8'>Physical activity helps you stay healthy, mobile and independent.
                                         It also helps keep the heart healthy and lowers the risk of heart disease and stroke.
                                         Keeping active can also improve your appetite.</p>
-                                    <p>
+                                    <p className='my-8'>
                                         If you’re underweight, have mobility problems or a disability talk to your GP or
                                         practice nurse before starting any physical activity.
                                     </p>

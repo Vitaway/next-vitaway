@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 import PageHeader from '@/app/components/headers/page-header'
 import GuestLayout from '@/app/layouts/GuestLayout'
 import React from 'react'
@@ -12,34 +13,34 @@ function Diary() {
         backgroundImage='https://plus.unsplash.com/premium_photo-1683141058830-bf7feb63212c?auto=format&fit=crop&q=80&w=2944&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
       />
 
-      <section className="content-section">
+      <section className="px-20 py-20 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-32 lg:px-28 lg:py-20">
         <div className="container">
           <div className="flex items-center justify-center">
             <div className="col-lg-8">
               <div className="main-contents">
                 <div className="font-merri font-normal text-gray-900">
-                  <p>
+                  <p className='my-8'>
                     Dairy and dairy alternatives are good sources of protein and vitamins. They also contain calcium, which helps keep our bones healthy and strong. Semi-skimmed, skimmed, and 1% fat milk all contain less fat than full-fat milk, but still give you protein, vitamins and calcium.
                   </p>
-                  <p>
+                  <p className='my-8'>
                     Dairy-free milk alternatives include soya milk and nut milks – if you chose dairy-free milk then go for unsweetened varieties which have been fortified with calcium.
                   </p>
 
-                  <h2>
+                  <h2 className='text-2xl font-semibold mt-5'>
                     How much should I eat from Dairy group
                   </h2>
-                  <p >
+                  <p className='my-8'>
                     The amount of dairy you need depends on your age, sex, height, weight, and level of physical activity. For women, the amount can also depend on whether you are pregnant or breastfeeding.
                   </p>
-                  <p>
+                  <p className='my-8'>
                     In general, 1 cup of milk, yogurt, or soy milk, or 1 ½ ounces of natural cheese can be considered as 1 cup from the Dairy Group. The table below lists specific amounts that count as 1 cup in the Dairy Group towards your daily recommended intake.
                   </p>
 
 
-                  <h2>
+                  <h2 className='text-2xl font-semibold mt-5'>
                     Daily dairy tables
                   </h2>
-                  <p>These are general recommendations by age</p>
+                  <p className='my-8'>These are general recommendations by age</p>
                   <table className="table-auto items-center bg-transparent w-full border-collapse">
                     <thead>
                       <tr>
@@ -169,27 +170,37 @@ function Diary() {
                     </tbody>
                   </table>
 
-                  <h2>
+                  <h2 className='text-2xl font-semibold mt-5'>
                     Health benefit of Dairy group
                   </h2>
-                  <p >
+                  <p className='my-8'>
                     Consuming dairy products provides health benefits — especially building and maintaining strong bones. Foods in the Dairy Group provide nutrients that are vital for health and maintenance of your body. These nutrients include calcium, potassium, vitamin D, and protein.
                   </p>
-                  <p>
+                  <p className='my-8'>
                     Calcium and vitamin D are important nutrients at any age. Intake of dairy products that contain these nutrients help to:
                   </p>
-                  <ul>
+                  <ul className='my-4 list-disc list-inside'>
                     <li>Improve bone health especially in children and adolescents, when bone mass is being built.</li>
                     <li>Promote bone health and prevent the onset of osteoporosis in adults, most of whom do not get enough of these nutrients.</li>
                   </ul>
 
-                  <h2>Nutrients </h2>
-                  <ul>
-                    <li>The dairy group provides many nutrients including calcium, phosphorus, vitamin A, vitamin D ( in products fortified with vitamin D), riboflavin, vitamin B12, protein, potassium, zinc, choline, magnesium, and selenium</li>
-                    <li>Calcium is used for building bones and teeth and in maintaining bone strength as you grow older. Dairy products are the main source of calcium in American diets.</li>
-                    <li>Many people do not get enough potassium. Diets rich in potassium may help to maintain healthy blood pressure. Dairy products, especially dairy milk and yogurt, and fortified soy milk, provide potassium.</li>
-                    <li>Vitamin D function in the body to maintain proper levels of calcium and phosphorous, there by helping to build and maintain bones. Milk and soy milk that are fortified with vitamin D are good sources of this nutrient. Other sources including some fish such as salmon , and other foods fortified with vitamin D </li>
-                    <li>Milk products that are consumed in their low – fat or fat-free forms provide very little saturated fat. </li>
+                  <h2 className='text-2xl font-semibold mt-5'>Nutrients </h2>
+                  <ul className='my-4 list-disc list-inside'>
+                    <li>
+                      The dairy group provides essential nutrients, including calcium, phosphorus, vitamin A, vitamin D (in fortified products), riboflavin, vitamin B12, protein, potassium, zinc, choline, magnesium, and selenium.
+                    </li>
+                    <li>
+                      Calcium is crucial for building and maintaining strong bones and teeth throughout life. Dairy products are the primary source of calcium in many diets.
+                    </li>
+                    <li>
+                      Potassium, which many people lack in their diets, helps maintain healthy blood pressure. Dairy products like milk, yogurt, and fortified soy milk are excellent sources of potassium.
+                    </li>
+                    <li>
+                      Vitamin D supports the body's ability to maintain proper levels of calcium and phosphorus, aiding in bone health. Fortified milk, soy milk, and certain fish like salmon are good sources of vitamin D.
+                    </li>
+                    <li>
+                      Low-fat or fat-free dairy products provide essential nutrients while containing minimal saturated fat, making them a healthier choice.
+                    </li>
                   </ul>
                 </div>
               </div>

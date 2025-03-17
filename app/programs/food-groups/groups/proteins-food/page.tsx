@@ -12,20 +12,20 @@ function Proteins() {
         backgroundImage='https://images.unsplash.com/photo-1598514983318-2f64f8f4796c?auto=format&fit=crop&q=80&w=2940&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
       />
 
-      <section className="content-section">
+      <section className="px-20 py-20 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-32 lg:px-28 lg:py-20">
         <div className="container">
           <div className="flex items-center justify-center">
             <div className="col-lg-8">
               <div className="main-contents">
                 <div className="font-merri font-normal text-gray-900">
-                  <p>
+                  <p className="mt-5">
                     All foods made from seafood; meat, poultry, and eggs; beans, peas, and lentils; and nuts, seeds, and soy products are part of the Protein Foods Group. Beans, peas, and lentils are also part of the Vegetable Group.
                   </p>
 
-                  <h2>
+                  <h2 className='text-2xl font-semibold mt-5'>
                     Foods from this food group fall into 6 categories. <br /> Examples include:
                   </h2>
-                  <p>
+                  <p className="mt-5">
                     <ol type="1">
                       <li>Lean meats - Beef, lamb, veal, pork, kangaroo, lean (lower salt) sausages</li>
                       <li>Poultry - Chicken, turkey, duck, emu, goose, bush birds</li>
@@ -37,10 +37,10 @@ function Proteins() {
                     The Guidelines recommend that you eat 1-3 serves of foods from this food group a day, depending on your age.  During pregnancy, 3-4 serves a day are recommended.
                   </p>
 
-                  <h2>
+                  <h2 className='text-2xl font-semibold mt-5'>
                     Daily Protein Foods Table
                   </h2>
-                  <p>
+                  <p className="mt-5">
                     These are general recommendations by age. Find
                     the right amount for you by getting your
                     <a href="https://www.myplate.gov/myplate-plan"><strong>MyPlate Plan</strong></a>.
@@ -121,10 +121,10 @@ function Proteins() {
                     </tbody>
                   </table>
 
-                  <h2>
+                  <h2 className='text-2xl font-semibold mt-5'>
                     Why is it important to eat proteins?
                   </h2>
-                  <p>
+                  <p className="mt-5">
                     Lean red meat provides a very good source of nutrients, however consumption of greater than 100/120g per day of red meat, which is more than double the recommended amount, is associated with an increased risk of colorectal cancer and renal cancer.  So remember to also eat other foods from this food group. Non meat options such as legumes provide many of the same nutrients as meats, poultry, fish and eggs. In fact, nuts and seeds may help reduce the risk of heart disease and are not associated with weight gain if total energy intake (kilojoules) is controlled.
                   </p>
 
@@ -132,8 +132,8 @@ function Proteins() {
                     Protein Foods subgroups can help increase intake of important nutrients, including unsaturated fats, dietary fiber, and vitamin D and help to limit intake of sodium and saturated fats coming from processed meat and poultry.
                   </blockquote>
 
-                  <h2>Nutrients of  protein group</h2>
-                  <ul>
+                  <h2 className='text-2xl font-semibold mt-5'>Nutrients of  protein group</h2>
+                  <ul className='my-4 list-disc list-inside'>
                     <li>Meat, poultry, seafood, beans,peans, and lentils, eggs,and nuts, seeds, and soy products supply many nutrients. These include protein, B vitamins ( niacin, thiamin, riboflavin, and B6), vitamin E, iron, zinc and magnesium. </li>
                     <li>Some food choices in the protein food group are high in saturated fat. These include fatty cuts of beef, pork, and lamb; regular ( 75% to 85% lean) ground beef; regular sausages,hot dogs, and bacon; some luncheon meats such as regular bologna and salami; and some poultry such as duck. To help keep saturated fat intake below 10% of daily calories, limit the amount of these foods you eat.</li>
                   </ul>
