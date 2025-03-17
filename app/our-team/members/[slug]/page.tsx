@@ -1,70 +1,31 @@
-import fs from "fs";
-import path from "path";
+'use client';
+
 import Image from "next/image";
-import { notFound } from "next/navigation";
+import { notFound, useParams } from 'next/navigation';
 import GuestLayout from "@/app/layouts/GuestLayout";
+import members from '@/content/members.json';
+import Head from "next/head";
 
-interface Member {
-  slug: string;
-  name: string;
-  description: string;
-  role: string;
-  image: string;
-  bio: string;
-}
+export default function MemberPage() {
+  const { slug } = useParams();
 
-export async function generateStaticParams() {
-  const filePath = path.join(process.cwd(), "content", "members.json");
-  const jsonData = fs.readFileSync(filePath, "utf-8");
-  const members: Member[] = JSON.parse(jsonData);
-
-  return members.map((member) => ({
-    slug: member.slug,
-  }));
-}
-
-export async function generateMetadata({ params }: { params: { slug: string } }) {
-  const filePath = path.join(process.cwd(), "content", "members.json");
-  const jsonData = fs.readFileSync(filePath, "utf-8");
-  const members: Member[] = JSON.parse(jsonData);
-
-  const member = members.find((m) => m.slug === params.slug);
-
-  if (!member) return notFound();
-
-  return {
-    title: member.name,
-    description: member.description,
-    keywords: member.role,
-
-    openGraph: {
-      title: member.name,
-      description: member.description,
-      type: "website",
-      url: `https://www.vitaway.com/our-team/members/${member.slug}`,
-      images: [
-        {
-          url: member.image,
-          width: 1200,
-          height: 630,
-          alt: member.name,
-        },
-      ],
-    },
-  };
-}
-
-export default async function MemberPage({ params }: { params: { slug: string } }) {
-  const filePath = path.join(process.cwd(), "content", "members.json");
-  const jsonData = fs.readFileSync(filePath, "utf-8");
-  const members: Member[] = JSON.parse(jsonData);
-
-  const member = members.find((m) => m.slug === params.slug);
+  const member = members.find((m) => m.slug === slug);
 
   if (!member) return notFound();
 
   return (
     <GuestLayout>
+      <Head>
+        <title>{member.name}</title>
+        <meta name="description" content={member.bio} />
+        <meta name="keywords" content="Vitaway, Our Team, Healthcare, Medical Professionals" />
+        <meta property="og:title" content={member.name} />
+        <meta property="og:description" content={member.bio} />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://www.vitaway.org" />
+        <meta property="og:image" content={member.image} />
+      </Head>
+      
       <div className="team-section relative w-full h-full">
         <div className="absolute hidden w-full bg-gradient-to-b from-[#272749] to-[#111827] lg:block h-[500px]"></div>
 
