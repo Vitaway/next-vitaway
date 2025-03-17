@@ -2,6 +2,14 @@ import Link from 'next/link';
 import React from 'react';
 import GuestLayout from '../layouts/GuestLayout';
 import ContactForm from '../components/forms/contact-form';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: "Contact Us",
+  description: "Get in touch with Vitaway today! Reach out to our dedicated team of experts and let us assist you on your healthcare journey.",
+  keywords: "Vitaway, Contact, Reach Out, Healthcare, Assistance",
+  metadataBase: new URL("https://www.vitaway.org"),
+}
 
 function Contact() {
   return (

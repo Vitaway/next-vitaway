@@ -5,18 +5,18 @@ import pricingTable from '../../content/pricing.json';
 import GuestLayout from '../layouts/GuestLayout';
 
 export const metadata: Metadata = {
-    title: "Healthcare Solutions From all walks of Life",
-    description: "Empowering Rwandans and youth globally with holistic healthcare via digital solutions. Focused on nutrition awareness and combating NCDs.",
-    keywords: "Rwanda, healthcare, digital health, nutrition, NCDs, youth health, Vitaway, e-clinic, health education, healthy lifestyle",
+    title: "Pricings",
+    description: "Discover Vitaway's affordable healthcare plans designed to empower Rwandans and youth globally with holistic healthcare via digital solutions. Focused on nutrition awareness and combating NCDs.",
+    keywords: "Rwanda, healthcare, digital health, nutrition, NCDs, youth health, Vitaway, e-clinic, health education, healthy lifestyle, affordable healthcare, pricing plans",
     metadataBase: new URL("https://www.vitaway.org"),
     openGraph: {
-        title: "Healthcare Solutions From all walks of Life",
-        description: "Empowering Rwandans and youth globally with holistic healthcare via digital solutions. Focused on nutrition awareness and combating NCDs.",
+        title: "Affordable Healthcare Solutions for Everyone",
+        description: "Discover Vitaway's affordable healthcare plans designed to empower Rwandans and youth globally with holistic healthcare via digital solutions. Focused on nutrition awareness and combating NCDs.",
         type: "website",
-        url: "https://vitaway.com",
+        url: "https://vitaway.com/pricing",
         images: [
             {
-                url: "https://vitaway.com/images/",
+                url: "https://vitaway.com/images/vitaway-logo.png",
                 width: 1200,
                 height: 630,
                 alt: "Vitaway Logo",

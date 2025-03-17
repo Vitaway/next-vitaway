@@ -9,9 +9,26 @@ function Subscriber() {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
 
+    useEffect(() => {
+        const handleScroll = () => {
+            if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 1000) {
+                if (!localStorage.getItem('subscribed') && !localStorage.getItem('closedSubscriber')) {
+                    setShowSubscriber(true);
+                }
+                window.removeEventListener('scroll', handleScroll);
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, []);
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        
+
         setIsSubmitting(true);
         setError('');
         setSuccess('');
@@ -19,13 +36,15 @@ function Subscriber() {
         try {
             const response = await fetch('/api/subscribers', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json'},
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email }),
             });
 
             if (response.ok) {
                 setSuccess('Thank you for subscribing!');
                 setEmail('');
+                localStorage.setItem('subscribed', 'true');
+                setShowSubscriber(false);
             } else {
                 const data = await response.json();
                 setError(data.message || 'Something went wrong. Please try again.');
@@ -37,20 +56,10 @@ function Subscriber() {
         }
     };
 
-    useEffect(() => {
-        const handleScroll = () => {
-            if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 1000) {
-                setShowSubscriber(true);
-                window.removeEventListener('scroll', handleScroll);
-            }
-        };
-
-        window.addEventListener('scroll', handleScroll);
-
-        return () => {
-            window.removeEventListener('scroll', handleScroll);
-        };
-    }, []);
+    const handleClose = () => {
+        setShowSubscriber(false);
+        localStorage.setItem('closedSubscriber', 'true');
+    };
 
     if (!showSubscriber) return null;
 
@@ -92,7 +101,7 @@ function Subscriber() {
                         <div className="aspect-[1155/678] w-[72.1875rem] bg-gradient-to-tr from-[#07f394] to-[#9089fc] opacity-30" style={{ clipPath: 'polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)' }}></div>
                     </div>
                 </div>
-                <div className="rounded-md absolute top-4 right-4 sm:top-10 sm:right-10 bg-white/50 cursor-pointer p-2 ring-1 ring-white/10" onClick={() => setShowSubscriber(false)}>
+                <div className="rounded-md absolute top-4 right-4 sm:top-10 sm:right-10 bg-white/50 cursor-pointer p-2 ring-1 ring-white/10" onClick={() => handleClose()}>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6 text-gray-400">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
                     </svg>

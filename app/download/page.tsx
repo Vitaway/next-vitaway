@@ -2,6 +2,28 @@ import Image from 'next/image'
 import React from 'react'
 import MobileFrame from '../components/design/mobile-frame'
 import GuestLayout from '../layouts/GuestLayout';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: "Download Vitaway - Your All-in-One Virtual Health Companion",
+  description: "Download Vitaway, the ultimate virtual health companion app. Empower your wellness with comprehensive care, virtual doctor consultations, health tracking, and personalized wellness plans.",
+  keywords: "Vitaway, virtual health companion, health app, wellness app, healthcare app, virtual doctor consultations, health tracking, personalized wellness plans, download app",
+  metadataBase: new URL("https://www.vitaway.org"),
+  openGraph: {
+    title: "Download Vitaway - Your All-in-One Virtual Health Companion",
+    description: "Download Vitaway, the ultimate virtual health companion app. Empower your wellness with comprehensive care, virtual doctor consultations, health tracking, and personalized wellness plans.",
+    type: "website",
+    url: "https://vitaway.com",
+    images: [
+      {
+        url: "https://vitaway.com/images/vitaway-logo.png",
+        width: 1200,
+        height: 630,
+        alt: "Vitaway Logo",
+      },
+    ],
+  },
+};
 
 function Download() {
   return (<>
@@ -38,10 +60,10 @@ function Download() {
                   </p>
                   <hr className="my-8 border-gray-600" />
                   <div className="flex items-center mb-3 sm:justify-left">
-                    <a href="https://play.google.com/store/search?q=vitaway&c=apps" className="mr-3 transition duration-300 hover:shadow-lg">
+                    <a href="https://play.google.com/store/apps/details?id=org.vitaway.app" target='__blank' className="mr-3 transition duration-300 hover:shadow-lg">
                       <Image width={100} height={100} src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Download_on_the_App_Store_Badge.svg/1000px-Download_on_the_App_Store_Badge.svg.png" className="object-cover object-top w-32 mx-auto" alt="Download Vitaway From App Store" />
                     </a>
-                    <a href="https://play.google.com/store/search?q=vitaway&c=apps" className="transition duration-300 hover:shadow-lg">
+                    <a href="https://play.google.com/store/apps/details?id=org.vitaway.app" target='__blank' className="transition duration-300 hover:shadow-lg">
                       <Image width={100} height={100} src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Google_Play_Store_badge_EN.svg/1000px-Google_Play_Store_badge_EN.svg.png" className="object-cover object-top w-32 mx-auto" alt="Download Vitaway From Google Play Store" />
                     </a>
                   </div>

@@ -5,9 +5,15 @@ import { Metadata } from 'next';
 import GuestLayout from '../layouts/GuestLayout';
 
 export const metadata: Metadata = {
-    title: "Vitaway | Our Pledge to You",
+    title: "About us",
     description: "Discover the Vitaway difference as we pledge to provide you with the highest quality healthcare solutions, personalized to your unique well-being.",
+    keywords: "Vitaway, healthcare solutions, personalized well-being, high-quality healthcare, wellness, health transformation, virtual health companion",
+    metadataBase: new URL("https://www.vitaway.org"),
     openGraph: {
+        title: "Vitaway | Our Pledge to You",
+        description: "Discover the Vitaway difference as we pledge to provide you with the highest quality healthcare solutions, personalized to your unique well-being.",
+        type: "website",
+        url: "https://www.vitaway.org/about-us",
         images: [
             {
                 url: "https://vitaway.org/images/Team/bg-1.jpeg",
@@ -74,7 +80,7 @@ function AboutUs() {
                         </div>
                     </div>
                     <div className="grid grid-cols-2 gap-5">
-                        <Image width={100} height={100} className="object-cover w-full h-56 col-span-2 rounded" src="https://vitaway.org/images/Team/bg-1.jpeg" alt="vitaway core team" />
+                        <Image width={600} height={600} className="object-cover w-full h-56 col-span-2 rounded" src="https://vitaway.org/images/Team/bg-1.jpeg" alt="vitaway core team" />
                     </div>
                 </div>
             </div>
@@ -95,7 +101,7 @@ function AboutUs() {
                 <div className="grid gap-6 row-gap-5 mb-8 lg:grid-cols-4 sm:row-gap-6 sm:grid-cols-2">
                     <a href="#">
                         <div className="relative overflow-hidden transition duration-200 transform rounded hover:-translate-y-2 hover:shadow-2xl">
-                            <Image width={100} height={100} className="object-cover w-full h-56 md:h-64 xl:h-80" src="https://vitaway.org/images/Team/bg.jpeg" alt="vitaway team during meetup" />
+                            <Image width={600} height={600} className="object-cover w-full h-56 md:h-64 xl:h-80" src="https://vitaway.org/images/Team/bg.jpeg" alt="vitaway team during meetup" />
                             <div className="absolute inset-0 px-6 py-4 transition-opacity duration-200 bg-black bg-opacity-75 opacity-0 hover:opacity-100">
                                 <p className="mb-4 text-lg font-bold text-gray-100">Mona Lisa</p>
                                 <p className="text-sm tracking-wide text-gray-300">
@@ -106,7 +112,7 @@ function AboutUs() {
                     </a>
                     <a href="#" aria-label="View Item">
                         <div className="relative overflow-hidden transition duration-200 transform rounded hover:-translate-y-2 hover:shadow-2xl">
-                            <Image width={100} height={100} className="object-cover w-full h-56 md:h-64 xl:h-80" src="https://vitaway.org/images/Team/bg-1.jpeg" alt="vitaway team during meetup" />
+                            <Image width={600} height={600} className="object-cover w-full h-56 md:h-64 xl:h-80" src="https://vitaway.org/images/Team/bg-1.jpeg" alt="vitaway team during meetup" />
                             <div className="absolute inset-0 px-6 py-4 transition-opacity duration-200 bg-black bg-opacity-75 opacity-0 hover:opacity-100">
                                 <p className="mb-4 text-lg font-bold text-gray-100">The Starry Night</p>
                                 <p className="text-sm tracking-wide text-gray-300">
@@ -117,7 +123,7 @@ function AboutUs() {
                     </a>
                     <a href="#" aria-label="View Item">
                         <div className="relative overflow-hidden transition duration-200 transform rounded hover:-translate-y-2 hover:shadow-2xl">
-                            <Image width={100} height={100} className="object-cover w-full h-56 md:h-64 xl:h-80" src="https://vitaway.org/images/summit.jpeg" alt="vitaway team during meetup" />
+                            <Image width={600} height={600} className="object-cover w-full h-56 md:h-64 xl:h-80" src="https://vitaway.org/images/summit.jpeg" alt="vitaway team during meetup" />
                             <div className="absolute inset-0 px-6 py-4 transition-opacity duration-200 bg-black bg-opacity-75 opacity-0 hover:opacity-100">
                                 <p className="mb-4 text-lg font-bold text-gray-100">The Kiss</p>
                                 <p className="text-sm tracking-wide text-gray-300">
@@ -128,7 +134,7 @@ function AboutUs() {
                     </a>
                     <a href="#" aria-label="View Item">
                         <div className="relative overflow-hidden transition duration-200 transform rounded hover:-translate-y-2 hover:shadow-2xl">
-                            <Image width={100} height={100} className="object-cover w-full h-56 md:h-64 xl:h-80" src="https://images.unsplash.com/photo-1543300055-4a87568503c8?auto=format&fit=crop&q=80&w=2940&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="vitaway team during meetup" />
+                            <Image width={600} height={600} className="object-cover w-full h-56 md:h-64 xl:h-80" src="https://images.unsplash.com/photo-1543300055-4a87568503c8?auto=format&fit=crop&q=80&w=2940&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="vitaway team during meetup" />
                             <div className="absolute inset-0 px-6 py-4 transition-opacity duration-200 bg-black bg-opacity-75 opacity-0 hover:opacity-100">
                                 <p className="mb-4 text-lg font-bold text-gray-100">The Harvesters</p>
                                 <p className="text-sm tracking-wide text-gray-300">

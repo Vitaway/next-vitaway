@@ -1,22 +1,17 @@
-'use client';
-
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import PageHeader from '../components/headers/page-header'
-import BlogList from '../components/sections/blogs-list'
 import GuestLayout from '../layouts/GuestLayout';
+import { Metadata } from 'next';
+import AllBlogs from '../components/sections/all-blogs';
+
+export const metadata: Metadata = {
+    title: "Our Blogs - Explore Our Latest Blogs and Articles",
+    description: "Explore our latest blogs and articles to learn more about the latest trends in health and wellness. Stay up to date with the latest news and information to help you live a healthier life.",
+    keywords: "Vitaway, Blogs, Articles, Health, Wellness, Trends, News, Information",
+    metadataBase: new URL("https://www.vitaway.org"),
+}
 
 function Blogs() {
-    const [blogs, setBlogs] = useState([]);
-
-    const fetchBlogs = async () => {
-        const res = await fetch(`/api/blogs`);
-        res.json().then((data) => setBlogs(data));
-    }
-
-    useEffect(() => {
-        fetchBlogs();
-    }, []);
-
     return (<>
         <GuestLayout>
             <PageHeader
@@ -29,25 +24,13 @@ function Blogs() {
                 <div className="flex items-end justify-between">
                     <div className="flex-1 text-center lg:text-left">
                         <h2 className="text-3xl font-bold leading-tight text-black sm:text-4xl lg:text-5xl">Latest from blog</h2>
-                        <p className="max-w-xl mx-auto mt-4 text-base leading-relaxed text-gray-600 lg:mx-0">Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis.</p>
-                    </div>
-
-                    <div className="hidden lg:flex lg:items-center lg:space-x-3">
-                        <button type="button" className="flex items-center justify-center text-gray-400 transition-all duration-200 bg-transparent border border-gray-300 rounded w-9 h-9 hover:bg-blue-600 hover:text-white focus:bg-blue-600 focus:text-white">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
-                            </svg>
-                        </button>
-
-                        <button type="button" className="flex items-center justify-center text-gray-400 transition-all duration-200 bg-transparent border border-gray-300 rounded w-9 h-9 hover:bg-blue-600 hover:text-white focus:bg-blue-600 focus:text-white">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-                            </svg>
-                        </button>
+                        <p className="max-w-xl mx-auto mt-4 text-sm leading-relaxed text-gray-600 lg:mx-0">
+                            Dive into our latest blog posts and stay updated with the newest trends, tips, and insights in health and wellness. Discover expert advice and inspiring stories to help you lead a healthier, happier life.
+                        </p>
                     </div>
                 </div>
 
-                <BlogList blogs={blogs} />
+                <AllBlogs />
 
                 <div className="flex items-center justify-center mt-8 space-x-3 lg:hidden">
                     <button type="button" className="flex items-center justify-center text-gray-400 transition-all duration-200 bg-transparent border border-gray-300 rounded w-9 h-9 hover:bg-blue-600 hover:text-white focus:bg-blue-600 focus:text-white">

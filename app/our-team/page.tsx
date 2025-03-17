@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   title: "Our Team",
   description: "Meet the dedicated individuals who make Vitaway tick. Our team is committed to providing the best healthcare services.",
   keywords: "Vitaway, Our Team, Healthcare, Medical Professionals",
+  metadataBase: new URL("https://www.vitaway.org"),
 };
 
 function OurTeam() {

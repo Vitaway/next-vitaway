@@ -1,16 +1,51 @@
-import React from 'react';
+'use client';
+
+import React, { useState } from 'react';
 import Logo from './logo';
 import BackgroundBlurImage from './design/background-blur-image';
 import Link from 'next/link';
 
 function Footer() {
+    const [email, setEmail] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        setIsSubmitting(true);
+        setError('');
+        setSuccess('');
+
+        try {
+            const response = await fetch('/api/subscribers', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email }),
+            });
+
+            if (response.ok) {
+                setSuccess('Thank you for subscribing!');
+                setEmail('');
+            } else {
+                const data = await response.json();
+                setError(data.message || 'Something went wrong. Please try again.');
+            }
+        } catch {
+            setError('Something went wrong. Please try again.');
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
     return (<>
         <section className="pt-10 pb-5 bg-white sm:pt-16 lg:pt-24 relative border-t border-gray-200">
             <div className="z-10 absolute left-1/2 top-0 aspect-[1204/394] w-full max-w-[1204px] -translate-x-1/2 opacity-35">
-               <BackgroundBlurImage />
+                <BackgroundBlurImage />
             </div>
 
-            <div className="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl z-10 relative">  
+            <div className="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl z-10 relative">
                 <div className="grid grid-cols-2 md:col-span-3 lg:grid-cols-6 gap-y-16 gap-x-12">
                     <div className="col-span-2 md:col-span-3 lg:col-span-2 lg:pr-8">
                         <Link href="/"><Logo /></Link>
@@ -102,14 +137,23 @@ function Footer() {
                     <div className="col-span-2 md:col-span-1 lg:col-span-2 lg:pl-8">
                         <p className="text-sm font-semibold tracking-widest text-slate-700 uppercase">Subscribe to newsletter</p>
 
-                        <form action="#" method="POST" className="mt-6">
+                        <form onSubmit={handleSubmit} method="POST" className="mt-6 flex items-center transition-all duration-200 bg-white border border-gray-200 rounded-md focus:outline-none focus:border-blue-600 caret-blue-600 pr-2">
                             <div>
                                 <label className="sr-only">Email</label>
-                                <input type="email" name="email" id="email" placeholder="Enter your email" className="block w-full p-4 text-black placeholder-gray-500 transition-all duration-200 bg-white border border-gray-200 rounded-md focus:outline-none focus:border-blue-600 caret-blue-600" />
+                                <input type="email" name="email" value={email}
+                                    onChange={(e) => setEmail(e.target.value)} id="email" placeholder="Enter your email" className="block w-full p-4 text-black placeholder-gray-500 border-none outline-none" />
                             </div>
 
-                            <button type="submit" className="inline-flex items-center justify-center px-6 py-3 mt-3 font-semibold text-white transition-all duration-200 bg-blue-600 rounded-md hover:bg-blue-700 focus:bg-blue-700">Subscribe</button>
+                            <button
+                                type="submit"
+                                className="flex-none rounded-md bg-[#3268b9] px-4 py-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline-none"
+                                disabled={isSubmitting}>
+                                {isSubmitting ? 'Submitting...' : 'Subscribe Now'}
+                            </button>                        
                         </form>
+
+                        {error && <p className="mt-4 text-sm text-red-500">{error}</p>}
+                        {success && <p className="mt-4 text-sm text-green-500">{success}</p>}
 
                         <ul className="mt-6 space-y-2 text-slate-700 text-sm border-t pt-5 border-gray-200">
                             <li><span><span className='font-bold'>Contact:</span> +250 795 767 405 /+250 787 279 560 </span></li>
