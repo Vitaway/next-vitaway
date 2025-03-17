@@ -5,7 +5,7 @@ import React from 'react'
 
 function BlogCard({ blog }: { blog: Blogs }) {
     return (<>
-        <Link href={blog.link}>
+        <Link href={`/blogs/${blog.slug}`}>
             <div>
                 <div className="block aspect-w-4 aspect-h-3">
                     <Image width={100} height={100} className="object-cover w-full h-full rounded-xl" src={blog.image} alt={blog.title} />

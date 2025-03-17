@@ -7,4 +7,5 @@ export interface Blogs {
     content: string;
     caption: string;
     link: string;
+    slug: string;
 }

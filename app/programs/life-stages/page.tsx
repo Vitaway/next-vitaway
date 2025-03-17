@@ -1,9 +1,11 @@
 import PageHeader from '@/app/components/headers/page-header'
+import GuestLayout from '@/app/layouts/GuestLayout'
 import Link from 'next/link'
 import React from 'react'
 
 function LifeStage() {
     return (<>
+        <GuestLayout>
         <PageHeader
             sup_title='Program'
             title='LIFE STAGES'
@@ -70,6 +72,7 @@ function LifeStage() {
                 </div>
             </div>
         </div>
+        </GuestLayout>
     </>)
 }
 

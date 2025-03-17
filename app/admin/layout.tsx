@@ -1,9 +1,10 @@
-
 import { Suspense } from "react";
 import { getServerAuthSession } from '@/config/auth-config'
 import { redirect } from 'next/navigation';
 import Loading from "../loading";
 import SessionProviderWrapper from "./SessionWrapper";
+import AdminNavbar from "../components/admin/admin-navbar";
+import AdminSidebar from "../components/admin/admin-sidebar";
 
 export default async function AdminLayout({ children }: Readonly<{ children: React.ReactNode; }>) {
     const session = await getServerAuthSession()
@@ -21,7 +22,15 @@ export default async function AdminLayout({ children }: Readonly<{ children: Rea
                 <Suspense fallback={<Loading />}>
                     <SessionProviderWrapper session={session}>
                         <main>
-                            {children}
+                            <div>
+                                <AdminNavbar />
+                                <div className="min-h-screen flex bg-gray-100">
+                                    <AdminSidebar />
+                                    <div className="flex-1 p-6">
+                                        {children}
+                                    </div>
+                                </div>
+                            </div>
                         </main>
                     </SessionProviderWrapper>
                 </Suspense>

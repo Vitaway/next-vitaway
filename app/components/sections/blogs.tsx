@@ -1,8 +1,20 @@
-import React from 'react';
-import blogs from '../../../content/blogs.json';
+'use client';
+
+import React, { useEffect, useState } from 'react';
 import BlogList from './blogs-list';
 
 function Blogs() {
+    const [blogs, setBlogs] = useState([]);
+
+    const fetchBlogs = async () => {
+        const res = await fetch(`/api/blogs`);
+        res.json().then((data) => setBlogs(data));
+    }
+
+    useEffect(() => {
+        fetchBlogs();   
+    }, []);
+
     return (<>
         <section className="px-4 py-20 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-20 lg:px-10 lg:py-20">
             <div className="max-w-2xl mx-auto text-center">

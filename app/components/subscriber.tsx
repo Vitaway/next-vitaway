@@ -4,6 +4,38 @@ import React, { useEffect, useState } from 'react';
 
 function Subscriber() {
     const [showSubscriber, setShowSubscriber] = useState(false);
+    const [email, setEmail] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        
+        setIsSubmitting(true);
+        setError('');
+        setSuccess('');
+
+        try {
+            const response = await fetch('/api/subscribers', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json'},
+                body: JSON.stringify({ email }),
+            });
+
+            if (response.ok) {
+                setSuccess('Thank you for subscribing!');
+                setEmail('');
+            } else {
+                const data = await response.json();
+                setError(data.message || 'Something went wrong. Please try again.');
+            }
+        } catch {
+            setError('Something went wrong. Please try again.');
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
 
     useEffect(() => {
         const handleScroll = () => {
@@ -33,13 +65,27 @@ function Subscriber() {
                                 Get exclusive wellness tips, expert insights, special offers & unlock a healthier you!
                                 Start your journey to vitality now by subscribing to Vitaway&apos;s newsletter.
                             </p>
-                            <div className="mt-6 flex items-center justify-center max-w-md gap-x-4">
+                            <form onSubmit={handleSubmit} className="mt-6 flex items-center justify-center max-w-md gap-x-4">
                                 <label className="sr-only">Email address</label>
-                                <input v-model="payload.email" id="email-address" name="email" type="email" required className="min-w-0 flex-auto rounded-md border-0 bg-white/5 px-3.5 py-2.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6" placeholder="Enter your email" />
-                                <button type="submit" className="flex-none rounded-md bg-[#3268b9] px-4 py-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline-none">
-                                    Subscribe Now
+                                <input
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    id="email-address"
+                                    name="email"
+                                    type="email"
+                                    required
+                                    className="min-w-0 flex-auto rounded-md border-0 bg-white/5 px-3.5 py-2.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+                                    placeholder="Enter your email"
+                                />
+                                <button
+                                    type="submit"
+                                    className="flex-none rounded-md bg-[#3268b9] px-4 py-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline-none"
+                                    disabled={isSubmitting}>
+                                    {isSubmitting ? 'Submitting...' : 'Subscribe Now'}
                                 </button>
-                            </div>
+                            </form>
+                            {error && <p className="mt-4 text-sm text-red-500">{error}</p>}
+                            {success && <p className="mt-4 text-sm text-green-500">{success}</p>}
                         </div>
                     </div>
                     <div className="absolute left-1/2 top-0 -z-10 -translate-x-1/2 blur-3xl xl:-top-6" aria-hidden="true">
