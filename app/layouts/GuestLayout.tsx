@@ -7,7 +7,7 @@ export default function GuestLayout({ children }: Readonly<{
 }>) {
     return (
         <html lang="en">
-            <body className={`antialiased`}>
+            <body className="app-body">
                 <Navbar />
                 {children}
                 <Footer />

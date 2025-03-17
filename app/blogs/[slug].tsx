@@ -2,7 +2,13 @@ import React from 'react';
 import { notFound } from "next/navigation";
 import GuestLayout from '@/app/layouts/GuestLayout';
 
-async function fetchBlog(slug: string) {
+interface Blog {
+  title: string;
+  author: string;
+  content: string;
+}
+
+async function fetchBlog(slug: string): Promise<Blog | null> {
   const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/blogs/${slug}`);
   if (!res.ok) return null;
   return res.json();

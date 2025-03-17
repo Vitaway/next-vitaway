@@ -18,7 +18,7 @@ export default async function AdminLayout({ children }: Readonly<{ children: Rea
             <head>
                 <meta name="apple-mobile-web-app-title" content="Art For Memory" />
             </head>
-            <body className="antialiased">
+            <body className="app-body">
                 <Suspense fallback={<Loading />}>
                     <SessionProviderWrapper session={session}>
                         <main>

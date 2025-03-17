@@ -6,7 +6,7 @@ export default function RootLayout({ children }: Readonly<{
 }>) {
   return (
     <html lang="en">
-      <body className={`antialiased`}>
+      <body className="app-body">
         <TopProgressBar />
         {children}
       </body>
