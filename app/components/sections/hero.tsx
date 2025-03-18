@@ -23,7 +23,7 @@ function Hero() {
                         <span className="bg-gradient-to-r from-[#0878de] to-white bg-clip-text text-transparent"> Access To Virtual Health Services for Enhanced Well-being</span>
                     </h1>
 
-                    <p className="mt-4 text-base text-wwhite lg:mt-8 sm:text-xl">Virtual healthcare solutions to empower individuals from all walks of life, promoting overall well-being and health equity.</p>
+                    <p className="mt-4 text-base text-white text-wwhite lg:mt-8 sm:text-xl">Virtual healthcare solutions to empower individuals from all walks of life, promoting overall well-being and health equity.</p>
 
                     <Link href="/pricing" title="" className="inline-flex items-center px-6 py-4 mt-8 font-semibold text-white transition-all duration-200 bg-[#0878de] rounded-full lg:mt-16 hover:bg-[#0878de]/50 focus:bg-[#0878de]/50" role="button">
                         Join for free

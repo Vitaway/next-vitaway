@@ -1,6 +1,29 @@
 import React from 'react'
 
 function Consultation() {
+    const services = [
+        {
+            title: 'Diabetes',
+            description: 'Get expert advice on managing diabetes, understanding its types, causes, symptoms, and effective treatment options.',
+            icon: 'svg',
+        },
+        {
+            title: 'Hypertension',
+            description: 'Learn how to monitor your blood pressure, recognize warning signs, and take practical steps to manage and prevent hypertension.',
+            icon: 'svg',
+        },
+        {
+            title: 'Weight Management',
+            description: 'Receive personalized plans and expert tips to help you achieve and maintain a healthy weight, promoting overall well-being.',
+            icon: 'svg',
+        },
+        {
+            title: 'Well Being',
+            description: 'Explore holistic approaches to improve your mental, emotional, and physical well-being, enhancing your quality of life.',
+            icon: 'svg',
+        },
+    ];
+
     return (<>
         <section className="py-10 bg-gray-50 sm:py-16 lg:py-24">
             <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
@@ -32,50 +55,17 @@ function Consultation() {
 
                 <div className="px-5 py-8 mt-12 bg-white lg:mt-20 lg:p-16 border border-gray-200 rounded-xl">
                     <div className="grid grid-cols-1 gap-12 lg:gap-16 sm:grid-cols-2">
-                        <div className="flex items-start">
-                            <svg className="flex-shrink-0 w-16 h-16 text-fuchsia-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                            </svg>
-                            <div className="ml-5">
-                                <h3 className="text-lg font-semibold text-black">Diabetes</h3>
-                                <p className="mt-4 text-base text-gray-600">Get expert advice on managing diabetes, understanding its types, causes, symptoms, and effective treatment options.</p>
+                        {services.map((service, index) => (
+                            <div className="flex items-start" key={index}>
+                                <span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"><path opacity=".4" d="m14.441 19.051 1.52 1.52 3.04-3.04M12.159 10.87c-.1-.01-.22-.01-.33 0a4.42 4.42 0 0 1-4.27-4.43A4.428 4.428 0 0 1 11.989 2c2.45 0 4.44 1.99 4.44 4.44 0 2.4-1.9 4.35-4.27 4.43Z" stroke="#697689" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M11.99 21.81c-1.82 0-3.63-.46-5.01-1.38-2.42-1.62-2.42-4.26 0-5.87 2.75-1.84 7.26-1.84 10.01 0" stroke="#697689" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                                </span>
+                                <div className="ml-5">
+                                    <h3 className="text-lg font-semibold text-black">{service.title}</h3>
+                                    <p className="mt-4 text-base text-gray-600">{service.description}</p>
+                                </div>
                             </div>
-                        </div>
-
-                        <div className="flex items-start">
-                            <svg className="flex-shrink-0 w-16 h-16 text-fuchsia-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                            </svg>
-                            <div className="ml-5">
-                                <h3 className="text-lg font-semibold text-black">Hypertension</h3>
-                                <p className="mt-4 text-base text-gray-600">Learn how to monitor your blood pressure, recognize warning signs, and take practical steps to manage and prevent hypertension.</p>
-                            </div>
-                        </div>
-
-                        <div className="flex items-start">
-                            <svg className="flex-shrink-0 w-16 h-16 text-fuchsia-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="1"
-                                    d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
-                                />
-                            </svg>
-                            <div className="ml-5">
-                                <h3 className="text-lg font-semibold text-black">Weight Management</h3>
-                                <p className="mt-4 text-base text-gray-600">Receive personalized plans and expert tips to help you achieve and maintain a healthy weight, promoting overall well-being.</p>
-                            </div>
-                        </div>
-
-                        <div className="flex items-start">
-                            <svg className="flex-shrink-0 w-16 h-16 text-fuchsia-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                            </svg>
-                            <div className="ml-5">
-                                <h3 className="text-lg font-semibold text-black">Secured Payments</h3>
-                                <p className="mt-4 text-base text-gray-600">Enjoy peace of mind with our secure payment options, ensuring your transactions are safe and protected.</p>
-                            </div>
-                        </div>
+                        ))}
                     </div>
                 </div>
             </div>
