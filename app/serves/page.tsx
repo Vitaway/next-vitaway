@@ -75,7 +75,7 @@ function WhoWeServe() {
                                     </svg>
                                 </div>
                                 <h4 className="text-md font-bold text-slate-700">{program.title}</h4>
-                                <p className="text-slate-600 font-medium text-base leading-6 text-md mt-5">{program.description}</p>
+                                <p className="text-slate-600 font-medium text-base leading-6 text-md mt-5 line-clamp-2">{program.description}</p>
                             </div>
                         </Link>
                     ))}
