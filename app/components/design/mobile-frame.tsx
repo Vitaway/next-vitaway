@@ -21,8 +21,8 @@ function MobileFrame({ title, image, width = '300px', height = '600px' }: Mobile
       <div className="h-[64px] w-[3px] bg-gray-800 absolute -right-[16px] top-[142px] rounded-r-lg"></div>
 
       <div className="rounded-[2rem] overflow-hidden bg-white" style={{ width: `calc(${width} - 28px)`, height: `calc(${height} - 28px)` }}>
-        <Image width={100} height={100} src={image} className="dark:hidden w-[272px] h-[572px]" alt={title} />
-        <Image width={100} height={100} src={image} className="hidden dark:block w-full h-full" alt={title} />
+        <Image width={500} height={500} src={image} className="dark:hidden w-[272px] h-[572px]" alt={title} />
+        <Image width={500} height={500} src={image} className="hidden dark:block w-full h-full" alt={title} />
       </div>
     </div>
   </>)
