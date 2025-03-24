@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import Logo from './logo';
 import BackgroundBlurImage from './design/background-blur-image';
 import Link from 'next/link';
 
@@ -40,7 +39,7 @@ function Footer() {
     };
 
     return (<>
-        <section className="pt-10 pb-5 bg-white sm:pt-16 lg:pt-24 relative border-t border-gray-200">
+        <section className="pt-10 pb-5 sm:pt-16 lg:pt-24 relative border-t border-gray-200 bg-gradient-to-b from-[#272749] to-[#111827]">
             <div className="z-10 absolute left-1/2 top-0 aspect-[1204/394] w-full max-w-[1204px] -translate-x-1/2 opacity-35">
                 <BackgroundBlurImage />
             </div>
@@ -48,8 +47,12 @@ function Footer() {
             <div className="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl z-10 relative">
                 <div className="grid grid-cols-2 md:col-span-3 lg:grid-cols-6 gap-y-16 gap-x-12">
                     <div className="col-span-2 md:col-span-3 lg:col-span-2 lg:pr-8">
-                        <Link href="/"><Logo /></Link>
-                        <p className="text-base leading-relaxed text-gray-600 mt-7">Empowering Rwandans and youth globally with holistic healthcare via digital solutions. Focused on nutrition awareness and combating NCDs.</p>
+                        <Link href="/" className="text-white font-bold text-4xl sm:text-3xl md:text-4xl">
+                            Vitaway
+                        </Link>
+                        
+                        <p className="text-base leading-relaxed text-gray-200 mt-7">Empowering Rwandans and youth globally with holistic healthcare via digital solutions. Focused on nutrition awareness and combating NCDs.</p>
+                        
                         <ul className="flex items-center space-x-3 mt-9">
                             <li>
                                 <a href="#" title="" className="flex items-center justify-center text-white transition-all duration-200 bg-gray-800 rounded-full w-7 h-7 hover:bg-blue-600 focus:bg-blue-600">
@@ -95,53 +98,53 @@ function Footer() {
                     </div>
 
                     <div>
-                        <p className="text-sm font-semibold tracking-widest text-slate-700 uppercase">Company</p>
+                        <p className="text-sm font-semibold tracking-widest text-white uppercase">Company</p>
 
                         <ul className="mt-6 space-y-4">
                             <li>
-                                <Link href="/about-us" title="" className="flex text-base text-black transition-all duration-200 hover:text-blue-600 focus:text-blue-600"> About </Link>
+                                <Link href="/about-us" title="" className="flex text-base text-gray-200 transition-all duration-200 hover:text-blue-600 focus:text-blue-600"> About </Link>
                             </li>
                             <li>
-                                <Link href="/our-team" title="" className="flex text-base text-black transition-all duration-200 hover:text-blue-600 focus:text-blue-600"> Our Team </Link>
+                                <Link href="/our-team" title="" className="flex text-base text-gray-200 transition-all duration-200 hover:text-blue-600 focus:text-blue-600"> Our Team </Link>
                             </li>
                             <li>
-                                <Link href="/pricing" title="" className="flex text-base text-black transition-all duration-200 hover:text-blue-600 focus:text-blue-600"> Our Pricings </Link>
+                                <Link href="/pricing" title="" className="flex text-base text-gray-200 transition-all duration-200 hover:text-blue-600 focus:text-blue-600"> Our Pricings </Link>
                             </li>
+                            {/* <li>
+                                <Link href="/blogs" title="" className="flex text-base text-gray-200 transition-all duration-200 hover:text-blue-600 focus:text-blue-600"> All Blogs </Link>
+                            </li> */}
                             <li>
-                                <Link href="/blogs" title="" className="flex text-base text-black transition-all duration-200 hover:text-blue-600 focus:text-blue-600"> All Blogs </Link>
-                            </li>
-                            <li>
-                                <Link href="/contact" title="" className="flex text-base text-black transition-all duration-200 hover:text-blue-600 focus:text-blue-600"> Contact us </Link>
+                                <Link href="/contact" title="" className="flex text-base text-gray-200 transition-all duration-200 hover:text-blue-600 focus:text-blue-600"> Contact us </Link>
                             </li>
                         </ul>
                     </div>
 
                     <div>
-                        <p className="text-sm font-semibold tracking-widest text-slate-700 uppercase">Help</p>
+                        <p className="text-sm font-semibold tracking-widest text-white uppercase">Help</p>
 
                         <ul className="mt-6 space-y-4">
                             <li>
-                                <Link href="/customer-support" title="" className="flex text-base text-black transition-all duration-200 hover:text-blue-600 focus:text-blue-600"> Customer Support </Link>
+                                <Link href="/customer-support" title="" className="flex text-base text-gray-200 transition-all duration-200 hover:text-blue-600 focus:text-blue-600"> Customer Support </Link>
                             </li>
 
                             <li>
-                                <Link href="/terms-and-conditions" title="" className="flex text-base text-black transition-all duration-200 hover:text-blue-600 focus:text-blue-600"> Terms & Conditions </Link>
+                                <Link href="/terms-and-conditions" title="" className="flex text-base text-gray-200 transition-all duration-200 hover:text-blue-600 focus:text-blue-600"> Terms & Conditions </Link>
                             </li>
 
                             <li>
-                                <Link href="/privacy-policy" title="" className="flex text-base text-black transition-all duration-200 hover:text-blue-600 focus:text-blue-600"> Privacy Policy </Link>
+                                <Link href="/privacy-policy" title="" className="flex text-base text-gray-200 transition-all duration-200 hover:text-blue-600 focus:text-blue-600"> Privacy Policy </Link>
                             </li>
                         </ul>
                     </div>
 
                     <div className="col-span-2 md:col-span-1 lg:col-span-2 lg:pl-8">
-                        <p className="text-sm font-semibold tracking-widest text-slate-700 uppercase">Subscribe to newsletter</p>
+                        <p className="text-sm font-semibold tracking-widest text-white uppercase">Subscribe to newsletter</p>
 
                         <form onSubmit={handleSubmit} method="POST" className="mt-6 flex items-center transition-all duration-200 bg-white border border-gray-200 rounded-md focus:outline-none focus:border-blue-600 caret-blue-600 pr-2">
                             <div>
                                 <label className="sr-only">Email</label>
                                 <input type="email" name="email" value={email}
-                                    onChange={(e) => setEmail(e.target.value)} id="email" placeholder="Enter your email" className="block w-full p-4 text-black placeholder-gray-500 border-none outline-none" />
+                                    onChange={(e) => setEmail(e.target.value)} id="email" placeholder="Enter your email" className="block w-full p-4 text-gray-200 placeholder-gray-500 border-none outline-none" />
                             </div>
 
                             <button
@@ -155,7 +158,7 @@ function Footer() {
                         {error && <p className="mt-4 text-sm text-red-500">{error}</p>}
                         {success && <p className="mt-4 text-sm text-green-500">{success}</p>}
 
-                        <ul className="mt-6 space-y-2 text-slate-700 text-sm border-t pt-5 border-gray-200">
+                        <ul className="mt-6 space-y-2 text-gray-200 text-sm border-t pt-5 border-gray-200">
                             <li><span><span className='font-bold'>Contact:</span> +250 795 767 405 /+250 787 279 560 </span></li>
                             <li><span><span className='font-bold'>Email:</span> vitawayeclinic@gmail.com</span></li>
                             <li><span><span className='font-bold'>Location:</span> KG 165 St 7, Kimironko, near the former KIE &quot;Remera Campus.&quot;</span></li>
@@ -165,7 +168,7 @@ function Footer() {
 
                 <hr className="mt-10 mb-5 border-gray-200" />
 
-                <p className="text-sm text-center text-gray-600 font-semibold">© Copyright 2025, All Rights Reserved by Vitaway</p>
+                <p className="text-sm text-center text-gray-200 font-semibold">© Copyright 2025, All Rights Reserved by Vitaway</p>
             </div>
         </section>
     </>)

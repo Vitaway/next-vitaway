@@ -13,6 +13,9 @@ const nextConfig: NextConfig = {
       "upload.wikimedia.org",
       "play.google.com",
       "lh3.googleusercontent.com",
+      "diplo-media.s3.eu-central-1.amazonaws.com",
+      "encrypted-tbn0.gstatic.com",
+      "tefconnect.com"
     ],
   },
 };
