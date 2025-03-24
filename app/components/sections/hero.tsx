@@ -16,21 +16,27 @@ function Hero() {
             <div className="relative grid items-center grid-cols-1 gap-12 lg:grid-cols-2 z-10 bg-transparent">
                 <div className='ml-5'>
                     <div className="w-auto max-w-2xl">
-                        <span className='font-semibold bg-blue-50 text-blue-600 text-sm border border-blue-300 rounded-full px-3 py-2'>A social media for learners</span>
+                        <span className='font-semibold capitalize bg-blue-50 text-blue-600 text-sm rounded-full px-3 py-2'>#1 Digital Healthcare Platform</span>
                     </div>
 
                     <h1 className="text-4xl font-bold sm:text-6xl mt-10">
-                        <span className="bg-gradient-to-r from-[#0878de] to-white bg-clip-text text-transparent"> Access To Virtual Health Services for Enhanced Well-being</span>
+                        <span className="bg-gradient-to-r from-[#0878de] to-white bg-clip-text text-transparent capitalize"> Access To Virtual Health Services for Enhanced Well-being</span>
                     </h1>
 
                     <p className="mt-4 text-base text-white text-wwhite lg:mt-8 sm:text-xl">Virtual healthcare solutions to empower individuals from all walks of life, promoting overall well-being and health equity.</p>
 
-                    <Link href="/pricing" title="" className="inline-flex items-center px-6 py-4 mt-8 font-semibold text-white transition-all duration-200 bg-[#0878de] rounded-full lg:mt-16 hover:bg-[#0878de]/50 focus:bg-[#0878de]/50" role="button">
-                        Join for free
-                        <svg className="w-6 h-6 ml-8 -mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </Link>
+                    <div>
+
+                        <Link href="/download" title="" className="inline-flex items-center px-6 py-4 mt-8 font-semibold text-indigo-900 transition-all duration-200 bg-white rounded-full lg:mt-16 hover:bg-white/50 focus:bg-white/50" role="button">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M17 6v10c0 4-1 5-5 5H6c-4 0-5-1-5-5V6c0-4 1-5 5-5h6c4 0 5 1 5 5Z" stroke="#697689" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path><path opacity=".4" d="M11 4.5H7M9 18.1A1.55 1.55 0 1 0 9 15a1.55 1.55 0 0 0 0 3.1Z" stroke="#697689" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path></svg>
+                            <span className='ml-2'>Download</span>
+                        </Link>
+
+                        <Link href="/pricing" title="" className="inline-flex md:ml-4 items-center px-6 py-4 mt-8 font-semibold text-white transition-all duration-200 bg-[#0878de] rounded-full lg:mt-16 hover:bg-[#0878de]/50 focus:bg-[#0878de]/50" role="button">
+                            <span className='mr-2'>Join for free</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"><path stroke="#ffffff" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" strokeWidth="1.5" d="M14.43 5.93L20.5 12l-6.07 6.07"></path><path stroke="#ffffff" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" strokeWidth="1.5" d="M3.5 12h16.83" opacity=".4"></path></svg>
+                        </Link>
+                    </div>
                 </div>
 
                 <div className="col-lg-6 relative mobile-view">

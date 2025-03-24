@@ -20,7 +20,7 @@ function Contact() {
         <div className="relative z-10 px-4 py-20 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-20 lg:px-10 lg:py-20">
           <div className="flex flex-col items-center justify-between xl:flex-row z-10">
             <div className="w-full max-w-xl mb-12 xl:pr-16 xl:mb-0 xl:w-7/12">
-              <h2 className="max-w-lg mb-6 font-sans text-3xl font-normal tracking-tight text-white sm:text-4xl sm:leading-none">
+              <h2 className="max-w-lg mb-6 font-sans text-3xl font-normal tracking-tight text-white sm:text-4xl sm:leading-none md:leading-5xl capitalize">
                 Contact Vitaway today, and let&apos;s connect for <span className="text-gray-400 font-normal">a Healthier tomorrow</span>
               </h2>
               <p className="max-w-xl mb-4 text-base font-normal text-gray-400 md:text-lg">
