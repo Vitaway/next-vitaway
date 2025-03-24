@@ -1,28 +1,23 @@
+import transporter from "@/config/email-config";
 import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
-import nodemailer from "nodemailer";
-
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.NEXT_EMAIL_USER,
-    pass: process.env.NEXT_EMAIL_PASS,
-  },
-});
 
 export async function POST(req: NextRequest) {
-  const { fullname, email, message } = await req.json();
-
-  if (!fullname || !email || !message) {
-    return NextResponse.json({ message: "All fields are required" });
-  }
-
   try {
+    const { fullname, email, message } = await req.json();
+
+    if (!fullname || !email || !message) {
+      return NextResponse.json(
+        { message: "All fields are required" },
+        { status: 400 }
+      );
+    }
+
     await prisma.contact.create({
       data: { name: fullname, email, message },
     });
 
-    const mailOptions = {
+    const userMailOptions = {
       from: process.env.NEXT_EMAIL_USER,
       to: email,
       subject: "Message Received",
@@ -36,13 +31,29 @@ export async function POST(req: NextRequest) {
       `,
     };
 
-    await transporter.sendMail(mailOptions);
+    const adminMailOptions = {
+      from: process.env.NEXT_EMAIL_USER,
+      to: process.env.NEXT_EMAIL_USER,
+      subject: "New Contact Message Received",
+      html: `
+        <h3>New Contact Message</h3>
+        <p><strong>Name:</strong> ${fullname}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Message:</strong></p>
+        <blockquote>${message}</blockquote>
+      `,
+    };
+
+    await transporter.sendMail(userMailOptions);
+    await transporter.sendMail(adminMailOptions);
 
     return NextResponse.json(
       { message: "Message sent successfully" },
       { status: 200 }
     );
-  } catch {
+  } catch (error) {
+    console.error("Error processing request:", error);
+
     return NextResponse.json(
       { message: "Internal server error" },
       { status: 500 }

@@ -1,5 +1,8 @@
+import transporter from "@/config/email-config";
 import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
+
+const adminEmail = "vitawayeclinic@gmail.com";
 
 export async function POST(req: NextRequest) {
   const { email } = await req.json();
@@ -11,6 +14,20 @@ export async function POST(req: NextRequest) {
   try {
     await prisma.subscriber.create({
       data: { email },
+    });
+
+    await transporter.sendMail({
+      from: process.env.NEXT_EMAIL_USER,
+      to: adminEmail,
+      subject: "New Subscriber Alert",
+      text: `A new subscriber has joined: ${email}`,
+    });
+
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: "Welcome to Vitaway!",
+      text: `Thank you for subscribing to Vitaway! We're excited to have you on board.`,
     });
 
     return NextResponse.json(

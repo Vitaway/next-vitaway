@@ -166,7 +166,7 @@ function Footer() {
                     </div>
                 </div>
 
-                <hr className="mt-10 mb-5 border-gray-200" />
+                <hr className="mt-10 mb-5 border-gray-300" />
 
                 <p className="text-sm text-center text-gray-200 font-semibold">© Copyright 2025, All Rights Reserved by Vitaway</p>
             </div>
