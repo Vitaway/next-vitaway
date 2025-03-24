@@ -5,7 +5,7 @@ import React from "react";
 function TopNavbar() {
     return (
         <div className="border-b border-gray-200 bg-gray-50 text-slate-700">
-            <div className="container mx-auto px-4 md:px-10 lg:px-20 flex  items-center justify-between py-3">
+            <div className="container mx-auto px-4 md:px-10 flex items-center justify-between py-3">
                 {/* Left Section */}
                 <div className="flex items-center space-x-3 text-sm">
                     <a href="https://wa.me/250787279560" rel="noopener" target="__blank" className="text-decoration-none text-body  font-bold flex items-center text-sm">

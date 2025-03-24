@@ -113,7 +113,7 @@ function BottomNavbar() {
 
                         <div className='absolute -right-5 top-0' onClick={() => setIsOpen(false)} role="button">
                             <span>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><g opacity=".4" stroke="#697689" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9.17 14.832 5.66-5.66M14.83 14.832l-5.66-5.66"></path></g><path d="M9 22h6c5 0 7-2 7-7V9c0-5-2-7-7-7H9C4 2 2 4 2 9v6c0 5 2 7 7 7Z" stroke="#697689" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><g opacity=".4" stroke="#697689" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="m9.17 14.832 5.66-5.66M14.83 14.832l-5.66-5.66"></path></g><path d="M9 22h6c5 0 7-2 7-7V9c0-5-2-7-7-7H9C4 2 2 4 2 9v6c0 5 2 7 7 7Z" stroke="#697689" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path></svg>
                             </span>
                         </div>
                     </div>
