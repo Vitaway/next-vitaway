@@ -26,8 +26,13 @@ export async function POST(req: NextRequest) {
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
       to: email,
-      subject: "Welcome to Vitaway!",
-      text: `Thank you for subscribing to Vitaway! We're excited to have you on board.`,
+      subject: "Welcome to Vitaway Health – Your Journey Starts Here!",
+      text: `Dear [Name],\n\n
+          Thank you for subscribing to Vitaway Health! We’re excited to have you on board. Stay tuned for expert nutrition tips, wellness programs, and exclusive offers. \n
+          Visit our website: https://www.vitaway.org/who-we-serve \n\n
+          Best regards,\n
+          Vitaway Health Team
+      `,
     });
 
     return NextResponse.json(

@@ -20,14 +20,13 @@ export async function POST(req: NextRequest) {
     const userMailOptions = {
       from: process.env.NEXT_EMAIL_USER,
       to: email,
-      subject: "Message Received",
+      subject: "Thank You for Reaching Out to Vitaway Health!",
       html: `
-        <h3>Hello ${fullname},</h3>
-        <p>Thank you for reaching out! We have received your message:</p>
-        <blockquote>${message}</blockquote>
-        <p>We will get back to you soon.</p>
-        <br>
-        <p>Best regards,<br>Vitaway</p>
+      Dear, \n\n
+      Thank you for contacting us! We have received your inquiry and will get back to you within 24 hours. \n
+      If your request is urgent, please call us at +250795767405 / 0787279560. \n\n
+      Best regards,\n
+      Vitaway Health Team
       `,
     };
 
