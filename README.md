@@ -1,4 +1,4 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+The web application will be a digital platform enhancing the efficiency and accessibility of healthcare and nutrition services. It will streamline operations for patients, nutritionists, and administrators, facilitating seamless appointment scheduling and progress tracking.
 
 ## Getting Started
 
