@@ -68,12 +68,38 @@ function Pricing() {
 
                     <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-y-8 mt-10 max-md:max-w-sm max-md:mx-auto">
                         {pricingTable.map((plan, index) => (
-                            <div key={index} className={`bg-gray-100 text-slate-700 rounded-3xl overflow-hidden p-8 ${plan.highlighted ? 'scale-[1.05] shadow-[0_2px_40px_-4px_rgba(93,96,127,0.2)]' : ''}`} style={{ border: '1px solid #e7dfd7' }}>
+                            <div key={index} className={`bg-gray-100 text-slate-700 rounded-3xl overflow-hidden col-span-${plan.colspan} p-8 ${plan.highlighted ? 'scale-[1.05] shadow-[0_2px_40px_-4px_rgba(93,96,127,0.2)]' : ''}`} style={{ border: '1px solid #e7dfd7' }}>
                                 <div className="text-left">
                                     <h4 className="text-3xl font-semibold">{plan.title}</h4>
-                                    <p className="text-md mt-2 text-gray-600">{plan.short_desc}</p>
-                                    <h3 className="text-xl font-semibold mt-4">{plan.price}<sub className="text-sm font-normal  text-gray-400 ml-2">/ Month</sub></h3>
-                                    <button type="button" className="w-full mt-8 px-2 py-2.5 text-sm font-semibold bg-blue-600 text-white hover:bg-blue-700 rounded-full">Get Started</button>
+
+                                    <p className="text-md mt-2 text-gray-600 font-semibold">{plan.short_desc}</p>
+                                    <p className="text-md mt-2 text-gray-600 line-clamp-2">{plan.description}</p>
+
+                                    {plan.price && (<h3 className="text-xl font-semibold mt-4">{plan.price}<sub className="text-sm font-normal  text-gray-400 ml-2">/ Month</sub></h3>)}
+
+                                    <div className='grid grid-cols-1 lg:grid-cols-2 md:grid-cols-2 gap-y-4 gap-x-4 mt-5'>
+                                        {plan.pricing && plan.pricing.map((price, priceIndex) => (<div key={priceIndex} className="bg-white text-slate-700 rounded-xl overflow-hidden p-5">
+                                            <h3 className="text-md font-semibold">
+                                                <span>{price.employees}</span> <br />
+                                                <ul className="mt-2">
+                                                    <li className="text-sm font-normal text-gray-400 ml-2 flex items-center">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="17" className="mr-4 bg-gray-200 fill-[#333] rounded-full p-[3px]" viewBox="0 0 24 24">
+                                                            <path d="M9.707 19.121a.997.997 0 0 1-1.414 0l-5.646-5.647a1.5 1.5 0 0 1 0-2.121l.707-.707a1.5 1.5 0 0 1 2.121 0L9 14.171l9.525-9.525a1.5 1.5 0 0 1 2.121 0l.707.707a1.5 1.5 0 0 1 0 2.121z" data-original="#000000" />
+                                                        </svg>
+                                                        <span>{price.price_per_employee}</span>
+                                                    </li>
+                                                    <li className="text-sm font-normal text-gray-400 ml-2 flex items-center">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="17" className="mr-4 bg-gray-200 fill-[#333] rounded-full p-[3px]" viewBox="0 0 24 24">
+                                                            <path d="M9.707 19.121a.997.997 0 0 1-1.414 0l-5.646-5.647a1.5 1.5 0 0 1 0-2.121l.707-.707a1.5 1.5 0 0 1 2.121 0L9 14.171l9.525-9.525a1.5 1.5 0 0 1 2.121 0l.707.707a1.5 1.5 0 0 1 0 2.121z" data-original="#000000" />
+                                                        </svg>
+                                                        <span>{price.price_per_company}</span>
+                                                    </li>
+                                                </ul>
+                                            </h3>
+                                        </div>))}
+                                    </div>
+
+                                    <button type="button" className="w-full mt-8 px-2 py-2.5 text-sm font-semibold bg-blue-600 text-white hover:bg-blue-700 rounded-full">{plan.cta_button}</button>
                                 </div>
                                 <div className="mt-8">
                                     <h4 className="text-lg font-bold mb-4">Plan Included</h4>
