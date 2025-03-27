@@ -3,7 +3,9 @@
         "id": "1",
         "title": "Free Plan",
         "short_desc": "Basic Features",
+        "description": "A starter plan offering essential features to get you started on your health journey.",
         "price": "RWF 0.00",
+        "cta_button": "Sign Up",
         "features": [
             "Virtual PT Appointment (non-member)",
             "Edit Profile",
@@ -15,8 +17,10 @@
         "id": "2",
         "title": "Standard Plan",
         "short_desc": "Popular Plan with Most Features",
+        "description": "A comprehensive plan designed for individuals seeking to enhance their health journey with personalized support and advanced features.",
         "price": "RWF 10, 000.00",
         "highlighted": true,
+        "cta_button": "Get Started",
         "features": [
             "Virtual PT Appointment (member)",
             "Access All Features (lessons, daily tracks, etc.)",
@@ -32,7 +36,9 @@
         "id": "3",
         "title": "Premium Plan",
         "short_desc": "All Features Included",
+        "description": "An all-inclusive plan offering unlimited access to advanced features and personalized support for a complete health and wellness experience.",
         "price": "RWF 15, 000.00",
+        "cta_button": "Get Started",
         "features": [
             "All Standard Plan Features",
             "Unlimited Video Calls",
@@ -42,6 +48,49 @@
             "Personalized Expert Consultations",
             "Community Membership",
             "Data Integration with PCP"
+        ]
+    },
+    {
+        "id": "4",
+        "title": "Corporate & Workplace Wellness Program",
+        "short_desc": "Enhancing Employee Health & Productivity",
+        "description": "Our program is designed to support companies in fostering a healthier, more productive workforce through expert-led nutrition, fitness, and mental health solutions. Join our Comprehensive Workplace Wellness Program!",
+        "cta_button": "Contact us today",
+        "colspan": "2",
+        "features": [
+            "Health & Nutrition Screening",
+            "Personalized Nutrition Plans",
+            "Group Nutrition Coaching.",
+            "Wellness Workshops & Sessions",
+            "On-Site Dietitian Visits (for large teams).",
+            "24/7 Chat Support – Instant expert guidance.",
+            "Weight & NCD Management Programs.",
+            "Executive Health Plan – One-on-one coaching, body composition analysis & priority consultations.",
+            "Aerobic Coaching – Guided fitness sessions by certified trainers.",
+            "Quarterly Mental Health Sessions with a certified psychologist or mental health nurse."
+        ],
+        "pricing": [
+            {
+                "employees": "Small Teams (5-20 Employees)",
+                "price_per_employee": "$10/employee/month",
+                "price_per_company": "$150/month per company (up to 10 employees)"
+            },
+            {
+
+                "employees": "Mid-Sized Teams (20-50 Employees)",
+                "price_per_employee": "$8 /employee/month",
+                "price_per_company": "$300/month per company (up to 40 employees)"
+            },
+            {
+                "employees": "Large Teams (50+ Employees)",
+                "price_per_employee": "$5/employee/month",
+                "price_per_company": "$400/month per company (up to 80 employees)"
+            },
+            {
+                "employees": "Executive Plan",
+                "price_per_employee": "0",
+                "price_per_company": "$50 per executive per month"
+            }
         ]
     }
 ]
