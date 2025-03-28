@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import React from 'react'
 
 function Consultation() {
@@ -5,22 +6,22 @@ function Consultation() {
         {
             title: 'Diabetes',
             description: 'Get expert advice on managing diabetes, understanding its types, causes, symptoms, and effective treatment options.',
-            icon: 'svg',
+            icon: "https://cdn-icons-png.flaticon.com/512/4349/4349215.png",
         },
         {
             title: 'Hypertension',
             description: 'Learn how to monitor your blood pressure, recognize warning signs, and take practical steps to manage and prevent hypertension.',
-            icon: 'svg',
+            icon: 'https://cdn-icons-png.flaticon.com/512/4799/4799067.png',
         },
         {
             title: 'Weight Management',
             description: 'Receive personalized plans and expert tips to help you achieve and maintain a healthy weight, promoting overall well-being.',
-            icon: 'svg',
+            icon: 'https://cdn-icons-png.flaticon.com/512/847/847345.png',
         },
         {
             title: 'Well Being',
             description: 'Explore holistic approaches to improve your mental, emotional, and physical well-being, enhancing your quality of life.',
-            icon: 'svg',
+            icon: 'https://cdn-icons-png.flaticon.com/512/3997/3997942.png',
         },
     ];
 
@@ -57,9 +58,9 @@ function Consultation() {
                     <div className="grid grid-cols-1 gap-12 lg:gap-16 sm:grid-cols-2">
                         {services.map((service, index) => (
                             <div className="flex items-start" key={index}>
-                                <span>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"><path opacity=".4" d="m14.441 19.051 1.52 1.52 3.04-3.04M12.159 10.87c-.1-.01-.22-.01-.33 0a4.42 4.42 0 0 1-4.27-4.43A4.428 4.428 0 0 1 11.989 2c2.45 0 4.44 1.99 4.44 4.44 0 2.4-1.9 4.35-4.27 4.43Z" stroke="#697689" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path><path d="M11.99 21.81c-1.82 0-3.63-.46-5.01-1.38-2.42-1.62-2.42-4.26 0-5.87 2.75-1.84 7.26-1.84 10.01 0" stroke="#697689" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path></svg>
-                                </span>
+                                <div className="flex items-center justify-center w-16 h-16 mb-4 rounded-full bg-indigo-50">
+                                    <Image width={500} height={500} src={service.icon} alt={service.title} />
+                                </div>
                                 <div className="ml-5">
                                     <h3 className="text-lg font-semibold text-black">{service.title}</h3>
                                     <p className="mt-4 text-base text-gray-600">{service.description}</p>
