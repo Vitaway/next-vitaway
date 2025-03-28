@@ -3,6 +3,7 @@ import BackgroundBlurImage from '../components/design/background-blur-image';
 import { Metadata } from 'next';
 import pricingTable from '../../content/pricing.json';
 import GuestLayout from '../layouts/GuestLayout';
+import Link from 'next/link';
 
 export const metadata: Metadata = {
     title: "Pricings",
@@ -82,12 +83,12 @@ function Pricing() {
                                             <h3 className="text-md font-semibold">
                                                 <span>{price.employees}</span> <br />
                                                 <ul className="mt-2">
-                                                    <li className="text-sm font-normal text-gray-400 ml-2 flex items-center">
+                                                    {price.price_per_employee && (<li className="text-sm font-normal text-gray-400 ml-2 flex items-center">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="17" className="mr-4 bg-gray-200 fill-[#333] rounded-full p-[3px]" viewBox="0 0 24 24">
                                                             <path d="M9.707 19.121a.997.997 0 0 1-1.414 0l-5.646-5.647a1.5 1.5 0 0 1 0-2.121l.707-.707a1.5 1.5 0 0 1 2.121 0L9 14.171l9.525-9.525a1.5 1.5 0 0 1 2.121 0l.707.707a1.5 1.5 0 0 1 0 2.121z" data-original="#000000" />
                                                         </svg>
                                                         <span>{price.price_per_employee}</span>
-                                                    </li>
+                                                    </li>)}
                                                     <li className="text-sm font-normal text-gray-400 ml-2 flex items-center">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="17" className="mr-4 bg-gray-200 fill-[#333] rounded-full p-[3px]" viewBox="0 0 24 24">
                                                             <path d="M9.707 19.121a.997.997 0 0 1-1.414 0l-5.646-5.647a1.5 1.5 0 0 1 0-2.121l.707-.707a1.5 1.5 0 0 1 2.121 0L9 14.171l9.525-9.525a1.5 1.5 0 0 1 2.121 0l.707.707a1.5 1.5 0 0 1 0 2.121z" data-original="#000000" />
@@ -99,7 +100,9 @@ function Pricing() {
                                         </div>))}
                                     </div>
 
-                                    <button type="button" className="w-full mt-8 px-2 py-2.5 text-sm font-semibold bg-blue-600 text-white hover:bg-blue-700 rounded-full">{plan.cta_button}</button>
+                                    <Link href={plan.cta_button_link} type="button" className="w-full mt-8 px-2 py-2.5 text-sm font-semibold bg-blue-600 text-white hover:bg-blue-700 rounded-full">
+                                        {plan.cta_button}
+                                    </Link>
                                 </div>
                                 <div className="mt-8">
                                     <h4 className="text-lg font-bold mb-4">Plan Included</h4>

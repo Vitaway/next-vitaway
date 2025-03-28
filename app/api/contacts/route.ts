@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
       to: email,
       subject: "Thank You for Reaching Out to Vitaway Health!",
       html: `
-      Dear, \n\n
+      Dear ${ fullname }, \n\n
       Thank you for contacting us! We have received your inquiry and will get back to you within 24 hours. \n
       If your request is urgent, please call us at +250795767405 / 0787279560. \n\n
       Best regards,\n

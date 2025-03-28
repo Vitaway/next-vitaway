@@ -6,6 +6,7 @@
         "description": "A starter plan offering essential features to get you started on your health journey.",
         "price": "RWF 0.00",
         "cta_button": "Sign Up",
+        "cta_button_link": "/download",
         "features": [
             "Virtual PT Appointment (non-member)",
             "Edit Profile",
@@ -21,6 +22,7 @@
         "price": "RWF 10, 000.00",
         "highlighted": true,
         "cta_button": "Get Started",
+        "cta_button_link": "/download",
         "features": [
             "Virtual PT Appointment (member)",
             "Access All Features (lessons, daily tracks, etc.)",
@@ -39,6 +41,7 @@
         "description": "An all-inclusive plan offering unlimited access to advanced features and personalized support for a complete health and wellness experience.",
         "price": "RWF 15, 000.00",
         "cta_button": "Get Started",
+        "cta_button_link": "/download",
         "features": [
             "All Standard Plan Features",
             "Unlimited Video Calls",
@@ -56,6 +59,7 @@
         "short_desc": "Enhancing Employee Health & Productivity",
         "description": "Our program is designed to support companies in fostering a healthier, more productive workforce through expert-led nutrition, fitness, and mental health solutions. Join our Comprehensive Workplace Wellness Program!",
         "cta_button": "Contact us today",
+        "cta_button_link": "/contacts",
         "colspan": "2",
         "features": [
             "Health & Nutrition Screening",
@@ -88,7 +92,6 @@
             },
             {
                 "employees": "Executive Plan",
-                "price_per_employee": "0",
                 "price_per_company": "$50 per executive per month"
             }
         ]
