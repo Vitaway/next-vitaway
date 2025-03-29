@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 import Image from 'next/image'
 import React from 'react'
 import PageHeader from '../components/headers/page-header'
@@ -103,9 +104,9 @@ function AboutUs() {
                         <div className="relative overflow-hidden transition duration-200 transform rounded hover:-translate-y-2 hover:shadow-2xl">
                             <Image width={600} height={600} className="object-cover w-full h-56 md:h-64 xl:h-80" src="https://vitaway.org/images/Team/bg.jpeg" alt="vitaway team during meetup" />
                             <div className="absolute inset-0 px-6 py-4 transition-opacity duration-200 bg-black bg-opacity-75 opacity-0 hover:opacity-100">
-                                <p className="mb-4 text-lg font-bold text-gray-100">Mona Lisa</p>
+                                <p className="mb-4 text-lg font-bold text-gray-100">Collaborative</p>
                                 <p className="text-sm tracking-wide text-gray-300">
-                                    Painted between 1503 and 1517, Da Vinci’s alluring portrait has been dogged by two questions since the day it was made: Who’s the subject and why is she smiling?
+                                    A testament to teamwork and shared vision, this image captures the essence of collaboration that drives Vitaway's mission forward.
                                 </p>
                             </div>
                         </div>
@@ -114,9 +115,9 @@ function AboutUs() {
                         <div className="relative overflow-hidden transition duration-200 transform rounded hover:-translate-y-2 hover:shadow-2xl">
                             <Image width={600} height={600} className="object-cover w-full h-56 md:h-64 xl:h-80" src="https://vitaway.org/images/Team/bg-1.jpeg" alt="vitaway team during meetup" />
                             <div className="absolute inset-0 px-6 py-4 transition-opacity duration-200 bg-black bg-opacity-75 opacity-0 hover:opacity-100">
-                                <p className="mb-4 text-lg font-bold text-gray-100">The Starry Night</p>
+                                <p className="mb-4 text-lg font-bold text-gray-100">The Demo Night</p>
                                 <p className="text-sm tracking-wide text-gray-300">
-                                    Vincent Van Gogh’s most popular painting, The Starry Night was created by Van Gogh at the asylum in Saint-Rémy, where he’d committed himself in 1889.
+                                    A night of innovation and inspiration, showcasing groundbreaking ideas and teamwork that define Vitaway's journey.
                                 </p>
                             </div>
                         </div>
@@ -125,9 +126,9 @@ function AboutUs() {
                         <div className="relative overflow-hidden transition duration-200 transform rounded hover:-translate-y-2 hover:shadow-2xl">
                             <Image width={600} height={600} className="object-cover w-full h-56 md:h-64 xl:h-80" src="https://vitaway.org/images/summit.jpeg" alt="vitaway team during meetup" />
                             <div className="absolute inset-0 px-6 py-4 transition-opacity duration-200 bg-black bg-opacity-75 opacity-0 hover:opacity-100">
-                                <p className="mb-4 text-lg font-bold text-gray-100">The Kiss</p>
+                                <p className="mb-4 text-lg font-bold text-gray-100">The Founder Nights</p>
                                 <p className="text-sm tracking-wide text-gray-300">
-                                    Opulently gilded and extravagantly patterned, The Kiss, Gustav Klimt’s fin-de-siècle portrayal of intimacy, is a mix of Symbolism and Vienna Jugendstil, the Austrian variant of Art Nouveau.
+                                    A celebration of vision and leadership, capturing the essence of innovation and determination that defines Vitaway's foundation.
                                 </p>
                             </div>
                         </div>
@@ -136,9 +137,9 @@ function AboutUs() {
                         <div className="relative overflow-hidden transition duration-200 transform rounded hover:-translate-y-2 hover:shadow-2xl">
                             <Image width={600} height={600} className="object-cover w-full h-56 md:h-64 xl:h-80" src="https://images.unsplash.com/photo-1543300055-4a87568503c8?auto=format&fit=crop&q=80&w=2940&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="vitaway team during meetup" />
                             <div className="absolute inset-0 px-6 py-4 transition-opacity duration-200 bg-black bg-opacity-75 opacity-0 hover:opacity-100">
-                                <p className="mb-4 text-lg font-bold text-gray-100">The Harvesters</p>
+                                <p className="mb-4 text-lg font-bold text-gray-100">Vitaway +</p>
                                 <p className="text-sm tracking-wide text-gray-300">
-                                    Bruegel’s fanfare for the common man is considered one of the defining works of Western art. This composition was one of six created on the theme of the seasons.
+                                    A celebration of innovation and care, showcasing Vitaway's commitment to redefining healthcare solutions for a better tomorrow.
                                 </p>
                             </div>
                         </div>
