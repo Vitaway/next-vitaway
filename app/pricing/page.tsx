@@ -78,8 +78,8 @@ function Pricing() {
 
                                     {plan.price && (<h3 className="text-xl font-semibold mt-4">{plan.price}<sub className="text-sm font-normal  text-gray-400 ml-2">/ Month</sub></h3>)}
 
-                                    <div className='grid grid-cols-1 lg:grid-cols-2 md:grid-cols-2 gap-y-4 gap-x-4 mt-5'>
-                                        {plan.pricing && plan.pricing.map((price, priceIndex) => (<div key={priceIndex} className="bg-white text-slate-700 rounded-xl overflow-hidden p-5">
+                                    {plan.pricing && <div className='grid grid-cols-1 lg:grid-cols-2 md:grid-cols-2 gap-y-4 gap-x-4 mt-5'>
+                                        {plan.pricing.map((price, priceIndex) => (<div key={priceIndex} className="bg-white text-slate-700 rounded-xl overflow-hidden p-5">
                                             <h3 className="text-md font-semibold">
                                                 <span>{price.employees}</span> <br />
                                                 <ul className="mt-2">
@@ -98,10 +98,12 @@ function Pricing() {
                                                 </ul>
                                             </h3>
                                         </div>))}
-                                    </div>
+                                    </div>}
 
-                                    <Link href={plan.cta_button_link} type="button" className="w-full mt-8 px-2 py-2.5 text-sm font-semibold bg-blue-600 text-white hover:bg-blue-700 rounded-full">
-                                        {plan.cta_button}
+                                    <Link href={plan.cta_button_link}>
+                                        <button type="button" className="w-full mt-8 px-10 py-4 text-sm font-semibold text-white bg-gradient-to-b from-[#272749] to-[#111827] rounded-full">
+                                            {plan.cta_button}
+                                        </button>
                                     </Link>
                                 </div>
                                 <div className="mt-8">
