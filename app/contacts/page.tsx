@@ -14,20 +14,20 @@ export const metadata: Metadata = {
 function Contact() {
   return (
     <GuestLayout>
-      <div className="relative overflow-hidden bg-gradient-to-b from-[#272749] to-[#111827] h-screen flex items-center justify-center">
+      <div className="relative overflow-hidden bg-gradient-to-b from-[#272749] to-[#111827] min-h-screen flex items-center justify-center">
         <div className="absolute inset-0 bg-gradient-to-b from-[#272749] to-[#111827] z-0"></div>
 
-        <div className="relative z-10 px-4 py-20 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-20 lg:px-10 lg:py-20">
+        <div className="relative z-10 px-4 py-10 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-10 lg:px-8 lg:py-16">
           <div className="flex flex-col items-center justify-between xl:flex-row z-10">
-            <div className="w-full max-w-xl mb-12 xl:pr-16 xl:mb-0 xl:w-7/12">
-              <h2 className="max-w-lg mb-6 font-sans text-3xl font-normal tracking-tight text-white sm:text-4xl sm:leading-none md:leading-5xl capitalize">
+            <div className="w-full max-w-xl mb-8 xl:pr-12 xl:mb-0 xl:w-7/12">
+              <h2 className="max-w-lg mb-6 font-sans text-2xl font-normal tracking-tight text-white sm:text-3xl sm:leading-none md:leading-5xl capitalize">
                 Contact Vitaway today, and let&apos;s connect for <span className="text-gray-400 font-normal">a Healthier tomorrow</span>
               </h2>
-              <p className="max-w-xl mb-4 text-base font-normal text-gray-400 md:text-lg">
+              <p className="max-w-xl mb-4 text-sm font-normal text-gray-400 md:text-base">
                 We&apos;d love to hear from you! Reach out to our dedicated team of experts at Vitaway and let us assist you on your healthcare journey.
               </p>
 
-              <div className="grid space-y-3 sm:gap-2 sm:grid-cols-2 sm:space-y-0">
+              <div className="grid gap-4 sm:grid-cols-2">
                 <ul className="space-y-3">
                   <li className="flex text-gray-400">
                     <span className="mr-1">
@@ -82,14 +82,14 @@ function Contact() {
                 </ul>
               </div>
 
-              <div className="col-lg-12 more-detail-buttons mt-10">
+              <div className="mt-8 flex flex-wrap gap-4">
                 <a href="https://wa.me/250787279560" rel="noopener" target="__blank">
-                  <button type="button" className="text-white font-normal bg-green-600 hover:bg-green-600/90 focus:ring-4 focus:outline-none focus:ring-[#1da1f2]/50 rounded-lg text-md px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#1da1f2]/55 mr-2 mb-2">
+                  <button type="button" className="text-white font-normal bg-green-600 hover:bg-green-600/90 focus:ring-4 focus:outline-none focus:ring-[#1da1f2]/50 rounded-lg text-sm px-4 py-2 inline-flex items-center dark:focus:ring-[#1da1f2]/55">
                     Use Whatsapp
                   </button>
                 </a>
                 <Link href="/download">
-                  <button type="button" className="text-gray-900 font-normal bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 rounded-lg text-md px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-gray-500 mr-2 mb-2">
+                  <button type="button" className="text-gray-900 font-normal bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 rounded-lg text-sm px-4 py-2 inline-flex items-center dark:focus:ring-gray-500">
                     Download The app
                   </button>
                 </Link>
@@ -98,7 +98,7 @@ function Contact() {
 
             <div className="w-full max-w-xl xl:px-8 xl:w-5/12">
               <div className="relative">
-                <svg viewBox="0 0 52 24" fill="currentColor" className="absolute bottom-0 right-0 z-0 hidden w-32 -mb-8 -mr-20 text-gray-300 lg:w-32 lg:-mr-16 sm:block">
+                <svg viewBox="0 0 52 24" fill="currentColor" className="absolute bottom-0 right-0 z-0 hidden w-24 -mb-6 -mr-12 text-gray-300 lg:w-32 lg:-mr-16 sm:block">
                   <defs>
                     <pattern id="766323e1-e594-4ffd-a688-e7275079d540" x="0" y="0" width=".135" height=".30">
                       <circle cx="1" cy="1" r=".7"></circle>

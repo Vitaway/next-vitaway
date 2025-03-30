@@ -34,18 +34,18 @@ function Indivituals() {
                 backgroundImage='https://images.unsplash.com/photo-1613089222731-8841ac989caa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTU4fHxoZWFydCUyMGF0dGFja3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60'
             />
 
-            <section className="aligible-container relative p-10 bg-white z-[11]">
-                <div className="px-4 py-16 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8 lg:py-20">
+            <section className="aligible-container relative p-6 bg-white z-[11]">
+                <div className="px-4 py-12 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-8 lg:px-6 lg:py-16">
 
-                    <div className="p-8 absolute border border-gray-200 -top-20 right-20 left-20 rounded-xl bg-white shadow-sm sm:p-16">
+                    <div className="p-6 absolute border border-gray-200 -top-16 sm:-top-20 sm:right-0 sm:left-0 md:right-16 md:left-16 lg:right-20 lg:left-20 rounded-xl bg-white shadow-sm sm:p-12 lg:p-16">
                         <div className="flex flex-col lg:flex-row">
                             <div className="mb-6 lg:mb-0 lg:w-1/2 lg:pr-5">
-                                <h4 style={{ lineHeight: '2.5rem' }} className="font-semibold text-3xl tracking-tight text-slate-900 sm:text-4xl sm:leading-none">
+                                <h4 style={{ lineHeight: '2.5rem' }} className="font-semibold text-2xl sm:text-3xl lg:text-4xl tracking-tight text-slate-900 sm:leading-none">
                                     It takes only one minute to see if Vitaway is right for you and at no cost.
                                 </h4>
                             </div>
                             <div className="lg:w-1/2">
-                                <p className="mb-4 text-sm text-slate-700">
+                                <p className="mb-4 text-sm sm:text-base text-slate-700">
                                     Your path to better well-being with Vitaway&rsquo;s one-minute wellness assessment.
                                     Find out if our tailored solutions are right for you, at no cost.
                                     Your journey to improved health begins now!
@@ -61,7 +61,7 @@ function Indivituals() {
             </section>
 
             <section className="px-4 py-20 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-20 lg:px-10 lg:py-20">
-                <div className="text-center grid grid-cols-3 gap-4">
+                <div className="text-center grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     {cardData.map((card, index) => (
                         <div className="col-md" key={index}>
                             <div className="bg-white border border-gray-200 rounded-xl p-8">

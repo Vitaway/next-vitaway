@@ -72,8 +72,8 @@ function Download() {
                   </p>
                 </div>
               </div>
-              <div className="flex items-center justify-center lg:pl-8 ml-20">
-                <div className="flex flex-col items-end">
+              <div className="flex items-center justify-center gap-6 pl-0 ml-0 md:pl-8 md:ml-20">
+                <div className="flex flex-col items-center">
                   <MobileFrame
                     title='Vitaway Blood Pressure Dashboard Screen'
                     image='/images/screens/blood-pressure.png'
@@ -82,7 +82,7 @@ function Download() {
                   />
                 </div>
 
-                <div className="px-3">
+                <div className="flex flex-col items-center">
                   <MobileFrame
                     title='Vitaway Categories Screen'
                     image='/images/screens/Categories.png'
@@ -91,7 +91,7 @@ function Download() {
                   />
                 </div>
 
-                <div className="flex flex-col items-end">
+                <div className="flex flex-col items-center">
                   <MobileFrame
                     title='Vitaway Weight management Screen'
                     image='/images/screens/weight-screen.png'

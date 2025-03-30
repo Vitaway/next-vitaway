@@ -25,9 +25,9 @@ export default function MemberPage() {
         <meta property="og:url" content="https://www.vitaway.org" />
         <meta property="og:image" content={member.image} />
       </Head>
-      
+
       <div className="team-section relative w-full h-full">
-        <div className="absolute hidden w-full bg-gradient-to-b from-[#272749] to-[#111827] lg:block h-[500px]"></div>
+        <div className="absolute w-full bg-gradient-to-b from-[#272749] to-[#111827] lg:block h-[500px]"></div>
 
         <div className="relative px-4 py-20 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-20 lg:px-10 lg:py-20">
           {/* Header */}
@@ -41,21 +41,41 @@ export default function MemberPage() {
             <p className="text-base text-gray-200 md:text-lg font-merri font-normal">{member.role}</p>
           </div>
 
-          <div className="relative bg-white rounded-xl px-10 py-5">
-            <section className="py-10 bg-white sm:py-16 lg:py-24">
-              <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-12 xl:gap-x-24 gap-y-12">
+          <div className="relative bg-white rounded-3xl">
+            <section className=" bg-white rounded-3xl px-2 py-2 md:px-10 md:py-5">
+              
+              <div className="mx-auto max-w-7xl mt-0 md:mt-10">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-8 xl:gap-x-12 gap-y-12">
+
                   <div className="relative lg:mb-12">
-                    <Image width={100} height={100} className="absolute -right-0 -bottom-8 xl:-bottom-12 xl:-right-4" src="https://cdn.rareblocks.xyz/collection/celebration/images/content/3/dots-pattern.svg" alt="" />
-                    <div className="pl-12 pr-6">
-                      <Image width={600} height={500} className="relative w-[600px] height-[500px] rounded-xl" src={member.image} alt="" />
+                    <Image
+                      width={100}
+                      height={100}
+                      className="absolute -right-0 -bottom-8 xl:-bottom-12 xl:-right-4 hidden lg:block"
+                      src="https://cdn.rareblocks.xyz/collection/celebration/images/content/3/dots-pattern.svg"
+                      alt=""
+                    />
+
+                    <div className="pl-0 pr-0 sm:pl-6 sm:pr-6">
+                      <Image
+                        width={600}
+                        height={500}
+                        className="relative w-full max-w-md sm:max-w-lg lg:max-w-xl xl:max-w-2xl rounded-3xl mx-auto"
+                        src={member.image}
+                        alt=""
+                      />
                     </div>
                   </div>
 
                   <div className="2xl:pl-16">
-                    <h2 className="text-xl font-bold leading-tight text-black sm:text-2xl lg:text-3xl lg:leading-tight">{member.description}</h2>
-                    <p className="text-xl leading-relaxed text-gray-900 mt-9">{member.bio}</p>
+                    <h2 className="text-lg font-bold leading-tight text-black sm:text-xl lg:text-2xl xl:text-3xl lg:leading-tight">
+                      {member.description}
+                    </h2>
+                    <p className="text-base sm:text-lg lg:text-xl leading-relaxed text-gray-900 mt-6 sm:mt-8 lg:mt-9">
+                      {member.bio}
+                    </p>
                   </div>
+
                 </div>
               </div>
             </section>
