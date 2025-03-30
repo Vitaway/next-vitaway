@@ -16,7 +16,7 @@ function OurTeam() {
   return (<>
     <GuestLayout>
       <div className="team-section relative w-full h-full">
-        <div className="absolute hidden w-full bg-gradient-to-b from-[#272749] to-[#111827] lg:block h-[500px]"></div>
+        <div className="absolute w-full bg-gradient-to-b from-[#272749] to-[#111827] lg:block h-[500px]"></div>
 
         <div className="relative px-4 py-20 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-20 lg:px-10 lg:py-20">
           {/* Header */}
@@ -51,8 +51,8 @@ function OurTeam() {
             </p>
           </div>
 
-          <div className="relative bg-white rounded-xl px-10 py-5">
-            <div className="grid gap-5 mx-auto lg:grid-cols-2 lg:max-w-screen-xl mt-5">
+          <div className="relative bg-white rounded-xl px-3 py-2 md:px-10 md:py-5">
+            <div className="grid gap-5 mx-auto lg:grid-cols-2 lg:max-w-screen-xl mt-2 md:mt-5">
               {members && members.map((member, index) => (
                 <Link href={`/our-team/members/${member.slug}`} className="grid sm:grid-cols-6 hover:bg-gray-50 rounded-xl cursor-pointer" key={index}>
                   <div className="relative w-full !h-64 max-h-full rounded-xl sm:h-auto sm:col-span-3 border-gray-200 border">

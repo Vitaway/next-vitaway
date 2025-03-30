@@ -35,7 +35,8 @@ function Pricing() {
     return (<>
         <GuestLayout>
             <div className="relative w-full h-full">
-                <div className="absolute hidden w-full bg-gradient-to-b from-[#272749] to-[#111827] lg:block h-96"></div>
+                <div className="absolute w-full bg-gradient-to-b from-[#272749] to-[#111827] lg:block h-96"></div>
+                
                 <div className="z-[5] absolute left-1/2 top-0 aspect-[1204/394] w-full max-w-[1204px] -translate-x-1/2">
                     <BackgroundBlurImage />
                 </div>
@@ -67,53 +68,64 @@ function Pricing() {
                         </p>
                     </div>
 
-                    <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-y-8 mt-10 max-md:max-w-sm max-md:mx-auto">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-8 gap-x-6 mt-10 max-w-sm sm:max-w-none mx-auto">
                         {pricingTable.map((plan, index) => (
-                            <div key={index} className={`bg-gray-100 text-slate-700 rounded-3xl overflow-hidden col-span-${plan.colspan} p-8 ${plan.highlighted ? 'scale-[1.05] shadow-[0_2px_40px_-4px_rgba(93,96,127,0.2)]' : ''}`} style={{ border: '1px solid #e7dfd7' }}>
+                            <div key={index} className={`bg-gray-100 text-slate-700 rounded-3xl overflow-hidden p-8 ${plan.highlighted ? 'scale-[1.05] shadow-[0_2px_40px_-4px_rgba(93,96,127,0.2)]' : ''}`} style={{ border: '1px solid #e7dfd7' }}>
                                 <div className="text-left">
-                                    <h4 className="text-3xl font-semibold">{plan.title}</h4>
+                                    <h4 className="text-2xl sm:text-3xl font-semibold">{plan.title}</h4>
 
-                                    <p className="text-md mt-2 text-gray-600 font-semibold">{plan.short_desc}</p>
-                                    <p className="text-md mt-2 text-gray-600 line-clamp-2">{plan.description}</p>
+                                    <p className="text-sm sm:text-md mt-2 text-gray-600 font-semibold">{plan.short_desc}</p>
+                                    <p className="text-sm sm:text-md mt-2 text-gray-600 line-clamp-2">{plan.description}</p>
 
-                                    {plan.price && (<h3 className="text-xl font-semibold mt-4">{plan.price}<sub className="text-sm font-normal  text-gray-400 ml-2">/ Month</sub></h3>)}
+                                    {plan.price && (
+                                        <h3 className="text-lg sm:text-xl font-semibold mt-4">
+                                            {plan.price}
+                                            <sub className="text-xs sm:text-sm font-normal text-gray-400 ml-2">/ Month</sub>
+                                        </h3>
+                                    )}
 
-                                    {plan.pricing && <div className='grid grid-cols-1 lg:grid-cols-2 md:grid-cols-2 gap-y-4 gap-x-4 mt-5'>
-                                        {plan.pricing.map((price, priceIndex) => (<div key={priceIndex} className="bg-white text-slate-700 rounded-xl overflow-hidden p-5">
-                                            <h3 className="text-md font-semibold">
-                                                <span>{price.employees}</span> <br />
-                                                <ul className="mt-2">
-                                                    {price.price_per_employee && (<li className="text-sm font-normal text-gray-400 ml-2 flex items-center">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="17" className="mr-4 bg-gray-200 fill-[#333] rounded-full p-[3px]" viewBox="0 0 24 24">
-                                                            <path d="M9.707 19.121a.997.997 0 0 1-1.414 0l-5.646-5.647a1.5 1.5 0 0 1 0-2.121l.707-.707a1.5 1.5 0 0 1 2.121 0L9 14.171l9.525-9.525a1.5 1.5 0 0 1 2.121 0l.707.707a1.5 1.5 0 0 1 0 2.121z" data-original="#000000" />
-                                                        </svg>
-                                                        <span>{price.price_per_employee}</span>
-                                                    </li>)}
-                                                    <li className="text-sm font-normal text-gray-400 ml-2 flex items-center">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="17" className="mr-4 bg-gray-200 fill-[#333] rounded-full p-[3px]" viewBox="0 0 24 24">
-                                                            <path d="M9.707 19.121a.997.997 0 0 1-1.414 0l-5.646-5.647a1.5 1.5 0 0 1 0-2.121l.707-.707a1.5 1.5 0 0 1 2.121 0L9 14.171l9.525-9.525a1.5 1.5 0 0 1 2.121 0l.707.707a1.5 1.5 0 0 1 0 2.121z" data-original="#000000" />
-                                                        </svg>
-                                                        <span>{price.price_per_company}</span>
-                                                    </li>
-                                                </ul>
-                                            </h3>
-                                        </div>))}
-                                    </div>}
+                                    {plan.pricing && (
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-4 mt-5">
+                                            {plan.pricing.map((price, priceIndex) => (
+                                                <div key={priceIndex} className="bg-white text-slate-700 rounded-xl overflow-hidden p-5">
+                                                    <h3 className="text-sm sm:text-md font-semibold">
+                                                        <span>{price.employees}</span>
+                                                        <ul className="mt-2">
+                                                            {price.price_per_employee && (
+                                                                <li className="text-xs sm:text-sm font-normal text-gray-400 ml-2 flex items-center">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="17" className="mr-4 bg-gray-200 fill-[#333] rounded-full p-[3px]" viewBox="0 0 24 24">
+                                                                        <path d="M9.707 19.121a.997.997 0 0 1-1.414 0l-5.646-5.647a1.5 1.5 0 0 1 0-2.121l.707-.707a1.5 1.5 0 0 1 2.121 0L9 14.171l9.525-9.525a1.5 1.5 0 0 1 2.121 0l.707.707a1.5 1.5 0 0 1 0 2.121z" />
+                                                                    </svg>
+                                                                    <span>{price.price_per_employee}</span>
+                                                                </li>
+                                                            )}
+                                                            <li className="text-xs sm:text-sm font-normal text-gray-400 ml-2 flex items-center">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="17" className="mr-4 bg-gray-200 fill-[#333] rounded-full p-[3px]" viewBox="0 0 24 24">
+                                                                    <path d="M9.707 19.121a.997.997 0 0 1-1.414 0l-5.646-5.647a1.5 1.5 0 0 1 0-2.121l.707-.707a1.5 1.5 0 0 1 2.121 0L9 14.171l9.525-9.525a1.5 1.5 0 0 1 2.121 0l.707.707a1.5 1.5 0 0 1 0 2.121z" />
+                                                                </svg>
+                                                                <span>{price.price_per_company}</span>
+                                                            </li>
+                                                        </ul>
+                                                    </h3>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
 
                                     <Link href={plan.cta_button_link}>
-                                        <button type="button" className="w-full mt-8 px-10 py-4 text-sm font-semibold text-white bg-gradient-to-b from-[#272749] to-[#111827] rounded-full">
+                                        <button type="button" className="w-full mt-8 px-6 sm:px-10 py-3 sm:py-4 text-xs sm:text-sm font-semibold text-white bg-gradient-to-b from-[#272749] to-[#111827] rounded-full">
                                             {plan.cta_button}
                                         </button>
                                     </Link>
                                 </div>
                                 <div className="mt-8">
-                                    <h4 className="text-lg font-bold mb-4">Plan Included</h4>
+                                    <h4 className="text-md sm:text-lg font-bold mb-4">Plan Included</h4>
 
                                     <ul className="space-y-4">
                                         {plan.features.map((feature, index) => (
-                                            <li className="flex items-center text-sm" key={index}>
+                                            <li className="flex items-center text-xs sm:text-sm" key={index}>
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="17" className="mr-4 bg-gray-200 fill-[#333] rounded-full p-[3px]" viewBox="0 0 24 24">
-                                                    <path d="M9.707 19.121a.997.997 0 0 1-1.414 0l-5.646-5.647a1.5 1.5 0 0 1 0-2.121l.707-.707a1.5 1.5 0 0 1 2.121 0L9 14.171l9.525-9.525a1.5 1.5 0 0 1 2.121 0l.707.707a1.5 1.5 0 0 1 0 2.121z" data-original="#000000" />
+                                                    <path d="M9.707 19.121a.997.997 0 0 1-1.414 0l-5.646-5.647a1.5 1.5 0 0 1 0-2.121l.707-.707a1.5 1.5 0 0 1 2.121 0L9 14.171l9.525-9.525a1.5 1.5 0 0 1 2.121 0l.707.707a1.5 1.5 0 0 1 0 2.121z" />
                                                 </svg>
                                                 {feature}
                                             </li>
