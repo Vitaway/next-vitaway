@@ -24,7 +24,7 @@ function Hero() {
                             <span className="bg-gradient-to-r from-[#0878de] to-white bg-clip-text text-transparent capitalize"> Access To Virtual Health Services for Enhanced Well-being</span>
                         </h1>
 
-                        <p className="mt-4 text-base text-white text-wwhite lg:mt-8 sm:text-xl">Virtual healthcare solutions to empower individuals from all walks of life, promoting overall well-being and health equity.</p>
+                        <p className="mt-4 text-base text-white lg:mt-8 sm:text-xl">Virtual healthcare solutions to empower individuals from all walks of life, promoting overall well-being and health equity.</p>
 
                         <div>
 
