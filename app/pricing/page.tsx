@@ -70,7 +70,7 @@ function Pricing() {
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-8 gap-x-6 mt-10 max-w-sm sm:max-w-none mx-auto">
                         {pricingTable.map((plan, index) => (
-                            <div key={index} className={`bg-gray-100 text-slate-700 rounded-3xl overflow-hidden p-8 ${plan.highlighted ? 'scale-[1.05] shadow-[0_2px_40px_-4px_rgba(93,96,127,0.2)]' : ''}`} style={{ border: '1px solid #e7dfd7' }}>
+                            <div key={index} className={`bg-gray-100 text-slate-700 rounded-3xl overflow-hidden ${plan.pricing ? 'lg:flex lg:col-span-3' : ''} p-8 ${plan.highlighted ? 'scale-[1.05] shadow-[0_2px_40px_-4px_rgba(93,96,127,0.2)]' : ''}`} style={{ border: '1px solid #e7dfd7' }}>
                                 <div className="text-left">
                                     <h4 className="text-2xl sm:text-3xl font-semibold">{plan.title}</h4>
 
@@ -118,7 +118,8 @@ function Pricing() {
                                         </button>
                                     </Link>
                                 </div>
-                                <div className="mt-8">
+                                
+                                <div className={`mt-8 ${plan.pricing ? 'lg:ml-10' : ''}`}>
                                     <h4 className="text-md sm:text-lg font-bold mb-4">Plan Included</h4>
 
                                     <ul className="space-y-4">
