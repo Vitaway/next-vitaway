@@ -108,7 +108,7 @@ function Footer() {
                             <div>
                                 <label className="sr-only">Email</label>
                                 <input type="email" name="email" value={email}
-                                    onChange={(e) => setEmail(e.target.value)} id="email" placeholder="Enter your email" className="block w-full p-4 text-gray-200 placeholder-gray-500 border-none outline-none" />
+                                    onChange={(e) => setEmail(e.target.value)} id="email" placeholder="Enter your email" className="block w-full p-4 text-slate-700 placeholder-gray-500 border-none outline-none" />
                             </div>
 
                             <button
