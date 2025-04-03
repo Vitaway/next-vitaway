@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Logo from '../logo'
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import ShoppingCart from '@/app/shop/shopping-cart';
 
 function BottomNavbar() {
     const pathname = usePathname();
@@ -32,12 +33,15 @@ function BottomNavbar() {
                     <Link href="/" title="" className={`text-base transition-all duration-200 hover:text-opacity-80 ${pathname === '/' ? 'text-slate-900 font-bold' : 'text-black'}`}> Home </Link>
                     <Link href="/serves" title="" className={`text-base transition-all duration-200 hover:text-opacity-80 ${pathname === '/serves' ? 'text-slate-900 font-bold' : 'text-black'}`}> Who we serve </Link>
                     <Link href="/indivituals" title="" className={`text-base transition-all duration-200 hover:text-opacity-80 ${pathname === '/indivituals' ? 'text-slate-900 font-bold' : 'text-black'}`}> For Individuals </Link>
-                    <Link href="https://vitawell.vitaway.org" title="" className={`text-base transition-all duration-200 hover:text-opacity-80 text-black`}> Vitawell </Link>
+                    <Link href="/shop" title="" className={`text-base transition-all duration-200 hover:text-opacity-80 ${pathname === '/shop' ? 'text-slate-900 font-bold' : 'text-black'}`}> Shop </Link>
                     <Link href="/pricing" title="" className={`text-base transition-all duration-200 hover:text-opacity-80 ${pathname === '/pricing' ? 'text-slate-900 font-bold' : 'text-black'}`}> Pricing </Link>
                 </div>
 
                 <div className="hidden lg:flex lg:items-center lg:justify-center lg:space-x-10 font-medium">
                     <Link href="/contacts" title="" className={`text-base transition-all duration-200 hover:text-opacity-80 ${pathname === '/contacts' ? 'text-slate-900 font-bold' : 'text-black'}`}> Contact </Link>
+                    <div title="" className={`text-base transition-all duration-200 hover:text-opacity-80`}>
+                        <ShoppingCart />
+                    </div>
                     <Link href="/download" title="" className="hidden lg:inline-flex items-center justify-center px-5 py-2.5 text-base transition-all duration-200 hover:text-white hover:bg-indigo-800 focus:text-black focus:bg-indigo-300 font-semibold text-white bg-black rounded-full" role="button"> Download </Link>
                 </div>
             </div>
@@ -49,7 +53,7 @@ function BottomNavbar() {
                             <Link href="/" title="" className={`text-base transition-all duration-200 hover:text-opacity-80 ${pathname === '/' ? 'text-slate-900 font-bold' : 'text-black'}`}> Home </Link>
                             <Link href="/serves" title="" className={`text-base transition-all duration-200 hover:text-opacity-80 ${pathname === '/serves' ? 'text-slate-900 font-bold' : 'text-black'}`}> Who we serve </Link>
                             <Link href="/indivituals" title="" className={`text-base transition-all duration-200 hover:text-opacity-80 ${pathname === '/indivituals' ? 'text-slate-900 font-bold' : 'text-black'}`}> For Individuals </Link>
-                            <Link href="https://vitawell.vitaway.org" title="" className={`text-base transition-all duration-200 hover:text-opacity-80 text-black`}> Vitawell </Link>
+                            <Link href="/shop" title="" className={`text-base transition-all duration-200 hover:text-opacity-80 ${pathname === '/shop' ? 'text-slate-900 font-bold' : 'text-black'}`}> Shop </Link>
                             <Link href="/pricing" title="" className={`text-base transition-all duration-200 hover:text-opacity-80 ${pathname === '/pricing' ? 'text-slate-900 font-bold' : 'text-black'}`}> Pricing </Link>
                             <Link href="/contacts" title="" className={`text-base transition-all duration-200 hover:text-opacity-80 ${pathname === '/contacts' ? 'text-slate-900 font-bold' : 'text-black'}`}> Contact </Link>
                             <Link href="/download" title="" className="lg:inline-flex items-center justify-center px-5 py-2.5 text-base transition-all duration-200 hover:text-white hover:bg-indigo-800 focus:text-black focus:bg-indigo-300 font-semibold text-white bg-black rounded-full" role="button"> Download </Link>
