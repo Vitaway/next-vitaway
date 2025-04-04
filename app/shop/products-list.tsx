@@ -1,0 +1,56 @@
+'use client';
+
+import React, { useEffect, useState } from 'react'
+import ProductCard from '../components/cards/product-card';
+
+function ProductsList() {
+    const [products, setProducts] = useState([]);
+	const [loading, setLoading] = useState(true);
+	const inventoryApiUrl = process.env.NEXT_ENVENTORY_API_URL || 'http://127.0.0.1:8000/api';
+
+	useEffect(() => {
+		const fetchProducts = async () => {
+			try {
+				setLoading(true);
+
+				const response = await fetch(`${inventoryApiUrl}/products`);
+				const data = await response.json();
+
+				if (!response.ok) {
+					throw new Error('Network response was not ok');
+				}
+
+				setLoading(false);
+				setProducts(data.data);
+			} catch (error) {
+				console.error('Error fetching products:', error);
+			}
+		};
+
+		fetchProducts();
+	}, [inventoryApiUrl]);
+
+    return (<>
+        <section className="bg-white">
+            <div className="px-4 py-20 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-20 lg:px-10 lg:py-20">
+                <div className="flex flex-wrap">
+                    <div className="w-full mb-6">
+                        <h2 className="text-xl text-slate-700 font-bold">Popular Products</h2>
+                    </div>
+                </div>
+
+                <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:gap-3 xl:grid-cols-4">
+                    {loading && <div className="text-center">Loading...</div>}
+					{products && products.map((product, index) => (
+						<ProductCard 
+							key={index} 
+							product={product} 
+						/>
+					))}
+                </div>
+            </div>
+        </section>
+    </>)
+}
+
+export default ProductsList;

@@ -15,7 +15,8 @@ const nextConfig: NextConfig = {
       "lh3.googleusercontent.com",
       "diplo-media.s3.eu-central-1.amazonaws.com",
       "encrypted-tbn0.gstatic.com",
-      "tefconnect.com"
+      "tefconnect.com",
+      "127.0.0.1"
     ],
   },
 };

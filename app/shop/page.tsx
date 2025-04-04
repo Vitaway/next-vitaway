@@ -1,31 +1,8 @@
-import React from 'react'
 import GuestLayout from '../layouts/GuestLayout'
 import BackgroundBlurImage from '../components/design/background-blur-image'
-import ProductCard from '../components/cards/product-card'
-import ShoppingCart from './shopping-cart';
+import ProductsList from './products-list';
 
 function Shop() {
-	const products = [
-		{
-			title: "Vitamic C Supplements",
-			caption: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quod, mollitia?",
-			category: "Smothy & Chill",
-			image: "https://images.unsplash.com/photo-1464226184884-fa280b87c399?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-			price: "RWF 20,000",
-			stars: 4,
-			soldout: true,
-		},
-		{
-			title: "Source paper and Chill",
-			caption: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quod, mollitia?",
-			category: "Smothy & Chill",
-			image: "https://images.unsplash.com/photo-1464226184884-fa280b87c399?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-			price: "RWF 6,000",
-			stars: 4,
-			soldout: false,
-		},
-	];
-
 	return (
 		<GuestLayout>
 			<div className="bg-gradient-to-b from-[#272749] to-[#111827] relative">
@@ -63,21 +40,8 @@ function Shop() {
 				</div>
 			</div>
 
-			<section className="bg-white">
-				<div className="px-4 py-20 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-20 lg:px-10 lg:py-20">
-					<div className="flex flex-wrap">
-						<div className="w-full mb-6">
-							<h2 className="text-xl text-slate-700 font-bold">Popular Products</h2>
-						</div>
-					</div>
-
-					<div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:gap-3 xl:grid-cols-4">
-						{products && products.map((product, index) => (<ProductCard product={product} key={index} />))}
-					</div>
-				</div>
-			</section>
-
-			{/* <ShoppingCart /> */}
+			{/* Product List */}
+			<ProductsList />
 		</GuestLayout>
 	)
 }

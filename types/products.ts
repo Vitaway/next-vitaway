@@ -1,9 +1,10 @@
 export interface Products {
-    title: string;
-    category: string;
-    image: string;
+    id: number | string;
+    name: string;
+    slug: string;
+    category: { name: string };
+    images: Array<{ image_url: string }>;
     price: string;
-    stars: number;
-    soldout: boolean;
-    caption: string;
+    description: string;
+    quantity?: number | string;
 }
