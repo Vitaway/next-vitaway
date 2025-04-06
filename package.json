@@ -17,6 +17,7 @@
     "cloudinary": "^2.6.0",
     "datauri": "^4.1.0",
     "flags": "^3.2.0",
+    "framer-motion": "^12.6.3",
     "next": "15.2.0",
     "next-auth": "^4.24.11",
     "next-cloudinary": "^6.16.0",
