@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import ProductCard from '../components/cards/product-card';
+import ProductCardSkeleton from '../components/cards/product-card-skeleton';
 
 function ProductsList() {
     const [products, setProducts] = useState([]);
@@ -40,13 +41,9 @@ function ProductsList() {
                 </div>
 
                 <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:gap-3 xl:grid-cols-4">
-                    {loading && <div className="text-center">Loading...</div>}
-					{products && products.map((product, index) => (
-						<ProductCard 
-							key={index} 
-							product={product} 
-						/>
-					))}
+					{loading 
+						? Array(8).fill(0).map((_, index) => <ProductCardSkeleton key={index} />)
+						: products.map((product, index) => (<ProductCard key={index} product={product} />))}
                 </div>
             </div>
         </section>

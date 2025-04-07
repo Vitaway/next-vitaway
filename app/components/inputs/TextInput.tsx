@@ -26,10 +26,10 @@ const TextInput: React.FC<TextInputProps> = ({
   disabled = false,
 }) => {
   return (
-    <div className="mt-3">
-      <label className="font-semibold text-slate-700 capitalize">{label}</label>
+    <div className="mt-2">
+      <label className="font-semibold text-slate-700 capitalize text-md">{label}</label>
 
-      <div className="mt-2.5 relative text-gray-400 focus-within:text-gray-600 transition-all duration-200">
+      <div className="mt-2 relative text-gray-400 focus-within:text-gray-600 transition-all duration-200">
         {children && (
           <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
             {children}
@@ -43,7 +43,7 @@ const TextInput: React.FC<TextInputProps> = ({
           onKeyDown={onKeyDown}
           placeholder={placeholder}
           disabled={disabled}
-          className={`block w-full py-4 pl-12 pr-4 transition-all duration-200 border rounded-md focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600 ${
+          className={`block w-full py-3 pl-12 pr-4 transition-all duration-200 border rounded-md focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600 ${
             errorMessage
               ? "text-red-700 placeholder-red-500 border-red-200 bg-red-50"
               : "text-black placeholder-gray-500 border-gray-200 bg-gray-50"

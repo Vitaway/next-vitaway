@@ -31,7 +31,7 @@ const FormModal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
           exit={{ opacity: 0 }}
         >
           <motion.div
-            className="relative w-full max-w-lg p-6 mx-4 bg-white rounded-lg shadow-lg sm:mx-6 md:mx-8 lg:mx-auto"
+            className="relative w-full max-w-xl max-h-[90vh] overflow-auto p-6 mx-4 bg-white rounded-lg shadow-lg sm:mx-6 md:mx-8 lg:mx-auto"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}

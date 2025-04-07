@@ -10,11 +10,7 @@ function ProductCard({ product }: { product: Products}) {
         <div className="relative rounded-2xl border bg-white border-gray-200">
             <div className="flex-auto">
                 <div className="text-center relative flex justify-center">
-                    {/* {product.soldout && <div className="absolute top-2 left-2">
-                        <span className="inline-block p-1 text-center font-semibold align-baseline leading-none rounded bg-red-600 text-white text-sm">Soldout</span>
-                    </div>} */}
-
-                    <div className='w-full h-[170px] overflow-hidden rounded-t-2xl'>
+                    <div className='w-full h-[170px] overflow-hidden rounded-t-2xl border-b border-gray-200'>
                         {typeof product.images[0] === 'object' && product.images[0] !== null ? (
                             <Image width={500} height={500} src={product.images[0].image_url} alt={product.name} className="w-full h-full object-cover" />
                         ) : null}
@@ -85,7 +81,7 @@ function ProductCard({ product }: { product: Products}) {
                             <span className="text-gray-900 font-semibold">RWF { Number(product.price).toLocaleString() }</span>
                         </div>
                         <div>
-                            <button type="button" onClick={() => addToCart(product)} className="inline-flex px-3 py-1 rounded-md text-sm items-center gap-x-1 bg-gradient-to-b from-[#272749] to-[#111827] text-white disabled:opacity-50 disabled:pointer-events-none hover:text-white focus:outline-none focus:ring-4">
+                            <button type="button" onClick={() => addToCart(product)} className="inline-flex cursor-pointer px-3 py-1 rounded-md text-sm items-center gap-x-1 bg-[#272749] hover:bg-[#272749]/90 text-white disabled:opacity-50 disabled:pointer-events-none hover:text-white focus:outline-none focus:ring-4">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"><path opacity=".4" d="M6 12h12" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path><path d="M12 18V6" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path></svg>                                
                                 <span>Add</span>
                             </button>
