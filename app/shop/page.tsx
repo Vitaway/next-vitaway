@@ -34,7 +34,7 @@ function Shop() {
 							Shop Now
 						</h2>
 						<p className="text-base text-gray-300 md:text-lg font-normal">
-							Lorem ipsum dolor sit amet consectetur adipisicing elit. Minima laborum adipisci necessitatibus hic repudiandae quis excepturi accusamus nesciunt debitis placeat?
+							Discover our exclusive collection of products tailored to meet your needs. From everyday nutritional to premium items, find everything you need in one place.
 						</p>
 					</div>
 				</div>

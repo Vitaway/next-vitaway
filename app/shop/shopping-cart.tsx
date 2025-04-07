@@ -29,6 +29,7 @@ function ShoppingCart() {
     const handlePaymentCallback = () => {
         setMessage('Payment Approved and Processed successful. Thank you for your order!');
         setMessageType('success');
+        closeCart();
     }
 
     return (
