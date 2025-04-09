@@ -8,4 +8,5 @@ export interface Blogs {
     caption: string;
     link: string;
     slug: string;
+    author: string;
 }

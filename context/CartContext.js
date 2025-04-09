@@ -61,7 +61,6 @@ export const CartProvider = ({ children }) => {
   };
 
   const checkout = async () => {
-    console.log('Proceeding to checkout', cart);
     await clearCart();
   };
 

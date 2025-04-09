@@ -8,9 +8,9 @@ function BlogCard({ blog }: { blog: Blogs }) {
     return (<>
         <Link href={`/blogs/${blog.slug}`}>
             <div>
-                <div className="block aspect-w-4 aspect-h-3">
+                <div className="block aspect-w-4 aspect-h-3 max-h-[250px] min-h-[250px] overflow-hidden rounded-xl bg-gray-100">
                     {typeof blog.images[0] === 'object' && blog.images[0] !== null ? (
-                        <Image width={500} height={500} className="object-cover w-full h-full rounded-xl" src={blog.images[0].image_url} alt={blog.title} />
+                        <Image width={500} height={500} className="object-cover w-full h-full rounded-xl max-h-[250px] min-h-[250px]" src={blog.images[0].image_url} alt={blog.title} />
                     ) : null}
                 </div>
 
@@ -19,7 +19,7 @@ function BlogCard({ blog }: { blog: Blogs }) {
                 </span>
 
                 <p className="mt-3 text-xl font-semibold text-black line-clamp-2">{blog.title}</p>
-                <p className="mt-4 text-gray-600 line-clamp-3">{blog.caption}</p>
+                <p className="mt-4 text-gray-600 line-clamp-2">{blog.caption}</p>
                 <div className="h-0 mt-6 mb-4 border-t-2 border-gray-200 border-dashed"></div>
                 <span className="block text-sm font-bold tracking-widest text-gray-500 uppercase">
                     {new Date(blog.created_at).toLocaleDateString('en-US', {
