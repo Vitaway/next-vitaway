@@ -16,7 +16,8 @@ const nextConfig: NextConfig = {
       "diplo-media.s3.eu-central-1.amazonaws.com",
       "encrypted-tbn0.gstatic.com",
       "tefconnect.com",
-      "127.0.0.1"
+      "127.0.0.1",
+      "ehr.vitaway.org",
     ],
   },
 };
