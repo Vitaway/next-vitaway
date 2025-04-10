@@ -6,6 +6,7 @@ import Partenership from "./components/sections/partenership";
 import Services from "./components/sections/services";
 import Video from "./components/sections/video";
 import GuestLayout from "./layouts/GuestLayout";
+import Blogs from "./components/sections/blogs";
 
 export const metadata: Metadata = {
   title: "Healthcare Solutions From all walks of Life",
@@ -42,7 +43,7 @@ export default function Home() {
       <Video />
       <DiabeteProgram />
       {/* <Testimonies /> */}
-      {/* <Blogs /> */}
+      <Blogs />
       <Partenership />
     </GuestLayout>
   </>);

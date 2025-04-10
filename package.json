@@ -17,6 +17,8 @@
     "cloudinary": "^2.6.0",
     "datauri": "^4.1.0",
     "flags": "^3.2.0",
+    "framer-motion": "^12.6.3",
+    "keen-slider": "^6.8.6",
     "next": "15.2.0",
     "next-auth": "^4.24.11",
     "next-cloudinary": "^6.16.0",
@@ -24,7 +26,8 @@
     "nprogress": "^0.2.0",
     "prisma": "^6.5.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-icons": "^5.5.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

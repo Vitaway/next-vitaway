@@ -23,9 +23,9 @@ function Blogs() {
             <section className=" bg-white px-4 py-20 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-20 lg:px-10 lg:py-20">
                 <div className="flex items-end justify-between">
                     <div className="flex-1 text-center lg:text-left">
-                        <h2 className="text-3xl font-bold leading-tight text-black sm:text-4xl lg:text-5xl">Latest from blog</h2>
+                        <h2 className="text-3xl font-bold leading-tight text-black sm:text-3xl lg:text-4xl">Latest from blog</h2>
                         <p className="max-w-xl mx-auto mt-4 text-sm leading-relaxed text-gray-600 lg:mx-0">
-                            Dive into our latest blog posts and stay updated with the newest trends, tips, and insights in health and wellness. Discover expert advice and inspiring stories to help you lead a healthier, happier life.
+                            Stay updated with our latest blogs and articles. Explore expert insights, tips, and inspiring stories to help you stay informed and lead a healthier, happier life.
                         </p>
                     </div>
                 </div>
