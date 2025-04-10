@@ -54,7 +54,7 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
         setLoading(true);
 
         try {
-            const response = await fetch(`${process.env.NEXT_ENVENTORY_API_URL}/api/products/payments/complete`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_ENVENTORY_API_URL}/api/products/payments/complete`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
                 body: JSON.stringify({ transaction_id: invoiceNumber }),
@@ -85,7 +85,7 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
     const makePayment = (invoiceNumber: string) => {
         if (typeof window.IremboPay !== 'undefined') {
             window.IremboPay.initiate({
-                publicKey: "pk_live_da91b566a86e4341a1348103256f6195",
+                publicKey: process.env.NEXT_PUBLIC_IREMBOPAY_PUBLIC_KEY || '',
                 invoiceNumber: invoiceNumber,
                 locale: window.IremboPay.locale.EN,
                 callback: (err, resp) => {
@@ -144,7 +144,7 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
                 ]
             };
 
-            const response = await fetch(`${process.env.NEXT_ENVENTORY_API_URL}/api/products/payments/init`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_ENVENTORY_API_URL}/api/products/payments/init`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
                 body: JSON.stringify(payload),
@@ -246,7 +246,7 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
     useEffect(() => {
         const script = document.createElement('script');
 
-        script.src = "https://dashboard.sandbox.irembopay.com/assets/payment/inline.js";
+        script.src = process.env.NEXT_PUBLIC_IREMBOPAY_JS_URL || '';
         script.async = true;
 
         document.body.appendChild(script);
