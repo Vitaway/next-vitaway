@@ -21,7 +21,7 @@ export const CartProvider = ({ children }) => {
     await localStorage.setItem('cart', JSON.stringify(updatedCart));
   };
 
-  const addToCart = async (item) => {
+  const addToCart = async (item, quantity = 1) => {
     setCart((prevCart) => {
       const existing = prevCart.find((i) => i.id === item.id);
 
@@ -30,7 +30,7 @@ export const CartProvider = ({ children }) => {
         setMessage(item.name + ' quantity updated!');
 
         const updatedCart = prevCart.map((i) =>
-          i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
+          i.id === item.id ? { ...i, quantity: i.quantity + quantity } : i
         );
         saveCartToLocalStorage(updatedCart);
         return updatedCart;
@@ -39,7 +39,7 @@ export const CartProvider = ({ children }) => {
       setType('success');
       setMessage(item.name + ' added to cart!');
 
-      const updatedCart = [...prevCart, { ...item, quantity: 1 }];
+      const updatedCart = [...prevCart, { ...item, quantity }];
       saveCartToLocalStorage(updatedCart);
       return updatedCart;
     });

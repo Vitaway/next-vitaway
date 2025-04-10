@@ -24,7 +24,7 @@ export default function ImageSlider({ images, alt = 'Image' }: ImageSliderProps)
     };
 
     return (
-        <div className="relative w-full mb-6">
+        <div className="relative w-full">
             <div ref={sliderRef} className="keen-slider rounded-lg overflow-hidden">
                 {images.map((src, index) => (
                     <div key={index} className="keen-slider__slide">
@@ -33,7 +33,7 @@ export default function ImageSlider({ images, alt = 'Image' }: ImageSliderProps)
                             alt={`${alt} ${index + 1}`}
                             width={500}
                             height={600}
-                            className="w-full h-auto object-cover"
+                            className="w-full h-auto max-h-[400px] min-h-[300] object-cover border border-gray-200 rounded-xl"
                         />
                     </div>
                 ))}

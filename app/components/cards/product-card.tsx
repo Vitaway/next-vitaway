@@ -25,7 +25,7 @@ function ProductCard({ product }: { product: Products }) {
 
                     <Link href={`/shop/${product.slug}`}>
                         <div className="flex flex-col">
-                            <h3 className="text-base truncate"><a href="#!" className='text-slate-800 font-bold'>{product.name}</a></h3>
+                            <h3 className="text-base truncate"><span className='text-slate-800 font-bold'>{product.name}</span></h3>
                             <p className='font-semibold text-sm text-slate-700 line-clamp-2 mt-2'>{product.description}</p>
 
                             <div className="flex items-center mt-2">
