@@ -54,7 +54,7 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
         setLoading(true);
 
         try {
-            const response = await fetch('http://127.0.0.1:8000/api/products/payments/complete', {
+            const response = await fetch(`${process.env.NEXT_ENVENTORY_API_URL}/api/products/payments/complete`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
                 body: JSON.stringify({ transaction_id: invoiceNumber }),
@@ -144,7 +144,7 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
                 ]
             };
 
-            const response = await fetch('http://127.0.0.1:8000/api/products/payments/init', {
+            const response = await fetch(`${process.env.NEXT_ENVENTORY_API_URL}/api/products/payments/init`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
                 body: JSON.stringify(payload),

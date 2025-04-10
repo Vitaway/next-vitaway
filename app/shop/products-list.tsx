@@ -8,7 +8,7 @@ import Image from 'next/image';
 function ProductsList() {
     const [products, setProducts] = useState([]);
 	const [loading, setLoading] = useState(true);
-	const inventoryApiUrl = process.env.NEXT_ENVENTORY_API_URL || 'http://127.0.0.1:8000/api';
+	const inventoryApiUrl = process.env.NEXT_ENVENTORY_API_URL;
 
 	useEffect(() => {
 		const fetchProducts = async () => {

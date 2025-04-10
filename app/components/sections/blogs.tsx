@@ -14,7 +14,7 @@ function Blogs() {
         try {
             setLoading(true);
 
-            const res = await fetch(`http://127.0.0.1:8000/api/blogs`);
+            const res = await fetch(`${process.env.NEXT_ENVENTORY_API_URL}/api/blogs`);
 
             if (!res.ok) {
                 setMessage('Failed to fetch blogs. Please try again later.');

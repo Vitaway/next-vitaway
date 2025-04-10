@@ -23,7 +23,7 @@ const ProductDetails: React.FC = () => {
         if (slug) {
             const fetchBlog = async () => {
                 try {
-                    const res = await fetch(`http://127.0.0.1:8000/api/products/${slug}`);
+                    const res = await fetch(`${process.env.NEXT_ENVENTORY_API_URL}/api/products/${slug}`);
 
                     if (!res.ok) {
                         throw new Error('Blog not found');
