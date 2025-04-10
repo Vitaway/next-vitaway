@@ -4,6 +4,7 @@ import { useCart } from '@/context/CartContext';
 import { Products } from '@/types/products';
 import CheckoutForm from '../components/forms/checkout-form';
 import AlertMessage from '../components/alerts/alert-message';
+import Image from 'next/image';
 
 interface CartItem {
     price: number;
@@ -97,10 +98,15 @@ function ShoppingCart() {
                 {/* Modal Body */}
                 <div className="offcanvas-body p-4">
                     <div>
+                        {cart.length === 0 && <div className="text-center flex items-center justify-center">
+                            <div className=''>
+                                <Image src='/svgs/carts.svg' alt='blogs' width={300} height={300} />
+                                <span className='font-bold text-slate-700'>No Items in Cart.</span>
+                            </div>
+                        </div>}
+
                         <ul className="list-none overflow-auto h-[70vh]">
-                            {cart.length === 0 ? (<p>No items in cart.</p>) : (<>
-                                {cart.map((product: Products) => (<ShopCartItem key={product.id} product={product} onRemoveFromCart={removeFromCart} />))}
-                            </>)}
+                           {cart && cart.map((product: Products) => (<ShopCartItem key={product.id} product={product} onRemoveFromCart={removeFromCart} />))}
                         </ul>
 
                         <div className="flex justify-between border-t border-gray-200 pt-4">
