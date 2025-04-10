@@ -15,7 +15,7 @@ function ProductsList() {
 			try {
 				setLoading(true);
 
-				const response = await fetch(`${inventoryApiUrl}/products`);
+				const response = await fetch(`${inventoryApiUrl}/api/products`);
 				const data = await response.json();
 
 				if (!response.ok) {
