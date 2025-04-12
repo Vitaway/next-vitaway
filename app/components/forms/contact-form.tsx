@@ -17,7 +17,7 @@ function ContactForm() {
         setSuccess('');
 
         try {
-            const response = await fetch('/api/contacts', {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_ENVENTORY_API_URL}/api/contacts`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ fullname, email, message }),
@@ -93,7 +93,7 @@ function ContactForm() {
 
                     {error && <p className="text-xs text-red-500 sm:text-sm font-normal">{error}</p>}
                     {success && <p className="text-xs text-green-500 sm:text-sm font-normal">{success}</p>}
-                    
+
                     <p className="text-xs text-gray-600 sm:text-sm font-normal">
                         We respect your privacy. <span className="text-green-600"></span>
                     </p>
