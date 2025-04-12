@@ -34,12 +34,12 @@ function ShopCartItem({ product, onRemoveFromCart }: Props) {
                         className="rounded-lg object-cover w-14 h-14 border border-gray-200"
                     />
                     <div className="ml-4">
-                        <h6 className="font-semibold text-sm">{product.name}</h6>
+                        <h6 className="font-semibold text-sm line-clamp-2">{product.name}</h6>
                         <p className="text-xs text-gray-500 line-clamp-2 max-w-52 mt-2">{product.description}</p>
                         
                         <button onClick={() => onRemoveFromCart(product.id)} className="text-red-600 border border-red-200 rounded-md px-1 py-1 text-xs mt-2 flex items-center">
                             <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M21 5.98c-3.33-.33-6.68-.5-10.02-.5-1.98 0-3.96.1-5.94.3L3 5.98" stroke="#f47373" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path opacity=".34" d="m8.5 4.97.22-1.31C8.88 2.71 9 2 10.69 2h2.62c1.69 0 1.82.75 1.97 1.67l.22 1.3" stroke="#f47373" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="m18.85 9.14-.65 10.07C18.09 20.78 18 22 15.21 22H8.79C6 22 5.91 20.78 5.8 19.21L5.15 9.14" stroke="#f47373" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path opacity=".34" d="M10.33 16.5h3.33M9.5 12.5h5" stroke="#f47373" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-                            Remove
+                            <span className='ml-2'>Remove</span>
                         </button>
                     </div>
                 </div>

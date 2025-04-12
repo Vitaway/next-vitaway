@@ -68,7 +68,7 @@ function ShoppingCart() {
             </div>
 
             {/* Cart Modal */}
-            <div className={`fixed top-0 right-0 bottom-0 bg-white rounded-tl-xl rounded-bl-xl border border-gray-200 z-20 text-slate-700 shadow-md transform transition-transform duration-300 ${isCartOpen ? 'translate-x-0' : 'translate-x-full'}`} id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+            <div className={`fixed max-w-xl top-0 right-0 bottom-0 bg-white rounded-tl-xl rounded-bl-xl border border-gray-200 z-20 text-slate-700 shadow-md transform transition-transform duration-300 ${isCartOpen ? 'translate-x-0' : 'translate-x-full'}`} id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
                 <div className="border-b px-5 py-5 relative border-gray-300">
                     <div>
                         <h5 className="text-xl font-bold">Shopping Cart</h5>
