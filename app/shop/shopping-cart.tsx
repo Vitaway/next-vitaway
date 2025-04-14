@@ -70,6 +70,9 @@ function ShoppingCart() {
             {/* Cart Modal */}
             <div className={`fixed max-w-xl top-0 right-0 bottom-0 bg-white rounded-tl-xl rounded-bl-xl border border-gray-200 z-20 text-slate-700 shadow-md transform transition-transform duration-300 ${isCartOpen ? 'translate-x-0' : 'translate-x-full'}`} id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
                 <div className="border-b px-5 py-5 relative border-gray-300">
+                    <div className="bg-green-400/50 w-full px-5 py-2 mt-5 rounded-3xl text-sm mb-5">
+                        <p>Free delivery anywhere for order above 50K in kigali</p>
+                    </div>
                     <div>
                         <h5 className="text-xl font-bold">Shopping Cart</h5>
                         <span className='mt-1'>Total: {Number(total).toLocaleString()}</span>
@@ -105,8 +108,8 @@ function ShoppingCart() {
                             </div>
                         </div>}
 
-                        <ul className="list-none overflow-auto h-[70vh]">
-                           {cart && cart.map((product: Products) => (<ShopCartItem key={product.id} product={product} onRemoveFromCart={removeFromCart} />))}
+                        <ul className="list-none overflow-auto max-h-[58vh]">
+                            {cart && cart.map((product: Products) => (<ShopCartItem key={product.id} product={product} onRemoveFromCart={removeFromCart} />))}
                         </ul>
 
                         <div className="flex justify-between border-t border-gray-200 pt-4">
@@ -117,8 +120,8 @@ function ShoppingCart() {
                                 </div>
                             )}
 
-                            <div onClick={closeCart} className="rounded-lg cursor-pointer px-3 py-2 inline-flex items-center gap-x-2 bg-gray-800 text-white border-gray-800 disabled:opacity-50 disabled:pointer-events-none hover:text-white hover:bg-gray-900 hover:border-gray-900 active:bg-gray-900 active:border-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300">
-                                <span>Continue Shopping</span>
+                            <div onClick={closeCart} className="rounded-lg cursor-pointer px-3 py-2 inline-flex items-center gap-x-2 bg-white text-red-700 borde  disabled:opacity-50 disabled:pointer-events-none hover:text-white hover:bg-red-900 hover:border-red-900 active:bg-red-900 active:border-red-900 focus:outline-none focus:ring-4 focus:ring-red-300">
+                                <span>Cancel</span>
                                 <span className='ml-2'><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"><path stroke="#ffffff" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" strokeWidth="1.5" d="M14.43 5.93L20.5 12l-6.07 6.07"></path><path stroke="#ffffff" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" strokeWidth="1.5" d="M3.5 12h16.83" opacity=".4"></path></svg></span>
                             </div>
                         </div>

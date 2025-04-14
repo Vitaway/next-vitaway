@@ -6,6 +6,7 @@ import { useCart } from '@/context/CartContext';
 import { Products } from '@/types/products';
 import AlertMessage from '../alerts/alert-message';
 import FetchLoader from '../spinners/fetching-loader';
+import ShopCartItem from '@/app/shop/shop-cart-item';
 
 declare global {
     interface Window {
@@ -22,6 +23,11 @@ declare global {
             closeModal: () => void;
         };
     }
+}
+
+interface CartItem {
+    price: number;
+    quantity: number;
 }
 
 function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose: () => void, callback: () => void }) {
@@ -59,7 +65,10 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
 
     const [customerDiffRecipient, setCustomerDiffRecipient] = useState<boolean>(false);
 
-    const { cart, clearCart } = useCart();
+    const { cart, clearCart, removeFromCart } = useCart();
+
+    const total: number = cart.reduce((sum: number, item: CartItem) => sum + item.price * item.quantity, 0);
+    const totalItems: number = cart.reduce((sum: number, item: CartItem) => sum + item.quantity, 0);
 
     const sendPaymentCallback = async (invoiceNumber: string) => {
         setLoading(true);
@@ -296,169 +305,184 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
     }, []);
 
     return (<>
-        <FormModal isOpen={isOpen} onClose={onClose}>
+        <FormModal width='max-w-[80vw]' height='max-h-[90vh]' isOpen={isOpen} onClose={onClose}>
             <div>
                 <h1 className='text-slate-700 text-xl font-semibold'>Checkout Form</h1>
 
-                <div className="flex flex-col gap-2 p-4">
-                    <TextInput
-                        label="Full name"
-                        placeholder="Eg: John Doe"
-                        type='text'
-                        value={customerName}
-                        onChange={setCustomerName}
-                        errorMessage={customerNameError}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M21 7v10c0 3-1.5 5-5 5H8c-3.5 0-5-2-5-5V7c0-3 1.5-5 5-5h8c3.5 0 5 2 5 5Z" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path><path opacity=".4" d="M14.5 4.5v2c0 1.1.9 2 2 2h2M8 13h4M8 17h8" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path></svg>
-                    </TextInput>
-                    <TextInput
-                        label="Email Address"
-                        placeholder="Eg: example@example.com"
-                        type='email'
-                        value={customerEmail}
-                        onChange={setCustomerEmail}
-                        errorMessage={customerEmailError}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M21 7v10c0 3-1.5 5-5 5H8c-3.5 0-5-2-5-5V7c0-3 1.5-5 5-5h8c3.5 0 5 2 5 5Z" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path><path opacity=".4" d="M14.5 4.5v2c0 1.1.9 2 2 2h2M8 13h4M8 17h8" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path></svg>
-                    </TextInput>
-                    <div>
+                <div className='flex w-full'>
+                    <div className="flex flex-col gap-2 p-4 max-w-1/2">
                         <TextInput
-                            label="Phone Number"
-                            placeholder="Eg: 0712345678"
-                            type='number'
-                            value={customerPhone}
-                            onChange={setCustomerPhone}
-                            errorMessage={customerPhoneError}>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M21 7v10c0 3-1.5 5-5 5H8c-3.5 0-5-2-5-5V7c0-3 1.5-5 5-5h8c3.5 0 5 2 5 5Z" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path><path opacity=".4" d="M14.5 4.5v2c0 1.1.9 2 2 2h2M8 13h4M8 17h8" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path></svg>
-                        </TextInput>
-                        <TextInput
-                            label="Address"
-                            placeholder="Eg: 123 Main St"
+                            label="Full name"
+                            placeholder="Eg: John Doe"
                             type='text'
-                            value={customerAddress}
-                            onChange={setCustomerAddress}
-                            errorMessage={customerAddressError}>
+                            value={customerName}
+                            onChange={setCustomerName}
+                            errorMessage={customerNameError}>
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M21 7v10c0 3-1.5 5-5 5H8c-3.5 0-5-2-5-5V7c0-3 1.5-5 5-5h8c3.5 0 5 2 5 5Z" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path><path opacity=".4" d="M14.5 4.5v2c0 1.1.9 2 2 2h2M8 13h4M8 17h8" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path></svg>
                         </TextInput>
-                    </div>
 
-
-
-                    <div className='flex gap-2'>
                         <TextInput
-                            label="City"
-                            placeholder="Eg: Kigali"
-                            type='text'
-                            value={customerCity}
-                            onChange={setCustomerCity}
-                            errorMessage={customerCityError}>
+                            label="Email Address"
+                            placeholder="Eg: example@example.com"
+                            type='email'
+                            value={customerEmail}
+                            onChange={setCustomerEmail}
+                            errorMessage={customerEmailError}>
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M21 7v10c0 3-1.5 5-5 5H8c-3.5 0-5-2-5-5V7c0-3 1.5-5 5-5h8c3.5 0 5 2 5 5Z" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path><path opacity=".4" d="M14.5 4.5v2c0 1.1.9 2 2 2h2M8 13h4M8 17h8" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path></svg>
                         </TextInput>
-                        <TextInput
-                            label="Country"
-                            placeholder="Eg: Rwanda"
-                            type='text'
-                            value={customerCountry}
-                            onChange={setCustomerCountry}
-                            errorMessage={customerCountryError}>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M21 7v10c0 3-1.5 5-5 5H8c-3.5 0-5-2-5-5V7c0-3 1.5-5 5-5h8c3.5 0 5 2 5 5Z" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path><path opacity=".4" d="M14.5 4.5v2c0 1.1.9 2 2 2h2M8 13h4M8 17h8" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path></svg>
-                        </TextInput>
-                    </div>
 
-                    <div className="flex items-center gap-2 border-t border-b border-gray-200 py-3 my-4">
-                        <input
-                            type="checkbox"
-                            id="differentRecipient"
-                            className="w-4 h-4"
-                            onChange={(e) => {
-                                if (!e.target.checked) {
-                                    setCustomerDiffRecipient(false)
-                                } else {
-                                    setCustomerDiffRecipient(true)
-                                }
-                            }}
-                        />
-                        <label htmlFor="differentRecipient" className="text-md font-bold text-gray-700">
-                            Recipient is different from customer (Want someone to recieve an items)
-                        </label>
-                    </div>
-
-                    {customerDiffRecipient && (
                         <div>
-                            <div className='flex gap-2'>
-                                <TextInput
-                                    label="Recipient Name"
-                                    placeholder="Eg: John Doe"
-                                    type='text'
-                                    value={recipientName}
-                                    onChange={setRecipientName}
-                                    errorMessage={recipientNameError}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M21 7v10c0 3-1.5 5-5 5H8c-3.5 0-5-2-5-5V7c0-3 1.5-5 5-5h8c3.5 0 5 2 5 5Z" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path><path opacity=".4" d="M14.5 4.5v2c0 1.1.9 2 2 2h2M8 13h4M8 17h8" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path></svg>
-                                </TextInput>
-                                <TextInput
-                                    label="Recipient Email"
-                                    placeholder="Eg: example@example.com"
-                                    type='email'
-                                    value={recipientEmail}
-                                    onChange={setRecipientEmail}
-                                    errorMessage={recipientEmailError}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M21 7v10c0 3-1.5 5-5 5H8c-3.5 0-5-2-5-5V7c0-3 1.5-5 5-5h8c3.5 0 5 2 5 5Z" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path><path opacity=".4" d="M14.5 4.5v2c0 1.1.9 2 2 2h2M8 13h4M8 17h8" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path></svg>
-                                </TextInput>
-                            </div>
-                            <div className='flex gap-2'>
-                                <TextInput
-                                    label="Recipient Phone Number"
-                                    placeholder="Eg: 0780987721"
-                                    type='number'
-                                    value={recipientPhone}
-                                    onChange={setRecipientPhone}
-                                    errorMessage={recipientPhoneError}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M21 7v10c0 3-1.5 5-5 5H8c-3.5 0-5-2-5-5V7c0-3 1.5-5 5-5h8c3.5 0 5 2 5 5Z" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path><path opacity=".4" d="M14.5 4.5v2c0 1.1.9 2 2 2h2M8 13h4M8 17h8" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path></svg>
-                                </TextInput>
-                                <TextInput
-                                    label="Recipient Address"
-                                    placeholder="Eg: 123 Main St"
-                                    type='text'
-                                    value={recipientAddress}
-                                    onChange={setRecipientAddress}
-                                    errorMessage={recipientAddressError}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M21 7v10c0 3-1.5 5-5 5H8c-3.5 0-5-2-5-5V7c0-3 1.5-5 5-5h8c3.5 0 5 2 5 5Z" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path><path opacity=".4" d="M14.5 4.5v2c0 1.1.9 2 2 2h2M8 13h4M8 17h8" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path></svg>
-                                </TextInput>
-                            </div>
-                            <div className='flex gap-2'>
-                                <TextInput
-                                    label="Recipient City"
-                                    placeholder="Eg: Kigali"
-                                    type='text'
-                                    value={recipientCity}
-                                    onChange={setRecipientCity}
-                                    errorMessage={recipientCityError}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M21 7v10c0 3-1.5 5-5 5H8c-3.5 0-5-2-5-5V7c0-3 1.5-5 5-5h8c3.5 0 5 2 5 5Z" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path><path opacity=".4" d="M14.5 4.5v2c0 1.1.9 2 2 2h2M8 13h4M8 17h8" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path></svg>
-                                </TextInput>
-                                <TextInput
-                                    label="Recipient Country"
-                                    placeholder="Eg: Rwanda"
-                                    type='text'
-                                    value={recipientCountry}
-                                    onChange={setRecipientCountry}
-                                    errorMessage={recipientCountryError}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M21 7v10c0 3-1.5 5-5 5H8c-3.5 0-5-2-5-5V7c0-3 1.5-5 5-5h8c3.5 0 5 2 5 5Z" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path><path opacity=".4" d="M14.5 4.5v2c0 1.1.9 2 2 2h2M8 13h4M8 17h8" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path></svg>
-                                </TextInput>
-                            </div>
+                            <TextInput
+                                label="Phone Number"
+                                placeholder="Eg: 0712345678"
+                                type='number'
+                                value={customerPhone}
+                                onChange={setCustomerPhone}
+                                errorMessage={customerPhoneError}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M21 7v10c0 3-1.5 5-5 5H8c-3.5 0-5-2-5-5V7c0-3 1.5-5 5-5h8c3.5 0 5 2 5 5Z" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path><path opacity=".4" d="M14.5 4.5v2c0 1.1.9 2 2 2h2M8 13h4M8 17h8" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path></svg>
+                            </TextInput>
+                            <TextInput
+                                label="Address"
+                                placeholder="Eg: 123 Main St"
+                                type='text'
+                                value={customerAddress}
+                                onChange={setCustomerAddress}
+                                errorMessage={customerAddressError}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M21 7v10c0 3-1.5 5-5 5H8c-3.5 0-5-2-5-5V7c0-3 1.5-5 5-5h8c3.5 0 5 2 5 5Z" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path><path opacity=".4" d="M14.5 4.5v2c0 1.1.9 2 2 2h2M8 13h4M8 17h8" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path></svg>
+                            </TextInput>
                         </div>
-                    )}
 
-                    <div className="flex justify-between border-t border-gray-200 pt-4">
-                        {loading ? <button className='btn btn-primary' disabled>Loading...</button> : (
-                            <div onClick={processPayment} className="rounded-lg cursor-pointer px-3 py-2 inline-flex items-center gap-x-2 bg-[#1a1a2e] text-white border-[#1a1a2e] disabled:opacity-50 disabled:pointer-events-none hover:text-white hover:bg-green-700 hover:border-green-700 active:bg-green-700 active:border-green-700 focus:outline-none focus:ring-4 focus:ring-green-300">
-                                <span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 19c0 .75-.21 1.46-.58 2.06A3.97 3.97 0 0 1 5 23a3.97 3.97 0 0 1-3.42-1.94A3.92 3.92 0 0 1 1 19c0-2.21 1.79-4 4-4s4 1.79 4 4Z" stroke="#ffffff" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path><path d="m3.441 19 .99.99 2.13-1.97" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path><path opacity=".4" d="M17.751 7.05c-.24-.04-.49-.05-.75-.05h-10c-.28 0-.55.02-.81.06.14-.28.34-.54.58-.78l3.25-3.26a3.525 3.525 0 0 1 4.96 0l1.75 1.77c.64.63.98 1.43 1.02 2.26Z" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path><path d="M22 12v5c0 3-2 5-5 5H7.63c.31-.26.58-.58.79-.94.37-.6.58-1.31.58-2.06 0-2.21-1.79-4-4-4-1.2 0-2.27.53-3 1.36V12c0-2.72 1.64-4.62 4.19-4.94.26-.04.53-.06.81-.06h10c.26 0 .51.01.75.05C20.33 7.35 22 9.26 22 12Z" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path><path opacity=".4" d="M22 12.5h-3c-1.1 0-2 .9-2 2s.9 2 2 2h3" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path></svg></span>
-                                <span className='ml-2'>Process Payment</span>
+                        <div className='flex gap-2'>
+                            <TextInput
+                                label="City"
+                                placeholder="Eg: Kigali"
+                                type='text'
+                                value={customerCity}
+                                onChange={setCustomerCity}
+                                errorMessage={customerCityError}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M21 7v10c0 3-1.5 5-5 5H8c-3.5 0-5-2-5-5V7c0-3 1.5-5 5-5h8c3.5 0 5 2 5 5Z" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path><path opacity=".4" d="M14.5 4.5v2c0 1.1.9 2 2 2h2M8 13h4M8 17h8" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path></svg>
+                            </TextInput>
+                            <TextInput
+                                label="Country"
+                                placeholder="Eg: Rwanda"
+                                type='text'
+                                value={customerCountry}
+                                onChange={setCustomerCountry}
+                                errorMessage={customerCountryError}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M21 7v10c0 3-1.5 5-5 5H8c-3.5 0-5-2-5-5V7c0-3 1.5-5 5-5h8c3.5 0 5 2 5 5Z" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path><path opacity=".4" d="M14.5 4.5v2c0 1.1.9 2 2 2h2M8 13h4M8 17h8" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path></svg>
+                            </TextInput>
+                        </div>
+
+                        <div className="flex items-center gap-2 border-t border-b border-gray-200 py-3 my-4">
+                            <input
+                                type="checkbox"
+                                id="differentRecipient"
+                                className="w-4 h-4"
+                                onChange={(e) => {
+                                    if (!e.target.checked) {
+                                        setCustomerDiffRecipient(false)
+                                    } else {
+                                        setCustomerDiffRecipient(true)
+                                    }
+                                }}
+                            />
+                            <label htmlFor="differentRecipient" className="text-md font-bold text-gray-700">
+                                Recipient is different from customer (Want someone to recieve an items)
+                            </label>
+                        </div>
+
+                        {customerDiffRecipient && (
+                            <div>
+                                <div className='flex gap-2'>
+                                    <TextInput
+                                        label="Recipient Name"
+                                        placeholder="Eg: John Doe"
+                                        type='text'
+                                        value={recipientName}
+                                        onChange={setRecipientName}
+                                        errorMessage={recipientNameError}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M21 7v10c0 3-1.5 5-5 5H8c-3.5 0-5-2-5-5V7c0-3 1.5-5 5-5h8c3.5 0 5 2 5 5Z" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path><path opacity=".4" d="M14.5 4.5v2c0 1.1.9 2 2 2h2M8 13h4M8 17h8" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path></svg>
+                                    </TextInput>
+                                    <TextInput
+                                        label="Recipient Email"
+                                        placeholder="Eg: example@example.com"
+                                        type='email'
+                                        value={recipientEmail}
+                                        onChange={setRecipientEmail}
+                                        errorMessage={recipientEmailError}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M21 7v10c0 3-1.5 5-5 5H8c-3.5 0-5-2-5-5V7c0-3 1.5-5 5-5h8c3.5 0 5 2 5 5Z" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path><path opacity=".4" d="M14.5 4.5v2c0 1.1.9 2 2 2h2M8 13h4M8 17h8" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path></svg>
+                                    </TextInput>
+                                </div>
+                                <div className='flex gap-2'>
+                                    <TextInput
+                                        label="Recipient Phone Number"
+                                        placeholder="Eg: 0780987721"
+                                        type='number'
+                                        value={recipientPhone}
+                                        onChange={setRecipientPhone}
+                                        errorMessage={recipientPhoneError}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M21 7v10c0 3-1.5 5-5 5H8c-3.5 0-5-2-5-5V7c0-3 1.5-5 5-5h8c3.5 0 5 2 5 5Z" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path><path opacity=".4" d="M14.5 4.5v2c0 1.1.9 2 2 2h2M8 13h4M8 17h8" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path></svg>
+                                    </TextInput>
+                                    <TextInput
+                                        label="Recipient Address"
+                                        placeholder="Eg: 123 Main St"
+                                        type='text'
+                                        value={recipientAddress}
+                                        onChange={setRecipientAddress}
+                                        errorMessage={recipientAddressError}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M21 7v10c0 3-1.5 5-5 5H8c-3.5 0-5-2-5-5V7c0-3 1.5-5 5-5h8c3.5 0 5 2 5 5Z" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path><path opacity=".4" d="M14.5 4.5v2c0 1.1.9 2 2 2h2M8 13h4M8 17h8" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path></svg>
+                                    </TextInput>
+                                </div>
+                                <div className='flex gap-2'>
+                                    <TextInput
+                                        label="Recipient City"
+                                        placeholder="Eg: Kigali"
+                                        type='text'
+                                        value={recipientCity}
+                                        onChange={setRecipientCity}
+                                        errorMessage={recipientCityError}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M21 7v10c0 3-1.5 5-5 5H8c-3.5 0-5-2-5-5V7c0-3 1.5-5 5-5h8c3.5 0 5 2 5 5Z" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path><path opacity=".4" d="M14.5 4.5v2c0 1.1.9 2 2 2h2M8 13h4M8 17h8" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path></svg>
+                                    </TextInput>
+                                    <TextInput
+                                        label="Recipient Country"
+                                        placeholder="Eg: Rwanda"
+                                        type='text'
+                                        value={recipientCountry}
+                                        onChange={setRecipientCountry}
+                                        errorMessage={recipientCountryError}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M21 7v10c0 3-1.5 5-5 5H8c-3.5 0-5-2-5-5V7c0-3 1.5-5 5-5h8c3.5 0 5 2 5 5Z" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path><path opacity=".4" d="M14.5 4.5v2c0 1.1.9 2 2 2h2M8 13h4M8 17h8" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path></svg>
+                                    </TextInput>
+                                </div>
                             </div>
                         )}
                     </div>
+                    <div className='border-l border-gray-300 pl-5 max-w-1/2'>
+                        <ul className="list-none overflow-auto h-[70vh]">
+                            {cart && cart.map((product: Products) => (<ShopCartItem key={product.id} product={product} onRemoveFromCart={removeFromCart} />))}
+                        </ul>
 
-                    {loading && (<div className="fixed top-0 right-0 left-0 bottom-0 flex items-center justify-center bg-black/20">
-                        <FetchLoader />
-                    </div>)}
+                        <div className='border-t border-gray-200 pt-5 text-slate-700 w-full'>
+                            <div className='mt-1 flex items-center justify-between w-full'><div className='font-bold'>Customer Name:</div> <div className='max-w-42 line-clamp-1'>{customerDiffRecipient ? recipientName : customerName}</div></div>
+                            <div className='mt-1 flex items-center justify-between w-full'><div className='font-bold'>Shipping Address:</div> <div className='max-w-42 line-clamp-1'>{customerDiffRecipient ? `${recipientAddress}, ${recipientCity}, ${recipientCountry}` : `${customerAddress}, ${customerCity}, ${customerCountry}`}</div></div>
+                            <div className='mt-1 flex items-center justify-between w-full'><div className='font-bold'>Shipping Amount:</div> <div className='max-w-42 line-clamp-1'>RWF {Number(total).toLocaleString()}</div></div>
+                            <div className='mt-1 flex items-center justify-between w-full'><div className='font-bold'>Total Amount:</div> <div className='max-w-42 line-clamp-1'>RWF {Number(total).toLocaleString()}</div></div>
+                        </div>
+
+                        <div className="flex justify-between border-t border-gray-200 pt-5 mt-5">
+                            <div></div>
+                            {loading ? <button className='btn btn-primary' disabled>Loading...</button> : (
+                                <div onClick={processPayment} className="rounded-lg cursor-pointer px-3 py-2 inline-flex items-center gap-x-2 bg-[#1a1a2e] text-white border-[#1a1a2e] disabled:opacity-50 disabled:pointer-events-none hover:text-white hover:bg-green-700 hover:border-green-700 active:bg-green-700 active:border-green-700 focus:outline-none focus:ring-4 focus:ring-green-300">
+                                    <span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 19c0 .75-.21 1.46-.58 2.06A3.97 3.97 0 0 1 5 23a3.97 3.97 0 0 1-3.42-1.94A3.92 3.92 0 0 1 1 19c0-2.21 1.79-4 4-4s4 1.79 4 4Z" stroke="#ffffff" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path><path d="m3.441 19 .99.99 2.13-1.97" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path><path opacity=".4" d="M17.751 7.05c-.24-.04-.49-.05-.75-.05h-10c-.28 0-.55.02-.81.06.14-.28.34-.54.58-.78l3.25-3.26a3.525 3.525 0 0 1 4.96 0l1.75 1.77c.64.63.98 1.43 1.02 2.26Z" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path><path d="M22 12v5c0 3-2 5-5 5H7.63c.31-.26.58-.58.79-.94.37-.6.58-1.31.58-2.06 0-2.21-1.79-4-4-4-1.2 0-2.27.53-3 1.36V12c0-2.72 1.64-4.62 4.19-4.94.26-.04.53-.06.81-.06h10c.26 0 .51.01.75.05C20.33 7.35 22 9.26 22 12Z" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path><path opacity=".4" d="M22 12.5h-3c-1.1 0-2 .9-2 2s.9 2 2 2h3" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path></svg></span>
+                                    <span className='ml-2'>Process Payment</span>
+                                </div>
+                            )}
+                        </div>
+                    </div>
                 </div>
+
+                {loading && (<div className="fixed top-0 right-0 left-0 bottom-0 flex items-center justify-center bg-black/20">
+                    <FetchLoader />
+                </div>)}
 
                 <AlertMessage message={message} type={messageType} />
             </div>
