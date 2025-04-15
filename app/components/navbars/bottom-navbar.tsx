@@ -11,7 +11,7 @@ function BottomNavbar() {
     const [isOpen, setIsOpen] = useState(false);
 
     return (<>
-        <header className="bg-white px-4 py-1 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-20 lg:px-10 lg:py-3">
+        <header className="bg-white sticky top-0 z-20 border-b border-gray-100 px-4 py-1 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-20 lg:px-10 lg:py-3">
             <div className="flex items-center justify-between h-14 lg:h-16">
                 <div className="flex-shrink-0">
                     <Link href="/" title="" className="flex">
@@ -33,7 +33,6 @@ function BottomNavbar() {
                     <Link href="/" title="" className={`text-base transition-all duration-200 hover:text-opacity-80 ${pathname === '/' ? 'text-slate-900 font-bold' : 'text-black'}`}> Home </Link>
                     <Link href="/serves" title="" className={`text-base transition-all duration-200 hover:text-opacity-80 ${pathname === '/serves' ? 'text-slate-900 font-bold' : 'text-black'}`}> Who we serve </Link>
                     <Link href="/indivituals" title="" className={`text-base transition-all duration-200 hover:text-opacity-80 ${pathname === '/indivituals' ? 'text-slate-900 font-bold' : 'text-black'}`}> For Individuals </Link>
-                    <Link href="/shop" title="" className={`text-base transition-all duration-200 hover:text-opacity-80 ${pathname === '/shop' ? 'text-slate-900 font-bold' : 'text-black'}`}> Shop </Link>
                     <Link href="/blogs" title="" className={`text-base transition-all duration-200 hover:text-opacity-80 ${pathname === '/blogs' ? 'text-slate-900 font-bold' : 'text-black'}`}> Blogs </Link>
                     <Link href="/pricing" title="" className={`text-base transition-all duration-200 hover:text-opacity-80 ${pathname === '/pricing' ? 'text-slate-900 font-bold' : 'text-black'}`}> Pricing </Link>
                 </div>
@@ -43,12 +42,15 @@ function BottomNavbar() {
                     <div title="" className={`text-base transition-all duration-200 hover:text-opacity-80`}>
                         <ShoppingCart />
                     </div>
-                    <Link href="/download" title="" className="hidden lg:inline-flex items-center justify-center px-5 py-2.5 text-base transition-all duration-200 hover:text-white hover:bg-indigo-800 focus:text-black focus:bg-indigo-300 font-semibold text-white bg-black rounded-full" role="button"> Download </Link>
+                    <div className='flex items-center space-x-2'>
+                        <Link href="/shop" title="" className="hidden lg:inline-flex items-center justify-center px-5 py-2.5 text-base transition-all duration-200 hover:text-white hover:bg-indigo-800 focus:text-white focus:bg-indigo-300 font-semibold text-white bg-gradient-to-b from-[#272749] to-[#111827] rounded-full" role="button"> Shop </Link>
+                        <Link href="/download" title="" className="hidden lg:inline-flex items-center justify-center px-5 py-2.5 text-base transition-all duration-200 hover:text-white hover:bg-indigo-800 focus:text-white focus:bg-indigo-300 font-semibold text-white bg-gradient-to-b from-[#272749] to-[#111827] rounded-full" role="button"> Download </Link>
+                    </div>
                 </div>
             </div>
 
             {isOpen && (
-                <div className='bg-white border z-40 border-gray-200 rounded-xl px-10 py-5 absolute top-14 left-0 right-0 mx-2 lg:hidden'>
+                <div className='bg-white max-h-[90vh] overflow-auto border z-40 border-gray-200 rounded-xl px-10 py-5 absolute top-14 left-0 right-0 mx-2 lg:hidden'>
                     <div className='relative'>
                         <div className='flex flex-col space-y-3'>
                             <Link href="/" title="" className={`text-base transition-all duration-200 hover:text-opacity-80 ${pathname === '/' ? 'text-slate-900 font-bold' : 'text-black'}`}> Home </Link>
@@ -59,6 +61,12 @@ function BottomNavbar() {
                             <Link href="/pricing" title="" className={`text-base transition-all duration-200 hover:text-opacity-80 ${pathname === '/pricing' ? 'text-slate-900 font-bold' : 'text-black'}`}> Pricing </Link>
                             <Link href="/contacts" title="" className={`text-base transition-all duration-200 hover:text-opacity-80 ${pathname === '/contacts' ? 'text-slate-900 font-bold' : 'text-black'}`}> Contact </Link>
                             <Link href="/download" title="" className="lg:inline-flex items-center justify-center px-5 py-2.5 text-base transition-all duration-200 hover:text-white hover:bg-indigo-800 focus:text-black focus:bg-indigo-300 font-semibold text-white bg-black rounded-full" role="button"> Download </Link>
+                        </div>
+
+                        <div className={`text-base transition-all duration-200 hover:text-opacity-80 mt-5`}>
+                            <div className='relative'>
+                                <ShoppingCart />
+                            </div>
                         </div>
 
                         {/* Social Media Icons */}
