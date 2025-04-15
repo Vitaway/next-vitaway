@@ -70,7 +70,7 @@ function ShoppingCart() {
             {/* Cart Modal */}
             <div className={`fixed max-w-xl top-0 right-0 bottom-0 bg-white rounded-tl-xl rounded-bl-xl border border-gray-200 z-20 text-slate-700 shadow-md transform transition-transform duration-300 ${isCartOpen ? 'translate-x-0' : 'translate-x-full'}`} id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
                 <div className="border-b px-5 py-5 relative border-gray-300">
-                    <div className="bg-green-400/50 w-full px-5 py-2 mt-5 rounded-3xl text-sm mb-5">
+                    <div className="bg-green-400/50 w-full px-5 py-2 mt-5 rounded-3xl text-sm text-center mb-5">
                         <p>Free delivery anywhere for order above 50K in kigali</p>
                     </div>
                     <div>

@@ -370,8 +370,8 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
             <div>
                 <h1 className='text-slate-700 text-xl font-semibold'>Checkout Form</h1>
 
-                <div className='flex w-full'>
-                    <div className="flex flex-col gap-2 p-4 max-w-1/2">
+                <div className='flex w-full flex-col md:flex-row'>
+                    <div className="flex flex-col gap-2 p-0 w-full mt-5 md:mt-0 md:p-4 md:max-w-1/2">
                         <TextInput
                             label="Full name"
                             placeholder="Eg: John Doe"
@@ -581,7 +581,7 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
                             </div>
                         )}
                     </div>
-                    <div className='border-l border-gray-300 pl-5 max-w-1/2'>
+                    <div className='border-none md:border-l border-gray-300 pl-0 md:pl-5 w-full md:max-w-1/2'>
                         <ul className="list-none overflow-auto max-h-[70vh]">
                             {cart && cart.map((product: Products) => (<ShopCartItem key={product.id} product={product} onRemoveFromCart={removeFromCart} />))}
                         </ul>
