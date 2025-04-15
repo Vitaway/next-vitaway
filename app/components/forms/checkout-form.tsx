@@ -7,6 +7,8 @@ import { Products } from '@/types/products';
 import AlertMessage from '../alerts/alert-message';
 import FetchLoader from '../spinners/fetching-loader';
 import ShopCartItem from '@/app/shop/shop-cart-item';
+import { Truck, Store } from 'lucide-react';
+import rwandaData from '@/data/rwanda_geo.json';
 
 declare global {
     interface Window {
@@ -31,6 +33,11 @@ interface CartItem {
 }
 
 function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose: () => void, callback: () => void }) {
+    const DEFAULT_SHIPPING_AMOUNT = 3000;
+    const SHIPPING_DISCOUNT_THRESHOLD = 50000;
+    const SHIPPING_DISCOUNT_AMOUNT = 0;
+    const SHIPPING_DISCOUNT_PROVINCE = 'Kigali';
+
     const [customerName, setCustomerName] = useState<string>('');
     const [customerEmail, setCustomerEmail] = useState<string>('');
     const [customerPhone, setCustomerPhone] = useState<string>('');
@@ -64,11 +71,16 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
     const [recipientCountryError, setRecipientCountryError] = useState<string>('');
 
     const [customerDiffRecipient, setCustomerDiffRecipient] = useState<boolean>(false);
+    const [selected, setSelected] = useState<'ship' | 'pickup'>('ship');
+    const [shippingAmount, setShippingAmount] = useState(DEFAULT_SHIPPING_AMOUNT);
+
+    const [selectedCustomerProvince, setSelectedCustomerProvince] = useState('');
+    const [selectedRecipientProvince, setSelectedRecipientProvince] = useState('');
+
+    const provinces = Object.keys(rwandaData);
 
     const { cart, clearCart, removeFromCart } = useCart();
-
     const total: number = cart.reduce((sum: number, item: CartItem) => sum + item.price * item.quantity, 0);
-    const totalItems: number = cart.reduce((sum: number, item: CartItem) => sum + item.quantity, 0);
 
     const sendPaymentCallback = async (invoiceNumber: string) => {
         setLoading(true);
@@ -166,7 +178,10 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
                             quantity: product.quantity,
                         }
                     })
-                ]
+                ],
+
+                shipping_amount: shippingAmount,
+                shipping_option: selected,
             };
 
             const response = await fetch(`${process.env.NEXT_PUBLIC_ENVENTORY_API_URL}/api/products/payments/init`, {
@@ -291,6 +306,52 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
         return isValid;
     }
 
+    const calculateShippingAmount = () => {
+        const isEligibleForDiscount = (country: string) =>
+            country === SHIPPING_DISCOUNT_PROVINCE && total > SHIPPING_DISCOUNT_THRESHOLD;
+
+        if (customerDiffRecipient) {
+            const shippingAmount = isEligibleForDiscount(recipientCountry) ? SHIPPING_DISCOUNT_AMOUNT : DEFAULT_SHIPPING_AMOUNT;
+            setShippingAmount(shippingAmount);
+
+            console.log(selectedRecipientProvince)
+        } else {
+            setShippingAmount(isEligibleForDiscount(customerCountry) ? SHIPPING_DISCOUNT_AMOUNT : DEFAULT_SHIPPING_AMOUNT);
+        }
+    };
+
+    const handleCustomerProvinceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const selected = e.target.value;
+        setSelectedCustomerProvince(selected);
+        setCustomerCountry(selected);
+        setCustomerCity('');
+    };
+
+    const handleCustomerDistrictChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setCustomerCity(e.target.value);
+    };
+
+    const handleRecipientProvinceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const selected = e.target.value;
+        setSelectedRecipientProvince(selected);
+        setRecipientCountry(selected);
+        setRecipientCity('');
+    };
+
+    const handleRecipientDistrictChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setRecipientCity(e.target.value);
+    };
+
+    const handleShipOption = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSelected(e.target.value as 'ship' | 'pickup');
+        setShippingAmount(e.target.value === 'ship' ? DEFAULT_SHIPPING_AMOUNT : 0);
+    };
+
+    useEffect(() => {
+        calculateShippingAmount();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedCustomerProvince, selectedRecipientProvince, customerCountry, recipientCountry, customerDiffRecipient]);
+
     useEffect(() => {
         const script = document.createElement('script');
 
@@ -323,7 +384,7 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
 
                         <TextInput
                             label="Email Address"
-                            placeholder="Eg: example@example.com"
+                            placeholder="Eg: ex@example.com"
                             type='email'
                             value={customerEmail}
                             onChange={setCustomerEmail}
@@ -334,7 +395,7 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
                         <div>
                             <TextInput
                                 label="Phone Number"
-                                placeholder="Eg: 0712345678"
+                                placeholder="Eg: 07.."
                                 type='number'
                                 value={customerPhone}
                                 onChange={setCustomerPhone}
@@ -343,7 +404,7 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
                             </TextInput>
                             <TextInput
                                 label="Address"
-                                placeholder="Eg: 123 Main St"
+                                placeholder="Eg: Main St"
                                 type='text'
                                 value={customerAddress}
                                 onChange={setCustomerAddress}
@@ -352,25 +413,56 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
                             </TextInput>
                         </div>
 
-                        <div className='flex gap-2'>
-                            <TextInput
-                                label="City"
-                                placeholder="Eg: Kigali"
-                                type='text'
-                                value={customerCity}
-                                onChange={setCustomerCity}
-                                errorMessage={customerCityError}>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M21 7v10c0 3-1.5 5-5 5H8c-3.5 0-5-2-5-5V7c0-3 1.5-5 5-5h8c3.5 0 5 2 5 5Z" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path><path opacity=".4" d="M14.5 4.5v2c0 1.1.9 2 2 2h2M8 13h4M8 17h8" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path></svg>
-                            </TextInput>
-                            <TextInput
-                                label="Country"
-                                placeholder="Eg: Rwanda"
-                                type='text'
-                                value={customerCountry}
-                                onChange={setCustomerCountry}
-                                errorMessage={customerCountryError}>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M21 7v10c0 3-1.5 5-5 5H8c-3.5 0-5-2-5-5V7c0-3 1.5-5 5-5h8c3.5 0 5 2 5 5Z" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path><path opacity=".4" d="M14.5 4.5v2c0 1.1.9 2 2 2h2M8 13h4M8 17h8" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path></svg>
-                            </TextInput>
+                        <div className="flex gap-4">
+                            {/* Province (customerCountry) */}
+                            <div className="w-full sm:w-1/2">
+                                <label className="font-semibold text-slate-700 capitalize text-md">Province</label>
+
+                                <div className="mt-2 relative text-gray-400 focus-within:text-gray-600 transition-all duration-200">
+                                    <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M21 7v10c0 3-1.5 5-5 5H8c-3.5 0-5-2-5-5V7c0-3 1.5-5 5-5h8c3.5 0 5 2 5 5Z" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path><path opacity=".4" d="M14.5 4.5v2c0 1.1.9 2 2 2h2M8 13h4M8 17h8" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path></svg>
+                                    </div>
+                                    <select
+                                        className="block w-full py-3 pl-12 pr-4 transition-all duration-200 border rounded-md focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
+                                        value={selectedCustomerProvince}
+                                        onChange={handleCustomerProvinceChange}
+                                    >
+                                        <option value="">Select Province</option>
+                                        {provinces.map((province) => (
+                                            <option key={province} value={province}>
+                                                {province}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                {customerCountryError && <p className="text-red-500 text-sm">{customerCountryError}</p>}
+                            </div>
+
+                            {/* District (customerCity) */}
+                            <div className="w-full sm:w-1/2">
+                                <label className="font-semibold text-slate-700 capitalize text-md">District</label>
+                                <div className="mt-2 relative text-gray-400 focus-within:text-gray-600 transition-all duration-200">
+                                    <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M21 7v10c0 3-1.5 5-5 5H8c-3.5 0-5-2-5-5V7c0-3 1.5-5 5-5h8c3.5 0 5 2 5 5Z" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path><path opacity=".4" d="M14.5 4.5v2c0 1.1.9 2 2 2h2M8 13h4M8 17h8" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path></svg>
+                                    </div>
+                                    <select
+                                        className="block w-full py-3 pl-12 pr-4 transition-all duration-200 border rounded-md focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
+                                        value={customerCity}
+                                        onChange={handleCustomerDistrictChange}
+                                        disabled={!selectedCustomerProvince}
+                                    >
+                                        <option value="">Select District</option>
+                                        {selectedCustomerProvince &&
+                                            Object.keys(rwandaData[selectedCustomerProvince as keyof typeof rwandaData] || {}).map((district: string) => (
+                                                <option key={district} value={district}>
+                                                    {district}
+                                                </option>
+                                            ))}
+                                    </select>
+                                </div>
+                                {customerCityError && <p className="text-red-500 text-sm">{customerCityError}</p>}
+                            </div>
                         </div>
 
                         <div className="flex items-center gap-2 border-t border-b border-gray-200 py-3 my-4">
@@ -405,7 +497,7 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
                                     </TextInput>
                                     <TextInput
                                         label="Recipient Email"
-                                        placeholder="Eg: example@example.com"
+                                        placeholder="Eg: ex@example.com"
                                         type='email'
                                         value={recipientEmail}
                                         onChange={setRecipientEmail}
@@ -416,7 +508,7 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
                                 <div className='flex gap-2'>
                                     <TextInput
                                         label="Recipient Phone Number"
-                                        placeholder="Eg: 0780987721"
+                                        placeholder="Eg: 07..."
                                         type='number'
                                         value={recipientPhone}
                                         onChange={setRecipientPhone}
@@ -425,7 +517,7 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
                                     </TextInput>
                                     <TextInput
                                         label="Recipient Address"
-                                        placeholder="Eg: 123 Main St"
+                                        placeholder="Eg: Main St"
                                         type='text'
                                         value={recipientAddress}
                                         onChange={setRecipientAddress}
@@ -433,39 +525,132 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M21 7v10c0 3-1.5 5-5 5H8c-3.5 0-5-2-5-5V7c0-3 1.5-5 5-5h8c3.5 0 5 2 5 5Z" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path><path opacity=".4" d="M14.5 4.5v2c0 1.1.9 2 2 2h2M8 13h4M8 17h8" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path></svg>
                                     </TextInput>
                                 </div>
-                                <div className='flex gap-2'>
-                                    <TextInput
-                                        label="Recipient City"
-                                        placeholder="Eg: Kigali"
-                                        type='text'
-                                        value={recipientCity}
-                                        onChange={setRecipientCity}
-                                        errorMessage={recipientCityError}>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M21 7v10c0 3-1.5 5-5 5H8c-3.5 0-5-2-5-5V7c0-3 1.5-5 5-5h8c3.5 0 5 2 5 5Z" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path><path opacity=".4" d="M14.5 4.5v2c0 1.1.9 2 2 2h2M8 13h4M8 17h8" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path></svg>
-                                    </TextInput>
-                                    <TextInput
-                                        label="Recipient Country"
-                                        placeholder="Eg: Rwanda"
-                                        type='text'
-                                        value={recipientCountry}
-                                        onChange={setRecipientCountry}
-                                        errorMessage={recipientCountryError}>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M21 7v10c0 3-1.5 5-5 5H8c-3.5 0-5-2-5-5V7c0-3 1.5-5 5-5h8c3.5 0 5 2 5 5Z" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path><path opacity=".4" d="M14.5 4.5v2c0 1.1.9 2 2 2h2M8 13h4M8 17h8" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path></svg>
-                                    </TextInput>
+                                <div className="flex gap-4">
+                                    {/* Province (customerCountry) */}
+                                    <div className="w-full sm:w-1/2">
+                                        <label className="font-semibold text-slate-700 capitalize text-md">Province</label>
+
+                                        <div className="mt-2 relative text-gray-400 focus-within:text-gray-600 transition-all duration-200">
+                                            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M21 7v10c0 3-1.5 5-5 5H8c-3.5 0-5-2-5-5V7c0-3 1.5-5 5-5h8c3.5 0 5 2 5 5Z" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path><path opacity=".4" d="M14.5 4.5v2c0 1.1.9 2 2 2h2M8 13h4M8 17h8" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path></svg>
+                                            </div>
+                                            <select
+                                                className="block w-full py-3 pl-12 pr-4 transition-all duration-200 border rounded-md focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
+                                                value={selectedRecipientProvince}
+                                                onChange={handleRecipientProvinceChange}
+                                            >
+                                                <option value="">Select Province</option>
+
+                                                {provinces.map((province) => (
+                                                    <option key={province} value={province}>
+                                                        {province}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+
+                                        {recipientCountryError && <p className="text-red-500 text-sm">{recipientCountryError}</p>}
+                                    </div>
+
+                                    {/* District (customerCity) */}
+                                    <div className="w-full sm:w-1/2">
+                                        <label className="font-semibold text-slate-700 capitalize text-md">District</label>
+                                        <div className="mt-2 relative text-gray-400 focus-within:text-gray-600 transition-all duration-200">
+                                            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M21 7v10c0 3-1.5 5-5 5H8c-3.5 0-5-2-5-5V7c0-3 1.5-5 5-5h8c3.5 0 5 2 5 5Z" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path><path opacity=".4" d="M14.5 4.5v2c0 1.1.9 2 2 2h2M8 13h4M8 17h8" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path></svg>
+                                            </div>
+                                            <select
+                                                className="block w-full py-3 pl-12 pr-4 transition-all duration-200 border rounded-md focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
+                                                value={recipientCity}
+                                                onChange={handleRecipientDistrictChange}
+                                                disabled={!selectedRecipientProvince}
+                                            >
+                                                <option value="">Select District</option>
+
+                                                {selectedRecipientProvince &&
+                                                    Object.keys(rwandaData[selectedRecipientProvince as keyof typeof rwandaData] || {}).map((district: string) => (
+                                                        <option key={district} value={district}>
+                                                            {district}
+                                                        </option>
+                                                    ))}
+                                            </select>
+                                        </div>
+                                        {recipientCityError && <p className="text-red-500 text-sm">{recipientCityError}</p>}
+                                    </div>
                                 </div>
                             </div>
                         )}
                     </div>
                     <div className='border-l border-gray-300 pl-5 max-w-1/2'>
-                        <ul className="list-none overflow-auto h-[70vh]">
+                        <ul className="list-none overflow-auto max-h-[70vh]">
                             {cart && cart.map((product: Products) => (<ShopCartItem key={product.id} product={product} onRemoveFromCart={removeFromCart} />))}
                         </ul>
 
+                        <div className="max-w-md mx-auto my-5">
+                            <h2 className="text-slate-700 font-semibold mb-4">Delivery</h2>
+                            <div className="rounded-md border overflow-hidden divide-y divide-gray-200">
+                                {/* Ship Option */}
+                                <label
+                                    className={`flex items-center justify-between p-4 cursor-pointer ${selected === 'ship'
+                                        ? 'bg-[#272749]/30 border-l-4 border-[#272749]'
+                                        : 'bg-white'
+                                        }`}
+                                >
+                                    <div className="flex items-center space-x-3">
+                                        <input
+                                            type="radio"
+                                            name="delivery"
+                                            value="ship"
+                                            checked={selected === 'ship'}
+                                            onChange={(e) => handleShipOption(e)}
+                                            className="accent-[#272749] w-5 h-5"
+                                        />
+                                        <span className="text-black font-medium">Ship</span>
+                                    </div>
+                                    <Truck
+                                        className={`w-5 h-5 ${selected === 'ship' ? 'text-[#272749]' : 'text-gray-400'
+                                            }`}
+                                    />
+                                </label>
+
+                                {/* Pickup Option */}
+                                <label
+                                    className={`flex items-center justify-between p-4 cursor-pointer ${selected === 'pickup'
+                                        ? 'bg-[#272749]/30 border-l-4 border-[#272749]'
+                                        : 'bg-white'
+                                        }`}
+                                >
+                                    <div className="flex items-center space-x-3">
+                                        <input
+                                            type="radio"
+                                            name="delivery"
+                                            value="pickup"
+                                            checked={selected === 'pickup'}
+                                            onChange={(e) => handleShipOption(e)}
+                                            className="accent-[#272749] w-5 h-5"
+                                        />
+                                        <span className="text-black font-medium">Pickup in store</span>
+                                    </div>
+                                    <Store
+                                        className={`w-5 h-5 ${selected === 'pickup' ? 'text-[#272749]' : 'text-gray-400'
+                                            }`}
+                                    />
+                                </label>
+                            </div>
+                        </div>
+
                         <div className='border-t border-gray-200 pt-5 text-slate-700 w-full'>
                             <div className='mt-1 flex items-center justify-between w-full'><div className='font-bold'>Customer Name:</div> <div className='max-w-42 line-clamp-1'>{customerDiffRecipient ? recipientName : customerName}</div></div>
-                            <div className='mt-1 flex items-center justify-between w-full'><div className='font-bold'>Shipping Address:</div> <div className='max-w-42 line-clamp-1'>{customerDiffRecipient ? `${recipientAddress}, ${recipientCity}, ${recipientCountry}` : `${customerAddress}, ${customerCity}, ${customerCountry}`}</div></div>
-                            <div className='mt-1 flex items-center justify-between w-full'><div className='font-bold'>Shipping Amount:</div> <div className='max-w-42 line-clamp-1'>RWF {Number(total).toLocaleString()}</div></div>
-                            <div className='mt-1 flex items-center justify-between w-full'><div className='font-bold'>Total Amount:</div> <div className='max-w-42 line-clamp-1'>RWF {Number(total).toLocaleString()}</div></div>
+                            <div className='mt-1 flex items-center justify-between w-full'>
+                                <div className='font-bold'>Shipping Address:</div>
+                                <div className='max-w-42 line-clamp-1'>
+                                    {customerDiffRecipient
+                                        ? [recipientAddress, recipientCity, recipientCountry].filter(Boolean).join(', ')
+                                        : [customerAddress, customerCity, customerCountry].filter(Boolean).join(', ')}
+                                </div>
+                            </div>
+                            <div className='mt-1 flex items-center justify-between w-full'><div className='font-bold'>Shipping Amount:</div> <div className='max-w-42 line-clamp-1'>RWF {Number(shippingAmount).toLocaleString()}</div></div>
+                            <div className='mt-1 flex items-center justify-between w-full'><div className='font-bold'>Total Amount:</div> <div className='max-w-42 line-clamp-1'>RWF {Number(total + shippingAmount).toLocaleString()}</div></div>
                         </div>
 
                         <div className="flex justify-between border-t border-gray-200 pt-5 mt-5">
