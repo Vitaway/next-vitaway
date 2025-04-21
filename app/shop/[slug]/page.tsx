@@ -10,9 +10,9 @@ import GuestLayout from "@/app/layouts/GuestLayout";
 import { useCart } from "@/context/CartContext";
 import { Products } from "@/types/products";
 import Head from "next/head";
-import Image from "next/image";
 import { useParams, notFound } from "next/navigation";
 import { useEffect, useState } from "react";
+import ProductSlider from "./ProductSlider";
 
 const ProductDetails: React.FC = () => {
     const params = useParams();
@@ -100,7 +100,10 @@ const ProductDetails: React.FC = () => {
                             </div>
 
                             <h2 className="font-bold text-xl text-slate-700">About this item</h2>
-                            <p className="text-gray-700 my-4">{product.description}</p>
+                            <div
+                                className="text-gray-700 my-4"
+                                dangerouslySetInnerHTML={{ __html: product.description }}
+                            />
 
                             <div className="flex space-x-4 mb-6 items-center">
                                 <div className="mb-6">
@@ -146,23 +149,10 @@ const ProductDetails: React.FC = () => {
                     </div>
 
                     {relatedProducts && relatedProducts.length > 2 && (
-                        <div className="mt-10">
-                            <h2 className="text-2xl font-bold text-slate-800">You may also Like</h2>
-
-                            <div className="keen-slider">
-                                {loading
-                                    ? Array(8).fill(0).map((_, index) => (
-                                        <div key={index} className="keen-slider__slide">
-                                            <ProductCardSkeleton />
-                                        </div>
-                                    ))
-                                    : relatedProducts.map((product, index) => (
-                                        <div key={index} className="keen-slider__slide">
-                                            <ProductCard product={product} />
-                                        </div>
-                                    ))}
-                            </div>
-                        </div>
+                        <ProductSlider  
+                            relatedProducts={relatedProducts}
+                            loading={loading}
+                        />
                     )}
                 </div>
             </div>

@@ -36,9 +36,6 @@ function Shop() {
 						<p className="text-base text-gray-300 md:text-lg font-normal">
 							Discover our exclusive collection of products tailored to meet your needs. From everyday nutritional to premium items, find everything you need in one place.
 						</p>
-						<div className="bg-green-400/50 w-full px-5 py-2 mt-5 rounded-3xl text-sm">
-							<p>Free delivery anywhere for order above 50K in kigali</p>
-						</div>
 					</div>
 				</div>
 			</div>

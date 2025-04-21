@@ -33,7 +33,7 @@ interface CartItem {
 }
 
 function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose: () => void, callback: () => void }) {
-    const DEFAULT_SHIPPING_AMOUNT = 3000;
+    const DEFAULT_SHIPPING_AMOUNT = 2000;
     const SHIPPING_DISCOUNT_THRESHOLD = 50000;
     const SHIPPING_DISCOUNT_AMOUNT = 0;
     const SHIPPING_DISCOUNT_PROVINCE = 'Kigali';
