@@ -35,7 +35,6 @@ function ProductSlider({ relatedProducts, loading }: { relatedProducts: Products
             <h2 className="text-2xl font-bold text-slate-800 mb-5">You may also like</h2>
 
             <div className="relative">
-                {/* Slider */}
                 <div ref={sliderRef} className="keen-slider">
                     {loading
                         ? Array(8)

@@ -313,8 +313,6 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
         if (customerDiffRecipient) {
             const shippingAmount = isEligibleForDiscount(recipientCountry) ? SHIPPING_DISCOUNT_AMOUNT : DEFAULT_SHIPPING_AMOUNT;
             setShippingAmount(shippingAmount);
-
-            console.log(selectedRecipientProvince)
         } else {
             setShippingAmount(isEligibleForDiscount(customerCountry) ? SHIPPING_DISCOUNT_AMOUNT : DEFAULT_SHIPPING_AMOUNT);
         }

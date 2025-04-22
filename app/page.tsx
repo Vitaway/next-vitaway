@@ -42,7 +42,6 @@ export default function Home() {
       <Services />
       <Video />
       <DiabeteProgram />
-      {/* <Testimonies /> */}
       <Blogs />
       <Partenership />
     </GuestLayout>

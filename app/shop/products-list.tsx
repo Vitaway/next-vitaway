@@ -50,7 +50,7 @@ function ProductsList() {
 	return (
 		<>
 			<section className="bg-white">
-				<div className="px-4 py-20 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-20 lg:px-10 lg:py-20">
+				<div className="px-4 pb-20 pt-10 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-20 lg:px-10 lg:pb-20 lg:pt-10">
 					<div className="flex flex-wrap">
 						<div className="w-full mb-6">
 							<h2 className="text-2xl text-slate-700 font-bold">Popular Products</h2>
