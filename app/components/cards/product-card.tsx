@@ -8,7 +8,7 @@ function ProductCard({ product }: { product: Products }) {
     const { addToCart } = useCart();
 
     return (<>
-        <div className="relative rounded-2xl border bg-white border-gray-200">
+        <div className="relative rounded-2xl border bg-white border-gray-200 transform transition-transform duration-300 hover:scale-105">
             <div className="flex-auto">
                 <div className="text-center relative flex justify-center">
                     <div className='w-full h-[170px] overflow-hidden rounded-t-2xl border-b border-gray-200'>
@@ -26,7 +26,7 @@ function ProductCard({ product }: { product: Products }) {
                     <Link href={`/shop/${product.slug}`}>
                         <div className="flex flex-col">
                             <h3 className="text-base truncate"><span className='text-slate-800 font-bold'>{product.name}</span></h3>
-                            <p className='font-semibold text-sm text-slate-700 line-clamp-2 mt-2'>{product.description}</p>
+                            <div className='font-semibold text-sm text-slate-700 line-clamp-2 mt-2' dangerouslySetInnerHTML={{ __html: product.description }}></div>
                         </div>
                     </Link>
 
