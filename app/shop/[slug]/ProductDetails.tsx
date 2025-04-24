@@ -13,6 +13,8 @@ function ProductDetails({ product, relatedProducts, loading }: { product: Produc
     const [isCheckoutOpen, setOpenCheckout] = useState(false);
     const [message, setMessage] = useState<string>('');
     const [messageType, setMessageType] = useState<'success' | 'error'>('success');
+    const [isExpanded, setIsExpanded] = useState(false);
+
     const openCheckout = () => setOpenCheckout(true);
     const closeCheckout = () => setOpenCheckout(false);
 
@@ -24,10 +26,9 @@ function ProductDetails({ product, relatedProducts, loading }: { product: Produc
     }
 
     const handlePaymentCallback = () => {
-        setMessage('Payment Approved and Processed successful. Thank you for your order!');
+        setMessage('Payment approved and processed successfully. Thank you for your order!');
         setMessageType('success');
     }
-
     return (<>
         <div className="bg-white border-t border-gray-200">
             <div className="px-4 py-20 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-20 lg:px-10 lg:py-20">
@@ -46,10 +47,20 @@ function ProductDetails({ product, relatedProducts, loading }: { product: Produc
                         </div>
 
                         <h2 className="font-bold text-xl text-slate-700">About this item</h2>
-                        <div
-                            className="text-gray-700 my-4"
-                            dangerouslySetInnerHTML={{ __html: product.description }}
-                        />
+                        <div className="text-gray-700 my-4">
+                            <p
+                                className={`overflow-hidden ${product.description.length > 200 && !isExpanded ? 'line-clamp-6' : ''}`}
+                                dangerouslySetInnerHTML={{ __html: product.description }}
+                            />
+                            {product.description.length > 200 && (
+                                <button
+                                    onClick={() => setIsExpanded(!isExpanded)}
+                                    className="text-indigo-600 hover:underline mt-2"
+                                >
+                                    {isExpanded ? 'See Less' : 'See More'}
+                                </button>
+                            )}
+                        </div>
 
                         <div className="flex space-x-4 mb-6 items-center">
                             <div className="mb-6">
