@@ -26,7 +26,7 @@ function ProductDetails({ product, relatedProducts, loading }: { product: Produc
     }
 
     const handlePaymentCallback = () => {
-        setMessage('Payment Approved and Processed successful. Thank you for your order!');
+        setMessage('Payment approved and processed successfully. Thank you for your order!');
         setMessageType('success');
     }
     return (<>
