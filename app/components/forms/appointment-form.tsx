@@ -16,6 +16,7 @@ function AppointmentForm() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
         setIsSubmitting(true);
         setError('');
         setSuccess('');
@@ -29,14 +30,14 @@ function AppointmentForm() {
                 date: appointmentDate,
                 time: appointmentTime,
                 priority: 'high',
-                type: 'BUSINESS',
+                type: 'business',
                 assigned: email,
                 patients: [fullname],
             };
 
             const response = await fetch(`${process.env.NEXT_PUBLIC_ENVENTORY_API_URL}/api/appointments/business`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
                 body: JSON.stringify(payload),
             });
 
@@ -48,7 +49,8 @@ function AppointmentForm() {
                 const data = await response.json();
                 setError(data.message || 'Something went wrong. Please try again.');
             }
-        } catch {
+        } catch (error) {
+            console.error('Error:', error);
             setError('Something went wrong. Please try again.');
         } finally {
             setIsSubmitting(false);
