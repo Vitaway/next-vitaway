@@ -5,7 +5,7 @@ import GuestLayout from '../layouts/GuestLayout';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: "Download Vitaway - Your All-in-One Virtual Health Companion",
+  title: "Download Vitaway",
   description: "Download Vitaway, the ultimate virtual health companion app. Empower your wellness with comprehensive care, virtual doctor consultations, health tracking, and personalized wellness plans.",
   keywords: "Vitaway, virtual health companion, health app, wellness app, healthcare app, virtual doctor consultations, health tracking, personalized wellness plans, download app",
   metadataBase: new URL("https://www.vitaway.org"),

@@ -7,6 +7,7 @@ import GuestLayout from '@/app/layouts/GuestLayout';
 import Head from 'next/head';
 import { Blogs } from '@/types/blogs';
 import ImageSlider from '@/app/components/cards/images-slider';
+import '../../styles/blog-content.css';
 
 const BlogPost: React.FC = () => {
   const params = useParams();
@@ -56,7 +57,7 @@ const BlogPost: React.FC = () => {
         <meta name="description" content={`Read "${blog.title}" by ${blog.author}`} />
       </Head>
 
-      <article className="relative p-4 border-t border-gray-200">
+      <article className="relative border-t border-gray-200">
         <div className="max-w-3xl mx-auto bg-white p-6 rounded">
           <header>
             <p className="text-indigo-600 text-sm mb-2 font-semibold">{blog.category.name}</p>
@@ -101,7 +102,7 @@ const BlogPost: React.FC = () => {
             <ImageSlider images={blog.images.map((img) => img.image_url)} alt={blog.title} />
           </div>
 
-          <section className="prose prose-lg max-w-none text-gray-800 blog-content" dangerouslySetInnerHTML={{ __html: blog.content }} />
+          <section className="blog-content prose prose-lg max-w-none text-gray-800 blog-content" dangerouslySetInnerHTML={{ __html: blog.content }} />
         </div>
       </article>
     </GuestLayout>
