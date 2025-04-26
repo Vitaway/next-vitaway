@@ -20,7 +20,7 @@ function Contact() {
         <div className="relative z-10 px-4 py-10 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-10 lg:px-8 lg:py-16">
           <div className="flex flex-col items-center justify-between xl:flex-row z-10">
             <div className="w-full max-w-xl mb-8 xl:pr-12 xl:mb-0 xl:w-7/12">
-              <h2 className="max-w-lg mb-6 font-sans text-2xl font-normal tracking-tight text-white sm:text-3xl sm:leading-none md:leading-5xl capitalize">
+              <h2 className="max-w-lg mb-6 text-2xl font-normal tracking-tight text-white sm:text-3xl capitalize" style={{ lineHeight: '35px' }}>
                 Contact Vitaway today, and let&apos;s connect for <span className="text-gray-400 font-normal">a Healthier tomorrow</span>
               </h2>
               <p className="max-w-xl mb-4 text-sm font-normal text-gray-400 md:text-base">

@@ -17,7 +17,7 @@ export const metadata: Metadata = {
         url: "https://www.vitaway.org/about-us",
         images: [
             {
-                url: "https://vitaway.org/images/Team/bg-1.jpeg",
+                url: "/images/Team/bg-1.jpeg",
                 width: 800,
                 height: 600,
                 alt: "Vitaway core team"
@@ -81,7 +81,7 @@ function AboutUs() {
                         </div>
                     </div>
                     <div className="grid grid-cols-2 gap-5">
-                        <Image width={600} height={600} className="object-cover w-full h-56 col-span-2 rounded" src="https://vitaway.org/images/Team/bg-1.jpeg" alt="vitaway core team" />
+                        <Image width={600} height={600} className="object-cover w-full h-56 col-span-2 rounded" src="/images/Team/bg-1.jpeg" alt="vitaway core team" />
                     </div>
                 </div>
             </div>
@@ -102,7 +102,7 @@ function AboutUs() {
                 <div className="grid gap-6 row-gap-5 mb-8 lg:grid-cols-4 sm:row-gap-6 sm:grid-cols-2">
                     <a href="#">
                         <div className="relative overflow-hidden transition duration-200 transform rounded hover:-translate-y-2 hover:shadow-2xl">
-                            <Image width={600} height={600} className="object-cover w-full h-56 md:h-64 xl:h-80" src="https://vitaway.org/images/Team/bg.jpeg" alt="vitaway team during meetup" />
+                            <Image width={600} height={600} className="object-cover w-full h-56 md:h-64 xl:h-80" src="/images/Team/bg.jpeg" alt="vitaway team during meetup" />
                             <div className="absolute inset-0 px-6 py-4 transition-opacity duration-200 bg-black bg-opacity-75 opacity-0 hover:opacity-100">
                                 <p className="mb-4 text-lg font-bold text-gray-100">Collaborative</p>
                                 <p className="text-sm tracking-wide text-gray-300">
@@ -113,7 +113,7 @@ function AboutUs() {
                     </a>
                     <a href="#" aria-label="View Item">
                         <div className="relative overflow-hidden transition duration-200 transform rounded hover:-translate-y-2 hover:shadow-2xl">
-                            <Image width={600} height={600} className="object-cover w-full h-56 md:h-64 xl:h-80" src="https://vitaway.org/images/Team/bg-1.jpeg" alt="vitaway team during meetup" />
+                            <Image width={600} height={600} className="object-cover w-full h-56 md:h-64 xl:h-80" src="/images/Team/bg-1.jpeg" alt="vitaway team during meetup" />
                             <div className="absolute inset-0 px-6 py-4 transition-opacity duration-200 bg-black bg-opacity-75 opacity-0 hover:opacity-100">
                                 <p className="mb-4 text-lg font-bold text-gray-100">The Demo Night</p>
                                 <p className="text-sm tracking-wide text-gray-300">
@@ -124,7 +124,7 @@ function AboutUs() {
                     </a>
                     <a href="#" aria-label="View Item">
                         <div className="relative overflow-hidden transition duration-200 transform rounded hover:-translate-y-2 hover:shadow-2xl">
-                            <Image width={600} height={600} className="object-cover w-full h-56 md:h-64 xl:h-80" src="https://vitaway.org/images/summit.jpeg" alt="vitaway team during meetup" />
+                            <Image width={600} height={600} className="object-cover w-full h-56 md:h-64 xl:h-80" src="/images/Team/aspring.jpeg" alt="vitaway team during meetup" />
                             <div className="absolute inset-0 px-6 py-4 transition-opacity duration-200 bg-black bg-opacity-75 opacity-0 hover:opacity-100">
                                 <p className="mb-4 text-lg font-bold text-gray-100">The Founder Nights</p>
                                 <p className="text-sm tracking-wide text-gray-300">

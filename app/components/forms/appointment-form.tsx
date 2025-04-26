@@ -116,14 +116,14 @@ function AppointmentForm() {
 
                     {/* Type */}
                     <div className="mb-1 sm:mb-2">
-                        <label className="inline-block mb-1 font-normal">Type</label>
+                        <label className="inline-block mb-1 font-normal">Type / Services</label>
                         <select
                             value={type}
                             onChange={(e) => setType(e.target.value)}
                             className="flex-grow w-full h-12 px-4 mb-2 font-normal transition duration-200 bg-white border border-gray-300 rounded appearance-none focus:border-indigo-400 focus:outline-none focus:shadow-outline"
                             required
                         >
-                            <option value="" disabled>Select type</option>
+                            <option value="" disabled>Select Type / Service</option>
                             <option value="BUSINESS">Business</option>
                             <option value="PERSONAL">Personal</option>
                             <option value="MEDICAL">Medical</option>

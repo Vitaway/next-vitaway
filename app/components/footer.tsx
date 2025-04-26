@@ -73,12 +73,16 @@ function Footer() {
                                 <Link href="/pricing" title="" className="flex text-base text-gray-200 transition-all duration-200 hover:text-blue-600 focus:text-blue-600"> Our Pricings </Link>
                             </li>
 
-                            {/* <li>
+                            <li>
                                 <Link href="/blogs" title="" className="flex text-base text-gray-200 transition-all duration-200 hover:text-blue-600 focus:text-blue-600"> All Blogs </Link>
-                            </li> */}
+                            </li>
                             
                             <li>
                                 <Link href="/contacts" title="" className="flex text-base text-gray-200 transition-all duration-200 hover:text-blue-600 focus:text-blue-600"> Contact us </Link>
+                            </li>
+
+                            <li>
+                                <Link href="/appointments" title="" className="flex text-base text-gray-200 transition-all duration-200 hover:text-blue-600 focus:text-blue-600"> Book Appointment </Link>
                             </li>
                         </ul>
                     </div>
@@ -88,7 +92,7 @@ function Footer() {
 
                         <ul className="mt-6 space-y-4">
                             <li>
-                                <Link href="/customer-support" title="" className="flex text-base text-gray-200 transition-all duration-200 hover:text-blue-600 focus:text-blue-600"> Customer Support </Link>
+                                <Link href="/customer-support" title="" className="flex text-base text-gray-200 transition-all duration-200 hover:text-blue-600 focus:text-blue-600"> Ethics & Compliance </Link>
                             </li>
 
                             <li>
