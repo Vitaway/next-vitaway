@@ -22,7 +22,7 @@
         "price": "RWF 10, 000.00",
         "highlighted": true,
         "cta_button": "Get Started",
-        "cta_button_link": "/download",
+        "cta_button_link": "/contacts",
         "features": [
             "Virtual PT Appointment (member)",
             "Access All Features (lessons, daily tracks, etc.)",
@@ -41,7 +41,7 @@
         "description": "An all-inclusive plan offering unlimited access to advanced features and personalized support for a complete health and wellness experience.",
         "price": "RWF 15, 000.00",
         "cta_button": "Get Started",
-        "cta_button_link": "/download",
+        "cta_button_link": "/contacts",
         "features": [
             "All Standard Plan Features",
             "Unlimited Video Calls",

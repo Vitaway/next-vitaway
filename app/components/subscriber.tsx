@@ -29,6 +29,13 @@ function Subscriber() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!emailRegex.test(email)) {
+            setError('Please enter a valid email address.');
+            return;
+        }
+
         setIsSubmitting(true);
         setError('');
         setSuccess('');
@@ -65,16 +72,18 @@ function Subscriber() {
 
     return (
         <div className="fixed transition-all ease-in-out delay-150 flex items-center top-0 right-0 left-0 bottom-0 bg-gray-900/25 h-screen w-screen z-[9999]">
-            <div className='flex items-center justify-center w-full h-full'>
-                <div className="relative isolate rounded-xl w-full max-w-3xl overflow-hidden bg-gray-900 py-8 sm:py-16 lg:py-24 flex items-center justify-between mx-4 sm:mx-8 lg:mx-12">
+            <div className="flex items-center justify-center w-full h-full px-4 sm:px-8">
+                <div className="relative isolate rounded-xl w-full max-w-3xl overflow-hidden bg-gray-900 py-8 sm:py-12 lg:py-16 flex items-center justify-between">
                     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                         <div className="max-w-xl lg:max-w-lg flex items-center justify-center text-center flex-col">
-                            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">Subscribe to Our Newsletter.</h2>
-                            <p className="mt-4 text-sm sm:text-md text-gray-300">
+                            <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight text-white">
+                                Subscribe to Our Newsletter.
+                            </h2>
+                            <p className="mt-4 text-sm sm:text-md lg:text-lg text-gray-300">
                                 Get exclusive wellness tips, expert insights, special offers & unlock a healthier you!
                                 Start your journey to vitality now by subscribing to Vitaway&apos;s newsletter.
                             </p>
-                            <form onSubmit={handleSubmit} className="mt-6 flex items-center justify-center max-w-md gap-x-4">
+                            <form onSubmit={handleSubmit} className="mt-6 flex flex-col sm:flex-row items-center justify-center max-w-md gap-y-4 sm:gap-x-4">
                                 <label className="sr-only">Email address</label>
                                 <input
                                     value={email}
@@ -83,14 +92,14 @@ function Subscriber() {
                                     name="email"
                                     type="email"
                                     required
-                                    className="min-w-0 flex-auto rounded-md border-0 bg-white/5 px-3.5 py-2.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+                                    className="w-full sm:flex-auto rounded-md border-0 bg-white/5 px-3.5 py-2.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
                                     placeholder="Enter your email"
                                 />
                                 <button
                                     type="submit"
-                                    className="flex-none rounded-md bg-[#3268b9] px-4 py-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline-none"
+                                    className="w-full sm:w-auto rounded-md bg-[#3268b9] px-4 py-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline-none"
                                     disabled={isSubmitting}>
-                                    {isSubmitting ? 'Submitting...' : 'Subscribe Now'}
+                                    {isSubmitting ? 'Submitting...' : 'Subscribe'}
                                 </button>
                             </form>
                             {error && <p className="mt-4 text-sm text-red-500">{error}</p>}
