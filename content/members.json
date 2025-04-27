@@ -76,5 +76,31 @@
             "twitter": "",
             "instagram": ""
         }
+    },
+    {
+        "name": "Sandra AKEZA MUKAMUGEMA",
+        "slug": "sandra-akeza-mukamugema",
+        "role": "Registered Nutritionist & Health Coach",
+        "description": "Providing expert guidance on managing chronic conditions through balanced, nutrient-rich diets and sustainable living.",
+        "image": "/images/members/member-9.jpg",
+        "bio": "Registered  Nutritionist dedicated to provide support for managing chronic conditions like Diabetes, heart diseases, Hypertension and  guiding  individuals to ward balanced, Nutrient-rich diets that support health, sustainability and ethical living.",
+        "social_media": {
+            "linkedin": "https://www.linkedin.com/in/hirwa-nathanaella/?originalSubdomain=rw",
+            "twitter": "",
+            "instagram": ""
+        }
+    },
+    {
+        "name": "Joseph KAREMERA RN",
+        "slug": "joseph-karemera",
+        "role": "Clinical Nutritionist & Public Health Researcher",
+        "description": "Dedicated to preventing and managing non-communicable diseases through medical nutrition therapy and public health research.",
+        "image": "/images/members/member-10.JPG",
+        "bio": "Joseph Karemera has been working in Rwanda health care system for more than five years, his experience range from clinical, public health, and Research. He is clinical Nutritionist and Dietician by training. His career focuses in Non-communicable disease prevention, management and control and Research. Using he is gained knowledge and skills in Nutrition and dietetic together with his master’s degree in Public health and disease control, he is mission aims to establish at which level the primary non-communicable diseases risk factors lead to secondary risk factors such as elevated blood pressure and sugar…etc. and its reverse using medical nutrition therapy in Africa Population.",
+        "social_media": {
+            "linkedin": "https://www.linkedin.com/in/hirwa-nathanaella/?originalSubdomain=rw",
+            "twitter": "",
+            "instagram": ""
+        }
     }
 ]
