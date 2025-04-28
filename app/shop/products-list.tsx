@@ -18,7 +18,10 @@ function ProductsList() {
 			try {
 				setLoading(true);
 
-				const response = await fetch(`${inventoryApiUrl}/api/products`);
+				const response = await fetch(`${inventoryApiUrl}/api/products`, {
+					method: 'GET',
+					headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
+				});
 				const data = await response.json();
 
 				if (!response.ok) {
@@ -27,7 +30,7 @@ function ProductsList() {
 
 				setLoading(false);
 				setProducts(data.data);
-				setFilteredProducts(data.data); // Initialize filtered products
+				setFilteredProducts(data.data);
 			} catch (error) {
 				console.error('Error fetching products:', error);
 			}
