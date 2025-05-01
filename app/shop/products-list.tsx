@@ -109,7 +109,7 @@ function ProductsList() {
 						</div>
 					)}
 
-					<div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:gap-3 xl:grid-cols-4">
+					<div className="grid gap-4 grid-cols-1 sm:grid-cols-1 md:grid-cols-3 xl:grid-cols-4">
 						{loading
 							? Array(8)
 								.fill(0)
