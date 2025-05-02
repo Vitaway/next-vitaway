@@ -158,14 +158,14 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
         try {
             const payload = {
                 customer_name: customerName,
-                customer_email: customerEmail,
+                customer_email: customerEmail ?? 'vitawayeclinic@gmail.com',
                 customer_phone: customerPhone,
                 customer_address: customerAddress,
                 customer_city: customerCity,
                 customer_country: customerCountry,
 
                 recipient_name: customerDiffRecipient ? recipientName : customerName,
-                recipient_email: customerDiffRecipient ? recipientEmail : customerEmail,
+                recipient_email: customerDiffRecipient ? recipientEmail : (customerEmail ?? 'vitawayeclinic@gmail.com'),
                 recipient_phone: customerDiffRecipient ? recipientPhone : customerPhone,
                 recipient_address: customerDiffRecipient ? recipientAddress : customerAddress,
                 recipient_city: customerDiffRecipient ? recipientCity : customerCity,
@@ -216,13 +216,6 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
             isValid = false;
         } else {
             setCustomerNameError('');
-        }
-
-        if (customerEmail.trim() === '') {
-            setCustomerEmailError('Customer email is required');
-            isValid = false;
-        } else {
-            setCustomerEmailError('');
         }
 
         if (customerPhone.trim() === '') {
