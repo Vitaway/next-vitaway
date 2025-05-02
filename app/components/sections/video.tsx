@@ -3,7 +3,7 @@ import React from 'react'
 
 function Video() {
     return (<>
-        <div className="w-screen bg-gradient-to-b from-[#272749] to-[#111827]">
+        <div className="w-screen bg-gradient-to-b from-[#003E48] to-[#282e33]">
             <div className="px-4 py-20 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-20 lg:px-10 lg:py-20">
                 <div className="space-y-8 lg:space-y-0 lg:grid lg:grid-cols-12 lg:gap-8">
                     <div className="px-6 sm:text-center md:mx-auto md:max-w-2xl lg:col-span-6 lg:flex lg:items-center lg:text-left">
@@ -11,7 +11,7 @@ function Video() {
                             <div className="space-y-4">
                                 <div className="space-y-2">
                                     <span
-                                        className="rounded-full uppercase bg-pink-500 px-3 py-0.5 text-sm font-semibold leading-5 text-white">
+                                        className="rounded-full uppercase bg-[#E85A2E] px-3 py-0.5 text-sm font-semibold leading-5 text-white">
                                         Early Access
                                     </span>
                                     <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl md:text-5xl">

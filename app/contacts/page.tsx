@@ -14,8 +14,8 @@ export const metadata: Metadata = {
 function Contact() {
   return (
     <GuestLayout>
-      <div className="relative overflow-hidden bg-gradient-to-b from-[#272749] to-[#111827] min-h-screen flex items-center justify-center">
-        <div className="absolute inset-0 bg-gradient-to-b from-[#272749] to-[#111827] z-0"></div>
+      <div className="relative overflow-hidden bg-gradient-to-b from-[#003E48] to-[#282e33] min-h-screen flex items-center justify-center">
+        <div className="absolute inset-0 bg-gradient-to-b from-[#003E48] to-[#282e33] z-0"></div>
 
         <div className="relative z-10 px-4 py-10 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-10 lg:px-8 lg:py-16">
           <div className="flex flex-col items-center justify-between xl:flex-row z-10">

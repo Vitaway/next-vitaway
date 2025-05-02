@@ -32,7 +32,7 @@ function Download() {
         <div className="px-4 py-20 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-20 lg:px-10 lg:py-20">
 
           <div className="absolute inset-0">
-            <div className="absolute inset-y-0 z-0 w-full h-full bg-gradient-to-b from-[#272749] to-[#111827] lg:w-3/6"></div>
+            <div className="absolute inset-y-0 z-0 w-full h-full bg-gradient-to-b from-[#003E48] to-[#282e33] lg:w-3/6"></div>
           </div>
 
           <div className="relative">

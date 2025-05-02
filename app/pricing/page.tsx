@@ -35,7 +35,7 @@ function Pricing() {
     return (<>
         <GuestLayout>
             <div className="relative w-full h-full">
-                <div className="absolute w-full bg-gradient-to-b from-[#272749] to-[#111827] lg:block h-96"></div>
+                <div className="absolute w-full bg-gradient-to-b from-[#003E48] to-[#282e33] lg:block h-96"></div>
                 
                 <div className="z-[5] absolute left-1/2 top-0 aspect-[1204/394] w-full max-w-[1204px] -translate-x-1/2">
                     <BackgroundBlurImage />
@@ -113,7 +113,7 @@ function Pricing() {
                                     )}
 
                                     <Link href={plan.cta_button_link}>
-                                        <button type="button" className="w-full mt-8 px-6 sm:px-10 py-3 sm:py-4 text-xs sm:text-sm font-semibold text-white bg-gradient-to-b from-[#272749] to-[#111827] rounded-full">
+                                        <button type="button" className="w-full mt-8 px-6 sm:px-10 py-3 sm:py-4 text-xs sm:text-sm font-semibold text-white bg-gradient-to-b from-[#003E48] to-[#282e33] rounded-full">
                                             {plan.cta_button}
                                         </button>
                                     </Link>

@@ -40,7 +40,7 @@ function Footer() {
     };
 
     return (<>
-        <section className="pt-10 pb-5 sm:pt-16 lg:pt-24 relative border-t border-gray-200 bg-gradient-to-b from-[#272749] to-[#111827]">
+        <section className="pt-10 pb-5 sm:pt-16 lg:pt-24 relative border-t border-gray-200 bg-gradient-to-b from-[#003E48] to-[#282e33]">
             <div className="z-10 absolute left-1/2 top-0 aspect-[1204/394] w-full max-w-[1204px] -translate-x-1/2 opacity-35">
                 <BackgroundBlurImage />
             </div>
@@ -117,7 +117,7 @@ function Footer() {
 
                             <button
                                 type="submit"
-                                className="flex-none rounded-md bg-[#3268b9] px-4 py-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline-none"
+                                className="flex-none rounded-md bg-[#003E48] px-4 py-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline-none"
                                 disabled={isSubmitting}>
                                 {isSubmitting ? 'Submitting...' : 'Subscribe Now'}
                             </button>                        
