@@ -44,8 +44,8 @@ function BottomNavbar() {
                             <ShoppingCart />
                         </div>
                         <div className='flex items-center space-x-2'>
-                            <Link href="/shop" title="" className="hidden lg:inline-flex items-center justify-center px-5 py-2.5 text-base transition-all duration-200 hover:text-white hover:bg-indigo-800 focus:text-white focus:bg-indigo-300 font-semibold text-white bg-gradient-to-b from-[#272749] to-[#111827] rounded-full" role="button"> Shop </Link>
-                            <Link href="/download" title="" className="hidden lg:inline-flex items-center justify-center px-5 py-2.5 text-base transition-all duration-200 hover:text-white hover:bg-indigo-800 focus:text-white focus:bg-indigo-300 font-semibold text-white bg-gradient-to-b from-[#272749] to-[#111827] rounded-full" role="button"> Download </Link>
+                            <Link href="/shop" title="" className="hidden lg:inline-flex items-center justify-center px-5 py-2.5 text-base transition-all duration-200 hover:text-white hover:bg-indigo-800 focus:text-white focus:bg-indigo-300 font-semibold text-white bg-gradient-to-b from-[#003E48] to-[#282e33] rounded-full" role="button"> Shop </Link>
+                            <Link href="/download" title="" className="hidden lg:inline-flex items-center justify-center px-5 py-2.5 text-base transition-all duration-200 hover:text-white hover:bg-indigo-800 focus:text-white focus:bg-indigo-300 font-semibold text-white bg-gradient-to-b from-[#003E48] to-[#282e33] rounded-full" role="button"> Download </Link>
                         </div>
                     </div>
                 </div>

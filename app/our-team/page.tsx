@@ -16,7 +16,7 @@ function OurTeam() {
   return (<>
     <GuestLayout>
       <div className="team-section relative w-full h-full">
-        <div className="absolute w-full bg-gradient-to-b from-[#272749] to-[#111827] lg:block h-[500px]"></div>
+        <div className="absolute w-full bg-gradient-to-b from-[#003E48] to-[#282e33] lg:block h-[500px]"></div>
 
         <div className="relative px-4 py-20 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-20 lg:px-10 lg:py-20">
           {/* Header */}

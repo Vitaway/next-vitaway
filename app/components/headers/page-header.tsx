@@ -11,7 +11,7 @@ interface PageHeaderProps {
 
 function PageHeader({ sup_title, title, description, backgroundImage }: PageHeaderProps) {
     return (<>
-        <div className="bg-gradient-to-b from-[#272749] to-[#111827] relative">
+        <div className="bg-gradient-to-b from-[#003E48] to-[#282e33] relative">
             <div className="absolute inset-0 z-1 bg-gray-900/90"></div>
 
             {backgroundImage && <div className="absolute inset-0 z-0">

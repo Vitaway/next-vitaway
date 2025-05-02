@@ -1,12 +1,12 @@
 .appointment-button {
   position: relative;
   padding: 15px 45px;
-  background: #272749;
+  background: #E85A2E;
   font-size: 17px;
   font-weight: 500;
-  color: rgb(234, 230, 230);
+  color: #FFF;
   cursor: pointer;
-  border: 1px solid #272749;
+  border: 1px solid #E85A2E;
   border-radius: 50px;
   filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.2));
 }
@@ -16,13 +16,13 @@
   background: linear-gradient(
     85deg,
     #272749,
-    #fcc196,
-    #fabd92,
-    #fac097,
+    #E85A2E,
+    #E85A2E,
+    #E85A2E,
     #fac39c
   );
   animation: wind 2s ease-in-out infinite;
-  color: #272749;
+  color: #FFF;
 }
 
 @keyframes wind {

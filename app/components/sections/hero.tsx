@@ -6,7 +6,7 @@ import Link from 'next/link';
 
 function Hero() {
     return (<>
-        <section className="bg-gradient-to-b from-[#1a1a2e] to-[#111827] relative">
+        <section className="bg-gradient-to-b from-[#003E48] to-[#282e33] relative">
             <div className='border-t px-4 py-20 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-20 lg:px-10 lg:py-20'>
                 <div className="absolute inset-0 z-1 bg-gray-900/90"></div>
 
