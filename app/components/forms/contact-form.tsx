@@ -17,7 +17,7 @@ function ContactForm() {
         setSuccess('');
 
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_ENVENTORY_API_URL}/api/contacts`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_ENVENTORY_API_URL}/api/contact`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
                 body: JSON.stringify({ fullname, email, message }),
