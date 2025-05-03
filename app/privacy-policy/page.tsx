@@ -42,7 +42,7 @@ function PrivacyPolicy() {
 
         <h2 className="text-xl font-semibold mt-6 text-slate-700 mb-3">7. Changes to Privacy Policy</h2>
         <p className="text-gray-600">
-          King Faisal Hospital Rwanda reserves the right to make changes to this privacy policy at any time without prior notice. It is your responsibility to review this privacy policy periodically for any updates or changes.
+          Vitaway Health reserves the right to make changes to this privacy policy at any time without prior notice. It is your responsibility to review this privacy policy periodically for any updates or changes.
         </p>
 
         <h2 className="text-xl font-semibold mt-6 text-slate-700 mb-3">8. Contact Us</h2>
