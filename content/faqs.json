@@ -1,18 +1,114 @@
 [
     {
-        "question": "What services does the platform offer?",
-        "answer": "Vitaway is a digital healthcare platform that offers a range of services including online consultations, prescription delivery, and health monitoring."
+        "name": "General Information",
+        "questions": [
+            {
+                "question": "What services does the platform offer?",
+                "answer": "Vitaway is a digital healthcare platform that offers a range of services including online consultations, prescription delivery, and health monitoring."
+            },
+            {
+                "question": "Is the platform secure?",
+                "answer": "Yes, Vitaway is a secure platform that uses end-to-end encryption to protect your data."
+            },
+            {
+                "question": "Why should I choose Vitaway as a digital healthcare platform?",
+                "answer": "Vitaway offers convenient, affordable, and reliable healthcare services that you can access from the comfort of your home."
+            },
+            {
+                "question": "Is Vitaway platform free of use?",
+                "answer": "Yes, Vitaway is a free platform that you can use to access healthcare services and information."
+            },
+            {
+                "question": "What makes Vitaway different?",
+                "answer": "We combine nutrition science, digital health, and AI to offer personalised, continuous care that fits your lifestyle—whether at home, work, or on the go."
+            },
+            {
+                "question": "Where are your services based?",
+                "answer": "Our headquarters and Nutritional Cabinet are based in Kimironko, Kigali, Rwanda (KG 165 Street). Our app-based services are accessible from anywhere."
+            },
+            {
+                "question": "What services does Vitaway provide?",
+                "answer": "We offer in-person nutritional consultations, health screenings, personalised meal plans, coaching, mental health support, and a wellness app for ongoing care."
+            },
+            {
+                "question": "Do you offer services for workplaces?",
+                "answer": "Yes! We provide wellness programs for companies, employees, schools, and organisations—tailored to their needs."
+            },
+            {
+                "question": "Can I access Vitaway services online?",
+                "answer": "Yes. Our mobile app, Vitaway+, offers digital consultations, tracking, personalised health plans, and remote coaching."
+            }
+        ]
     },
     {
-        "question": "Is the platform secure?",
-        "answer": "Yes, Vitaway is a secure platform that uses end-to-end encryption to protect your data."
+        "name": "Programs and Eligibility",
+        "questions": [
+            {
+                "question": "Who is eligible for Vitaway for Prevention, Hypertension, or Diabetes?",
+                "answer": "Vitaway is personalised to support people as their needs evolve—whether you have overweight or obesity, and are at risk for or living with ongoing health conditions. This includes people living with prediabetes, diabetes, hypertension, high cholesterol, anxiety, and depression. Please speak to your human resources department to find out what conditions are covered under your plan or contact: vitawayeclinic@gmail.com"
+            },
+            {
+                "question": "What’s included with Vitaway for Prevention, Hypertension, or Diabetes?",
+                "answer": "The program surrounds you with a variety of tools and support tailored to what you need to succeed. You can expect:\n● A professional health coach for one-on-one support\n● Syncable devices to track your metrics (scale, blood pressure monitor, glucose meter)\n● Weekly interactive lessons focused on physical, social, and psychological wellness\n● A supportive online community of peers"
+            },
+            {
+                "question": "How are the Prevention, Diabetes, and Hypertension programs structured?",
+                "answer": "Vitaway introduces a new area of focus biweekly, such as nutrition habits, physical activity, blood pressure monitoring, stress management, and insulin use. Each topic is supported by lessons, coaching, and community features. Coaches personalize your experience by focusing on your specific goals and areas of improvement."
+            }
+        ]
     },
     {
-        "question": "Why should I choose Vitaway as a digital healthcare platform?",
-        "answer": "Vitaway offers convenient, affordable, and reliable healthcare services that you can access from the comfort of your home."
+        "name": "Vitaway+ App & Packages",
+        "questions": [
+            {
+                "question": "What is Vitaway+?",
+                "answer": "It’s our mobile app that gives you access to health assessments, coaching, tracking tools, and meal plans—anytime, anywhere."
+            },
+            {
+                "question": "Do I need to pay to use the app?",
+                "answer": "Basic access is free. Premium features (like advanced coaching, detailed reports, and personalised meal planning) require a paid subscription."
+            },
+            {
+                "question": "Can I use the app without visiting your clinic?",
+                "answer": "Yes! The app is fully functional for remote clients. Virtual consultations and chat support are available."
+            },
+            {
+                "question": "Do you have health packages?",
+                "answer": "Yes. We offer monthly and annual packages for individuals, families, and organisations. These include consultations, meal plans, tracking, and exclusive content."
+            },
+            {
+                "question": "Are there discounts for groups or companies?",
+                "answer": "Yes. Group pricing is available for corporate wellness plans and families."
+            },
+            {
+                "question": "Can I customise my own package?",
+                "answer": "Absolutely. Health is personal, and you can tailor your package based on your goals—weight loss, diabetes care, etc."
+            }
+        ]
     },
     {
-        "question": "Is Vitaway platform free of use?",
-        "answer": "Yes, Vitaway is a free platform that you can use to access healthcare services and information."
+        "name": "Shop & Products",
+        "questions": [
+            {
+                "question": "Do you sell nutrition products and wellness items?",
+                "answer": "Yes. Our shop offers a curated selection of nutritional supplements, healthy snacks, wellness kits, and educational materials recommended by our experts."
+            },
+            {
+                "question": "How do I place an order?",
+                "answer": "Visit www.vitaway.org/shop to browse and purchase directly. You can also order through the Vitaway+ app."
+            },
+            {
+                "question": "Do you deliver orders?",
+                "answer": "Yes. We offer delivery services within Kigali and nearby districts. More delivery locations will be added soon."
+            },
+            {
+                "question": "Can I buy without an appointment?",
+                "answer": "Absolutely. The shop is open to the public—no consultation is needed to place an order."
+            },
+            {
+                "question": "Are your products safe and approved?",
+                "answer": "All products are reviewed by licensed nutritionists and comply with the Rwanda FDA and safety regulations."
+            }
+        ]
     }
 ]

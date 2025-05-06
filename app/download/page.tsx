@@ -7,13 +7,13 @@ import { Metadata } from 'next';
 export const metadata: Metadata = {
   title: "Download Vitaway",
   description: "Download Vitaway, the ultimate virtual health companion app. Empower your wellness with comprehensive care, virtual doctor consultations, health tracking, and personalized wellness plans.",
-  keywords: "Vitaway, virtual health companion, health app, wellness app, healthcare app, virtual doctor consultations, health tracking, personalized wellness plans, download app",
-  metadataBase: new URL("https://www.vitaway.org"),
+  keywords: "Vitaway, virtual health companion, health app, wellness app, healthcare app, virtual doctor consultations, health tracking, personalized wellness plans, download app, download Vitaway, health management, wellness management, healthcare technology, health monitoring, health management app, vitaway health ltd, vitaway health, health rwanda",
+  metadataBase: new URL("https://www.vitaway.org/download"),
   openGraph: {
-    title: "Download Vitaway - Your All-in-One Virtual Health Companion",
+    title: "Download Vitaway",
     description: "Download Vitaway, the ultimate virtual health companion app. Empower your wellness with comprehensive care, virtual doctor consultations, health tracking, and personalized wellness plans.",
     type: "website",
-    url: "https://vitaway.com",
+    url: "https://vitaway.com/download",
     images: [
       {
         url: "https://vitaway.com/images/vitaway-logo.png",
@@ -72,6 +72,7 @@ function Download() {
                   </p>
                 </div>
               </div>
+              
               <div className="flex items-center justify-center gap-6 pl-0 ml-0 md:pl-8 md:ml-20">
                 <div className="flex flex-col items-center">
                   <MobileFrame

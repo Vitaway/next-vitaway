@@ -8,16 +8,18 @@ import GuestLayout from '../layouts/GuestLayout';
 export const metadata: Metadata = {
     title: "About us",
     description: "Discover the Vitaway difference as we pledge to provide you with the highest quality healthcare solutions, personalized to your unique well-being.",
-    keywords: "Vitaway, healthcare solutions, personalized well-being, high-quality healthcare, wellness, health transformation, virtual health companion",
+    keywords: "Vitaway Health Ltd, Vitaway Health, healthcare solutions, personalized well-being, high-quality healthcare, wellness, health transformation, virtual health companion, about us, vitaway about us, vitaway health about us",
+    authors: [{ name: "Vitaway Health Ltd" }],
     metadataBase: new URL("https://www.vitaway.org"),
     openGraph: {
-        title: "Vitaway | Our Pledge to You",
+        title: "About us",
+        siteName: "Vitaway Health Ltd",
         description: "Discover the Vitaway difference as we pledge to provide you with the highest quality healthcare solutions, personalized to your unique well-being.",
         type: "website",
         url: "https://www.vitaway.org/about-us",
         images: [
             {
-                url: "/images/Team/bg-1.jpeg",
+                url: "/images/Gallery/image-12.jpg",
                 width: 800,
                 height: 600,
                 alt: "Vitaway core team"
@@ -32,6 +34,65 @@ export const viewport = {
 };
 
 function AboutUs() {
+    const gallery = [
+        {
+            image: "/images/Team/bg.jpeg",
+            caption: "Vitaway Gallery",
+            description: "A snapshot of the Vitaway gallery, dedicated to transforming healthcare through innovation and compassion.",
+        },
+        {
+            image: "/images/Gallery/image-2.jpg",
+            caption: "Vitaway Gallery",
+            description: "A snapshot of the Vitaway gallery, dedicated to transforming healthcare through innovation and compassion.",
+        },
+        {
+            image: "/images/Gallery/image-8.jpg",
+            caption: "Vitaway Gallery",
+            description: "A snapshot of the Vitaway gallery, dedicated to transforming healthcare through innovation and compassion.",
+        },
+        {
+            image: "/images/Gallery/image-1.jpg",
+            caption: "Vitaway Gallery",
+            description: "A snapshot of the Vitaway gallery, dedicated to transforming healthcare through innovation and compassion.",
+        },
+
+        {
+            image: "/images/Gallery/image-4.jpg",
+            caption: "Vitaway Gallery",
+            description: "A snapshot of the Vitaway gallery, dedicated to transforming healthcare through innovation and compassion.",
+        },
+        {
+            image: "/images/Gallery/image-5.jpg",
+            caption: "Vitaway Gallery",
+            description: "A snapshot of the Vitaway gallery, dedicated to transforming healthcare through innovation and compassion.",
+        },
+        {
+            image: "/images/Gallery/image-3.jpg",
+            caption: "Vitaway Gallery",
+            description: "A snapshot of the Vitaway gallery, dedicated to transforming healthcare through innovation and compassion.",
+        },
+        {
+            image: "/images/Gallery/image-10.jpg",
+            caption: "Vitaway Gallery",
+            description: "A snapshot of the Vitaway gallery, dedicated to transforming healthcare through innovation and compassion.",
+        },
+        {
+            image: "/images/Gallery/image-11.jpg",
+            caption: "Vitaway Gallery",
+            description: "A snapshot of the Vitaway gallery, dedicated to transforming healthcare through innovation and compassion.",
+        },
+        {
+            image: "/images/Gallery/image-13.jpg",
+            caption: "Vitaway Gallery",
+            description: "A snapshot of the Vitaway gallery, dedicated to transforming healthcare through innovation and compassion.",
+        },
+        {
+            image: "/images/Gallery/image-15.jpg",
+            caption: "Vitaway Gallery",
+            description: "A snapshot of the Vitaway gallery, dedicated to transforming healthcare through innovation and compassion.",
+        },
+    ];
+
     return (<>
         <GuestLayout>
             <PageHeader
@@ -81,7 +142,7 @@ function AboutUs() {
                         </div>
                     </div>
                     <div className="grid grid-cols-2 gap-5">
-                        <Image width={600} height={600} className="object-cover w-full h-56 col-span-2 rounded" src="/images/Team/bg-1.jpeg" alt="vitaway core team" />
+                        <Image width={600} height={600} className="object-cover w-full h-[400px] col-span-2 rounded" src="/images/Gallery/image-12.jpg" alt="vitaway core team" />
                     </div>
                 </div>
             </div>
@@ -100,50 +161,19 @@ function AboutUs() {
                 </div>
 
                 <div className="grid gap-6 row-gap-5 mb-8 lg:grid-cols-4 sm:row-gap-6 sm:grid-cols-2">
-                    <a href="#">
-                        <div className="relative overflow-hidden transition duration-200 transform rounded hover:-translate-y-2 hover:shadow-2xl">
-                            <Image width={600} height={600} className="object-cover w-full h-56 md:h-64 xl:h-80" src="/images/Team/bg.jpeg" alt="vitaway team during meetup" />
-                            <div className="absolute inset-0 px-6 py-4 transition-opacity duration-200 bg-black bg-opacity-75 opacity-0 hover:opacity-100">
-                                <p className="mb-4 text-lg font-bold text-gray-100">Collaborative</p>
-                                <p className="text-sm tracking-wide text-gray-300">
-                                    A testament to teamwork and shared vision, this image captures the essence of collaboration that drives Vitaway's mission forward.
-                                </p>
+                    {gallery.map((item, index) => (
+                        <a href="#" key={index}>
+                            <div className="relative overflow-hidden transition duration-200 transform rounded hover:-translate-y-2 hover:shadow-2xl">
+                                <Image width={600} height={600} className="object-cover w-full h-56 md:h-64 xl:h-80" src={item.image} alt={item.caption} />
+                                <div className="absolute inset-0 px-6 py-4 transition-opacity duration-200 bg-black bg-opacity-75 opacity-0 hover:opacity-100">
+                                    <p className="mb-4 text-lg font-bold text-gray-100">{item.caption}</p>
+                                    <p className="text-sm tracking-wide text-gray-300">
+                                        {item.description}
+                                    </p>
+                                </div>
                             </div>
-                        </div>
-                    </a>
-                    <a href="#" aria-label="View Item">
-                        <div className="relative overflow-hidden transition duration-200 transform rounded hover:-translate-y-2 hover:shadow-2xl">
-                            <Image width={600} height={600} className="object-cover w-full h-56 md:h-64 xl:h-80" src="/images/Team/bg-1.jpeg" alt="vitaway team during meetup" />
-                            <div className="absolute inset-0 px-6 py-4 transition-opacity duration-200 bg-black bg-opacity-75 opacity-0 hover:opacity-100">
-                                <p className="mb-4 text-lg font-bold text-gray-100">The Demo Night</p>
-                                <p className="text-sm tracking-wide text-gray-300">
-                                    A night of innovation and inspiration, showcasing groundbreaking ideas and teamwork that define Vitaway's journey.
-                                </p>
-                            </div>
-                        </div>
-                    </a>
-                    <a href="#" aria-label="View Item">
-                        <div className="relative overflow-hidden transition duration-200 transform rounded hover:-translate-y-2 hover:shadow-2xl">
-                            <Image width={600} height={600} className="object-cover w-full h-56 md:h-64 xl:h-80" src="/images/Team/aspring.jpeg" alt="vitaway team during meetup" />
-                            <div className="absolute inset-0 px-6 py-4 transition-opacity duration-200 bg-black bg-opacity-75 opacity-0 hover:opacity-100">
-                                <p className="mb-4 text-lg font-bold text-gray-100">The Founder Nights</p>
-                                <p className="text-sm tracking-wide text-gray-300">
-                                    A celebration of vision and leadership, capturing the essence of innovation and determination that defines Vitaway's foundation.
-                                </p>
-                            </div>
-                        </div>
-                    </a>
-                    <a href="#" aria-label="View Item">
-                        <div className="relative overflow-hidden transition duration-200 transform rounded hover:-translate-y-2 hover:shadow-2xl">
-                            <Image width={600} height={600} className="object-cover w-full h-56 md:h-64 xl:h-80" src="/images/Team/team-1.jpeg" alt="vitaway team during meetup" />
-                            <div className="absolute inset-0 px-6 py-4 transition-opacity duration-200 bg-black bg-opacity-75 opacity-0 hover:opacity-100">
-                                <p className="mb-4 text-lg font-bold text-gray-100">Vitaway +</p>
-                                <p className="text-sm tracking-wide text-gray-300">
-                                    A celebration of innovation and care, showcasing Vitaway's commitment to redefining healthcare solutions for a better tomorrow.
-                                </p>
-                            </div>
-                        </div>
-                    </a>
+                        </a>
+                    ))}
                 </div>
             </div>
         </GuestLayout>
