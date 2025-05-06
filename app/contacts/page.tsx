@@ -7,7 +7,21 @@ import { Metadata } from 'next';
 export const metadata: Metadata = {
   title: "Contact Us",
   description: "Get in touch with Vitaway today! Reach out to our dedicated team of experts and let us assist you on your healthcare journey.",
-  keywords: "Vitaway, Contact, Reach Out, Healthcare, Assistance",
+  keywords: "Vitaway, Contact, Reach Out, Healthcare, Assistance, vitaway health ltd, vitaway health, health rwanda",
+  openGraph: {
+    title: "Contact Us",
+    description: "Get in touch with Vitaway today! Reach out to our dedicated team of experts and let us assist you on your healthcare journey.",
+    type: "website",
+    url: "https://vitaway.com/contacts",
+    images: [
+      {
+        url: "https://vitaway.com/images/vitaway-logo.png",
+        width: 1200,
+        height: 630,
+        alt: "Vitaway Logo",
+      },
+    ],
+  },
   metadataBase: new URL("https://www.vitaway.org"),
 }
 

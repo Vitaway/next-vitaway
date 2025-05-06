@@ -19,7 +19,7 @@ function Appointment() {
         <div className="relative z-10 px-4 py-10 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-10 lg:px-8 lg:py-16">
           <div className="flex flex-col items-center justify-center z-10">
             <div className="w-full max-w-xl mb-8 text-center flex flex-col items-center">
-              <h2 className="max-w-lg mb-6 text-center text-xl font-normal tracking-tight text-white sm:text-2xl md:text-3xl capitalize" style={{ lineHeight: '1.5' }}>
+              <h2 className="max-w-lg mb-6 text-center text-xl font-normal tracking-tight text-white sm:text-2xl md:text-3xl capitalize" style={{ lineHeight: '1.3' }}>
                 Book your appointment with Vitaway for <span className="text-gray-400 font-normal">personalized healthcare</span>
               </h2>
               <p className="max-w-xl mb-4 text-sm font-normal text-gray-400 sm:text-base md:text-lg text-center">

@@ -5,10 +5,24 @@ import { Metadata } from 'next';
 import AllBlogs from '../components/sections/all-blogs';
 
 export const metadata: Metadata = {
-    title: "Our Blogs - Explore Our Latest Blogs and Articles",
+    title: "Latest Blogs and Articles",
     description: "Explore our latest blogs and articles to learn more about the latest trends in health and wellness. Stay up to date with the latest news and information to help you live a healthier life.",
-    keywords: "Vitaway, Blogs, Articles, Health, Wellness, Trends, News, Information",
+    keywords: "Vitaway, Blogs, Articles, Health, Wellness, Trends, News, Information, vitaway health ltd, vitaway health, health rwanda",
     metadataBase: new URL("https://www.vitaway.org"),
+    openGraph: {
+        title: "Latest Blogs and Articles",
+        description: "Explore our latest blogs and articles to learn more about the latest trends in health and wellness. Stay up to date with the latest news and information to help you live a healthier life.",
+        type: "website",
+        url: "https://vitaway.com/blogs",
+        images: [
+            {
+                url: "https://vitaway.com/images/vitaway-logo.png",
+                width: 1200,
+                height: 630,
+                alt: "Vitaway Logo",
+            },
+        ],
+    },
 }
 
 function Blogs() {
@@ -18,6 +32,7 @@ function Blogs() {
                 sup_title='Our Blogs'
                 title='Our Recent Blogs and Articles'
                 description='Explore our latest blogs and articles to learn more about the latest trends in health and wellness. Stay up to date with the latest news and information to help you live a healthier life.'
+                backgroundImage=''
             />
 
             <section className=" bg-white px-4 py-20 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-20 lg:px-10 lg:py-20">

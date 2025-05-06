@@ -1,5 +1,4 @@
 import React from 'react'
-import BackgroundBlurImage from '../components/design/background-blur-image';
 import { Metadata } from 'next';
 import pricingTable from '../../content/pricing.json';
 import GuestLayout from '../layouts/GuestLayout';
@@ -36,10 +35,6 @@ function Pricing() {
         <GuestLayout>
             <div className="relative w-full h-full">
                 <div className="absolute w-full bg-gradient-to-b from-[#003E48] to-[#282e33] lg:block h-96"></div>
-                
-                <div className="z-[5] absolute left-1/2 top-0 aspect-[1204/394] w-full max-w-[1204px] -translate-x-1/2">
-                    <BackgroundBlurImage />
-                </div>
 
                 <div className="relative px-4 py-20 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8 lg:py-20">
                     <div className="max-w-xl mb-10 md:mx-auto sm:text-center lg:max-w-2xl md:mb-12">

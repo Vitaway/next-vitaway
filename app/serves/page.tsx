@@ -2,6 +2,28 @@ import React from 'react'
 import PageHeader from '../components/headers/page-header';
 import Link from 'next/link';
 import GuestLayout from '../layouts/GuestLayout';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+    title: "Who we serve",
+    description: "At Vitaway, we’re on a mission to make preventive and personalized healthcare accessible to individuals, families, companies, and institutions across Rwanda and beyond. Whether you're managing a chronic condition, looking to build healthier habits, or aiming to boost your organization's wellness strategy—we’re here to support your journey.",
+    keywords: "Vitaway, Blogs, Articles, Health, Wellness, Trends, News, Information, vitaway health ltd, vitaway health, health rwanda, who we serve, health programs, health management, wellness management",
+    metadataBase: new URL("https://www.vitaway.org"),
+    openGraph: {
+        title: "Who we serve",
+        description: "At Vitaway, we’re on a mission to make preventive and personalized healthcare accessible to individuals, families, companies, and institutions across Rwanda and beyond. Whether you're managing a chronic condition, looking to build healthier habits, or aiming to boost your organization's wellness strategy—we’re here to support your journey.",
+        type: "website",
+        url: "https://vitaway.com/serves",
+        images: [
+            {
+                url: "https://vitaway.com/images/vitaway-logo.png",
+                width: 1200,
+                height: 630,
+                alt: "Vitaway Logo",
+            },
+        ],
+    },
+}
 
 function WhoWeServe() {
     const programs = [
@@ -31,7 +53,7 @@ function WhoWeServe() {
         <GuestLayout>
             <PageHeader
                 title='Your well being with vitaway’s Health Plan'
-                description='Our personalized programs are designed to inspire better health outcomes. We believe in tailoring wellness plans to your unique needs'
+                description="At Vitaway, we’re on a mission to make preventive and personalized healthcare accessible to individuals, families, companies, and institutions across Rwanda and beyond. Whether you're managing a chronic condition, looking to build healthier habits, or aiming to boost your organization's wellness strategy."
                 sup_title='Who We Serve'
                 backgroundImage='https://res.cloudinary.com/dzhuhtn30/image/upload/v1671533556/vite-guest-imgs/allgo-an-app-for-plus-size-people-eqlRthvN188-unsplash_mjb1s7.jpg'
             />

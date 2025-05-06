@@ -115,7 +115,7 @@ function AppointmentForm() {
                     </div>
 
                     {/* Type */}
-                    <div className="mb-1 sm:mb-2">
+                    <div className="mb-1 sm:mb-2 max-w-1/2 min-w-1/2">
                         <label className="inline-block mb-1 font-normal">Type / Services</label>
                         <select
                             value={type}
@@ -124,6 +124,17 @@ function AppointmentForm() {
                             required
                         >
                             <option value="" disabled>Select Type / Service</option>
+                            <option value="CONSULTATION">Consultation</option>
+                            <option value="DIABETES_COUNSELLING">Nutrition counselling for Diabetes (Type 1 & Type 2)</option>
+                            <option value="HYPERTENSION_COUNSELLING">Nutrition counselling for Hypertension (High Blood Pressure)</option>
+                            <option value="CARDIOVASCULAR_COUNSELLING">Nutrition counselling for Cardiovascular Disease</option>
+                            <option value="WEIGHT_MANAGEMENT">Weight Management Programs (Weight Loss & Weight Gain)</option>
+                            <option value="MEAL_PLANS">Personalized Meal Plans</option>
+                            <option value="WELLNESS_PROGRAMS">Workplace & Institutional Wellness Programs</option>
+                            <option value="LIFESTYLE_COACHING">Lifestyle Coaching & Education</option>
+                            <option value="MATERNAL_CHILD_NUTRITION">Maternal & Child Nutrition</option>
+                            <option value="SPECIAL_POPULATIONS">Nutrition for Special Populations</option>
+                            <option value="SUPPLEMENT_GUIDANCE">Dietary Supplement Guidance</option>
                             <option value="BUSINESS">Business</option>
                             <option value="PERSONAL">Personal</option>
                             <option value="MEDICAL">Medical</option>
@@ -131,7 +142,6 @@ function AppointmentForm() {
                             <option value="FOLLOW_UP">Follow up</option>
                             <option value="EMERGENCY">Emergency</option>
                             <option value="CHECKUP">Checkup</option>
-                            <option value="CONSULTATION">Consultation</option>
                         </select>
                     </div>
                 </div>
@@ -178,12 +188,22 @@ function AppointmentForm() {
                     </div>
 
                     {/* Appointment Time */}
-                    <div className="mb-1 sm:mb-2">
+                    <div className="mb-1 sm:mb-2 max-w-1/2 min-w-1/2">
                         <label className="inline-block mb-1 font-normal">Appointment Time</label>
                         <input
                             value={appointmentTime}
-                            onChange={(e) => setAppointmentTime(e.target.value)}
+                            onChange={(e) => {
+                                const selectedTime = e.target.value;
+                                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                                const [hours, minutes] = selectedTime.split(':').map(Number);
+                                if (minutes % 30 === 0) {
+                                    setAppointmentTime(selectedTime);
+                                } else {
+                                    alert('Please select a time in 30-minute intervals.');
+                                }
+                            }}
                             type="time"
+                            step="1800" // Enforces 30-minute intervals in the time picker
                             className="flex-grow w-full h-12 px-4 mb-2 font-normal transition duration-200 bg-white border border-gray-300 rounded appearance-none focus:border-indigo-400 focus:outline-none focus:shadow-outline"
                             required
                         />
