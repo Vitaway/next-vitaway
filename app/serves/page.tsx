@@ -49,6 +49,135 @@ function WhoWeServe() {
         }
     ];
 
+    const services = [
+        {
+            title: 'Individuals & Families',
+            descriptioin: 'Personalized Health Support for Your Wellness Journey Every health journey is unique.Whether you’re living with or at risk of diabetes, hypertension, obesity, or high cholesterol, we help you take control through:',
+            subServices: [
+                {
+                    title: "Cabinet",
+                    description: "In-person support at the Vitaway Nutritional Cabinet in Kimironko.",
+                    icon: (
+                        <svg className="w-10 h-10 text-fuchsia-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                    ),
+                },
+                {
+                    title: "Coaching",
+                    description: "Digital coaching and care via the Vitaway+ mobile app",
+                    icon: (
+                        <svg className="w-10 h-10 text-fuchsia-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
+                        </svg>
+                    ),
+                },
+                {
+                    title: "Release & launch",
+                    description: "Personalized meal plans, physical activity guidance, mental health tools, and health tracking",
+                    icon: (
+                        <svg className="w-10 h-10 text-fuchsia-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
+                        </svg>
+                    ),
+                },
+                {
+                    title: "Professionals",
+                    description: "Ongoing coaching from licensed professionals to keep you on track",
+                    icon: (
+                        <svg className="w-10 h-10 text-fuchsia-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                    ),
+                },
+            ]
+        },
+        {
+            title: 'Employers & Workplace Wellness Programs',
+            descriptioin: 'Empowering Your Team, Improving Performance Healthier employees are more productive, motivated, and loyal. Vitaway partners with organizations to improve workforce well-being through:',
+            subServices: [
+                {
+                    title: "Cabinet",
+                    description: "In-person support at the Vitaway Nutritional Cabinet in Kimironko.",
+                    icon: (
+                        <svg className="w-10 h-10 text-fuchsia-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                    ),
+                },
+                {
+                    title: "Coaching",
+                    description: "Digital coaching and care via the Vitaway+ mobile app",
+                    icon: (
+                        <svg className="w-10 h-10 text-fuchsia-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
+                        </svg>
+                    ),
+                },
+                {
+                    title: "Release & launch",
+                    description: "Personalized meal plans, physical activity guidance, mental health tools, and health tracking",
+                    icon: (
+                        <svg className="w-10 h-10 text-fuchsia-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
+                        </svg>
+                    ),
+                },
+                {
+                    title: "Professionals",
+                    description: "Ongoing coaching from licensed professionals to keep you on track",
+                    icon: (
+                        <svg className="w-10 h-10 text-fuchsia-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                    ),
+                },
+            ]
+        },
+        {
+            title: 'Insurance Companies',
+            descriptioin: 'Empowering Your Team, Improving Performance Healthier employees are more productive, motivated, and loyal. Vitaway partners with organizations to improve workforce well-being through:',
+            subServices: [
+                {
+                    title: "Cabinet",
+                    description: "In-person support at the Vitaway Nutritional Cabinet in Kimironko.",
+                    icon: (
+                        <svg className="w-10 h-10 text-fuchsia-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                    ),
+                },
+                {
+                    title: "Coaching",
+                    description: "Digital coaching and care via the Vitaway+ mobile app",
+                    icon: (
+                        <svg className="w-10 h-10 text-fuchsia-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
+                        </svg>
+                    ),
+                },
+                {
+                    title: "Release & launch",
+                    description: "Personalized meal plans, physical activity guidance, mental health tools, and health tracking",
+                    icon: (
+                        <svg className="w-10 h-10 text-fuchsia-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
+                        </svg>
+                    ),
+                },
+                {
+                    title: "Professionals",
+                    description: "Ongoing coaching from licensed professionals to keep you on track",
+                    icon: (
+                        <svg className="w-10 h-10 text-fuchsia-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                    ),
+                },
+            ]
+        }
+    ];
+
     return (<>
         <GuestLayout>
             <PageHeader
@@ -97,12 +226,50 @@ function WhoWeServe() {
                                     </svg>
                                 </div>
                                 <h4 className="text-sm sm:text-md font-bold text-slate-700">{program.title}</h4>
-                                <p className="text-slate-600 font-medium text-sm sm:text-base leading-5 sm:leading-6 mt-4 sm:mt-5 line-clamp-2">{program.description}</p>
+                                <p className="text-slate-600 font-medium text-sm sm:text-base leading-5 sm:leading-6 sm:mt-5 line-clamp-2">{program.description}</p>
                             </div>
                         </Link>
                     ))}
                 </div>
             </section>
+
+            {services.map((service, serviceIndex) => (
+                <section key={serviceIndex} className="py-10 bg-gray-50 sm:py-16 lg:py-24">
+                    <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+                        <div>
+                            <h2 className="text-3xl font-bold leading-tight text-gray-900 sm:text-4xl lg:text-5xl">{service.title}</h2>
+
+                            <div className="mt-20 grid grid-cols-1 gap-8 md:grid-cols-2">
+                                <div>
+                                    <blockquote>
+                                        <p className="text-xl leading-relaxed text-black md:leading-relaxed md:text-2xl">“
+                                            {service.descriptioin}
+                                            ”</p>
+                                    </blockquote>
+                                </div>
+                                <div>
+                                    <ul>
+                                        {service.subServices.map((subService, subServiceIndex) => (
+                                            <li key={subServiceIndex} className="relative flex items-start">
+                                                {subServiceIndex !== 0 && (
+                                                    <div className="-ml-0.5 absolute mt-0.5 top-14 left-8 w-px border-l-4 border-dotted border-gray-300 h-full" aria-hidden="true"></div>
+                                                )}
+                                                <div className="relative flex items-center justify-center flex-shrink-0 w-16 h-16 bg-white rounded-full shadow">
+                                                    {subService.icon}
+                                                </div>
+                                                <div className="ml-6 py-5">
+                                                    <h3 className="text-lg font-semibold text-black">{subService.title}</h3>
+                                                    <p className="text-base text-gray-600">{subService.description}</p>
+                                                </div>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            ))}
         </GuestLayout>
     </>)
 }
