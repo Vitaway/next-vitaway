@@ -18,19 +18,15 @@ function ProductsList() {
 			try {
 				setLoading(true);
 
-				const response = await fetch(`${inventoryApiUrl}/api/products`, {
-					method: 'GET',
+				const axios = (await import('axios')).default;
+				
+				const response = await axios.get(`${inventoryApiUrl}/api/products`, {
 					headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
 				});
-				const data = await response.json();
-
-				if (!response.ok) {
-					throw new Error('Network response was not ok');
-				}
 
 				setLoading(false);
-				setProducts(data.data);
-				setFilteredProducts(data.data);
+				setProducts(response.data.data);
+				setFilteredProducts(response.data.data);
 			} catch (error) {
 				console.error('Error fetching products:', error);
 			}

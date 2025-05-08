@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://www.vitaway.org
+
+# Sitemaps
+Sitemap: https://www.vitaway.org/sitemap.xml
