@@ -1,4 +1,3 @@
-/* eslint-disable react/no-unescaped-entities */
 import Image from 'next/image'
 import React from 'react'
 import PageHeader from '../components/headers/page-header'

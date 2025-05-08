@@ -190,23 +190,24 @@ function AppointmentForm() {
                     {/* Appointment Time */}
                     <div className="mb-1 sm:mb-2 max-w-1/2 min-w-1/2">
                         <label className="inline-block mb-1 font-normal">Appointment Time</label>
-                        <input
+                        <select
                             value={appointmentTime}
-                            onChange={(e) => {
-                                const selectedTime = e.target.value;
-                                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                                const [hours, minutes] = selectedTime.split(':').map(Number);
-                                if (minutes % 30 === 0) {
-                                    setAppointmentTime(selectedTime);
-                                } else {
-                                    alert('Please select a time in 30-minute intervals.');
-                                }
-                            }}
-                            type="time"
-                            step="1800" // Enforces 30-minute intervals in the time picker
+                            onChange={(e) => setAppointmentTime(e.target.value)}
                             className="flex-grow w-full h-12 px-4 mb-2 font-normal transition duration-200 bg-white border border-gray-300 rounded appearance-none focus:border-indigo-400 focus:outline-none focus:shadow-outline"
                             required
-                        />
+                        >
+                            <option value="" disabled>Select Time</option>
+                            {Array.from({ length: 48 }, (_, index) => {
+                                const hours = String(Math.floor(index / 2)).padStart(2, '0');
+                                const minutes = index % 2 === 0 ? '00' : '30';
+                                const time = `${hours}:${minutes}`;
+                                return (
+                                    <option key={time} value={time}>
+                                        {time}
+                                    </option>
+                                );
+                            })}
+                        </select>
                     </div>
                 </div>
 
