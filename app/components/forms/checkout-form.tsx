@@ -19,9 +19,7 @@ declare global {
                 locale: string;
                 callback: (err: Error | null, resp: { status: string; data?: unknown }) => void;
             }) => void;
-            locale: {
-                EN: string;
-            };
+            locale: { EN: string; };
             closeModal: () => void;
         };
     }
