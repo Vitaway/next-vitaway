@@ -56,14 +56,14 @@ function TopNavbar() {
                     </div>
 
                     {/* Language Toggle */}
-                    <div className="flex items-center text-sm hidden md:block">
+                    {/* <div className="flex items-center text-sm hidden md:block">
                         <span className="font-medium">Eng</span>
                         <label className="relative inline-flex cursor-pointer items-center mx-2">
                             <input type="checkbox" className="peer sr-only" />
                             <div className="peer h-4 w-11 rounded bg-gray-200 peer-checked:bg-blue-600 after:absolute after:-top-1 after:left-0 after:h-6 after:w-6 after:rounded-md after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:after:translate-x-full"></div>
                         </label>
                         <span className="font-medium">Kiny</span>
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </div>

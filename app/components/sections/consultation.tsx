@@ -58,8 +58,8 @@ function Consultation() {
                     <div className="grid grid-cols-1 gap-12 lg:gap-16 sm:grid-cols-2">
                         {services.map((service, index) => (
                             <div className="flex items-start" key={index}>
-                                <div className="flex items-center justify-center w-20 h-16 mb-4 rounded-full bg-indigo-50">
-                                    <Image width={500} height={500} src={service.icon} className='w-16 h-9' alt={service.title} />
+                                <div className="flex items-center justify-center p-4 mb-4 rounded-full bg-indigo-50">
+                                    <Image width={500} height={500} src={service.icon} className='w-16 h-8' alt={service.title} />
                                 </div>
                                 <div className="ml-5">
                                     <h3 className="text-lg font-semibold text-black">{service.title}</h3>

@@ -65,7 +65,7 @@ function AppointmentForm() {
     };
 
     return (
-        <div className="relative bg-white rounded-xl shadow-2xl p-7 sm:p-10 text-slate-700 w-full">
+        <div className="relative bg-white rounded-xl shadow-2xl p-7 sm:p-10 text-slate-700 w-full md:max-w-2xl mx-auto">
             <h3 className="mb-4 text-xl font-normal sm:text-center sm:mb-6 sm:text-2xl">
                 Book Your Appointment
             </h3>
@@ -197,10 +197,13 @@ function AppointmentForm() {
                             required
                         >
                             <option value="" disabled>Select Time</option>
-                            {Array.from({ length: 48 }, (_, index) => {
-                                const hours = String(Math.floor(index / 2)).padStart(2, '0');
+
+                            {Array.from({ length: 26 }, (_, index) => {
+                                const hours = Math.floor(index / 2) + 8;
                                 const minutes = index % 2 === 0 ? '00' : '30';
-                                const time = `${hours}:${minutes}`;
+                                const period = hours >= 12 ? 'PM' : 'AM';
+                                const formattedHours = hours > 12 ? hours - 12 : hours;
+                                const time = `${String(formattedHours).padStart(2, '0')}:${minutes} ${period}`;
                                 return (
                                     <option key={time} value={time}>
                                         {time}
