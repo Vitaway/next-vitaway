@@ -1,5 +1,6 @@
 'use client';
 
+import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 
 function Subscriber() {
@@ -41,23 +42,24 @@ function Subscriber() {
         setSuccess('');
 
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_ENVENTORY_API_URL}/api/subscribers`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email }),
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_ENVENTORY_API_URL}/api/subscribers`, {
+                email,
             });
 
-            if (response.ok) {
+            if (response.status === 200) {
                 setSuccess('Thank you for subscribing!');
                 setEmail('');
                 localStorage.setItem('subscribed', 'true');
                 setShowSubscriber(false);
             } else {
-                const data = await response.json();
-                setError(data.message || 'Something went wrong. Please try again.');
+                setError(response.data.message || 'Something went wrong. Please try again.');
             }
-        } catch {
-            setError('Something went wrong. Please try again.');
+        } catch (error: unknown) {
+            if (axios.isAxiosError(error)) {
+                setError(error.response?.data?.message || 'Something went wrong. Please try again.');
+            } else {
+                setError('Something went wrong. Please try again.');
+            }
         } finally {
             setIsSubmitting(false);
         }
