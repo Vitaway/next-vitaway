@@ -41,7 +41,7 @@ function Subscriber() {
         setSuccess('');
 
         try {
-            const response = await fetch('/api/subscribers', {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_ENVENTORY_API_URL}/api/subscribers`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email }),
