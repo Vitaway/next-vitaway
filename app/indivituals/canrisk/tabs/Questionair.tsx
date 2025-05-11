@@ -1,7 +1,22 @@
 'use client';
 
 import React, { useState } from 'react';
+import '@/app/styles/questionnaire.css';
+
 import StepOne from './steps/StepOne';
+import StepTwo from './steps/StepTwo';
+import StepThree from './steps/StepThree';
+import StepFour from './steps/StepFour';
+import StepFive from './steps/StepFive';
+import StepSix from './steps/StepSix';
+import StepSeven from './steps/StepSeven';
+import StepEight from './steps/StepEight';
+import StepNine from './steps/StepNine';
+import StepTen from './steps/StepTen';
+import StepEleven from './steps/StepEleven';
+import StepTwelve from './steps/StepTwelve';
+import StepThirteen from './steps/StepThirteen';
+
 
 function Questionair() {
   const [currentStep, setCurrentStep] = useState(0);
@@ -9,6 +24,42 @@ function Questionair() {
   const steps = [
     {
       component: <StepOne />,
+    },
+    {
+      component: <StepTwo />,
+    },
+    {
+      component: <StepThree />,
+    },
+    {
+      component: <StepFour />,
+    },
+    {
+      component: <StepFive />,
+    },
+    {
+      component: <StepSix />,
+    },
+    {
+      component: <StepSeven />,
+    },
+    {
+      component: <StepEight />,
+    },
+    {
+      component: <StepNine />,
+    },
+    {
+      component: <StepTen />,
+    },
+    {
+      component: <StepEleven />,
+    },
+    {
+      component: <StepTwelve />,
+    },
+    {
+      component: <StepThirteen />,
     }
   ];
 
@@ -29,10 +80,17 @@ function Questionair() {
   };
 
   return (
-    <div className='border border-gray-200 p-6 rounded-xl bg-white'>
-      <div>
-        <div className='mt-4'>
+    <div className='border border-gray-200 p-6 rounded-xl bg-white flex flex-col items-center'>
+      <div className='w-full'>
+        <div className='mt-4 text-slate-800 questionnaire'>
           {steps[currentStep].component}
+        </div>
+      </div>
+
+      <div tabIndex={-1} className="progressTracking mt-5 w-full text-center">
+        <progress id="progressbar" className='rounded' value={currentStep + 1} max={steps.length}></progress>
+        <div id="progressText" className="mt-2 text-sm text-gray-600">
+          Step {currentStep + 1} of {steps.length}
         </div>
       </div>
 

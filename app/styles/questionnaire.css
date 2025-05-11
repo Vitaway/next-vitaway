@@ -1,0 +1,104 @@
+.questionnaire {
+    background-color: white;
+}
+
+.questionnaire h1 {
+    font-size: 1.6em;
+    margin: 0.5em 0;
+    font-weight: bold;
+}
+
+.questionnaire h2 {
+    font-size: 1.2em;
+    margin: 0.5em 0;
+    font-weight: bold;
+}
+
+.questionnaire h3 {
+    font-size: 1.1em;
+    margin: 0.5em 0;
+    font-weight: bold;
+}
+
+.questionnaire h4 {
+    font-size: 1em;
+    margin: 0.5em 0;
+    font-weight: bold;
+}
+
+.questionnaire p {
+    font-size: 1em;
+    margin-bottom: 0.7em;
+}
+
+.questionnaire .alert.alert-info {
+    background-color: #e7f3fe;
+    border-color: #b3d4fc;
+    color: #31708f;
+    padding: 10px;
+    margin: 20px 0;
+    border-radius: 5px;
+    border-left: 5px solid #31708f;
+}
+
+.questionnaire .alert.alert-info h3 {
+    font-size: 1.2em;
+    margin: 0.5em 0;
+    font-weight: bold;
+}
+
+.questionnaire img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+    margin: 10px 0;
+    max-height: 300px;
+    object-fit: cover;
+    border: 1px solid #31708f;
+}
+
+.questionnaire input[type="radio"] {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #31708f;
+    border-radius: 50%;
+    outline: none;
+    margin-right: 10px;
+    margin-top: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.questionnaire input[type="radio"]:checked {
+    background-color: #31708f;
+    border-color: #31708f;
+    box-shadow: 0 0 5px rgba(49, 112, 143, 0.5);
+}
+
+.questionnaire input[type="radio"]:hover {
+    border-color: #245a73;
+}
+
+.questionnaire input[type="checkbox"] {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #31708f;
+    border-radius: 5px;
+    outline: none;
+    margin-right: 10px;
+    margin-top: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.questionnaire input[type="checkbox"]:checked {
+    background-color: #31708f;
+    border-color: #31708f;
+    box-shadow: 0 0 5px rgba(49, 112, 143, 0.5);
+}
+
+.questionnaire input[type="checkbox"]:hover {
+    border-color: #245a73;
+}
