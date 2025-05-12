@@ -19,7 +19,7 @@ function ProductsList() {
 				setLoading(true);
 
 				const axios = (await import('axios')).default;
-				
+
 				const response = await axios.get(`${inventoryApiUrl}/api/products`, {
 					headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
 				});

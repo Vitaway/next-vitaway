@@ -1,28 +1,62 @@
-import React from 'react'
+import React, { useState } from 'react';
 
-function StepFive() {
+function StepFive({ onInputChange }: { onInputChange: (data: { height: string; weight: string }) => void }) {
+    const [height, setHeight] = useState('');
+    const [weight, setWeight] = useState('');
+
+    const handleHeightChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const newHeight = event.target.value;
+        setHeight(newHeight);
+        onInputChange({ height: newHeight, weight });
+    };
+
+    const handleWeightChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const newWeight = event.target.value;
+        setWeight(newWeight);
+        onInputChange({ height, weight: newWeight });
+    };
+
     return (
         <section id="bmi-content">
             <h2 tabIndex={-1}>What is your height and weight?</h2>
             <div className="info-box">
-                <p>To calculate your <a href="http://www.hc-sc.gc.ca/fn-an/nutrition/weights-poids/guide-ld-adult/bmi_chart_java-graph_imc_java-eng.php" rel="external">body mass index</a> (BMI) use the graphic below.</p><p>First indicate your height, then your weight.</p><p>You can use the sliders on the graphics to set your height and weight or, you can enter the information using the boxes.</p>
+                <p>To calculate your <a href="http://www.hc-sc.gc.ca/fn-an/nutrition/weights-poids/guide-ld-adult/bmi_chart_java-graph_imc_java-eng.php" rel="external">body mass index</a> (BMI) use the graphic below.</p>
+                <p>First indicate your height, then your weight.</p>
+                <p>You can use the sliders on the graphics to set your height and weight or, you can enter the information using the boxes.</p>
             </div>
 
             <h3>What does <abbr title="body mass index">BMI</abbr> mean?</h3>
             <p>The <a href="http://www.hc-sc.gc.ca/fn-an/nutrition/weights-poids/guide-ld-adult/bmi_chart_java-graph_imc_java-eng.php" rel="external">Body Mass Index</a> (BMI) is an indicator of body fat based on height and weight. Most adults with a high <abbr title="body mass index">BMI</abbr> have a high percentage of body fat and extra body fat is associated with an increased risk of developing diabetes.</p>
-
 
             <div className="height-weight-outer">
                 <div className="text-center height">
                     <div className="form-group">
                         <label>
                             Enter your height:&nbsp;
-                            <input type="text" name="heightInput" id="heightInput" className="form-control" placeholder="Ex: 167cm or 5 ft 6 in" />
+                            <input
+                                type="text"
+                                name="heightInput"
+                                id="heightInput"
+                                className="form-control"
+                                placeholder="Ex: 167cm or 5 ft 6 in"
+                                value={height}
+                                onChange={handleHeightChange}
+                            />
                         </label>
                     </div>
                     <div className="range-wrapper hidden-print">
-                        <label htmlFor="heightRange" className="sr-only"><span>Use the slider to select your height or type it in the box above</span></label>
-                        <input data-initial="1" type="range" id="heightRange" min="121.92" max="213.36" />
+                        <label htmlFor="heightRange" className="sr-only">
+                            <span>Use the slider to select your height or type it in the box above</span>
+                        </label>
+                        <input
+                            data-initial="1"
+                            type="range"
+                            id="heightRange"
+                            min="121.92"
+                            max="213.36"
+                            value={parseFloat(height) || 121.92}
+                            onChange={(e) => handleHeightChange({ target: { value: e.target.value } } as React.ChangeEvent<HTMLInputElement>)}
+                        />
                         <ul className="labels">
                             <li>122cm / 4 ft</li>
                             <li>213cm / 7 ft</li>
@@ -34,12 +68,30 @@ function StepFive() {
                     <div className="form-group">
                         <label>
                             Enter your weight:&nbsp;
-                            <input type="text" name="weightInput" id="weightInput" className="form-control" placeholder="Ex: 84kg or 185lbs" />
+                            <input
+                                type="text"
+                                name="weightInput"
+                                id="weightInput"
+                                className="form-control"
+                                placeholder="Ex: 84kg or 185lbs"
+                                value={weight}
+                                onChange={handleWeightChange}
+                            />
                         </label>
                     </div>
                     <div className="range-wrapper hidden-print">
-                        <label htmlFor="weightRange" className="sr-only"><span>Use the slider to select your weight or type it in the box above</span></label>
-                        <input data-initial="1" type="range" id="weightRange" min="45.3592" max="226.796" />
+                        <label htmlFor="weightRange" className="sr-only">
+                            <span>Use the slider to select your weight or type it in the box above</span>
+                        </label>
+                        <input
+                            data-initial="1"
+                            type="range"
+                            id="weightRange"
+                            min="45.3592"
+                            max="226.796"
+                            value={parseFloat(weight) || 45.3592}
+                            onChange={(e) => handleWeightChange({ target: { value: e.target.value } } as React.ChangeEvent<HTMLInputElement>)}
+                        />
                         <ul className="labels">
                             <li>45kg / 100lbs</li>
                             <li>227kg / 500lbs</li>
@@ -62,9 +114,10 @@ function StepFive() {
 
             <div className="alert alert-info alert-no-icon">
                 <h3>Did you know...</h3>
-                Being overweight or obese increases your risk of developing diabetes. The more overweight you are, the higher your risk.                    </div>
+                Being overweight or obese increases your risk of developing diabetes. The more overweight you are, the higher your risk.
+            </div>
         </section>
-    )
+    );
 }
 
-export default StepFive
+export default StepFive;

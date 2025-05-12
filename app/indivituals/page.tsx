@@ -3,6 +3,14 @@ import PageHeader from '../components/headers/page-header'
 import Image from 'next/image'
 import Link from 'next/link'
 import GuestLayout from '../layouts/GuestLayout';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+    title: "For Individuals",
+    description: "Discover how Vitaway helps individuals transform their lives and achieve optimal health through mindset shifts and personalized virtual care.",
+    keywords: "Vitaway, Individuals, Health, Virtual Care, Mindset Shift, Personalized Care, Health Transformation, Vitaway Health, Wellness, Optimal Health",
+    metadataBase: new URL("https://www.vitaway.org/individuals"),
+}
 
 const programs = [
     {

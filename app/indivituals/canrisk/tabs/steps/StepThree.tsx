@@ -1,7 +1,15 @@
 import Image from 'next/image'
-import React from 'react'
+import React, { useState } from 'react';
 
-function StepThree() {
+function StepThree({ onInputChange }: { onInputChange: (data: { gender: string }) => void }) {
+    const [selectedGender, setSelectedGender] = useState('');
+
+    const handleGenderChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const gender = event.target.value;
+        setSelectedGender(gender);
+        onInputChange({ gender });
+    };
+
     return (
         <section id="gender-content" data-start-quiz-page="1">
             <h2 tabIndex={-1}>Are you male or female?</h2>
@@ -10,12 +18,26 @@ function StepThree() {
                     <label className="text-center">
                         <Image width={500} height={500} src="https://healthycanadians.gc.ca/apps/canrisk-standalone/images/gender-male.jpg" alt="Picture of a man" />
                         <br />
-                        <input type="radio" name="gender" value="6" />&nbsp;Male                            </label>
+                        <input
+                            type="radio"
+                            name="gender"
+                            value="Male"
+                            checked={selectedGender === 'Male'}
+                            onChange={handleGenderChange}
+                        />
+                        &nbsp;Male
+                    </label>
                     <label className="text-center">
                         <Image width={500} height={500} src="https://healthycanadians.gc.ca/apps/canrisk-standalone/images/gender-female.jpg" alt="Picture of a woman" />
                         <br />
-                        <input type="radio" name="gender" value="0" />&nbsp;
-                        Female                            
+                        <input
+                            type="radio"
+                            name="gender"
+                            value="Female"
+                            checked={selectedGender === 'Female'}
+                            onChange={handleGenderChange}
+                        />
+                        &nbsp;Female
                     </label>
                 </fieldset>
             </div>
@@ -25,7 +47,7 @@ function StepThree() {
                 Males are at a higher risk for developing type 2 diabetes.
             </div>
         </section>
-    )
+    );
 }
 
-export default StepThree
+export default StepThree;

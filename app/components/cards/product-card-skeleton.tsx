@@ -2,7 +2,7 @@ import React from 'react';
 
 function ProductCardSkeleton() {
     return (
-        <div className="relative rounded-2xl border bg-white border-gray-200 animate-pulse">
+        <div className="relative rounded-2xl border bg-white border-gray-200">
             <div className="flex-auto">
                 {/* Image Placeholder */}
                 <div className="text-center relative flex justify-center">
