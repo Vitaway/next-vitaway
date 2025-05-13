@@ -5,37 +5,82 @@ import ProductCard from '../components/cards/product-card';
 import ProductCardSkeleton from '../components/cards/product-card-skeleton';
 import Image from 'next/image';
 import { Products } from '@/types/products';
+import AlertMessage from '../components/alerts/alert-message';
 
 function ProductsList() {
+	const [categories, setCategories] = useState([]);
 	const [products, setProducts] = useState([]);
 	const [filteredProducts, setFilteredProducts] = useState([]);
 	const [loading, setLoading] = useState(true);
-	const inventoryApiUrl = process.env.NEXT_PUBLIC_ENVENTORY_API_URL;
 	const [searchQuery, setSearchQuery] = useState('');
+	const [selectedCategory, setSelectedCategory] = useState('');
+	const [currentPage, setCurrentPage] = useState(1);
+	const [message, setMessage] = useState<string>('');
+	const [messageType, setMessageType] = useState<'success' | 'error'>('success');
+
+	const inventoryApiUrl = process.env.NEXT_PUBLIC_ENVENTORY_API_URL;
+	const itemsPerPage = 12;
+
+	const paginatedProducts = filteredProducts.slice(
+		(currentPage - 1) * itemsPerPage,
+		currentPage * itemsPerPage
+	);
+
+	const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+
+	const handlePageChange = (page: number) => {
+		setCurrentPage(page);
+	};
+
+	const fetchProducts = async () => {
+		try {
+			setLoading(true);
+
+			const axios = (await import('axios')).default;
+
+			const response = await axios.get(`${inventoryApiUrl}/api/products?category=${selectedCategory}`, {
+				headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
+			});
+
+			setLoading(false);
+			setProducts(response.data.data);
+			setFilteredProducts(response.data.data);
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		} catch (error) {
+			setMessage("Failed to fetch Products, Try again later");
+			setMessageType('error');
+		}
+	};
+
+	const fetchCategories = async () => {
+		try {
+			setLoading(true);
+
+			const axios = (await import('axios')).default;
+
+			const response = await axios.get(`${inventoryApiUrl}/api/products/categories/list`, {
+				headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
+			});
+
+			setLoading(false);
+			setCategories(response.data.data);
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		} catch (error) {
+			setMessage("Failed to fetch Categories, Try again later");
+			setMessageType('error');
+		}
+	}
+
+	const handleCategoryChange = (category: string) => {
+		setSelectedCategory(category);
+		fetchProducts();
+	}
 
 	useEffect(() => {
-		const fetchProducts = async () => {
-			try {
-				setLoading(true);
-
-				const axios = (await import('axios')).default;
-
-				const response = await axios.get(`${inventoryApiUrl}/api/products`, {
-					headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
-				});
-
-				setLoading(false);
-				setProducts(response.data.data);
-				setFilteredProducts(response.data.data);
-			} catch (error) {
-				console.error('Error fetching products:', error);
-			}
-		};
-
 		fetchProducts();
+		fetchCategories();
 	}, [inventoryApiUrl]);
 
-	// Filter products based on search query
 	useEffect(() => {
 		const filtered = products.filter((product: Products) =>
 			product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -94,6 +139,21 @@ function ProductsList() {
 								/>
 							</div>
 						</div>
+						<div className="flex items-center w-full md:w-auto flex-col md:flex-row justify-center">
+							<div className="border border-gray-300 rounded-full px-4 py-3 w-full md:w-[200px] text-sm focus:outline-none flex items-center bg-white">
+								<select
+									value={selectedCategory}
+									onChange={(e) => handleCategoryChange(e.target.value)}
+									className="border-none outline-none focus:border-none focus:outline-none ml-3 text-slate-700 bg-white w-full h-full placeholder:text-gray-400"
+								>
+									<option value="">All Categories</option>
+
+									{categories.map((category: { name: string; id: string; }) => (
+										<option key={category.id} value={category.id}>{category.name}</option>
+									))}
+								</select>
+							</div>
+						</div>
 					</div>
 
 					{filteredProducts.length === 0 && !loading && (
@@ -107,15 +167,45 @@ function ProductsList() {
 
 					<div className="grid gap-4 grid-cols-1 sm:grid-cols-1 md:grid-cols-3 xl:grid-cols-4">
 						{loading
-							? Array(8)
+							? Array(itemsPerPage)
 								.fill(0)
 								.map((_, index) => <ProductCardSkeleton key={index} />)
-							: filteredProducts.map((product, index) => (
+							: paginatedProducts.map((product, index) => (
 								<ProductCard key={index} product={product} />
 							))}
 					</div>
+
+					<hr className='my-5' />
+
+					<div className="flex justify-center items-center">
+						<button
+							className="px-4 py-2 mx-1 bg-gray-300 text-gray-700 rounded-full text-sm cursor-pointer"
+							onClick={() => handlePageChange(currentPage - 1)}
+							disabled={currentPage === 1}
+						>
+							Previous
+						</button>
+						{Array.from({ length: totalPages }, (_, index) => (
+							<button
+								key={index}
+								className={`px-4 py-2 mx-1 rounded-full text-sm cursor-pointer ${currentPage === index + 1 ? 'bg-[#003E48] text-white' : 'bg-gray-300 text-gray-700'}`}
+								onClick={() => handlePageChange(index + 1)}
+							>
+								{index + 1}
+							</button>
+						))}
+						<button
+							className="px-4 py-2 mx-1 bg-gray-300 text-gray-700 rounded-full text-sm cursor-pointer"
+							onClick={() => handlePageChange(currentPage + 1)}
+							disabled={currentPage === totalPages}
+						>
+							Next
+						</button>
+					</div>
 				</div>
 			</section>
+
+			<AlertMessage message={message} type={messageType} />
 		</>
 	);
 }

@@ -9,6 +9,7 @@ import FetchLoader from '../spinners/fetching-loader';
 import ShopCartItem from '@/app/shop/shop-cart-item';
 import { Truck, Store } from 'lucide-react';
 import rwandaData from '@/data/rwanda_geo.json';
+import AlertModal from '../alerts/alert-modal';
 
 declare global {
     interface Window {
@@ -74,6 +75,19 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
 
     const [selectedCustomerProvince, setSelectedCustomerProvince] = useState('');
     const [selectedRecipientProvince, setSelectedRecipientProvince] = useState('');
+    const [showAlert, setShowAlert] = useState(false);
+
+    const [alert, setAlert] = useState<{
+        title: string;
+        message: string;
+        status: 'success' | 'error' | 'info';
+        actionUrl: string;
+    }>({
+        title: '',
+        message: '',
+        status: 'success',
+        actionUrl: ''
+    });
 
     const provinces = Object.keys(rwandaData);
 
@@ -92,8 +106,13 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
 
             if (!response.ok) {
                 setLoading(false);
-                setMessageType('error');
-                setMessage('Network Error - Payment callback failed. Please try again.');
+                setShowAlert(true);
+                setAlert({
+                    title: 'Network Issue',
+                    message: 'We encountered a network issue while processing your payment. Please check your internet connection and try again.',
+                    status: 'error',
+                    actionUrl: ''
+                });
                 return;
             }
 
@@ -101,14 +120,25 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
             onClose();
 
             setLoading(false);
-            setMessageType('success');
-            setMessage('Payment Approved and Processed successful. Thank you for your order!');
+            setShowAlert(true);
+
+            setAlert({
+                title: 'Payment Successful',
+                message: 'Your payment has been successfully processed. Thank you for your purchase!',
+                status: 'success',
+                actionUrl: ''
+            });
 
             callback();
         } catch (error) {
             setLoading(false);
-            setMessageType('error');
-            setMessage('Error - Payment callback failed. Please try again.');
+            setShowAlert(true);
+            setAlert({
+                title: 'Payment Callback Failed',
+                message: 'An error occurred while processing your payment callback. Please try again or contact support if the issue persists.',
+                status: 'error',
+                actionUrl: ''
+            });
         }
     }
 
@@ -124,8 +154,13 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
                         sendPaymentCallback(invoiceNumber);
                     } else {
                         setLoading(false);
-                        setMessageType('error');
-                        setMessage('Error - Payment failed. Please try again.');
+                        setShowAlert(true);
+                        setAlert({
+                            title: 'Payment Failed',
+                            message: 'Unfortunately, your payment could not be processed at this time. Please check your payment details or try again later.',
+                            status: 'error',
+                            actionUrl: ''
+                        });
                     }
                 }
             });
@@ -659,6 +694,7 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
                 </div>)}
 
                 <AlertMessage message={message} type={messageType} />
+                {showAlert && <AlertModal title={alert.title} message={alert.message} status={alert.status} actionUrl={alert.actionUrl} onOk={() => setShowAlert(false)} onClose={() => setShowAlert(false)} />}
             </div>
         </FormModal>
     </>)

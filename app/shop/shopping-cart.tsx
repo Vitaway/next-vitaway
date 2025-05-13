@@ -3,8 +3,8 @@ import ShopCartItem from './shop-cart-item';
 import { useCart } from '@/context/CartContext';
 import { Products } from '@/types/products';
 import CheckoutForm from '../components/forms/checkout-form';
-import AlertMessage from '../components/alerts/alert-message';
 import Image from 'next/image';
+import AlertModal from '../components/alerts/alert-modal';
 
 interface CartItem {
     price: number;
@@ -14,13 +14,24 @@ interface CartItem {
 function ShoppingCart() {
     const [isCartOpen, setCartOpen] = useState(false);
     const [isCheckoutOpen, setOpenCheckout] = useState(false);
-    const [message, setMessage] = useState<string>('');
-    const [messageType, setMessageType] = useState<'success' | 'error'>('success');
 
     const openCart = () => setCartOpen(true);
     const closeCart = () => setCartOpen(false);
     const openCheckout = () => setOpenCheckout(true);
     const closeCheckout = () => setOpenCheckout(false);
+    const [showAlert, setShowAlert] = useState(false);
+
+    const [alert, setAlert] = useState<{
+        title: string;
+        message: string;
+        status: 'success' | 'error' | 'info';
+        actionUrl: string;
+    }>({
+        title: '',
+        message: '',
+        status: 'success',
+        actionUrl: ''
+    });
 
     const { cart, removeFromCart } = useCart();
 
@@ -28,8 +39,15 @@ function ShoppingCart() {
     const totalItems: number = cart.reduce((sum: number, item: CartItem) => sum + item.quantity, 0);
 
     const handlePaymentCallback = () => {
-        setMessage('Payment Approved and Processed successful. Thank you for your order!');
-        setMessageType('success');
+        setShowAlert(true);
+        
+        setAlert({
+            title: 'Payment Successful',
+            message: 'Your payment has been successfully processed. Thank you for your purchase!',
+            status: 'success',
+            actionUrl: ''
+        });
+
         closeCart();
     }
 
@@ -132,7 +150,7 @@ function ShoppingCart() {
             {/* Checkout Form */}
             <CheckoutForm isOpen={isCheckoutOpen} onClose={closeCheckout} callback={handlePaymentCallback} />
 
-            <AlertMessage message={message} type={messageType} />
+            {showAlert && <AlertModal title={alert.title} message={alert.message} status={alert.status} actionUrl={alert.actionUrl} onOk={() => setShowAlert(false)} onClose={() => setShowAlert(false)} />}
         </>
     );
 }
