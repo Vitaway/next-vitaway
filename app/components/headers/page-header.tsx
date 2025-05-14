@@ -29,7 +29,7 @@ function PageHeader({ sup_title, title, description, backgroundImage }: PageHead
                             {sup_title}
                         </p>
                     </div>
-                    <h2 className="max-w-lg font-semibold my-6 text-3xl leading-none tracking-tight text-white sm:text-4xl md:mx-auto">
+                    <h2 className="max-w-lg font-semibold my-6 text-3xl leading-none tracking-tight !text-white sm:text-4xl md:mx-auto">
                         <span className="relative inline-block">
                             <svg viewBox="0 0 52 24" fill="currentColor" className="absolute top-9 -right-1 z-0 hidden w-28 -mt-8 -ml-20 text-blue-gray-100 lg:w-28 lg:-ml-28 lg:-mt-10 sm:block">
                                 <defs>

@@ -78,6 +78,11 @@ const nextConfig: NextConfig = {
         hostname: 'ehr.vitaway.org',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'healthycanadians.gc.ca',
+        pathname: '/**',
+      }
     ],
   },
 };
