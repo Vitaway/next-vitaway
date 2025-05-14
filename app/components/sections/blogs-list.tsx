@@ -9,7 +9,7 @@ function BlogList({ blogs, isLoading }: { blogs: Blogs[], isLoading: boolean }) 
         <div className='mt-2'>
             {blogs.length === 0 && !isLoading && <div className="text-center flex items-center justify-center">
                 <div className=''>
-                    <Image src='/svgs/blogs.svg' alt='blogs' width={300} height={300} />
+                    <Image src='/svgs/blogs.svg' alt='blogs' width={500} height={500} />
                     <span className='font-bold text-slate-700'>No Blogs Uploaded.</span>
                 </div>
             </div>}
