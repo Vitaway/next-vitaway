@@ -38,8 +38,9 @@ function ProductsList() {
 
 			const axios = (await import('axios')).default;
 
-			const response = await axios.get(`${inventoryApiUrl}/api/products?category=${selectedCategory}`, {
-				headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
+			const response = await axios.get(`${inventoryApiUrl}/api/products`, {
+				headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+				params: selectedCategory ? { category: selectedCategory } : {}
 			});
 
 			setLoading(false);
@@ -146,7 +147,7 @@ function ProductsList() {
 									onChange={(e) => handleCategoryChange(e.target.value)}
 									className="border-none outline-none focus:border-none focus:outline-none ml-3 text-slate-700 bg-white w-full h-full placeholder:text-gray-400"
 								>
-									<option value="">All Categories</option>
+									<option value="">All Products</option>
 
 									{categories.map((category: { name: string; id: string; }) => (
 										<option key={category.id} value={category.id}>{category.name}</option>
