@@ -30,7 +30,7 @@ const services = [
         title: 'Individuals & Families',
         descriptioin: 'Personalized Health Support for Your Wellness Journey Every health journey is unique.Whether you’re living with or at risk of diabetes, hypertension, obesity, or high cholesterol, we help you take control through:',
         backgroundColor: '#f8fafc',
-        image: "https://images.unsplash.com/photo-1577896849786-738ed6c78bd3?q=80&w=2074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        image: "https://images.unsplash.com/photo-1636830632657-1dcda9360a3a?q=80&w=1949&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         subServices: [
             {
                 title: "Cabinet",
@@ -86,7 +86,7 @@ const services = [
         title: 'Insurance Companies',
         descriptioin: 'Innovating Preventive Care with Technology We help insurers shift from reactive claims to proactive health management by integrating digital tools and data-driven insights into member care.',
         backgroundColor: '#f3f4f6',
-        image: 'https://images.unsplash.com/photo-1505816014357-96b5ff457e9a?q=80&w=1933&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        image: 'https://images.unsplash.com/photo-1610374792793-f016b77ca51a?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
         subServices: [
             {
                 title: "Preventive Health Packages",
