@@ -137,7 +137,7 @@ function Indivituals() {
                 </div>
             </section>
 
-            <section className="px-4 py-20 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-20 lg:px-10 lg:py-20">
+            <section className="px-4 pt-10 pb-20 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-20 lg:px-10 lg:pt-0 lg:pb-20">
                 <div className="text-center grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     {cardData.map((card, index) => (
                         <div className="col-md" key={index}>
