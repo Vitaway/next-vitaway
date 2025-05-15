@@ -20,15 +20,27 @@ function BottomNavbar() {
                         </Link>
                     </div>
 
-                    <button onClick={() => setIsOpen(true)} type="button" className="inline-flex p-2 text-black transition-all duration-200 rounded-md lg:hidden focus:bg-gray-100 hover:bg-gray-100">
-                        <svg className="block w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 8h16M4 16h16"></path>
-                        </svg>
+                    <div className='lg:hidden'>
+                        <div className="flex items-center space-x-2 text-sm">
+                            <Link href="/shop" className="text-decoration-none text-body font-bold flex items-center text-sm">
+                                <div className='border border-gray-200 rounded-xl p-[5px]'>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 12c1.83 0 3.18-1.49 3-3.32L14.34 2H9.67L9 8.68C8.82 10.51 10.17 12 12 12Z" stroke="#697689" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path><path d="M18.31 12c2.02 0 3.5-1.64 3.3-3.65l-.28-2.75C20.97 3 19.97 2 17.35 2H14.3l.7 7.01c.17 1.65 1.66 2.99 3.31 2.99ZM5.64 12c1.65 0 3.14-1.34 3.3-2.99l.22-2.21.48-4.8H6.59C3.97 2 2.97 3 2.61 5.6l-.27 2.75C2.14 10.36 3.62 12 5.64 12Z" stroke="#697689" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path><g opacity=".4" stroke="#697689" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3.01 11.219v4.49c0 4.49 1.8 6.29 6.29 6.29h5.39c4.49 0 6.29-1.8 6.29-6.29v-4.49"></path><path d="M12 17c-1.67 0-2.5.83-2.5 2.5V22h5v-2.5c0-1.67-.83-2.5-2.5-2.5Z"></path></g></svg>
+                                </div>
+                            </Link>
 
-                        <svg className="hidden w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                    </button>
+                            <div className={`text-base transition-all duration-200 hover:text-opacity-80 lg:hidden`}>
+                                <div className='border border-gray-200 rounded-xl p-[5px]'>
+                                    <ShoppingCart />
+                                </div>
+                            </div>
+
+                            <div className='border border-gray-200 rounded-xl p-[5px] lg:hidden'>
+                                <div onClick={() => setIsOpen(true)} className="text-black transition-all duration-200 rounded-md focus:bg-gray-100 hover:bg-gray-100">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M3 7h18" stroke="#697689" strokeWidth="1.5" strokeLinecap="round"></path><path opacity=".34" d="M3 12h18" stroke="#697689" strokeWidth="1.5" strokeLinecap="round"></path><path d="M3 17h18" stroke="#697689" strokeWidth="1.5" strokeLinecap="round"></path></svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     <div className="hidden lg:flex lg:items-center lg:justify-center lg:space-x-10 font-medium text-slate-500">
                         <Link href="/" title="" className={`text-base transition-all duration-200 hover:text-opacity-80 ${pathname === '/' ? 'text-slate-900 font-bold' : 'text-black'}`}> Home </Link>
@@ -41,7 +53,9 @@ function BottomNavbar() {
                     <div className="hidden lg:flex lg:items-center lg:justify-center lg:space-x-10 font-medium">
                         <Link href="/contacts" title="" className={`text-base transition-all duration-200 hover:text-opacity-80 ${pathname === '/contacts' ? 'text-slate-900 font-bold' : 'text-black'}`}> Contact </Link>
                         <div title="" className={`text-base transition-all duration-200 hover:text-opacity-80`}>
-                            <ShoppingCart />
+                            <div className='border border-gray-200 rounded-xl p-[5px]'>
+                                <ShoppingCart />
+                            </div>
                         </div>
                         <div className='flex items-center space-x-2'>
                             <Link href="/shop" title="" className="hidden lg:inline-flex items-center justify-center px-5 py-2.5 text-base transition-all duration-200 hover:text-white hover:bg-indigo-800 focus:text-white focus:bg-indigo-300 font-semibold text-white bg-gradient-to-b from-[#003E48] to-[#282e33] rounded-full" role="button"> Shop </Link>

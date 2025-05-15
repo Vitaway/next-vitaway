@@ -54,7 +54,7 @@ function ShoppingCart() {
     return (
         <>
             {/* Cart Icon */}
-            <div className="relative cursor-pointer hover:bg-gray-200 rounded-full p-2" onClick={openCart}>
+            <div className="relative cursor-pointer hover:bg-gray-200 rounded-full" onClick={openCart}>
                 <div>
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -80,9 +80,11 @@ function ShoppingCart() {
                         ></path>
                     </svg>
                 </div>
-                <div className="absolute -top-1 -right-1 bg-[#1a1a2e] w-5 h-5 rounded-full text-white text-sm px-1 py-1 flex items-center justify-center">
-                    {totalItems > 9 ? '9+' : totalItems}
-                </div>
+                {totalItems > 0 && (
+                    <div className="absolute -top-1 -right-1 bg-[#1a1a2e] w-5 h-5 rounded-full text-white text-sm px-1 py-1 flex items-center justify-center">
+                        {totalItems > 9 ? '9+' : totalItems}
+                    </div>
+                )}
             </div>
 
             {/* Cart Modal */}
