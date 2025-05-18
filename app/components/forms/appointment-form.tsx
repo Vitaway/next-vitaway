@@ -105,12 +105,18 @@ function AppointmentForm() {
                         <label className="inline-block mb-1 font-normal">Phone</label>
                         <input
                             value={phone}
-                            onChange={(e) => setPhone(e.target.value)}
-                            placeholder="+1234567890"
+                            onChange={(e) => {
+                                // Allow only digits
+                                const value = e.target.value.replace(/\D/g, '');
+                                setPhone(value);
+                            }}
+                            placeholder="07XXXXXXXX"
                             type="text"
                             className="flex-grow w-full h-12 px-4 mb-2 font-normal transition duration-200 bg-white border border-gray-300 rounded appearance-none focus:border-indigo-400 focus:outline-none focus:shadow-outline"
                             required
-                            maxLength={20}
+                            maxLength={10}
+                            pattern="^(078|072|073|079)\d{7}$"
+                            title="Phone must start with 078, 072, 073, or 079 and be 10 digits"
                         />
                     </div>
 

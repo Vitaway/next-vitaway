@@ -54,12 +54,6 @@ function AboutUs() {
             caption: "Vitaway Gallery",
             description: "A snapshot of the Vitaway gallery, dedicated to transforming healthcare through innovation and compassion.",
         },
-
-        {
-            image: "/images/Gallery/image-4.jpg",
-            caption: "Vitaway Gallery",
-            description: "A snapshot of the Vitaway gallery, dedicated to transforming healthcare through innovation and compassion.",
-        },
         {
             image: "/images/Gallery/image-5.jpg",
             caption: "Vitaway Gallery",
@@ -67,16 +61,6 @@ function AboutUs() {
         },
         {
             image: "/images/Gallery/image-3.jpg",
-            caption: "Vitaway Gallery",
-            description: "A snapshot of the Vitaway gallery, dedicated to transforming healthcare through innovation and compassion.",
-        },
-        {
-            image: "/images/Gallery/image-10.jpg",
-            caption: "Vitaway Gallery",
-            description: "A snapshot of the Vitaway gallery, dedicated to transforming healthcare through innovation and compassion.",
-        },
-        {
-            image: "/images/Gallery/image-11.jpg",
             caption: "Vitaway Gallery",
             description: "A snapshot of the Vitaway gallery, dedicated to transforming healthcare through innovation and compassion.",
         },
