@@ -113,7 +113,7 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
         setShippingAmount(DEFAULT_SHIPPING_AMOUNT);
         setCustomerDiffRecipient(false);
     }
-    
+
     const sendPaymentCallback = async (invoiceNumber: string) => {
         setLoading(true);
 
@@ -483,9 +483,8 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
                                             </option>
                                         ))}
                                     </select>
-                                    {selectedCustomerProvince}
                                 </div>
-
+                                <span className="text-slate-800 mt-2">{selectedCustomerProvince}</span>
                                 {customerCountryError && <p className="text-red-500 text-sm">{customerCountryError}</p>}
                             </div>
 
@@ -510,8 +509,8 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
                                                 </option>
                                             ))}
                                     </select>
-                                    {customerCity}
                                 </div>
+                                <span className="text-slate-800 mt-2">{customerCity}</span>
                                 {customerCityError && <p className="text-red-500 text-sm">{customerCityError}</p>}
                             </div>
                         </div>

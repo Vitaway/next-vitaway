@@ -7,6 +7,7 @@ import CheckoutForm from '@/app/components/forms/checkout-form'
 import AlertMessage from '@/app/components/alerts/alert-message'
 import { Products } from '@/types/products'
 import { useCart } from '@/context/CartContext'
+import Image from 'next/image';
 
 function ProductDetails({ product, relatedProducts, loading }: { product: Products, relatedProducts: Products[], loading: boolean }) {
     const [quantity, setQuantity] = useState(1);
@@ -35,6 +36,19 @@ function ProductDetails({ product, relatedProducts, loading }: { product: Produc
                 <div className="flex flex-wrap -mx-4">
                     <div className="w-full md:w-1/2 px-4 mb-8">
                         <ImageSlider images={product.images.map((img) => img.image_url)} alt={product.name} />
+                        <div className="grid grid-cols-1 gap-4 mt-4 sm:grid-cols-2 sm:gap-4 md:grid-cols-3 lg:grid-cols-4">
+                            {product.images.map((img) => (
+                                <div key={img.image_url} className="hidden md:block">
+                                    <Image
+                                        src={img.image_url}
+                                        alt={product.name}
+                                        width={500}
+                                        height={600}
+                                        className="w-full h-auto max-h-[200px] min-h-[200px] object-cover border border-gray-200 rounded-xl"
+                                    />
+                                </div>
+                            ))}
+                        </div>
                     </div>
 
                     <div className="w-full md:w-1/2 px-4">
@@ -62,9 +76,10 @@ function ProductDetails({ product, relatedProducts, loading }: { product: Produc
                             )}
                         </div>
 
-                        <div className="flex flex-col sm:flex-row sm:space-x-4 mb-6 items-center space-y-4 sm:space-y-0">
+                        <div className="flex flex-col sm:flex-row sm:space-x-4 mb-6 items-center space-y-4 sm:space-y-0 justify-between w-full">
                             <div className="w-full sm:w-auto mb-6 sm:mb-0">
                                 <label className="font-bold text-md text-slate-700">Quantity:</label>
+
                                 <div className="flex items-center space-x-2 mt-2 sm:mt-5">
                                     <button
                                         type="button"
@@ -91,17 +106,19 @@ function ProductDetails({ product, relatedProducts, loading }: { product: Produc
                                     </button>
                                 </div>
                             </div>
-                            <div className="w-full sm:w-auto">
-                                <button onClick={() => addToCart(product, quantity)} className="w-full sm:w-auto bg-[#272749] hover:bg-[#272749]/90 cursor-pointer flex justify-center gap-2 items-center text-white px-6 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M2 2h1.74c1.08 0 1.93.93 1.84 2l-.83 9.96a2.796 2.796 0 0 0 2.79 3.03h10.65c1.44 0 2.7-1.18 2.81-2.61l.54-7.5c.12-1.66-1.14-3.01-2.81-3.01H5.82" stroke="#ffffff" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path><path opacity=".4" d="M16.25 22a1.25 1.25 0 1 0 0-2.5 1.25 1.25 0 0 0 0 2.5ZM8.25 22a1.25 1.25 0 1 0 0-2.5 1.25 1.25 0 0 0 0 2.5ZM9 8h12" stroke="#ffffff" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path></svg>
-                                    Add to Cart
-                                </button>
-                            </div>
-                            <div className="w-full sm:w-auto">
-                                <button onClick={() => buyNow()} className="w-full sm:w-auto bg-[#272749] hover:bg-[#272749]/90 cursor-pointer flex justify-center gap-2 items-center text-white px-6 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M2 2h1.74c1.08 0 1.93.93 1.84 2l-.83 9.96a2.796 2.796 0 0 0 2.79 3.03h10.65c1.44 0 2.7-1.18 2.81-2.61l.54-7.5c.12-1.66-1.14-3.01-2.81-3.01H5.82" stroke="#ffffff" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path><path opacity=".4" d="M16.25 22a1.25 1.25 0 1 0 0-2.5 1.25 1.25 0 0 0 0 2.5ZM8.25 22a1.25 1.25 0 1 0 0-2.5 1.25 1.25 0 0 0 0 2.5ZM9 8h12" stroke="#ffffff" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path></svg>
-                                    Buy Now
-                                </button>
+                            <div className="flex items-center space-x-4 justify-center">
+                                <div className="w-full sm:w-auto">
+                                    <button onClick={() => addToCart(product, quantity)} className="w-full sm:w-auto bg-[#272749] hover:bg-[#272749]/90 cursor-pointer flex justify-center gap-2 items-center text-white px-6 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M2 2h1.74c1.08 0 1.93.93 1.84 2l-.83 9.96a2.796 2.796 0 0 0 2.79 3.03h10.65c1.44 0 2.7-1.18 2.81-2.61l.54-7.5c.12-1.66-1.14-3.01-2.81-3.01H5.82" stroke="#ffffff" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path><path opacity=".4" d="M16.25 22a1.25 1.25 0 1 0 0-2.5 1.25 1.25 0 0 0 0 2.5ZM8.25 22a1.25 1.25 0 1 0 0-2.5 1.25 1.25 0 0 0 0 2.5ZM9 8h12" stroke="#ffffff" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path></svg>
+                                        Add to Cart
+                                    </button>
+                                </div>
+                                <div className="w-full sm:w-auto">
+                                    <button onClick={() => buyNow()} className="w-full sm:w-auto bg-[#272749] hover:bg-[#272749]/90 cursor-pointer flex justify-center gap-2 items-center text-white px-6 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M2 2h1.74c1.08 0 1.93.93 1.84 2l-.83 9.96a2.796 2.796 0 0 0 2.79 3.03h10.65c1.44 0 2.7-1.18 2.81-2.61l.54-7.5c.12-1.66-1.14-3.01-2.81-3.01H5.82" stroke="#ffffff" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path><path opacity=".4" d="M16.25 22a1.25 1.25 0 1 0 0-2.5 1.25 1.25 0 0 0 0 2.5ZM8.25 22a1.25 1.25 0 1 0 0-2.5 1.25 1.25 0 0 0 0 2.5ZM9 8h12" stroke="#ffffff" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path></svg>
+                                        Buy Now
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>

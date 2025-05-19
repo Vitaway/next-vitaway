@@ -106,7 +106,6 @@ function AppointmentForm() {
                         <input
                             value={phone}
                             onChange={(e) => {
-                                // Allow only digits
                                 const value = e.target.value.replace(/\D/g, '');
                                 setPhone(value);
                             }}
@@ -207,12 +206,10 @@ function AppointmentForm() {
                             {Array.from({ length: 26 }, (_, index) => {
                                 const hours = Math.floor(index / 2) + 8;
                                 const minutes = index % 2 === 0 ? '00' : '30';
-                                const period = hours >= 12 ? 'PM' : 'AM';
-                                const formattedHours = hours > 12 ? hours - 12 : hours;
-                                const time = `${String(formattedHours).padStart(2, '0')}:${minutes} ${period}`;
+                                const value = `${String(hours).padStart(2, '0')}:${minutes}`;
                                 return (
-                                    <option key={time} value={time}>
-                                        {time}
+                                    <option key={value} value={value}>
+                                        {value}
                                     </option>
                                 );
                             })}
