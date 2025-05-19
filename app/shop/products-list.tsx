@@ -32,7 +32,7 @@ function ProductsList() {
 		setCurrentPage(page);
 	};
 
-	const fetchProducts = async () => {
+	const fetchProducts = React.useCallback(async () => {
 		try {
 			setLoading(true);
 
@@ -51,9 +51,9 @@ function ProductsList() {
 			setMessage("Failed to fetch Products, Try again later");
 			setMessageType('error');
 		}
-	};
+	}, [inventoryApiUrl, selectedCategory]);
 
-	const fetchCategories = async () => {
+	const fetchCategories = React.useCallback(async () => {
 		try {
 			setLoading(true);
 
@@ -70,16 +70,16 @@ function ProductsList() {
 			setMessage("Failed to fetch Categories, Try again later");
 			setMessageType('error');
 		}
-	}
+	}, [inventoryApiUrl]);
 
 	const handleCategoryChange = (category: string) => {
 		setSelectedCategory(category);
 		fetchProducts();
 	}
-
 	useEffect(() => {
 		fetchProducts();
 		fetchCategories();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [inventoryApiUrl]);
 
 	useEffect(() => {
