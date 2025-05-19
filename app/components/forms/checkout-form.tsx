@@ -94,6 +94,26 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
     const { cart, clearCart, removeFromCart } = useCart();
     const total: number = cart.reduce((sum: number, item: CartItem) => sum + item.price * item.quantity, 0);
 
+    const clearForm = () => {
+        setCustomerName('');
+        setCustomerEmail('');
+        setCustomerPhone('');
+        setCustomerAddress('');
+        setCustomerCity('');
+        setCustomerCountry('');
+
+        setRecipientName('');
+        setRecipientEmail('');
+        setRecipientPhone('');
+        setRecipientAddress('');
+        setRecipientCity('');
+        setRecipientCountry('');
+
+        setSelected('ship');
+        setShippingAmount(DEFAULT_SHIPPING_AMOUNT);
+        setCustomerDiffRecipient(false);
+    }
+
     const sendPaymentCallback = async (invoiceNumber: string) => {
         setLoading(true);
 
@@ -129,6 +149,7 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
                 actionUrl: ''
             });
 
+            clearForm();
             callback();
         } catch (error) {
             setLoading(false);
@@ -217,23 +238,27 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
                 shipping_option: selected,
             };
 
-            const response = await fetch(`${process.env.NEXT_PUBLIC_ENVENTORY_API_URL}/api/products/payments/init`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                body: JSON.stringify(payload),
-            });
+            // Use axios for the payment request
+            const axios = (await import('axios')).default;
 
-            if (!response.ok) {
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_ENVENTORY_API_URL}/api/products/payments/init`, payload,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    }
+                }
+            );
+
+            if (response.status !== 200) {
                 setLoading(false);
                 setMessageType('error');
                 setMessage('Network Error - Processing payment failed. Please try again.');
                 return;
             }
 
-            const data = await response.json();
-
             setLoading(false);
-            makePayment(data.data.invoiceNumber);
+            makePayment(response.data.data.invoiceNumber);
         } catch (error) {
             setLoading(false);
             setMessageType('error');
@@ -459,7 +484,7 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
                                         ))}
                                     </select>
                                 </div>
-
+                                <span className="text-slate-800 mt-2">{selectedCustomerProvince}</span>
                                 {customerCountryError && <p className="text-red-500 text-sm">{customerCountryError}</p>}
                             </div>
 
@@ -485,6 +510,7 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
                                             ))}
                                     </select>
                                 </div>
+                                <span className="text-slate-800 mt-2">{customerCity}</span>
                                 {customerCityError && <p className="text-red-500 text-sm">{customerCityError}</p>}
                             </div>
                         </div>

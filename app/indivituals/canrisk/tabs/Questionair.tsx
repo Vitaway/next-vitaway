@@ -18,7 +18,7 @@ import StepTwelve from './steps/StepTwelve';
 import StepThirteen from './steps/StepThirteen';
 import AlertModal from '@/app/components/alerts/alert-modal';
 
-type InputData = {
+export type InputData = {
   gender?: string;
   age?: number;
   weight?: string;
@@ -36,7 +36,7 @@ type InputData = {
   education?: string;
 }
 
-function Questionair() {
+function Questionair({ onComplete }: { onComplete?: (finalScore: number, data: InputData) => void }) {
   const [currentStep, setCurrentStep] = useState(0);
   const [collectedData, setCollectedData] = useState<InputData>({});
   const [showAlert, setShowAlert] = useState(false);
@@ -166,6 +166,9 @@ function Questionair() {
       status: 'success',
       actionUrl: '',
     });
+    if (onComplete) {
+      onComplete(finalScore, collectedData);
+    }
   };
 
   const steps = [

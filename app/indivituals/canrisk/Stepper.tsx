@@ -1,13 +1,15 @@
 'use client';
 
 import React, { useState } from 'react';
-import Questionair from './tabs/Questionair';
+import Questionair, { InputData } from './tabs/Questionair';
 import Score from './tabs/Score';
 import Information from './tabs/Information';
 import Share from './tabs/Share';
 
 function Stepper() {
     const [activeTab, setActiveTab] = useState('Diabetes Questionnaire');
+    const [score, setScore] = useState<number | null>(null);
+    const [collectedData, setCollectedData] = useState<InputData | null>(null);
 
     const tabs = [
         'Diabetes Questionnaire',
@@ -15,6 +17,23 @@ function Stepper() {
         'More Information',
         'Share',
     ];
+
+    // Handler to be called when questionnaire is completed
+    const handleQuestionnaireComplete = (finalScore: number, data: InputData) => {
+        setScore(finalScore);
+        setCollectedData(data);
+        setActiveTab('My Score');
+    };
+
+    // Handler to go to Information tab after viewing score
+    const handleScoreNext = () => {
+        setActiveTab('More Information');
+    };
+
+    // Handler to go to Share tab after viewing information
+    const handleInformationNext = () => {
+        setActiveTab('Share');
+    };
 
     return (
         <>
@@ -37,13 +56,19 @@ function Stepper() {
 
             {/* Tab Content */}
             <div className='mt-6'>
-                {activeTab === 'Diabetes Questionnaire' && <Questionair />}
-                {activeTab === 'My Score' && <Score />}
-                {activeTab === 'More Information' && <Information />}
-                {activeTab === 'Share' && <Share />}
+                {activeTab === 'Diabetes Questionnaire' && (
+                    <Questionair onComplete={handleQuestionnaireComplete} />
+                )}
+                {activeTab === 'My Score' && (
+                    <Score score={score} data={collectedData} onNext={handleScoreNext} />
+                )}
+                {activeTab === 'More Information' && (
+                    <Information score={score} data={collectedData} onNext={handleInformationNext} />
+                )}
+                {activeTab === 'Share' && <Share score={score} data={collectedData} />}
             </div>
         </>
     );
 }
 
-export default Stepper
+export default Stepper;

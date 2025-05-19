@@ -1,7 +1,14 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import Image from 'next/image'
 import React from 'react'
+import type { InputData } from './Questionair';
 
-function Share() {
+type ShareProps = {
+  score: number | null;
+  data: InputData | null;
+};
+
+function Share({ score, data }: ShareProps) {
     return (
         <section className="border border-gray-200 p-6 rounded-xl bg-white text-slate-800" id="share" tabIndex={-1}>
             <h2 tabIndex={-1} className='font-bold my-3'>Share the questionnaire</h2>
