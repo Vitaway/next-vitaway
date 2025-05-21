@@ -36,8 +36,9 @@ function ProductDetails({ product, relatedProducts, loading }: { product: Produc
                 <div className="flex flex-wrap -mx-4">
                     <div className="w-full md:w-1/2 px-4 mb-8">
                         <ImageSlider images={product.images.map((img) => img.image_url)} alt={product.name} />
+
                         <div className="grid grid-cols-1 gap-4 mt-4 sm:grid-cols-2 sm:gap-4 md:grid-cols-3 lg:grid-cols-4">
-                            {product.images.map((img) => (
+                            {product.images.length > 2 && product.images.map((img) => (
                                 <div key={img.image_url} className="hidden md:block">
                                     <Image
                                         src={img.image_url}
@@ -61,9 +62,10 @@ function ProductDetails({ product, relatedProducts, loading }: { product: Produc
                         </div>
 
                         <h2 className="font-bold text-xl text-slate-700">About this item</h2>
+
                         <div className="text-gray-700 my-4">
-                            <p
-                                className={`overflow-hidden ${product.description.length > 200 && !isExpanded ? 'line-clamp-6' : ''}`}
+                            <div
+                                className={`prose prose-slate max-w-none overflow-hidden ${product.description.length > 200 && !isExpanded ? 'line-clamp-6' : ''}`}
                                 dangerouslySetInnerHTML={{ __html: product.description }}
                             />
                             {product.description.length > 200 && (

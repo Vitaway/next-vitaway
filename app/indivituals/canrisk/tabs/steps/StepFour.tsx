@@ -35,7 +35,7 @@ function StepFour({ onInputChange }: { onInputChange: (data: { age: number }) =>
                 />
 
                 <div className="center-outer">
-                    <div className="center-inner">
+                    <div className="center-inner modern-age-input">
                         <div className="background text-center">
                             <div className="range-wrapper hidden-print">
                                 <label htmlFor="ageRange" className="sr-only">
@@ -48,29 +48,83 @@ function StepFour({ onInputChange }: { onInputChange: (data: { age: number }) =>
                                     max="75"
                                     value={age}
                                     onChange={handleSliderChange}
+                                    className="modern-slider"
                                 />
-                                <ul className="labels">
-                                    <li>Under 25</li>
-                                    <li>50</li>
-                                    <li>Over 75</li>
-                                </ul>
+                                <div className="slider-labels">
+                                    <span>25</span>
+                                    <span>50</span>
+                                    <span>75</span>
+                                </div>
                             </div>
-                            <div>
-                                <label>
-                                    Enter your age:&nbsp;
-                                    <input
-                                        type="text"
-                                        size={3}
-                                        maxLength={3}
-                                        pattern="^\d{2,3}$"
-                                        value={age}
-                                        onChange={handleTextInputChange}
-                                        name="ageInput"
-                                        id="ageInput"
-                                    />
+                            <div className="modern-age-box">
+                                <label htmlFor="ageInput" className="modern-label">
+                                    <span>Enter your age:</span>
                                 </label>
+                                <input
+                                    type="text"
+                                    size={3}
+                                    maxLength={3}
+                                    pattern="^\d{2,3}$"
+                                    value={age}
+                                    onChange={handleTextInputChange}
+                                    name="ageInput"
+                                    id="ageInput"
+                                    className="modern-input"
+                                    autoComplete="off"
+                                />
                             </div>
                         </div>
+                        <style jsx>{`
+                            .modern-age-input {
+                                display: flex;
+                                flex-direction: column;
+                                align-items: center;
+                                gap: 2rem;
+                            }
+                            .modern-slider {
+                                width: 300px;
+                                accent-color: #0078d4;
+                                height: 6px;
+                                border-radius: 3px;
+                                margin-bottom: 0.5rem;
+                            }
+                            .slider-labels {
+                                display: flex;
+                                justify-content: space-between;
+                                width: 300px;
+                                font-size: 0.95rem;
+                                color: #888;
+                                margin-top: -0.5rem;
+                            }
+                            .modern-age-box {
+                                display: flex;
+                                align-items: center;
+                                gap: 0.75rem;
+                                background: #f5f7fa;
+                                border-radius: 8px;
+                                padding: 0.5rem 1rem;
+                                box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+                            }
+                            .modern-label {
+                                font-weight: 500;
+                                color: #333;
+                            }
+                            .modern-input {
+                                width: 3rem;
+                                font-size: 1.25rem;
+                                padding: 0.25rem 0.5rem;
+                                border: 1.5px solid #0078d4;
+                                border-radius: 6px;
+                                outline: none;
+                                transition: border-color 0.2s;
+                                text-align: center;
+                                background: #fff;
+                            }
+                            .modern-input:focus {
+                                border-color: #005fa3;
+                                box-shadow: 0 0 0 2px #cce6ff;
+                            }
+                        `}</style>
                     </div>
                 </div>
             </div>

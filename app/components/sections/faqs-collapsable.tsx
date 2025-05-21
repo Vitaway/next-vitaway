@@ -45,7 +45,7 @@ function FaqsCollapsable({ faqs }: { faqs: { question: string, answer: string }[
 
                 {openIndex === index && (
                     <div className="p-4 text-slate-700 bg-blue-50 border-t animate-fade-in">
-                        <ul className="list-disc list-inside space-y-2">
+                        <ul className="space-y-2">
                             {faq.answer.split('\n').map((line, i) => (
                                 <li key={i}>{line}</li>
                             ))}
