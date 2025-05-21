@@ -11,17 +11,19 @@ function ProductCard({ product }: { product: Products }) {
         <div className="relative rounded-2xl border bg-white border-gray-200 transform transition-transform duration-300 hover:scale-105">
             <div className="flex-auto">
                 <div className="text-center relative flex justify-center">
-                    <div className='w-full h-54 overflow-hidden rounded-t-2xl border-b border-gray-200 flex justify-center items-center bg-gray-100'>
-                        {typeof product.images[0] === 'object' && product.images[0] !== null ? (
-                            <Image
-                                width={500}
-                                height={500}
-                                src={product.images[0].image_url}
-                                alt={product.name}
-                                className="object-cover w-full h-full"
-                            />
-                        ) : null}
-                    </div>
+                    <Link href={`/shop/${product.slug}`}>
+                        <div className='w-full h-54 overflow-hidden rounded-t-2xl border-b border-gray-200 flex justify-center items-center bg-gray-100'>
+                            {typeof product.images[0] === 'object' && product.images[0] !== null ? (
+                                <Image
+                                    width={500}
+                                    height={500}
+                                    src={product.images[0].image_url}
+                                    alt={product.name}
+                                    className="object-cover w-full h-full"
+                                />
+                            ) : null}
+                        </div>
+                    </Link>
                 </div>
 
                 <div className="flex flex-col px-3 py-4">

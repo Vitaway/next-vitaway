@@ -17,22 +17,32 @@ function StepSix({ onInputChange }: { onInputChange: (data: { waist: string }) =
             <p>You can also enter the information by typing it in the box.</p>
 
             <div className="waist-outer">
-                <div className="text-center waist">
-                    <div className="form-group">
-                        <label>
-                            Enter your waist size <span className="wb-inv">in inches</span>&nbsp;
-                            <input
-                                type="text"
-                                name="waistInput"
-                                id="waistInput"
-                                className="form-control"
-                                placeholder="Ex: 101cm or 40 in"
-                                value={waist}
-                                onChange={handleWaistChange}
-                            />
+                <div className="waist-modern-container" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2rem', width: '100%' }}>
+                    <div className="waist-input-group" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
+                        <label htmlFor="waistInput" style={{ fontWeight: 600, fontSize: '1.1rem', marginBottom: '0.5rem' }}>
+                            Enter your waist size <span className="wb-inv">in inches</span>
                         </label>
+                        <input
+                            type="text"
+                            name="waistInput"
+                            id="waistInput"
+                            className="form-control"
+                            placeholder="Ex: 101cm or 40 in"
+                            value={waist}
+                            onChange={handleWaistChange}
+                            style={{
+                                padding: '0.75rem 1rem',
+                                borderRadius: '8px',
+                                border: '1.5px solid #a0aec0',
+                                fontSize: '1.1rem',
+                                width: '220px',
+                                boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                                transition: 'border-color 0.2s',
+                                outline: 'none'
+                            }}
+                        />
                     </div>
-                    <div className="range-wrapper hidden-print">
+                    <div className="waist-slider-group" style={{ width: '100%', maxWidth: '400px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                         <label htmlFor="waistRange" className="sr-only">
                             <span>Use the slider to select your waist size or type it in the box above</span>
                         </label>
@@ -44,11 +54,19 @@ function StepSix({ onInputChange }: { onInputChange: (data: { waist: string }) =
                             max="203.2"
                             value={parseFloat(waist) || 50.8}
                             onChange={(e) => handleWaistChange({ target: { value: e.target.value } } as React.ChangeEvent<HTMLInputElement>)}
+                            style={{
+                                width: '100%',
+                                accentColor: '#3182ce',
+                                height: '6px',
+                                borderRadius: '3px',
+                                background: 'linear-gradient(90deg, #63b3ed 0%, #3182ce 100%)',
+                                marginBottom: '0.5rem'
+                            }}
                         />
-                        <ul className="labels">
-                            <li>51cm / 20 in</li>
-                            <li>203cm / 80 in</li>
-                        </ul>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', fontSize: '0.95rem', color: '#4a5568' }}>
+                            <span>51cm / 20 in</span>
+                            <span>203cm / 80 in</span>
+                        </div>
                     </div>
                 </div>
             </div>

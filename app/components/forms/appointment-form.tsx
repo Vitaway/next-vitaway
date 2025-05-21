@@ -184,7 +184,10 @@ function AppointmentForm() {
                         <label className="inline-block mb-1 font-normal">Appointment Date</label>
                         <input
                             value={appointmentDate}
-                            onChange={(e) => setAppointmentDate(e.target.value)}
+                            onChange={(e) => {
+                                setAppointmentDate(e.target.value);
+                                setAppointmentTime(''); // Reset time when date changes
+                            }}
                             type="date"
                             className="flex-grow w-full h-12 px-4 mb-2 font-normal transition duration-200 bg-white border border-gray-300 rounded appearance-none focus:border-indigo-400 focus:outline-none focus:shadow-outline"
                             required
@@ -200,19 +203,50 @@ function AppointmentForm() {
                             onChange={(e) => setAppointmentTime(e.target.value)}
                             className="flex-grow w-full h-12 px-4 mb-2 font-normal transition duration-200 bg-white border border-gray-300 rounded appearance-none focus:border-indigo-400 focus:outline-none focus:shadow-outline"
                             required
+                            disabled={!appointmentDate}
                         >
                             <option value="" disabled>Select Time</option>
+                            {(() => {
+                                const startHour = 8;
+                                const endHour = 20;
+                                const now = new Date();
+                                let minTime = `${String(startHour).padStart(2, '0')}:00`;
 
-                            {Array.from({ length: 26 }, (_, index) => {
-                                const hours = Math.floor(index / 2) + 8;
-                                const minutes = index % 2 === 0 ? '00' : '30';
-                                const value = `${String(hours).padStart(2, '0')}:${minutes}`;
-                                return (
+                                if (
+                                    appointmentDate &&
+                                    appointmentDate === now.toISOString().split('T')[0]
+                                ) {
+                                    // If today, set minTime to next available half hour
+                                    const currentMinutes = now.getMinutes();
+                                    let nextHour = now.getHours();
+                                    let nextMinutes = 0;
+                                    if (currentMinutes < 30) {
+                                        nextMinutes = 30;
+                                    } else {
+                                        nextHour += 1;
+                                        nextMinutes = 0;
+                                    }
+                                    // Clamp to working hours
+                                    if (nextHour < startHour) nextHour = startHour;
+                                    if (nextHour > endHour) nextHour = endHour;
+                                    minTime = `${String(nextHour).padStart(2, '0')}:${nextMinutes === 0 ? '00' : '30'}`;
+                                }
+
+                                const slots: string[] = [];
+                                for (let hour = startHour; hour <= endHour; hour++) {
+                                    for (const min of [0, 30]) {
+                                        const value = `${String(hour).padStart(2, '0')}:${min === 0 ? '00' : '30'}`;
+                                        if (value >= minTime) {
+                                            slots.push(value);
+                                        }
+                                    }
+                                }
+                                return slots.map((value) => (
                                     <option key={value} value={value}>
                                         {value}
                                     </option>
-                                );
-                            })}
+                                ));
+                            })()}
                         </select>
                     </div>
                 </div>
