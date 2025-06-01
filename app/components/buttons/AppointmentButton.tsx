@@ -5,7 +5,7 @@ import '../../styles/appointment_button.css';
 
 function AppointmentButton() {
     return (
-        <div className='fixed z-20 bottom-10 right-10'>
+        <div className='fixed z-20 bottom-12 left-7'>
             <div className='appointment-button' onClick={() => window.location.href = '/appointments'}>
                 <div className="flex items-center relative">
                     <div className="block sm:hidden">
