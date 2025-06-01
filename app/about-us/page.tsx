@@ -36,18 +36,18 @@ function AboutUs() {
     const gallery = [
         {
             image: "/images/Team/bg.jpeg",
-            caption: "Vitaway Gallery",
-            description: "A snapshot of the Vitaway gallery, dedicated to transforming healthcare through innovation and compassion.",
+            caption: "Co-founders discussion",
+            description: "Vitaway Health co-founders engaged in a visionary dialogue, driving innovation and impact in preventive healthcare",
         },
         {
             image: "/images/Gallery/image-2.jpg",
-            caption: "Vitaway Gallery",
-            description: "A snapshot of the Vitaway gallery, dedicated to transforming healthcare through innovation and compassion.",
+            caption: "Founder & CEO of Vitaway Health",
+            description: "Emmanuel Hakuzimana, Founder & CEO of Vitaway Health, leading with purpose, passion, and a vision for a healthier Africa.” We created this company to inspire and engage people in lifelong health, one step at a time.",
         },
         {
             image: "/images/Gallery/image-8.jpg",
-            caption: "Vitaway Gallery",
-            description: "A snapshot of the Vitaway gallery, dedicated to transforming healthcare through innovation and compassion.",
+            caption: "Photo of Nutritionist and Patient in consultation room",
+            description: "Personalised nutrition counselling in action—empowering patients to take charge of their health.",
         },
         {
             image: "/images/Gallery/image-1.jpg",
@@ -56,23 +56,23 @@ function AboutUs() {
         },
         {
             image: "/images/Gallery/image-5.jpg",
-            caption: "Vitaway Gallery",
-            description: "A snapshot of the Vitaway gallery, dedicated to transforming healthcare through innovation and compassion.",
+            caption: "All Nutritionists at Vitaway Health",
+            description: "A powerhouse team of qualified nutritionists dedicated to transforming lives through evidence-based nutritional care.",
         },
         {
             image: "/images/Gallery/image-3.jpg",
-            caption: "Vitaway Gallery",
-            description: "A snapshot of the Vitaway gallery, dedicated to transforming healthcare through innovation and compassion.",
+            caption: "Dedicated Nutritionist at Vitaway Health",
+            description: "Personalised nutrition counselling in action—empowering patients to take charge of their health.",
         },
         {
             image: "/images/Gallery/image-13.jpg",
-            caption: "Vitaway Gallery",
-            description: "A snapshot of the Vitaway gallery, dedicated to transforming healthcare through innovation and compassion.",
+            caption: "Photo of Nutritionist and Patient in consultation room",
+            description: "Personalised nutrition counselling in action—empowering patients to take charge of their health.",
         },
         {
             image: "/images/Gallery/image-15.jpg",
-            caption: "Vitaway Gallery",
-            description: "A snapshot of the Vitaway gallery, dedicated to transforming healthcare through innovation and compassion.",
+            caption: "Photo of the location",
+            description: "Welcome to Vitaway Nutritional Cabinet in Kimironko, 7KG 165ST a modern, accessible space where health and care meet",
         },
     ];
 
