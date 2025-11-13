@@ -129,7 +129,7 @@ function Footer() {
                         <ul className="mt-6 space-y-2 text-gray-200 text-sm border-t pt-5 border-gray-200">
                             <li><span><span className='font-bold'>Contact:</span> +250 795 767 405 /+250 787 279 560 </span></li>
                             <li><span><span className='font-bold'>Email:</span> vitawayeclinic@gmail.com</span></li>
-                            <li><span><span className='font-bold'>Location:</span> KG 165 St 7, Kimironko, near the former KIE &quot;Remera Campus.&quot;</span></li>
+                            <li><span><span className='font-bold'>Location:</span> CPR-Unit House, 1 Floor,  KK21 Ave Niboye, Kicukiro, Kigali</span></li>
                         </ul>
                     </div>
                 </div>
