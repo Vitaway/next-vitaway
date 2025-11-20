@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "postbuild": "next-sitemap"
+    "postbuild": "next-sitemap",
+    "export": "npm run build && echo Build completed. Use hosting provider that supports Next.js or deploy the .next folder."
   },
   "dependencies": {
     "axios": "^1.8.1",
