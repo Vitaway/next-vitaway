@@ -5,26 +5,45 @@ import { Metadata } from 'next';
 import GuestLayout from '../layouts/GuestLayout';
 
 export const metadata: Metadata = {
-    title: "About us",
-    description: "Discover the Vitaway difference as we pledge to provide you with the highest quality healthcare solutions, personalized to your unique well-being.",
-    keywords: "Vitaway Health Ltd, Vitaway Health, healthcare solutions, personalized well-being, high-quality healthcare, wellness, health transformation, virtual health companion, about us, vitaway about us, vitaway health about us",
+    title: "About Vitaway Health | Our Mission to Transform Healthcare in Rwanda",
+    description: "Learn about Vitaway Health's journey to revolutionize healthcare in Rwanda. Meet our expert team of nutritionists and discover how we're making quality healthcare accessible through innovative digital solutions.",
+    keywords: [
+        "Vitaway Health team",
+        "Rwanda healthcare innovation",
+        "digital health company Rwanda", 
+        "nutrition experts Kigali",
+        "healthcare transformation",
+        "preventive medicine Rwanda",
+        "health tech startup",
+        "telehealth pioneers",
+        "wellness company Rwanda",
+        "NCD prevention specialists"
+    ],
     authors: [{ name: "Vitaway Health Ltd" }],
-    metadataBase: new URL("https://www.vitaway.org"),
     openGraph: {
-        title: "About us",
-        siteName: "Vitaway Health Ltd",
-        description: "Discover the Vitaway difference as we pledge to provide you with the highest quality healthcare solutions, personalized to your unique well-being.",
+        title: "About Vitaway Health | Our Mission to Transform Healthcare in Rwanda",
+        siteName: "Vitaway Health",
+        description: "Learn about Vitaway Health's journey to revolutionize healthcare in Rwanda. Meet our expert team and discover our innovative digital solutions.",
         type: "website",
         url: "https://www.vitaway.org/about-us",
         images: [
             {
                 url: "/images/Gallery/image-12.jpg",
-                width: 800,
-                height: 600,
-                alt: "Vitaway core team"
+                width: 1200,
+                height: 630,
+                alt: "Vitaway Health core team - Healthcare professionals in Rwanda"
             },
         ]
-    }
+    },
+    twitter: {
+        card: "summary_large_image",
+        title: "About Vitaway Health | Our Mission to Transform Healthcare in Rwanda",
+        description: "Learn about Vitaway Health's journey to revolutionize healthcare in Rwanda. Meet our expert team and discover our innovative digital solutions.",
+        images: ["/images/Gallery/image-12.jpg"],
+    },
+    alternates: {
+        canonical: "https://www.vitaway.org/about-us",
+    },
 };
 
 export const viewport = {
