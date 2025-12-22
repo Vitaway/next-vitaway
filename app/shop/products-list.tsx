@@ -14,6 +14,7 @@ function ProductsList() {
 	const [loading, setLoading] = useState(true);
 	const [searchQuery, setSearchQuery] = useState('');
 	const [selectedCategory, setSelectedCategory] = useState('');
+	const [sortBy, setSortBy] = useState('name-desc');
 	const [currentPage, setCurrentPage] = useState(1);
 	const [message, setMessage] = useState<string>('');
 	const [messageType, setMessageType] = useState<'success' | 'error'>('success');
@@ -83,14 +84,30 @@ function ProductsList() {
 	}, [inventoryApiUrl]);
 
 	useEffect(() => {
-		const filtered = products.filter((product: Products) =>
+		let filtered = products.filter((product: Products) =>
 			product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
 			product.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
 			product.price.toString().includes(searchQuery) ||
 			product.category?.name.toLowerCase().includes(searchQuery.toLowerCase())
 		);
+
+		filtered = filtered.sort((a: Products, b: Products) => {
+			switch (sortBy) {
+				case 'name-asc':
+					return a.name.localeCompare(b.name);
+				case 'name-desc':
+					return b.name.localeCompare(a.name);
+				case 'price-asc':
+					return Number(a.price) - Number(b.price);
+				case 'price-desc':
+					return Number(b.price) - Number(a.price);
+				default:
+					return b.name.localeCompare(a.name);
+			}
+		});
+
 		setFilteredProducts(filtered);
-	}, [searchQuery, products]);
+	}, [searchQuery, products, sortBy]);
 
 	return (
 		<>
@@ -155,6 +172,20 @@ function ProductsList() {
 								</select>
 							</div>
 						</div>
+						<div className="flex items-center w-full md:w-auto flex-col md:flex-row justify-center">
+							<div className="border border-gray-300 rounded-full px-4 py-3 w-full md:w-[200px] text-sm focus:outline-none flex items-center bg-white">
+								<select
+									value={sortBy}
+									onChange={(e) => setSortBy(e.target.value)}
+									className="border-none outline-none focus:border-none focus:outline-none ml-3 text-slate-700 bg-white w-full h-full placeholder:text-gray-400"
+								>
+									<option value="name-desc">Name (Z-A)</option>
+									<option value="name-asc">Name (A-Z)</option>
+									<option value="price-desc">Price (High-Low)</option>
+									<option value="price-asc">Price (Low-High)</option>
+								</select>
+							</div>
+						</div>
 					</div>
 
 					{filteredProducts.length === 0 && !loading && (
@@ -204,6 +235,7 @@ function ProductsList() {
 						</button>
 					</div>
 				</div>
+
 			</section>
 
 			<AlertMessage message={message} type={messageType} />

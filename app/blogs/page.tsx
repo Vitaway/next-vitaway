@@ -5,23 +5,47 @@ import { Metadata } from 'next';
 import AllBlogs from '../components/sections/all-blogs';
 
 export const metadata: Metadata = {
-    title: "Latest Blogs and Articles",
-    description: "Explore our latest blogs and articles to learn more about the latest trends in health and wellness. Stay up to date with the latest news and information to help you live a healthier life.",
-    keywords: "Vitaway, Blogs, Articles, Health, Wellness, Trends, News, Information, vitaway health ltd, vitaway health, health rwanda",
-    metadataBase: new URL("https://www.vitaway.org"),
+    title: "Health & Wellness Blog | Expert Nutrition Tips from Rwanda",
+    description: "Discover expert health and wellness insights from Vitaway Health's team of qualified nutritionists. Read about NCD prevention, healthy eating, lifestyle tips, and medical breakthroughs in Rwanda and Africa.",
+    keywords: [
+        "health blog Rwanda",
+        "nutrition articles",
+        "wellness tips Kigali",
+        "NCD prevention blog",
+        "healthy lifestyle Rwanda",
+        "nutrition education",
+        "health insights Africa",
+        "preventive healthcare blog",
+        "medical advice Rwanda",
+        "wellness articles",
+        "healthy eating tips",
+        "lifestyle medicine"
+    ],
     openGraph: {
-        title: "Latest Blogs and Articles",
-        description: "Explore our latest blogs and articles to learn more about the latest trends in health and wellness. Stay up to date with the latest news and information to help you live a healthier life.",
+        title: "Health & Wellness Blog | Expert Nutrition Tips from Rwanda",
+        description: "Discover expert health and wellness insights from Vitaway Health's team of qualified nutritionists. Read about NCD prevention, healthy eating, and lifestyle tips.",
         type: "website",
-        url: "https://vitaway.com/blogs",
+        url: "https://www.vitaway.org/blogs",
         images: [
             {
-                url: "https://vitaway.com/images/vitaway-logo.png",
+                url: "/images/blog-cover.png",
                 width: 1200,
                 height: 630,
-                alt: "Vitaway Logo",
+                alt: "Vitaway Health Blog - Expert Health & Wellness Tips",
             },
         ],
+    },
+    twitter: {
+        card: "summary_large_image",
+        title: "Health & Wellness Blog | Expert Nutrition Tips from Rwanda",
+        description: "Discover expert health insights from Vitaway Health's nutritionists. NCD prevention, healthy eating, and lifestyle tips for better health.",
+        images: ["/images/blog-cover.png"],
+    },
+    alternates: {
+        canonical: "https://www.vitaway.org/blogs",
+        types: {
+            'application/rss+xml': 'https://www.vitaway.org/rss.xml',
+        },
     },
 }
 

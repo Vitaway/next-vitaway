@@ -1,9 +1,41 @@
-# *
+# Robots.txt for Vitaway Health Ltd
+# https://www.vitaway.org/robots.txt
+
+# Allow all crawlers to access all content
 User-agent: *
 Allow: /
 
-# Host
-Host: https://www.vitaway.org
+# Specifically allow important crawlers
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+# Disallow crawling of admin or sensitive areas
+Disallow: /api/
+Disallow: /admin/
+Disallow: /.env
+Disallow: /_next/
+Disallow: /checkout/
+
+# Allow crawling of important directories
+Allow: /images/
+Allow: /blogs/
+Allow: /shop/
+Allow: /programs/
+Allow: /our-team/
+
+# Crawl delay (be respectful)
+Crawl-delay: 1
 
 # Sitemaps
 Sitemap: https://www.vitaway.org/sitemap.xml
+Sitemap: https://www.vitaway.org/sitemap-blogs.xml
+Sitemap: https://www.vitaway.org/sitemap-products.xml
+
+# Host preference
+Host: https://www.vitaway.org

@@ -5,25 +5,44 @@ import ContactForm from '../components/forms/contact-form';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: "Contact Us",
-  description: "Get in touch with Vitaway today! Reach out to our dedicated team of experts and let us assist you on your healthcare journey.",
-  keywords: "Vitaway, Contact, Reach Out, Healthcare, Assistance, vitaway health ltd, vitaway health, health rwanda",
+  title: "Contact Vitaway Health | Schedule Your Health Consultation Today",
+  description: "Get in touch with Vitaway Health's expert team in Kigali, Rwanda. Schedule a nutrition consultation, book a health assessment, or reach out for personalized healthcare guidance. Located in Kimironko with online services available.",
+  keywords: [
+    "contact Vitaway Health",
+    "health consultation Kigali", 
+    "nutrition appointment Rwanda",
+    "healthcare contact Kimironko",
+    "book health assessment",
+    "nutrition consultation booking",
+    "Vitaway Health location",
+    "healthcare services contact",
+    "wellness consultation Rwanda",
+    "health coaching contact"
+  ],
   openGraph: {
-    title: "Contact Us",
-    description: "Get in touch with Vitaway today! Reach out to our dedicated team of experts and let us assist you on your healthcare journey.",
+    title: "Contact Vitaway Health | Schedule Your Health Consultation Today",
+    description: "Get in touch with Vitaway Health's expert team in Kigali, Rwanda. Schedule consultations, book assessments, or reach out for personalized healthcare guidance.",
     type: "website",
-    url: "https://vitaway.com/contacts",
+    url: "https://www.vitaway.org/contacts",
     images: [
       {
-        url: "https://vitaway.com/images/vitaway-logo.png",
+        url: "/images/contact-vitaway.png",
         width: 1200,
         height: 630,
-        alt: "Vitaway Logo",
+        alt: "Contact Vitaway Health - Healthcare Consultation in Kigali, Rwanda",
       },
     ],
   },
-  metadataBase: new URL("https://www.vitaway.org"),
-}
+  twitter: {
+    card: "summary_large_image",
+    title: "Contact Vitaway Health | Schedule Your Health Consultation",
+    description: "Get in touch with Vitaway Health's expert team in Kigali, Rwanda. Schedule consultations and personalized healthcare guidance.",
+    images: ["/images/contact-vitaway.png"],
+  },
+  alternates: {
+    canonical: "https://www.vitaway.org/contacts",
+  },
+};
 
 function Contact() {
   return (
