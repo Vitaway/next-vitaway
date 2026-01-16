@@ -2,7 +2,7 @@ import React from 'react';
 
 function BlogCardSkeleton() {
   return (
-    <div className="animate-pulse">
+    <div className="">
       {/* Image Placeholder */}
       <div className="block aspect-w-4 aspect-h-3 bg-gray-200 rounded-xl"></div>
 

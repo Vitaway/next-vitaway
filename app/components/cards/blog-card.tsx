@@ -14,7 +14,7 @@ function BlogCard({ blog }: { blog: Blogs }) {
                     ) : null}
                 </div>
 
-                <span className="inline-flex px-4 py-2 font-semibold tracking-widest uppercase rounded-full text-[11px] text-indigo-500 bg-indigo-100 mt-3">
+                <span className="inline-block px-4 py-2 max-w-full truncate font-semibold tracking-widest uppercase rounded-full text-[11px] text-[#003E48] bg-[#003E48]/20 mt-3">
                     {blog.category.name}
                 </span>
 
@@ -24,7 +24,7 @@ function BlogCard({ blog }: { blog: Blogs }) {
                 <div className="h-0 my-4 border-t-2 border-gray-200 border-dashed"></div>
 
                 <div className='flex items-center justify-between'>
-                    <span className="block text-sm font-bold tracking-widest text-gray-500 uppercase">
+                    <span className="block text-sm font-bold tracking-widest text-gray-500 capitalize">
                         {new Date(blog.created_at).toLocaleDateString('en-US', {
                             day: 'numeric',
                             month: 'long',

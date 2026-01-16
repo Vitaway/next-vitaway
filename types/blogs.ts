@@ -9,4 +9,5 @@ export interface Blogs {
     link: string;
     slug: string;
     author: string;
+    disclaimer?: string;
 }

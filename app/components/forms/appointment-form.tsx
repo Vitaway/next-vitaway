@@ -255,7 +255,7 @@ function AppointmentForm() {
                 <div className="mt-4 mb-2 sm:mb-4">
                     <button
                         type="submit"
-                        className="relative cursor-pointer inline-flex items-center justify-center w-full h-12 px-6 font-normal tracking-wide text-white transition duration-200 rounded bg-indigo-400 hover:bg-indigo-500 focus:shadow-outline focus:outline-none"
+                        className="relative cursor-pointer inline-flex items-center justify-center w-full h-12 px-6 font-normal tracking-wide text-white transition duration-200 rounded bg-gradient-to-b from-[#003E48] to-[#282e33] focus:shadow-outline focus:outline-none"
                         disabled={isSubmitting}
                     >
                         {isSubmitting ? 'Submitting...' : 'Book Appointment'}
