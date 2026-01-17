@@ -375,7 +375,7 @@ const BlogPost: React.FC = () => {
             <p className="text-sm text-gray-600 mb-4">Stay updated with the latest health tips and wellness insights</p>
             <div className="flex justify-center gap-4">
               <a
-                href="https://facebook.com/vitawayhealth"
+                href="Facebook: https://www.facebook.com/VitawayEClinic/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-12 h-12 flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white rounded-full transition-colors duration-200"
@@ -386,7 +386,7 @@ const BlogPost: React.FC = () => {
                 </svg>
               </a>
               <a
-                href="https://twitter.com/vitawayhealth"
+                href="X: https://x.com/Vitawayeclinic"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-12 h-12 flex items-center justify-center bg-sky-500 hover:bg-sky-600 text-white rounded-full transition-colors duration-200"
@@ -397,7 +397,7 @@ const BlogPost: React.FC = () => {
                 </svg>
               </a>
               <a
-                href="https://linkedin.com/company/vitaway-health"
+                href="https://www.linkedin.com/in/vitaway-e-clinic-ba1009206/?originalSubdomain=rw"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-12 h-12 flex items-center justify-center bg-blue-700 hover:bg-blue-800 text-white rounded-full transition-colors duration-200"
@@ -408,7 +408,7 @@ const BlogPost: React.FC = () => {
                 </svg>
               </a>
               <a
-                href="https://instagram.com/vitawayhealth"
+                href="https://www.instagram.com/vitawayeclinic/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-12 h-12 flex items-center justify-center bg-gradient-to-br from-purple-600 via-pink-600 to-orange-500 hover:from-purple-700 hover:via-pink-700 hover:to-orange-600 text-white rounded-full transition-colors duration-200"
