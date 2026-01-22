@@ -156,7 +156,7 @@ export default function RootLayout({ children }: Readonly<{
   };
 
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <Script 
           id="structured-data"
@@ -165,7 +165,7 @@ export default function RootLayout({ children }: Readonly<{
         />
         <Script src="//code.tidio.co/mwzeombpb11eeirlfz6ba2uar9jhcvoc.js" strategy="afterInteractive" />
       </head>
-      <body className="app-body">
+      <body className="app-body" suppressHydrationWarning>
         <TopProgressBar />
         <CartProvider>
           {children}
