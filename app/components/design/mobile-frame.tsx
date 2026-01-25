@@ -11,7 +11,7 @@ interface MobileFrameProps {
 function MobileFrame({ title, image, width = '300px', height = '600px' }: MobileFrameProps) {
   return (<>
     <div className="relative border-gray-800 bg-white border-[14px] rounded-[2.5rem] shadow-xl" style={{ width, height }}>
-      <div className="w-[148px] h-[18px] bg-gray-800 top-0 rounded-b-[1rem] left-1/2 -translate-x-1/2 absolute"></div>
+      <div className="w-[100px] h-[20px] bg-gray-800 top-2 rounded-[1rem] left-1/2 -translate-x-1/2 absolute"></div>
 
       {/* Volume Button */}
       <div className="h-[46px] w-[3px] bg-gray-800 absolute -left-[16px] top-[124px] rounded-l-lg"></div>

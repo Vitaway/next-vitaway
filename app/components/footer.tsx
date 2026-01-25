@@ -96,6 +96,10 @@ function Footer() {
                             </li>
 
                             <li>
+                                <Link href="/assessments" title="" className="flex text-base text-gray-200 transition-all duration-200 hover:text-blue-600 focus:text-blue-600"> Assessments </Link>
+                            </li>
+
+                            <li>
                                 <Link href="/terms-and-conditions" title="" className="flex text-base text-gray-200 transition-all duration-200 hover:text-blue-600 focus:text-blue-600"> Terms & Conditions </Link>
                             </li>
 
@@ -136,7 +140,7 @@ function Footer() {
 
                 <hr className="mt-10 mb-5 border-gray-300" />
 
-                <p className="text-sm text-center text-gray-200 font-semibold">© Copyright 2025, All Rights Reserved by Vitaway</p>
+                <p className="text-sm text-center text-gray-200 font-semibold">All Rights Reserved - Vitaway Health Ltd © 2025</p>
             </div>
         </section>
     </>)
