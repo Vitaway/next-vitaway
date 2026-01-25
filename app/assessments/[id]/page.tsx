@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import PageHeader from '@/app/components/headers/page-header';
 import Loading from '@/app/components/loading';
@@ -23,13 +23,8 @@ export default function QuizPage() {
     const [error, setError] = useState<string | null>(null);
     const [quizCompleted, setQuizCompleted] = useState(false);
     const [score, setScore] = useState<number | null>(null);
-    const [startTime, setStartTime] = useState<Date | null>(null);
 
-    useEffect(() => {
-        initializeQuiz();
-    }, [quizId]);
-
-    const initializeQuiz = async () => {
+    const initializeQuiz = useCallback(async () => {
         try {
             setLoading(true);
             
@@ -58,7 +53,6 @@ export default function QuizPage() {
                 });
             }
             
-            setStartTime(new Date());
             setError(null);
         } catch (err) {
             console.error('Quiz initialization error:', err);
@@ -66,7 +60,11 @@ export default function QuizPage() {
         } finally {
             setLoading(false);
         }
-    };
+    }, [quizId]);
+
+    useEffect(() => {
+        initializeQuiz();
+    }, [initializeQuiz]);
 
     const handleAnswerSelect = (questionId: number, answerIndex: number) => {
         setSelectedAnswers(prev => ({
@@ -141,7 +139,7 @@ export default function QuizPage() {
         return (
             <GuestLayout>
                 <PageHeader
-                    sub_title="For Individuals"
+                    sup_title="For Individuals"
                     title="Quiz Completed!"
                     description={`You've completed ${quiz.title}`}
                 />
@@ -200,7 +198,7 @@ export default function QuizPage() {
     return (
         <GuestLayout>
             <PageHeader
-                sub_title="For Individuals"
+                sup_title="For Individuals"
                 title={quiz.title}
                 description={quiz.description}
             />
@@ -233,7 +231,7 @@ export default function QuizPage() {
                             </h3>
 
                             <div className="space-y-3">
-                                {currentQuestionData.options?.map((option, index) => (
+                                {currentQuestionData.options?.map((option) => (
                                     <button
                                         key={option.id}
                                         onClick={() => handleAnswerSelect(currentQuestionData.id, option.id)}
