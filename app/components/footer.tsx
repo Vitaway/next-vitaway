@@ -140,7 +140,7 @@ function Footer() {
 
                 <hr className="mt-10 mb-5 border-gray-300" />
 
-                <p className="text-sm text-center text-gray-200 font-semibold">© Copyright 2025, All Rights Reserved by Vitaway</p>
+                <p className="text-sm text-center text-gray-200 font-semibold">All Rights Reserved - Vitaway Health Ltd © 2025</p>
             </div>
         </section>
     </>)
