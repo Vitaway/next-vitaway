@@ -61,7 +61,10 @@ export interface QuizResult {
 }
 
 export interface QuizSubmission {
-    answers: Record<number, number>;
+    answers: Array<{
+        question_id: number;
+        option_id: number;
+    }>;
 }
 
 export interface QuizResponse {
@@ -74,4 +77,26 @@ export interface QuizResponse {
         user_answer: number;
         correct_answer: number;
     }>;
+}
+
+export interface AnswerCheckRequest {
+    question_id: number;
+    option_id: number;
+    answer_text?: string;
+}
+
+export interface AnswerCheckResponse {
+    is_correct: boolean;
+    correct_answer: {
+        id: number;
+        option_text: string;
+    };
+    explanation?: string;
+    points_earned: number;
+    question: {
+        id: number;
+        question: string;
+        type: string;
+        points: number;
+    };
 }
