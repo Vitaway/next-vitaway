@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import PageHeader from '@/app/components/headers/page-header';
 import Loading from '@/app/components/loading';
 import { quizApi } from '@/lib/quiz-api';
-import { Quiz, Question, QuizAttempt } from '@/types/quizzes';
+import { Quiz, Question, QuizAttempt, AnswerCheckResponse } from '@/types/quizzes';
 import GuestLayout from '@/app/layouts/GuestLayout';
 
 export default function QuizPage() {
@@ -23,7 +23,7 @@ export default function QuizPage() {
     const [error, setError] = useState<string | null>(null);
     const [quizCompleted, setQuizCompleted] = useState(false);
     const [score, setScore] = useState<number | null>(null);
-    const [answerFeedback, setAnswerFeedback] = useState<Record<number, any>>({});
+    const [answerFeedback, setAnswerFeedback] = useState<Record<number, AnswerCheckResponse>>({});
     const [checkingAnswer, setCheckingAnswer] = useState(false);
 
     // Social media share functions
@@ -345,7 +345,6 @@ export default function QuizPage() {
                                 {currentQuestionData.options?.map((option) => {
                                     const isSelected = selectedAnswers[currentQuestionData.id] === option.id;
                                     const feedback = answerFeedback[currentQuestionData.id];
-                                    const isCorrect = feedback?.is_correct;
                                     const isCorrectAnswer = feedback?.correct_answer?.id === option.id;
                                     
                                     return (
