@@ -83,6 +83,11 @@ const nextConfig: NextConfig = {
         hostname: "healthycanadians.gc.ca",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "www.goodlifeaccess.org",
+        pathname: "/**",
+      },
     ],
   },
 };

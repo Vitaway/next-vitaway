@@ -3,7 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 
-function BlogCard({ blog }: { blog: Blogs }) {
+const BlogCard = React.memo(function BlogCard({ blog }: { blog: Blogs }) {
 
     return (<>
         <Link href={`/blogs/${blog.slug}`}>
@@ -41,6 +41,6 @@ function BlogCard({ blog }: { blog: Blogs }) {
             </div>
         </Link>
     </>)
-}
+})
 
 export default BlogCard

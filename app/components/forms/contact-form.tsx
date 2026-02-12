@@ -1,43 +1,39 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useContact } from '@/hooks';
+import { ButtonSpinner } from '@/app/components/spinners';
 
 function ContactForm() {
     const [fullname, setFullname] = useState('');
     const [email, setEmail] = useState('');
     const [message, setMessage] = useState('');
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
+
+    const { submitting, success, error, submitContact, reset } = useContact();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setIsSubmitting(true);
-        setError('');
-        setSuccess('');
 
-        try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_ENVENTORY_API_URL}/api/contact`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                body: JSON.stringify({ fullname, email, message }),
-            });
+        const payload = { fullname, email, message };
+        const isSuccess = await submitContact(payload);
 
-            if (response.ok) {
-                setSuccess('Message sent successfully');
-                setFullname('');
-                setEmail('');
-                setMessage('');
-            } else {
-                const data = await response.json();
-                setError(data.message || 'Something went wrong. Please try again.');
-            }
-        } catch {
-            setError('Something went wrong. Please try again.');
-        } finally {
-            setIsSubmitting(false);
+        if (isSuccess) {
+            // Reset form fields
+            setFullname('');
+            setEmail('');
+            setMessage('');
         }
     };
+
+    // Auto-dismiss success message after 5 seconds
+    useEffect(() => {
+        if (success) {
+            const timer = setTimeout(() => {
+                reset();
+            }, 5000);
+            return () => clearTimeout(timer);
+        }
+    }, [success, reset]);
 
     return (
         <div className="relative bg-white rounded-xl shadow-2xl p-7 sm:p-10 text-slate-700">
@@ -85,9 +81,9 @@ function ContactForm() {
                     <div className="mt-4 mb-2 sm:mb-4">
                         <button
                             type="submit"
-                            className="relative cursor-pointer inline-flex items-center justify-center w-full h-12 px-6 font-normal tracking-wide text-white transition duration-200 rounded bg-indigo-400 hover:bg-deep-purple-accent-700 focus:shadow-outline focus:outline-none"
-                            disabled={isSubmitting}>
-                            {isSubmitting ? 'Submitting...' : 'Contact'}
+                            className="relative cursor-pointer inline-flex items-center justify-center w-full h-12 px-6 font-normal tracking-wide text-white transition duration-200 rounded bg-indigo-400 hover:bg-deep-purple-accent-700 focus:shadow-outline focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+                            disabled={submitting}>
+                            {submitting ? <ButtonSpinner loadingText="Sending" /> : 'Contact'}
                         </button>
                     </div>
 

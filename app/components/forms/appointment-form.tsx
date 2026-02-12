@@ -1,6 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useAppointment } from '@/hooks';
+import { ButtonSpinner } from '@/app/components/spinners';
 
 function AppointmentForm() {
     const [name, setName] = useState('');
@@ -12,57 +14,47 @@ function AppointmentForm() {
     const [appointmentDate, setAppointmentDate] = useState('');
     const [appointmentTime, setAppointmentTime] = useState('');
 
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
+    const { submitting, success, error, createAppointment, reset } = useAppointment();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        setIsSubmitting(true);
-        setError('');
-        setSuccess('');
+        const payload = {
+            name,
+            email,
+            phone,
+            subject,
+            reasons: 'Appointment',
+            message,
+            type,
+            appointment_date: appointmentDate,
+            appointment_time: appointmentTime,
+        };
 
-        try {
-            const payload = {
-                name,
-                email,
-                phone,
-                subject,
-                reasons: 'Appointment',
-                message,
-                type,
-                appointment_date: appointmentDate,
-                appointment_time: appointmentTime,
-            };
+        const isSuccess = await createAppointment(payload);
 
-            const response = await fetch(`${process.env.NEXT_PUBLIC_ENVENTORY_API_URL}/api/appointments/business`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                body: JSON.stringify(payload),
-            });
-
-            if (response.ok) {
-                setSuccess('Appointment booked successfully');
-                setName('');
-                setEmail('');
-                setPhone('');
-                setSubject('');
-                setMessage('');
-                setType('');
-                setAppointmentDate('');
-                setAppointmentTime('');
-            } else {
-                const data = await response.json();
-                setError(data.message || 'Something went wrong. Please try again.');
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            setError('Something went wrong. Please try again.');
-        } finally {
-            setIsSubmitting(false);
+        if (isSuccess) {
+            // Reset form fields
+            setName('');
+            setEmail('');
+            setPhone('');
+            setSubject('');
+            setMessage('');
+            setType('');
+            setAppointmentDate('');
+            setAppointmentTime('');
         }
     };
+
+    // Auto-dismiss success message after 5 seconds
+    useEffect(() => {
+        if (success) {
+            const timer = setTimeout(() => {
+                reset();
+            }, 5000);
+            return () => clearTimeout(timer);
+        }
+    }, [success, reset]);
 
     return (
         <div className="relative bg-white rounded-xl shadow-2xl p-7 sm:p-10 text-slate-700 w-full md:max-w-2xl mx-auto">
@@ -255,10 +247,10 @@ function AppointmentForm() {
                 <div className="mt-4 mb-2 sm:mb-4">
                     <button
                         type="submit"
-                        className="relative cursor-pointer inline-flex items-center justify-center w-full h-12 px-6 font-normal tracking-wide text-white transition duration-200 rounded bg-gradient-to-b from-[#003E48] to-[#282e33] focus:shadow-outline focus:outline-none"
-                        disabled={isSubmitting}
+                        className="relative cursor-pointer inline-flex items-center justify-center w-full h-12 px-6 font-normal tracking-wide text-white transition duration-200 rounded bg-gradient-to-b from-[#003E48] to-[#282e33] focus:shadow-outline focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+                        disabled={submitting}
                     >
-                        {isSubmitting ? 'Submitting...' : 'Book Appointment'}
+                        {submitting ? <ButtonSpinner loadingText="Booking" /> : 'Book Appointment'}
                     </button>
                 </div>
 

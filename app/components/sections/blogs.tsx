@@ -1,40 +1,12 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import BlogList from './blogs-list';
 import AlertMessage from '../alerts/alert-message';
+import { useBlogs } from '@/hooks';
 
-function Blogs() {
-    const [blogs, setBlogs] = useState([]);
-    const [message, setMessage] = useState<string>('');
-    const [messageType, setMessageType] = useState<'success' | 'error'>('success');
-    const [isLoading, setLoading] = useState(false);
-
-    const fetchBlogs = async () => {
-        try {
-            setLoading(true);
-
-            const res = await fetch(`${process.env.NEXT_PUBLIC_ENVENTORY_API_URL}/api/blogs`);
-
-            if (!res.ok) {
-                setMessage('Failed to fetch blogs. Please try again later.');
-                setMessageType('error');
-            }
-
-            const data = await res.json();
-            setBlogs(data.data.slice(0, 4));
-            setLoading(false);
-        } catch (error) {
-            console.error('Error fetching blogs:', error);
-            setMessage('Error fetching blogs. Please try again later.');
-            setMessageType('error');
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        fetchBlogs();
-    }, []);
+const Blogs = React.memo(function Blogs() {
+    const { blogs, loading, error } = useBlogs({ limit: 4 });
 
     return (<>
         <section className="px-4 py-20 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-20 lg:px-10 lg:py-20">
@@ -43,10 +15,10 @@ function Blogs() {
                 <p className="max-w-xl mx-auto mt-4 text-base leading-relaxed text-gray-600">Stay updated with our latest articles, insights, and tips to keep you informed and inspired.</p>
             </div>
 
-            <BlogList blogs={blogs} isLoading={isLoading} />
-            <AlertMessage message={message} type={messageType} />
+            <BlogList blogs={blogs} isLoading={loading} />
+            {error && <AlertMessage message={error} type="error" />}
         </section>
     </>)
-}
+});
 
 export default Blogs

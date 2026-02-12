@@ -4,7 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link';
 import React from 'react'
 
-function ProductCard({ product }: { product: Products }) {
+const ProductCard = React.memo(function ProductCard({ product }: { product: Products }) {
     const { addToCart } = useCart();
 
     return (<>
@@ -55,6 +55,6 @@ function ProductCard({ product }: { product: Products }) {
             </div>
         </div>
     </>)
-}
+});
 
 export default ProductCard

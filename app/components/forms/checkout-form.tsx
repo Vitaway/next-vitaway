@@ -5,11 +5,11 @@ import TextInput from '../inputs/TextInput'
 import { useCart } from '@/context/CartContext';
 import { Products } from '@/types/products';
 import AlertMessage from '../alerts/alert-message';
-import FetchLoader from '../spinners/fetching-loader';
 import ShopCartItem from '@/app/shop/shop-cart-item';
 import { Truck, Store } from 'lucide-react';
 import rwandaData from '@/data/rwanda_geo.json';
 import AlertModal from '../alerts/alert-modal';
+import { ButtonSpinner } from '../spinners/Spinner';
 
 declare global {
     interface Window {
@@ -36,6 +36,7 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
     const SHIPPING_DISCOUNT_THRESHOLD = 50000;
     const SHIPPING_DISCOUNT_AMOUNT = 0;
     const SHIPPING_DISCOUNT_PROVINCE = 'Kigali';
+    const MAX_RETRIES = 2;
 
     const [customerName, setCustomerName] = useState<string>('');
     const [customerEmail, setCustomerEmail] = useState<string>('');
@@ -52,8 +53,12 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
     const [recipientCountry, setRecipientCountry] = useState<string>('');
 
     const [loading, setLoading] = useState<boolean>(false);
+    const [paymentProcessing, setPaymentProcessing] = useState<boolean>(false);
     const [message, setMessage] = useState<string>('');
     const [messageType, setMessageType] = useState<'success' | 'error'>('success');
+    const [retryCount, setRetryCount] = useState<number>(0);
+    const [scriptLoaded, setScriptLoaded] = useState<boolean>(false);
+    const [scriptError, setScriptError] = useState<boolean>(false);
 
     const [customerNameError, setCustomerNameError] = useState<string>('');
     const [customerEmailError, setCustomerEmailError] = useState<string>('');
@@ -115,7 +120,7 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
     }
 
     const sendPaymentCallback = async (invoiceNumber: string) => {
-        setLoading(true);
+        setPaymentProcessing(true);
 
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_ENVENTORY_API_URL}/api/products/payments/complete`, {
@@ -125,162 +130,206 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
             });
 
             if (!response.ok) {
-                setLoading(false);
-                setShowAlert(true);
-                setAlert({
-                    title: 'Network Issue',
-                    message: 'We encountered a network issue while processing your payment. Please check your internet connection and try again.',
-                    status: 'error',
-                    actionUrl: ''
-                });
-                return;
+                throw new Error(`Payment callback failed with status ${response.status}`);
             }
 
+            const data = await response.json();
+
+            // Success - clear cart and close modal
             clearCart();
             onClose();
+            clearForm();
+            callback();
 
-            setLoading(false);
             setShowAlert(true);
-
             setAlert({
                 title: 'Payment Successful',
                 message: 'Your payment has been successfully processed. Thank you for your purchase!',
                 status: 'success',
                 actionUrl: ''
             });
-
-            clearForm();
-            callback();
         } catch (error) {
-            setLoading(false);
+            console.error('Payment callback error:', error);
             setShowAlert(true);
             setAlert({
-                title: 'Payment Callback Failed',
-                message: 'An error occurred while processing your payment callback. Please try again or contact support if the issue persists.',
+                title: 'Payment Verification Failed',
+                message: 'We couldn\'t verify your payment. Please contact support with your transaction reference.',
                 status: 'error',
                 actionUrl: ''
             });
+        } finally {
+            setPaymentProcessing(false);
+            setLoading(false);
         }
     }
 
     const makePayment = (invoiceNumber: string) => {
-        if (typeof window.IremboPay !== 'undefined') {
+        // Check if script is loaded
+        if (!scriptLoaded || typeof window.IremboPay === 'undefined') {
+            setLoading(false);
+            setShowAlert(true);
+            setAlert({
+                title: 'Payment Gateway Loading',
+                message: 'Payment gateway is still loading. Please wait a moment and try again.',
+                status: 'info',
+                actionUrl: ''
+            });
+            return;
+        }
+
+        setPaymentProcessing(true);
+        
+        try {
             window.IremboPay.initiate({
                 publicKey: process.env.NEXT_PUBLIC_IREMBOPAY_PUBLIC_KEY || '',
                 invoiceNumber: invoiceNumber,
                 locale: window.IremboPay.locale.EN,
                 callback: (err, resp) => {
-                    if (!err) {
+                    if (!err && resp?.status === 'success') {
                         window.IremboPay?.closeModal();
                         sendPaymentCallback(invoiceNumber);
                     } else {
                         setLoading(false);
+                        setPaymentProcessing(false);
                         setShowAlert(true);
                         setAlert({
                             title: 'Payment Failed',
-                            message: 'Unfortunately, your payment could not be processed at this time. Please check your payment details or try again later.',
+                            message: err?.message || 'Your payment could not be processed. Please check your payment details and try again.',
                             status: 'error',
                             actionUrl: ''
                         });
                     }
                 }
             });
-        } else {
+        } catch (error) {
+            console.error('IremboPay initiation error:', error);
             setLoading(false);
-            setMessageType('error');
-            setMessage('Error - IremboPay script not loaded yet. Please try again.');
+            setPaymentProcessing(false);
+            setShowAlert(true);
+            setAlert({
+                title: 'Payment Error',
+                message: 'An error occurred while initializing the payment. Please try again.',
+                status: 'error',
+                actionUrl: ''
+            });
         }
     };
 
     const processPayment = async () => {
+        if (loading) return; // Prevent double submission
+        
         setLoading(true);
+        setMessage('');
 
         if (!formValidation()) {
             setLoading(false);
             setMessageType('error');
-            setMessage('Error - Please fill all the required fields.');
+            setMessage('Please fill all required fields correctly.');
             return;
         }
 
         if (cart.length === 0) {
             setLoading(false);
             setMessageType('error');
-            setMessage('Error - Cart is empty. Please add products to your cart.');
+            setMessage('Your cart is empty. Please add products before checkout.');
             return;
         }
 
         try {
             const payload = {
-                customer_name: customerName,
-                customer_email: customerEmail ?? 'vitawayeclinic@gmail.com',
-                customer_phone: customerPhone,
-                customer_address: customerAddress,
-                customer_city: customerCity,
-                customer_country: customerCountry,
+                customer_name: customerName.trim(),
+                customer_email: customerEmail.trim() || 'vitawayeclinic@gmail.com',
+                customer_phone: customerPhone.trim(),
+                customer_address: customerAddress.trim(),
+                customer_city: customerCity.trim(),
+                customer_country: customerCountry.trim(),
 
-                recipient_name: customerDiffRecipient ? recipientName : customerName,
-                recipient_email: customerDiffRecipient ? recipientEmail : (customerEmail ?? 'vitawayeclinic@gmail.com'),
-                recipient_phone: customerDiffRecipient ? recipientPhone : customerPhone,
-                recipient_address: customerDiffRecipient ? recipientAddress : customerAddress,
-                recipient_city: customerDiffRecipient ? recipientCity : customerCity,
-                recipient_country: customerDiffRecipient ? recipientCountry : customerCountry,
+                recipient_name: customerDiffRecipient ? recipientName.trim() : customerName.trim(),
+                recipient_email: customerDiffRecipient ? (recipientEmail.trim() || 'vitawayeclinic@gmail.com') : (customerEmail.trim() || 'vitawayeclinic@gmail.com'),
+                recipient_phone: customerDiffRecipient ? recipientPhone.trim() : customerPhone.trim(),
+                recipient_address: customerDiffRecipient ? recipientAddress.trim() : customerAddress.trim(),
+                recipient_city: customerDiffRecipient ? recipientCity.trim() : customerCity.trim(),
+                recipient_country: customerDiffRecipient ? recipientCountry.trim() : customerCountry.trim(),
 
-                products: [
-                    ...cart.map((product: Products) => {
-                        return {
-                            id: product.id,
-                            quantity: product.quantity,
-                        }
-                    })
-                ],
+                products: cart.map((product: Products) => ({
+                    id: product.id,
+                    quantity: product.quantity || 1,
+                })),
 
                 shipping_amount: shippingAmount,
                 shipping_option: selected,
             };
 
-            // Use axios for the payment request
             const axios = (await import('axios')).default;
 
-            const response = await axios.post(`${process.env.NEXT_PUBLIC_ENVENTORY_API_URL}/api/products/payments/init`, payload,
+            const response = await axios.post(
+                `${process.env.NEXT_PUBLIC_ENVENTORY_API_URL}/api/products/payments/init`,
+                payload,
                 {
                     headers: {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json'
-                    }
+                    },
+                    timeout: 30000, // 30 second timeout
                 }
             );
 
-            if (response.status !== 200) {
-                setLoading(false);
-                setMessageType('error');
-                setMessage('Network Error - Processing payment failed. Please try again.');
-                return;
+            if (response.status === 200 && response.data?.data?.invoiceNumber) {
+                setRetryCount(0);
+                makePayment(response.data.data.invoiceNumber);
+            } else {
+                throw new Error('Invalid payment response');
             }
-
-            setLoading(false);
-            makePayment(response.data.data.invoiceNumber);
         } catch (error) {
+            console.error('Payment init error:', error);
             setLoading(false);
-            setMessageType('error');
-            setMessage('Error - Processing payment failed. Please try again.');
+            
+            if (retryCount < MAX_RETRIES) {
+                setRetryCount(prev => prev + 1);
+                setMessageType('error');
+                setMessage(`Payment initialization failed. Retrying (${retryCount + 1}/${MAX_RETRIES})...`);
+                setTimeout(() => processPayment(), 2000);
+            } else {
+                setMessageType('error');
+                setMessage('Payment initialization failed. Please check your connection and try again.');
+                setRetryCount(0);
+            }
         }
     }
 
     const formValidation = () => {
         let isValid = true;
 
+        // Customer name validation
         if (customerName.trim() === '') {
             setCustomerNameError('Customer name is required');
+            isValid = false;
+        } else if (customerName.trim().length < 2) {
+            setCustomerNameError('Customer name must be at least 2 characters');
             isValid = false;
         } else {
             setCustomerNameError('');
         }
 
+        // Email validation (optional but must be valid if provided)
+        if (customerEmail.trim() !== '') {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(customerEmail.trim())) {
+                setCustomerEmailError('Please enter a valid email address');
+                isValid = false;
+            } else {
+                setCustomerEmailError('');
+            }
+        } else {
+            setCustomerEmailError('');
+        }
+
+        // Phone validation
         if (customerPhone.trim() === '') {
-            setCustomerPhoneError('Customer phone number is required');
+            setCustomerPhoneError('Phone number is required');
             isValid = false;
-        } else if (customerPhone.trim().length !== 10) {
-            setCustomerPhoneError('Customer phone number must be exactly 10 digits');
+        } else if (!/^\d{10}$/.test(customerPhone.trim())) {
+            setCustomerPhoneError('Phone number must be exactly 10 digits');
             isValid = false;
         } else {
             setCustomerPhoneError('');
@@ -403,14 +452,40 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
 
     useEffect(() => {
         const script = document.createElement('script');
-
         script.src = process.env.NEXT_PUBLIC_IREMBOPAY_JS_URL || '';
         script.async = true;
 
+        // Add load event listener
+        script.onload = () => {
+            console.log('IremboPay script loaded successfully');
+            setScriptLoaded(true);
+            setScriptError(false);
+        };
+
+        // Add error event listener
+        script.onerror = () => {
+            console.error('Failed to load IremboPay script');
+            setScriptLoaded(false);
+            setScriptError(true);
+            setMessageType('error');
+            setMessage('Payment gateway failed to load. Please refresh the page.');
+        };
+
         document.body.appendChild(script);
 
+        // Check if already loaded (in case script loads super fast)
+        const checkLoaded = setInterval(() => {
+            if (typeof window.IremboPay !== 'undefined') {
+                setScriptLoaded(true);
+                clearInterval(checkLoaded);
+            }
+        }, 100);
+
         return () => {
-            document.body.removeChild(script);
+            clearInterval(checkLoaded);
+            if (document.body.contains(script)) {
+                document.body.removeChild(script);
+            }
         };
     }, []);
 
@@ -705,19 +780,25 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
 
                         <div className="flex justify-between border-t border-gray-200 pt-5 mt-5">
                             <div></div>
-                            {loading ? <button className='btn btn-primary' disabled>Loading...</button> : (
-                                <div onClick={processPayment} className="rounded-lg cursor-pointer px-3 py-2 inline-flex items-center gap-x-2 bg-[#1a1a2e] text-white border-[#1a1a2e] disabled:opacity-50 disabled:pointer-events-none hover:text-white hover:bg-green-700 hover:border-green-700 active:bg-green-700 active:border-green-700 focus:outline-none focus:ring-4 focus:ring-green-300">
-                                    <span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 19c0 .75-.21 1.46-.58 2.06A3.97 3.97 0 0 1 5 23a3.97 3.97 0 0 1-3.42-1.94A3.92 3.92 0 0 1 1 19c0-2.21 1.79-4 4-4s4 1.79 4 4Z" stroke="#ffffff" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path><path d="m3.441 19 .99.99 2.13-1.97" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path><path opacity=".4" d="M17.751 7.05c-.24-.04-.49-.05-.75-.05h-10c-.28 0-.55.02-.81.06.14-.28.34-.54.58-.78l3.25-3.26a3.525 3.525 0 0 1 4.96 0l1.75 1.77c.64.63.98 1.43 1.02 2.26Z" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path><path d="M22 12v5c0 3-2 5-5 5H7.63c.31-.26.58-.58.79-.94.37-.6.58-1.31.58-2.06 0-2.21-1.79-4-4-4-1.2 0-2.27.53-3 1.36V12c0-2.72 1.64-4.62 4.19-4.94.26-.04.53-.06.81-.06h10c.26 0 .51.01.75.05C20.33 7.35 22 9.26 22 12Z" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path><path opacity=".4" d="M22 12.5h-3c-1.1 0-2 .9-2 2s.9 2 2 2h3" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path></svg></span>
-                                    <span className='ml-2'>Process Payment</span>
-                                </div>
-                            )}
+                            <button 
+                                onClick={processPayment} 
+                                disabled={loading || paymentProcessing || cart.length === 0 || scriptError}
+                                className="rounded-lg cursor-pointer px-3 py-2 inline-flex items-center gap-x-2 bg-[#1a1a2e] text-white border-[#1a1a2e] disabled:opacity-50 disabled:cursor-not-allowed hover:text-white hover:bg-green-700 hover:border-green-700 active:bg-green-700 active:border-green-700 focus:outline-none focus:ring-4 focus:ring-green-300"
+                            >
+                                {loading || paymentProcessing ? (
+                                    <ButtonSpinner loadingText={paymentProcessing ? "Processing" : "Initializing"} />
+                                ) : !scriptLoaded ? (
+                                    <ButtonSpinner loadingText="Loading payment gateway" />
+                                ) : (
+                                    <>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 19c0 .75-.21 1.46-.58 2.06A3.97 3.97 0 0 1 5 23a3.97 3.97 0 0 1-3.42-1.94A3.92 3.92 0 0 1 1 19c0-2.21 1.79-4 4-4s4 1.79 4 4Z" stroke="#ffffff" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path><path d="m3.441 19 .99.99 2.13-1.97" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path><path opacity=".4" d="M17.751 7.05c-.24-.04-.49-.05-.75-.05h-10c-.28 0-.55.02-.81.06.14-.28.34-.54.58-.78l3.25-3.26a3.525 3.525 0 0 1 4.96 0l1.75 1.77c.64.63.98 1.43 1.02 2.26Z" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path><path d="M22 12v5c0 3-2 5-5 5H7.63c.31-.26.58-.58.79-.94.37-.6.58-1.31.58-2.06 0-2.21-1.79-4-4-4-1.2 0-2.27.53-3 1.36V12c0-2.72 1.64-4.62 4.19-4.94.26-.04.53-.06.81-.06h10c.26 0 .51.01.75.05C20.33 7.35 22 9.26 22 12Z" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path><path opacity=".4" d="M22 12.5h-3c-1.1 0-2 .9-2 2s.9 2 2 2h3" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path></svg>
+                                        <span className='ml-2'>Process Payment</span>
+                                    </>
+                                )}
+                            </button>
                         </div>
                     </div>
                 </div>
-
-                {loading && (<div className="fixed top-0 right-0 left-0 bottom-0 flex items-center justify-center bg-black/20">
-                    <FetchLoader />
-                </div>)}
 
                 <AlertMessage message={message} type={messageType} />
                 {showAlert && <AlertModal title={alert.title} message={alert.message} status={alert.status} actionUrl={alert.actionUrl} onOk={() => setShowAlert(false)} onClose={() => setShowAlert(false)} />}

@@ -2,24 +2,23 @@
 
 import React, { useEffect, useState } from 'react';
 import ProductCard from '../components/cards/product-card';
-import ProductCardSkeleton from '../components/cards/product-card-skeleton';
 import Image from 'next/image';
 import { Products } from '@/types/products';
 import AlertMessage from '../components/alerts/alert-message';
+import { useProducts, useCategories } from '@/hooks';
+import { InlineSpinner } from '@/app/components/spinners';
 
-function ProductsList() {
-	const [categories, setCategories] = useState([]);
-	const [products, setProducts] = useState([]);
-	const [filteredProducts, setFilteredProducts] = useState([]);
-	const [loading, setLoading] = useState(true);
+const ProductsList = React.memo(function ProductsList() {
+	const { products, loading: productsLoading, error: productsError } = useProducts();
+	const { categories, loading: categoriesLoading } = useCategories();
+	
+	const [filteredProducts, setFilteredProducts] = useState<Products[]>([]);
 	const [searchQuery, setSearchQuery] = useState('');
 	const [selectedCategory, setSelectedCategory] = useState('');
 	const [sortBy, setSortBy] = useState('name-desc');
 	const [currentPage, setCurrentPage] = useState(1);
-	const [message, setMessage] = useState<string>('');
-	const [messageType, setMessageType] = useState<'success' | 'error'>('success');
 
-	const inventoryApiUrl = process.env.NEXT_PUBLIC_ENVENTORY_API_URL;
+	const loading = productsLoading || categoriesLoading;
 	const itemsPerPage = 12;
 
 	const paginatedProducts = filteredProducts.slice(
@@ -33,63 +32,29 @@ function ProductsList() {
 		setCurrentPage(page);
 	};
 
-	const fetchProducts = React.useCallback(async () => {
-		try {
-			setLoading(true);
-
-			const axios = (await import('axios')).default;
-
-			const response = await axios.get(`${inventoryApiUrl}/api/products`, {
-				headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-				params: selectedCategory ? { category: selectedCategory } : {}
-			});
-
-			setLoading(false);
-			setProducts(response.data.data);
-			setFilteredProducts(response.data.data);
-			// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		} catch (error) {
-			setMessage("Failed to fetch Products, Try again later");
-			setMessageType('error');
-		}
-	}, [inventoryApiUrl, selectedCategory]);
-
-	const fetchCategories = React.useCallback(async () => {
-		try {
-			setLoading(true);
-
-			const axios = (await import('axios')).default;
-
-			const response = await axios.get(`${inventoryApiUrl}/api/products/categories/list`, {
-				headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
-			});
-
-			setLoading(false);
-			setCategories(response.data.data);
-			// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		} catch (error) {
-			setMessage("Failed to fetch Categories, Try again later");
-			setMessageType('error');
-		}
-	}, [inventoryApiUrl]);
-
 	const handleCategoryChange = (category: string) => {
 		setSelectedCategory(category);
-		fetchProducts();
-	}
-	useEffect(() => {
-		fetchProducts();
-		fetchCategories();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [inventoryApiUrl]);
+	};
 
 	useEffect(() => {
-		let filtered = products.filter((product: Products) =>
-			product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-			product.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-			product.price.toString().includes(searchQuery) ||
-			product.category?.name.toLowerCase().includes(searchQuery.toLowerCase())
-		);
+		let filtered = products.filter((product: Products) => {
+			// Filter by selected category
+			if (selectedCategory && product.category?.id?.toString() !== selectedCategory) {
+				return false;
+			}
+			
+			// Filter by search query
+			if (searchQuery) {
+				return (
+					product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+					product.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+					product.price.toString().includes(searchQuery) ||
+					product.category?.name.toLowerCase().includes(searchQuery.toLowerCase())
+				);
+			}
+			
+			return true;
+		});
 
 		filtered = filtered.sort((a: Products, b: Products) => {
 			switch (sortBy) {
@@ -107,7 +72,7 @@ function ProductsList() {
 		});
 
 		setFilteredProducts(filtered);
-	}, [searchQuery, products, sortBy]);
+	}, [searchQuery, products, sortBy, selectedCategory]);
 
 	return (
 		<>
@@ -166,7 +131,7 @@ function ProductsList() {
 								>
 									<option value="">All Products</option>
 
-									{categories.map((category: { name: string; id: string; }) => (
+									{categories.map((category: { name: string; id: string | number; }) => (
 										<option key={category.id} value={category.id}>{category.name}</option>
 									))}
 								</select>
@@ -197,15 +162,15 @@ function ProductsList() {
 						</div>
 					)}
 
-					<div className="grid gap-4 grid-cols-1 sm:grid-cols-1 md:grid-cols-3 xl:grid-cols-4">
-						{loading
-							? Array(itemsPerPage)
-								.fill(0)
-								.map((_, index) => <ProductCardSkeleton key={index} />)
-							: paginatedProducts.map((product, index) => (
+					{loading ? (
+						<InlineSpinner message="Loading products..." />
+					) : (
+						<div className="grid gap-4 grid-cols-1 sm:grid-cols-1 md:grid-cols-3 xl:grid-cols-4">
+							{paginatedProducts.map((product, index) => (
 								<ProductCard key={index} product={product} />
 							))}
-					</div>
+						</div>
+					)}
 
 					<hr className='my-5' />
 
@@ -238,9 +203,9 @@ function ProductsList() {
 
 			</section>
 
-			<AlertMessage message={message} type={messageType} />
+			{productsError && <AlertMessage message={productsError} type="error" />}
 		</>
 	);
-}
+});
 
 export default ProductsList;

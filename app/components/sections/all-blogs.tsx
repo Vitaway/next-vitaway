@@ -1,44 +1,16 @@
 'use client';
 
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import BlogList from './blogs-list';
 import AlertMessage from '../alerts/alert-message';
-import { Blogs } from '@/types/blogs';
+import { useBlogs } from '@/hooks';
+import { InlineSpinner } from '@/app/components/spinners';
 
-function AllBlogs() {
-    const [blogs, setBlogs] = useState<Blogs[]>([]);
-    const [message, setMessage] = useState<string>('');
-    const [messageType, setMessageType] = useState<'success' | 'error'>('success');
-    const [isLoading, setLoading] = useState(false);
+const AllBlogs = React.memo(function AllBlogs() {
+    const { blogs, loading, error } = useBlogs();
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('All');
     const [sortBy, setSortBy] = useState<'newest' | 'oldest' | 'title'>('newest');
-
-    const fetchBlogs = async () => {
-        try {
-            setLoading(true);
-
-            const res = await fetch(`${process.env.NEXT_PUBLIC_ENVENTORY_API_URL}/api/blogs`);
-
-            if (!res.ok) {
-                setMessage('Failed to fetch blogs. Please try again later.');
-                setMessageType('error');
-            }
-
-            const data = await res.json();
-            setBlogs(data.data);
-            setLoading(false);
-        } catch (error) {
-            console.error('Error fetching blogs:', error);
-            setMessage('Error fetching blogs. Please try again later.');
-            setMessageType('error');
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        fetchBlogs();
-    }, []);
 
     // Get unique categories
     const categories = useMemo(() => {
@@ -162,10 +134,10 @@ function AllBlogs() {
                 </div>
             </div>
 
-            <BlogList blogs={filteredBlogs} isLoading={isLoading} />
-            <AlertMessage message={message} type={messageType} />
+            <BlogList blogs={filteredBlogs} isLoading={loading} />
+            {error && <AlertMessage message={error} type="error" />}
         </>
     );
-}
+});
 
 export default AllBlogs;
