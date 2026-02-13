@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
 import React, { useState, useMemo } from 'react';
@@ -20,7 +21,7 @@ const AllBlogs = React.memo(function AllBlogs() {
     // Filter and sort blogs
     const filteredBlogs = useMemo(() => {
         if (!blogs || blogs.length === 0) return [];
-        
+
         let filtered = blogs;
 
         // Filter by search query
@@ -90,11 +91,10 @@ const AllBlogs = React.memo(function AllBlogs() {
                             <button
                                 key={category}
                                 onClick={() => setSelectedCategory(category)}
-                                className={`px-4 py-2 text-sm font-medium rounded-full transition-colors duration-200 ${
-                                    selectedCategory === category
+                                className={`px-4 py-2 text-sm font-medium rounded-full transition-colors duration-200 ${selectedCategory === category
                                         ? 'bg-gradient-to-b from-[#003E48] to-[#282e33] text-white'
                                         : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                                }`}
+                                    }`}
                             >
                                 {category}
                             </button>
