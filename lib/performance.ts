@@ -23,6 +23,11 @@ export function reportWebVitals(metric: {
   value: number;
   label: 'web-vital' | 'custom';
 }) {
+  // Log metrics in development
+  if (process.env.NODE_ENV === 'development') {
+    console.log(`[Web Vital] ${metric.name}:`, Math.round(metric.value));
+  }
+  
   // Send to analytics in production
   if (process.env.NODE_ENV === 'production') {
     // Example: Send to Google Analytics
@@ -56,8 +61,6 @@ export function measureRenderTime(componentName: string) {
   return () => {
     performance.mark(endMark);
     performance.measure(measureName, startMark, endMark);
-    
-    const measure = performance.getEntriesByName(measureName)[0];
 
     // Clean up
     performance.clearMarks(startMark);
