@@ -35,10 +35,10 @@ function ProductDetails({ product, relatedProducts, loading }: { product: Produc
             <div className="px-4 py-20 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-20 lg:px-10 lg:py-20">
                 <div className="flex flex-wrap -mx-4">
                     <div className="w-full md:w-1/2 px-4 mb-8">
-                        <ImageSlider images={product.images.map((img) => img.image_url)} alt={product.name} />
+                        <ImageSlider images={product.images && product.images.length > 0 ? product.images.map((img) => img.image_url) : []} alt={product.name} />
 
                         <div className="grid grid-cols-1 gap-4 mt-4 sm:grid-cols-2 sm:gap-4 md:grid-cols-3 lg:grid-cols-4">
-                            {product.images.length > 2 && product.images.map((img) => (
+                            {product.images && product.images.length > 2 && product.images.map((img) => (
                                 <div key={img.image_url} className="hidden md:block">
                                     <Image
                                         src={img.image_url}

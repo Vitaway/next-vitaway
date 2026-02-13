@@ -34,7 +34,7 @@ export const blogService = {
     },
 
     /**
-     * Search blogs
+     * Search blogs by query
      */
     search: async (query: string): Promise<Blogs[]> => {
         const response = await get<BlogsResponse>('/api/blogs', {

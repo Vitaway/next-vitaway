@@ -2,7 +2,6 @@
 
 import React, { useState, useMemo } from 'react';
 import BlogList from './blogs-list';
-import AlertMessage from '../alerts/alert-message';
 import { useBlogs } from '@/hooks';
 
 const AllBlogs = React.memo(function AllBlogs() {
@@ -137,7 +136,6 @@ const AllBlogs = React.memo(function AllBlogs() {
             </div>
 
             <BlogList blogs={filteredBlogs} isLoading={loading} />
-            {error && <AlertMessage message={error} type="error" />}
         </>
     );
 });
