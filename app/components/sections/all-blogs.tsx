@@ -13,12 +13,15 @@ const AllBlogs = React.memo(function AllBlogs() {
 
     // Get unique categories
     const categories = useMemo(() => {
+        if (!blogs || blogs.length === 0) return ['All'];
         const uniqueCategories = Array.from(new Set(blogs.map(blog => blog.category.name)));
         return ['All', ...uniqueCategories];
     }, [blogs]);
 
     // Filter and sort blogs
     const filteredBlogs = useMemo(() => {
+        if (!blogs || blogs.length === 0) return [];
+        
         let filtered = blogs;
 
         // Filter by search query
