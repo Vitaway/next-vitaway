@@ -39,6 +39,8 @@ export const useBlogs = (options: UseBlogsOptions = {}): UseBlogsReturn => {
                 data = await blogService.getByCategory(category);
             } else {
                 data = await blogService.getAll();
+
+                console.log('Fetched blogs:', data);
             }
 
             if (limit) {
