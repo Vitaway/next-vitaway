@@ -49,8 +49,6 @@ export const quizApi = {
         if (!process.env.NEXT_PUBLIC_ENVENTORY_API_URL) {
             throw new Error('API URL is not configured. Please set NEXT_PUBLIC_ENVENTORY_API_URL in your .env.local file');
         }
-
-        console.log('Fetching quiz:', `${API_BASE_URL}/quizzes/${quizId}`);
         
         try {
             const response = await fetch(`${API_BASE_URL}/quizzes/${quizId}`, {
@@ -66,7 +64,6 @@ export const quizApi = {
             }
 
             const result = await response.json();
-            console.log('Quiz response:', result);
             // Handle both direct object and { data: {} } wrapper
             return result.data || result;
         } catch (error) {

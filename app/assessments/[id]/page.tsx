@@ -62,7 +62,6 @@ export default function QuizPage() {
 
             // Fetch quiz details
             const quizData = await quizApi.getQuizById(quizId);
-            console.log('Quiz data:', quizData);
             setQuiz(quizData);
 
             if (quizData.questions) {
@@ -72,7 +71,6 @@ export default function QuizPage() {
             // Try to start quiz attempt (optional - only needed for final submission)
             try {
                 const attemptData = await quizApi.startQuizAttempt(quizId);
-                console.log('Attempt data:', attemptData);
                 setAttempt(attemptData);
             } catch (attemptErr) {
                 console.warn('Could not start attempt - using instant feedback mode:', attemptErr);

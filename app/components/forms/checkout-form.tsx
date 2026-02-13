@@ -488,7 +488,6 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
 
         // Add load event listener
         script.onload = () => {
-            console.log('IremboPay script loaded successfully');
             setScriptLoaded(true);
             setScriptError(false);
         };

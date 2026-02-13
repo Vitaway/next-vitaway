@@ -23,11 +23,6 @@ export function reportWebVitals(metric: {
   value: number;
   label: 'web-vital' | 'custom';
 }) {
-  // Log to console in development
-  if (process.env.NODE_ENV === 'development') {
-    console.log(`[Performance] ${metric.name}:`, Math.round(metric.value), 'ms');
-  }
-
   // Send to analytics in production
   if (process.env.NODE_ENV === 'production') {
     // Example: Send to Google Analytics
@@ -63,9 +58,6 @@ export function measureRenderTime(componentName: string) {
     performance.measure(measureName, startMark, endMark);
     
     const measure = performance.getEntriesByName(measureName)[0];
-    if (measure && process.env.NODE_ENV === 'development') {
-      console.log(`[Render Time] ${componentName}:`, Math.round(measure.duration), 'ms');
-    }
 
     // Clean up
     performance.clearMarks(startMark);
@@ -86,10 +78,6 @@ export async function measureApiCall<T>(
   try {
     const result = await apiCall();
     const duration = performance.now() - start;
-    
-    if (process.env.NODE_ENV === 'development') {
-      console.log(`[API Call] ${apiName}:`, Math.round(duration), 'ms');
-    }
     
     // Track slow API calls
     if (duration > 3000) {
@@ -138,7 +126,6 @@ export function logBundleSize() {
     const src = script.getAttribute('src');
     if (src && src.includes('/_next/')) {
       // This would need actual size fetching in real implementation
-      console.log('Script:', src);
     }
   });
 }
@@ -195,13 +182,11 @@ export function shouldLoadFeature(featureName: string): boolean {
 
   // Disable heavy features on low-end devices
   if (isLowEnd && heavyFeatures.includes(featureName)) {
-    console.log(`[Adaptive Loading] Skipping ${featureName} on low-end device`);
     return false;
   }
 
   // Disable medium features on low tier devices
   if (tier === 'low' && mediumFeatures.includes(featureName)) {
-    console.log(`[Adaptive Loading] Skipping ${featureName} on low-tier device`);
     return false;
   }
 
