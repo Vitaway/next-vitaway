@@ -4,7 +4,6 @@ import React, { useState, useMemo } from 'react';
 import BlogList from './blogs-list';
 import AlertMessage from '../alerts/alert-message';
 import { useBlogs } from '@/hooks';
-import { InlineSpinner } from '@/app/components/spinners';
 
 const AllBlogs = React.memo(function AllBlogs() {
     const { blogs, loading, error } = useBlogs();

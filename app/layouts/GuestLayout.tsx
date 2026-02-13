@@ -7,14 +7,12 @@ export default function GuestLayout({ children }: Readonly<{
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en">
-            <body className="app-body">
-                <Navbar />
-                {children}
-                <Footer />
-                <Subscriber />
-                <AppointmentButton />
-            </body>
-        </html>
+        <>
+            <Navbar />
+            {children}
+            <Footer />
+            <Subscriber />
+            <AppointmentButton />
+        </>
     );
 }

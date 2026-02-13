@@ -451,8 +451,39 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
     }, [selectedCustomerProvince, selectedRecipientProvince, customerCountry, recipientCountry, customerDiffRecipient]);
 
     useEffect(() => {
+        const scriptUrl = process.env.NEXT_PUBLIC_IREMBOPAY_JS_URL;
+        
+        // Check if the URL is configured
+        if (!scriptUrl) {
+            console.warn('IremboPay script URL not configured');
+            setScriptLoaded(false);
+            setScriptError(true);
+            return;
+        }
+
+        // Check if script is already loaded
+        if (typeof window.IremboPay !== 'undefined') {
+            setScriptLoaded(true);
+            setScriptError(false);
+            return;
+        }
+
+        // Check if script already exists in the document
+        const existingScript = document.querySelector(`script[src="${scriptUrl}"]`);
+        if (existingScript) {
+            const checkLoaded = setInterval(() => {
+                if (typeof window.IremboPay !== 'undefined') {
+                    setScriptLoaded(true);
+                    setScriptError(false);
+                    clearInterval(checkLoaded);
+                }
+            }, 100);
+
+            return () => clearInterval(checkLoaded);
+        }
+
         const script = document.createElement('script');
-        script.src = process.env.NEXT_PUBLIC_IREMBOPAY_JS_URL || '';
+        script.src = scriptUrl;
         script.async = true;
 
         // Add load event listener

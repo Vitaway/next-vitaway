@@ -1,38 +1,71 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 import NProgress from "nprogress";
-import "nprogress/nprogress.css"; // Import default styles
+import "nprogress/nprogress.css";
+
+// Configure NProgress for optimal UX
+NProgress.configure({
+    showSpinner: false,
+    trickleSpeed: 200,
+    minimum: 0.08,
+    easing: 'ease',
+    speed: 500,
+});
 
 export default function TopProgressBar() {
-    const router = useRouter();
     const pathname = usePathname();
-    const [loading, setLoading] = useState(false);
+    const searchParams = useSearchParams();
 
+    // Complete progress when route changes
     useEffect(() => {
-        const handleStart = () => {
+        NProgress.done();
+    }, [pathname, searchParams]);
+
+    // Handle navigation clicks
+    useEffect(() => {
+        const handleClick = (e: MouseEvent) => {
+            const target = e.target as HTMLElement;
+            const anchor = target.closest('a');
+
+            if (anchor && anchor.href && anchor.target !== '_blank') {
+                const url = new URL(anchor.href);
+                // Only show progress for same-origin internal navigation
+                if (url.origin === window.location.origin && url.pathname !== pathname) {
+                    NProgress.start();
+                }
+            }
+        };
+
+        // Handle form submissions
+        const handleSubmit = () => {
             NProgress.start();
-            setLoading(true);
         };
 
-        const handleStop = () => {
-            NProgress.done();
-            setLoading(false);
+        // Handle browser back/forward buttons
+        const handlePopState = () => {
+            NProgress.start();
         };
 
-        router.prefetch(pathname);
-
-        handleStart();
-
-        setTimeout(handleStop, 500);
+        document.addEventListener('click', handleClick, true);
+        document.addEventListener('submit', handleSubmit, true);
+        window.addEventListener('popstate', handlePopState);
 
         return () => {
-            NProgress.remove();
+            document.removeEventListener('click', handleClick, true);
+            document.removeEventListener('submit', handleSubmit, true);
+            window.removeEventListener('popstate', handlePopState);
+            NProgress.done();
         };
-    }, [pathname, router]);
+    }, [pathname]);
 
-    return loading ? (
-        <div className="fixed top-0 left-0 w-full h-1 bg-blue-500 z-50" />
-    ) : null;
+    return (
+        <style jsx global>{`
+            #nprogress .bar {
+                background: white !important;
+                height: 3px;
+            }
+        `}</style>
+    );
 }

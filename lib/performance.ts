@@ -3,6 +3,17 @@
  * Helpers for tracking and reporting performance metrics
  */
 
+// TypeScript extensions for Navigator API
+interface NavigatorConnection {
+  saveData?: boolean;
+  effectiveType?: string;
+}
+
+interface ExtendedNavigator extends Navigator {
+  deviceMemory?: number;
+  connection?: NavigatorConnection;
+}
+
 /**
  * Report Web Vitals to analytics
  */
@@ -122,7 +133,6 @@ export function logBundleSize() {
 
   // Get all script tags
   const scripts = document.querySelectorAll('script[src]');
-  let totalSize = 0;
 
   scripts.forEach((script) => {
     const src = script.getAttribute('src');
@@ -139,18 +149,20 @@ export function logBundleSize() {
 export function isLowEndDevice(): boolean {
   if (typeof navigator === 'undefined') return false;
 
+  const nav = navigator as ExtendedNavigator;
+  
   // Check for reduced motion preference
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   
   // Check for save data mode
-  const saveData = 'connection' in navigator && (navigator as any).connection?.saveData;
+  const saveData = 'connection' in navigator && nav.connection?.saveData;
   
   // Check for low memory
-  const lowMemory = 'deviceMemory' in navigator && (navigator as any).deviceMemory < 4;
+  const lowMemory = 'deviceMemory' in navigator && (nav.deviceMemory ?? 4) < 4;
   
   // Check for slow connection
   const slowConnection = 'connection' in navigator && 
-    ['slow-2g', '2g'].includes((navigator as any).connection?.effectiveType);
+    ['slow-2g', '2g'].includes(nav.connection?.effectiveType ?? '');
 
   return prefersReducedMotion || saveData || lowMemory || slowConnection;
 }
@@ -161,7 +173,8 @@ export function isLowEndDevice(): boolean {
 export function getPerformanceTier(): 'high' | 'medium' | 'low' {
   if (typeof window === 'undefined') return 'medium';
 
-  const memory = (navigator as any).deviceMemory || 4;
+  const nav = navigator as ExtendedNavigator;
+  const memory = nav.deviceMemory ?? 4;
   const cores = navigator.hardwareConcurrency || 2;
 
   if (memory >= 8 && cores >= 8) return 'high';
@@ -178,9 +191,17 @@ export function shouldLoadFeature(featureName: string): boolean {
 
   // Define features that should be disabled on low-end devices
   const heavyFeatures = ['animations', 'video-autoplay', 'parallax-effects'];
+  const mediumFeatures = ['lazy-images', 'prefetch'];
 
+  // Disable heavy features on low-end devices
   if (isLowEnd && heavyFeatures.includes(featureName)) {
     console.log(`[Adaptive Loading] Skipping ${featureName} on low-end device`);
+    return false;
+  }
+
+  // Disable medium features on low tier devices
+  if (tier === 'low' && mediumFeatures.includes(featureName)) {
+    console.log(`[Adaptive Loading] Skipping ${featureName} on low-tier device`);
     return false;
   }
 

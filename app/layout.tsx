@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { Suspense } from "react";
 import TopProgressBar from "./components/top-progress-bar";
 import { CartProvider } from '@/context/CartContext';
 import "./globals.css";
@@ -166,7 +167,10 @@ export default function RootLayout({ children }: Readonly<{
         <Script src="//code.tidio.co/mwzeombpb11eeirlfz6ba2uar9jhcvoc.js" strategy="afterInteractive" />
       </head>
       <body className="app-body" suppressHydrationWarning>
-        <TopProgressBar />
+        <Suspense fallback={null}>
+          <TopProgressBar />
+        </Suspense>
+        
         <CartProvider>
           {children}
         </CartProvider>
