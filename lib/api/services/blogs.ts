@@ -12,7 +12,8 @@ export const blogService = {
      */
     getAll: async (): Promise<Blogs[]> => {
         const response = await get<BlogsResponse>('/api/blogs');
-        return response.data;
+        // API returns: { data: { data: [...blogs] } }
+        return Array.isArray(response.data?.data) ? response.data.data : [];
     },
 
     /**
@@ -30,7 +31,7 @@ export const blogService = {
         const response = await get<BlogsResponse>('/api/blogs', {
             params: { category },
         });
-        return response.data;
+        return Array.isArray(response.data?.data) ? response.data.data : [];
     },
 
     /**
@@ -40,6 +41,6 @@ export const blogService = {
         const response = await get<BlogsResponse>('/api/blogs', {
             params: { search: query },
         });
-        return response.data;
+        return Array.isArray(response.data?.data) ? response.data.data : [];
     },
 };
