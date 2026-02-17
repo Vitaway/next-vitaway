@@ -2,50 +2,69 @@ import { useState, useEffect, useCallback } from 'react';
 import { blogService } from '@/lib/api';
 import { Blogs } from '@/types/blogs';
 import { APIError } from '@/lib/api/client';
+import { LaravelPaginatedResponse } from '@/lib/api/types';
 
 interface UseBlogsOptions {
     limit?: number;
     category?: string;
     autoFetch?: boolean;
+    initialPage?: number;
 }
 
 interface UseBlogsReturn {
     blogs: Blogs[];
     loading: boolean;
     error: string | null;
+    pagination: {
+        currentPage: number;
+        lastPage: number;
+        perPage: number;
+        total: number;
+        from: number;
+        to: number;
+    };
+    goToPage: (page: number) => Promise<void>;
+    nextPage: () => Promise<void>;
+    prevPage: () => Promise<void>;
     refetch: () => Promise<void>;
 }
 
 /**
- * Custom hook for fetching blogs
+ * Custom hook for fetching blogs with pagination
  * @param options - Options for fetching blogs
- * @returns Blogs data, loading state, error, and refetch function
+ * @returns Blogs data, loading state, error, pagination info, and navigation functions
  */
 export const useBlogs = (options: UseBlogsOptions = {}): UseBlogsReturn => {
-    const { limit, category, autoFetch = true } = options;
+    const { limit, category, autoFetch = true, initialPage = 1 } = options;
     
     const [blogs, setBlogs] = useState<Blogs[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
+    const [currentPage, setCurrentPage] = useState<number>(initialPage);
+    const [paginationData, setPaginationData] = useState<LaravelPaginatedResponse<Blogs> | null>(null);
 
-    const fetchBlogs = useCallback(async () => {
+    const fetchBlogs = useCallback(async (page: number = currentPage) => {
         try {
             setLoading(true);
             setError(null);
 
-            let data: Blogs[];
+            let data: LaravelPaginatedResponse<Blogs>;
 
             if (category) {
-                data = await blogService.getByCategory(category);
+                data = await blogService.getByCategory(category, page);
             } else {
-                data = await blogService.getAll();
+                data = await blogService.getAll(page);
             }
 
+            setPaginationData(data);
+
+            let blogList = data.data;
             if (limit) {
-                data = data.slice(0, limit);
+                blogList = blogList.slice(0, limit);
             }
 
-            setBlogs(data);
+            setBlogs(blogList);
+            setCurrentPage(data.current_page);
         } catch (err) {
             const errorMessage = err instanceof APIError 
                 ? err.message 
@@ -55,18 +74,47 @@ export const useBlogs = (options: UseBlogsOptions = {}): UseBlogsReturn => {
         } finally {
             setLoading(false);
         }
-    }, [limit, category]);
+    }, [limit, category, currentPage]);
+
+    const goToPage = useCallback(async (page: number) => {
+        if (paginationData && page >= 1 && page <= paginationData.last_page) {
+            await fetchBlogs(page);
+        }
+    }, [fetchBlogs, paginationData]);
+
+    const nextPage = useCallback(async () => {
+        if (paginationData?.next_page_url) {
+            await goToPage(currentPage + 1);
+        }
+    }, [currentPage, goToPage, paginationData]);
+
+    const prevPage = useCallback(async () => {
+        if (paginationData?.prev_page_url) {
+            await goToPage(currentPage - 1);
+        }
+    }, [currentPage, goToPage, paginationData]);
 
     useEffect(() => {
         if (autoFetch) {
-            fetchBlogs();
+            fetchBlogs(initialPage);
         }
-    }, [autoFetch, fetchBlogs]);
+    }, [autoFetch, initialPage]); // Don't include fetchBlogs to avoid infinite loop
 
     return {
         blogs,
         loading,
         error,
-        refetch: fetchBlogs,
+        pagination: {
+            currentPage: paginationData?.current_page || 1,
+            lastPage: paginationData?.last_page || 1,
+            perPage: paginationData?.per_page || 15,
+            total: paginationData?.total || 0,
+            from: paginationData?.from || 0,
+            to: paginationData?.to || 0,
+        },
+        goToPage,
+        nextPage,
+        prevPage,
+        refetch: () => fetchBlogs(currentPage),
     };
 };

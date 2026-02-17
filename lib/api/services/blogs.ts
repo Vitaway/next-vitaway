@@ -1,5 +1,5 @@
 import { get } from '../client';
-import { BlogsResponse, SingleBlogResponse } from '../types';
+import { BlogsResponse, SingleBlogResponse, LaravelPaginatedResponse } from '../types';
 import { Blogs } from '@/types/blogs';
 
 /**
@@ -8,12 +8,13 @@ import { Blogs } from '@/types/blogs';
  */
 export const blogService = {
     /**
-     * Fetch all blogs
+     * Fetch all blogs with pagination
      */
-    getAll: async (): Promise<Blogs[]> => {
-        const response = await get<BlogsResponse>('/api/blogs');
-        // API returns: { data: { data: [...blogs] } }
-        return Array.isArray(response.data?.data) ? response.data.data : [];
+    getAll: async (page: number = 1): Promise<LaravelPaginatedResponse<Blogs>> => {
+        const response = await get<BlogsResponse>('/api/blogs', {
+            params: { page },
+        });
+        return response.data;
     },
 
     /**
@@ -25,22 +26,22 @@ export const blogService = {
     },
 
     /**
-     * Fetch blogs by category
+     * Fetch blogs by category with pagination
      */
-    getByCategory: async (category: string): Promise<Blogs[]> => {
+    getByCategory: async (category: string, page: number = 1): Promise<LaravelPaginatedResponse<Blogs>> => {
         const response = await get<BlogsResponse>('/api/blogs', {
-            params: { category },
+            params: { category, page },
         });
-        return Array.isArray(response.data?.data) ? response.data.data : [];
+        return response.data;
     },
 
     /**
-     * Search blogs by query
+     * Search blogs by query with pagination
      */
-    search: async (query: string): Promise<Blogs[]> => {
+    search: async (query: string, page: number = 1): Promise<LaravelPaginatedResponse<Blogs>> => {
         const response = await get<BlogsResponse>('/api/blogs', {
-            params: { search: query },
+            params: { search: query, page },
         });
-        return Array.isArray(response.data?.data) ? response.data.data : [];
+        return response.data;
     },
 };

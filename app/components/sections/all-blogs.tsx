@@ -4,9 +4,10 @@
 import React, { useState, useMemo } from 'react';
 import BlogList from './blogs-list';
 import { useBlogs } from '@/hooks';
+import Pagination from '../pagination';
 
 const AllBlogs = React.memo(function AllBlogs() {
-    const { blogs, loading, error } = useBlogs();
+    const { blogs, loading, error, pagination, goToPage } = useBlogs();
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('All');
     const [sortBy, setSortBy] = useState<'newest' | 'oldest' | 'title'>('newest');
@@ -18,7 +19,7 @@ const AllBlogs = React.memo(function AllBlogs() {
         return ['All', ...uniqueCategories];
     }, [blogs]);
 
-    // Filter and sort blogs
+    // Filter and sort blogs (applied on current page's data)
     const filteredBlogs = useMemo(() => {
         if (!blogs || blogs.length === 0) return [];
 
@@ -119,7 +120,7 @@ const AllBlogs = React.memo(function AllBlogs() {
                 {/* Results Count */}
                 <div className="flex items-center justify-between text-sm text-gray-600">
                     <span>
-                        Showing <strong>{filteredBlogs.length}</strong> of <strong>{blogs.length}</strong> blogs
+                        Showing <strong>{filteredBlogs.length}</strong> of <strong>{pagination.total}</strong> blogs
                     </span>
                     {(searchQuery || selectedCategory !== 'All') && (
                         <button
@@ -136,6 +137,19 @@ const AllBlogs = React.memo(function AllBlogs() {
             </div>
 
             <BlogList blogs={filteredBlogs} isLoading={loading} />
+
+            {/* Pagination Component */}
+            {!loading && filteredBlogs.length > 0 && (
+                <Pagination
+                    currentPage={pagination.currentPage}
+                    lastPage={pagination.lastPage}
+                    total={pagination.total}
+                    from={pagination.from}
+                    to={pagination.to}
+                    onPageChange={goToPage}
+                    loading={loading}
+                />
+            )}
         </>
     );
 });
