@@ -63,7 +63,7 @@ function Download() {
                     <a href="https://apps.apple.com/rw/app/vitaway-plus/id6745190821" target='__blank' className="mr-3 transition duration-300 hover:shadow-lg">
                       <Image width={100} height={100} src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Download_on_the_App_Store_Badge.svg/1000px-Download_on_the_App_Store_Badge.svg.png" className="object-cover object-top w-32 mx-auto" alt="Download Vitaway From App Store" />
                     </a>
-                    <a href="https://play.google.com/store/apps/details?id=org.vitaway.app" target='__blank' className="transition duration-300 hover:shadow-lg">
+                    <a href="https://play.google.com/store/apps/details?id=com.patienceman.vitaway" target='__blank' className="transition duration-300 hover:shadow-lg">
                       <Image width={100} height={100} src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Google_Play_Store_badge_EN.svg/1000px-Google_Play_Store_badge_EN.svg.png" className="object-cover object-top w-32 mx-auto" alt="Download Vitaway From Google Play Store" />
                     </a>
                   </div>

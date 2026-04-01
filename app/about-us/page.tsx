@@ -53,11 +53,11 @@ export const viewport = {
 
 function AboutUs() {
     const gallery = [
-        {
-            image: "/images/Team/bg.jpeg",
-            caption: "Co-founders discussion",
-            description: "Vitaway Health co-founders engaged in a visionary dialogue, driving innovation and impact in preventive healthcare",
-        },
+        // {
+        //     image: "/images/Team/bg.jpeg",
+        //     caption: "Co-founders discussion",
+        //     description: "Vitaway Health co-founders engaged in a visionary dialogue, driving innovation and impact in preventive healthcare",
+        // },
         {
             image: "/images/Gallery/image-2.jpg",
             caption: "Founder & CEO of Vitaway Health",
