@@ -59,6 +59,11 @@ function Download() {
                     from virtual doctor consultations to health tracking and personalized wellness plans.
                   </p>
                   <hr className="my-8 border-gray-600" />
+                  <div className="mb-6 p-4 bg-yellow-900/30 border border-yellow-600/50 rounded-lg">
+                    <p className="text-yellow-100 text-sm sm:text-base">
+                      <span className="font-semibold">Notice:</span> Vitaway Plus is currently unavailable for new downloads on both iOS and Android platforms due to a temporary issue. Our team is working to resolve this as quickly as possible. Please check back soon – the app will be available again shortly. Thank you for your patience and understanding.
+                    </p>
+                  </div>
                   <div className="flex items-center mb-3 sm:justify-left">
                     <a href="https://apps.apple.com/rw/app/vitaway-plus/id6745190821" target='__blank' className="mr-3 transition duration-300 hover:shadow-lg">
                       <Image width={100} height={100} src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Download_on_the_App_Store_Badge.svg/1000px-Download_on_the_App_Store_Badge.svg.png" className="object-cover object-top w-32 mx-auto" alt="Download Vitaway From App Store" />
