@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Quiz, QuizAttempt, QuizSubmission, QuizResponse, AnswerCheckRequest, AnswerCheckResponse } from '@/types/quizzes';
 
 const API_BASE_URL = `${process.env.NEXT_PUBLIC_ENVENTORY_API_URL}/api`;
