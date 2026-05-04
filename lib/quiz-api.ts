@@ -24,6 +24,22 @@ const getAuthHeaders = () => {
     return headers;
 };
 
+// Helper function to extract error message from response
+const getErrorMessage = (errorText: string, defaultMessage: string): string => {
+    try {
+        const errorJson = JSON.parse(errorText);
+        if (errorJson.message) {
+            return errorJson.message;
+        }
+    } catch (e) {
+        // If it's not valid JSON, just use the raw text
+        if (errorText && errorText.trim()) {
+            return errorText;
+        }
+    }
+    return defaultMessage;
+};
+
 export const quizApi = {
     // GET /api/quizzes - Get all available quizzes
     async getAllQuizzes(): Promise<Quiz[]> {
@@ -35,8 +51,9 @@ export const quizApi = {
 
         if (!response.ok) {
             const errorText = await response.text();
+            const errorMessage = getErrorMessage(errorText, `Failed to fetch quizzes: ${response.status}`);
             console.error('Quizzes fetch error:', response.status, errorText);
-            throw new Error(`Failed to fetch quizzes: ${response.status}`);
+            throw new Error(errorMessage);
         }
 
         const result = await response.json();
@@ -59,8 +76,9 @@ export const quizApi = {
 
             if (!response.ok) {
                 const errorText = await response.text();
+                const errorMessage = getErrorMessage(errorText, `Failed to fetch quiz details: ${response.status}`);
                 console.error('Quiz fetch error:', response.status, errorText);
-                throw new Error(`Failed to fetch quiz details: ${response.status}`);
+                throw new Error(errorMessage);
             }
 
             const result = await response.json();
@@ -84,8 +102,9 @@ export const quizApi = {
 
         if (!response.ok) {
             const errorText = await response.text();
+            const errorMessage = getErrorMessage(errorText, `Failed to start quiz attempt: ${response.status}`);
             console.error('Start attempt error:', response.status, errorText);
-            throw new Error(`Failed to start quiz attempt: ${response.status}`);
+            throw new Error(errorMessage);
         }
 
         const result = await response.json();
@@ -107,8 +126,9 @@ export const quizApi = {
 
         if (!response.ok) {
             const errorText = await response.text();
+            const errorMessage = getErrorMessage(errorText, `Failed to submit quiz answers: ${response.status}`);
             console.error('Submit attempt error:', response.status, errorText);
-            throw new Error(`Failed to submit quiz answers: ${response.status}`);
+            throw new Error(errorMessage);
         }
 
         const result = await response.json();
@@ -136,8 +156,9 @@ export const quizApi = {
 
             if (!response.ok) {
                 const errorText = await response.text();
+                const errorMessage = getErrorMessage(errorText, `Failed to check answer: ${response.status}`);
                 console.error('Check answer error:', response.status, errorText);
-                throw new Error(`Failed to check answer: ${response.status}`);
+                throw new Error(errorMessage);
             }
 
             const result = await response.json();
