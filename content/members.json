@@ -11,7 +11,7 @@
     "advisory_boad": [
         {
             "name": " Jean Claude Mugunga ",
-            "slug": "emmanuel-hakuzimana",
+            "slug": "Jean-Claude-Mugunga",
             "role": "Advisor, Health Tech",
             "description": "Physician leader focused on using data, research, and innovative financing to strengthen equitable health systems and Physician leader focused on data, research, and innovative financing to strengthen equitable health systems and advance Universal Health Coverage. Experienced in health strategy, policy advocacy, and data-driven decision-making, with a passion for mentoring future global health leaders.",
             "image": "/images/members/Jean-Claude.png",
@@ -26,7 +26,7 @@
     "clinical_members": [
         {
             "name": "Ally NIYONKURU",
-            "slug": "emmanuel-hakuzimana",
+            "slug": "ally-niyonkuru",
             "role": "Nutritionist",
             "description": "Dedicated to advancing individual wellness through quality healthcare, compassionate support, and personalized care. Passionate about helping people achieve healthier, balanced lives through professional medical services, ethical practice, preventive wellness, and patient-centered solutions that promote physical, mental, and lifestyle well-being across every stage of life.",
             "image": "/images/members/ally.jpeg",
@@ -39,10 +39,10 @@
         },
         {
             "name": "Martine UMUHIRE",
-            "slug": "emmanuel-hakuzimana",
+            "slug": "marthe-umuhire",
             "role": "Nutritionist",
             "description": "Nutrition expert, public health practitioner, and health coach with experience in noncommunicable disease prevention and weight management. Passionate about helping individuals and communities build healthier lives through evidence-based nutrition and personalized coaching.",
-            "image": "/favicon.svg",
+            "image": "/images/members/marthe-umuhire.jpeg",
             "bio": "As a Registered Nutritionist and Nursing Professional, I am passionate about transforming healthcare through AI-driven solutions. Growing up in Rwanda, I saw the impact of non-communicable diseases (NCDs) and the need for accessible, preventive care. That’s why I founded Vitaway Health to bridge the gap between patients and providers with personalized, sustainable health solutions. I meet people where they are, guiding them toward lasting change, one habit at a time. At Vitaway, better health isn’t just a goal, it’s a way of life.",
             "social_media": {
                 "linkedin": "https://www.linkedin.com/in/emmanuel-hakuzimana-rn-123309188/",
@@ -52,10 +52,10 @@
         },
         {
             "name": "Olga Nelly Muhoza",
-            "slug": "emmanuel-hakuzimana",
+            "slug": "olga-nelly",
             "role": "Front Desk & Administrative Assistant",
             "description": "Receptionist and administrative assistant at Vitaway Nutrition Clinic, dedicated to creating a welcoming and professional experience for clients and visitors. Organized, friendly, and passionate about excellent customer service and communication.",
-            "image": "/favicon.svg",
+            "image": "/images/members/Olga-Nelly.jpeg",
             "bio": "As a Registered Nutritionist and Nursing Professional, I am passionate about transforming healthcare through AI-driven solutions. Growing up in Rwanda, I saw the impact of non-communicable diseases (NCDs) and the need for accessible, preventive care. That’s why I founded Vitaway Health to bridge the gap between patients and providers with personalized, sustainable health solutions. I meet people where they are, guiding them toward lasting change, one habit at a time. At Vitaway, better health isn’t just a goal, it’s a way of life.",
             "social_media": {
                 "linkedin": "https://www.linkedin.com/in/emmanuel-hakuzimana-rn-123309188/",
@@ -65,7 +65,7 @@
         },
         {
             "name": "Ange Celeste DIANGUITOUKOULOU",
-            "slug": "emmanuel-hakuzimana",
+            "slug": "ange-celeste",
             "role": "Registered Nurse & Nutrition Associate",
             "description": "Registered Nurse and Nutrition Associate at Vitaway Health, supporting preventive healthcare and wellness programs through clinical care, nutrition education, and health screenings. Passionate about helping individuals achieve healthier lifestyles through balanced nutrition, physical activity, and sustainable wellness habits.",
             "image": "/images/members/Ange.jpeg",
@@ -78,7 +78,7 @@
         },
         {
             "name": "Dr Steven SHIMIRWA",
-            "slug": "emmanuel-hakuzimana",
+            "slug": "steven-shimirwa",
             "role": "Clinical and Content Director",
             "description": "Healthcare professional focused on global health research, health systems improvement, community health, and health technology. Experienced in clinical research, leadership, and health communication, with a strong commitment to collaboration, innovation, and improving health outcomes.",
             "image": "/images/members/member-3.jpg",
@@ -91,7 +91,7 @@
         },
         {
             "name": "Patience HIRWA MANIRABONA",
-            "slug": "emmanuel-hakuzimana",
+            "slug": "patience-hirwa",
             "role": "Software Engineer",
             "description": "Software engineer passionate about building scalable, user-focused applications that solve realworld problems. Experienced in backend and frontend development, with a strong interest in creating reliable, impactful, and innovative technology solutions.",
             "image": "/images/members/member-4.jpg",
@@ -104,10 +104,10 @@
         },
         {
             "name": "Faustin NZITONDA",
-            "slug": "emmanuel-hakuzimana",
+            "slug": "faustin-nzitonda",
             "role": "AI Data Engineer",
             "description": "AI Data Engineer with experience in machine learning, data science, embedded systems, and web application development. Passionate about building intelligent solutions, analyzing data insights, and continuously learning innovative technologies to solve complex problems.",
-            "image": "/favicon.svg",
+            "image": "/images/members/Faustin.jpeg",
             "bio": "As a Registered Nutritionist and Nursing Professional, I am passionate about transforming healthcare through AI-driven solutions. Growing up in Rwanda, I saw the impact of non-communicable diseases (NCDs) and the need for accessible, preventive care. That’s why I founded Vitaway Health to bridge the gap between patients and providers with personalized, sustainable health solutions. I meet people where they are, guiding them toward lasting change, one habit at a time. At Vitaway, better health isn’t just a goal, it’s a way of life.",
             "social_media": {
                 "linkedin": "https://www.linkedin.com/in/emmanuel-hakuzimana-rn-123309188/",
@@ -119,7 +119,7 @@
     "coaching_team": [
         {
             "name": "Cybille ISHIMWE",
-            "slug": "emmanuel-hakuzimana",
+            "slug": "cybille-ishimwe",
             "role": "Wellness Coach",
             "description": "Dynamic wellness professional with strong experience in program coordination, client support, and health-focused initiatives. Passionate about helping individuals achieve healthier lifestyles through communication, organization, and personalized wellness guidance.",
             "image": "/images/members/Cybs.png",
@@ -132,7 +132,7 @@
         },
         {
             "name": " Joseph Karemera",
-            "slug": "emmanuel-hakuzimana",
+            "slug": "joseph-karemera",
             "role": "Senior Nutritionist & Coach",
             "description": "Registered Nurse and Clinical Dietitian Nutritionist with expertise in public health, epidemiology, and data analysis. Passionate about promoting preventive healthcare, nutrition education, and evidence-based wellness solutions.",
             "image": "/images/members/Joseph.jpg",
@@ -145,7 +145,7 @@
         },
         {
             "name": "Emmanuel Murindwa",
-            "slug": "emmanuel-hakuzimana",
+            "slug": "emmanuel-muridwa",
             "role": "Nutrition Coach",
             "description": "Nutrition coach dedicated to helping individuals improve their health through personalized nutrition guidance, lifestyle support, and sustainable wellness habits. Passionate about promoting healthier living through practical and client-centered coaching.",
             "image": "/images/members/member-6.jpg",
@@ -158,10 +158,10 @@
         },
         {
             "name": "Saiba RAMADHAN",
-            "slug": "emmanuel-hakuzimana",
+            "slug": "saiba-ramadhan",
             "role": "Fitness Trainer & Coach",
             "description": "Fitness trainer and coach with over 8 years of experience in personalized fitness, weight management, strength training, cardio health, and body transformation programs. Passionate about helping clients achieve sustainable fitness and wellness goals.",
-            "image": "/favicon.svg",
+            "image": "/images/members/Saiba-RAMADHAN.jpeg",
             "bio": "As a Registered Nutritionist and Nursing Professional, I am passionate about transforming healthcare through AI-driven solutions. Growing up in Rwanda, I saw the impact of non-communicable diseases (NCDs) and the need for accessible, preventive care. That’s why I founded Vitaway Health to bridge the gap between patients and providers with personalized, sustainable health solutions. I meet people where they are, guiding them toward lasting change, one habit at a time. At Vitaway, better health isn’t just a goal, it’s a way of life.",
             "social_media": {
                 "linkedin": "https://www.linkedin.com/in/emmanuel-hakuzimana-rn-123309188/",
@@ -171,10 +171,10 @@
         },
         {
             "name": " Jules KWIZERA",
-            "slug": "emmanuel-hakuzimana",
+            "slug": "jules-kwizera",
             "role": "Fitness Trainer & Coach",
             "description": "Fitness trainer and coach with over 11 years of experience in aerobic conditioning, weight loss programs, mobility training, and goal-oriented fitness transformation plans. Dedicated to helping clients improve strength, endurance, and overall wellness.",
-            "image": "/favicon.svg",
+            "image": "/images/members/Jules-KWIZERA.jpeg",
             "bio": "As a Registered Nutritionist and Nursing Professional, I am passionate about transforming healthcare through AI-driven solutions. Growing up in Rwanda, I saw the impact of non-communicable diseases (NCDs) and the need for accessible, preventive care. That’s why I founded Vitaway Health to bridge the gap between patients and providers with personalized, sustainable health solutions. I meet people where they are, guiding them toward lasting change, one habit at a time. At Vitaway, better health isn’t just a goal, it’s a way of life.",
             "social_media": {
                 "linkedin": "https://www.linkedin.com/in/emmanuel-hakuzimana-rn-123309188/",
