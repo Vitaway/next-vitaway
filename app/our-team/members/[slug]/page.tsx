@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import Image from "next/image";
@@ -28,10 +29,6 @@ type Member = {
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-/**
- * Flatten all member categories into one searchable list,
- * tagging each entry with its team label.
- */
 function getAllMembers(): Member[] {
   const { advisory_boad, clinical_members, coaching_team } = membersData;
 
