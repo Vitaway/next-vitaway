@@ -88,6 +88,11 @@ const nextConfig: NextConfig = {
         hostname: "www.goodlifeaccess.org",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "drive.google.com",
+        pathname: "/**",
+      },
     ],
   },
 };
