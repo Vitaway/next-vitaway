@@ -71,7 +71,7 @@ export default function Home() {
       <Services />
       <Video />
       <DiabeteProgram />
-      <Blogs />
+      {/* <Blogs /> */}
       <Partenership />
     </GuestLayout>
   </>);

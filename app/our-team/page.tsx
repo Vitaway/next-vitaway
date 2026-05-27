@@ -206,6 +206,13 @@ function OurTeam() {
             <CeoMessage ceo={ceo_message[0]} />
           )}
 
+          {/* Advisory Board */}
+          <TeamSection
+            label="Meet the Team Behind Your Health"
+            title="Advisory Board"
+            members={advisory_boad}
+          />
+
           {/* Clinical & Nutrition Team */}
           <TeamSection
             label="Meet the Team Behind Your Health"
@@ -218,13 +225,6 @@ function OurTeam() {
             label="Meet the Team Behind Your Health"
             title="Coaching Team"
             members={coaching_team}
-          />
-
-          {/* Advisory Board */}
-          <TeamSection
-            label="Meet the Team Behind Your Health"
-            title="Advisory Board"
-            members={advisory_boad}
           />
         </div>
       </div>
