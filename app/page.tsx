@@ -6,7 +6,7 @@ import Partenership from "./components/sections/partenership";
 import Services from "./components/sections/services";
 import Video from "./components/sections/video";
 import GuestLayout from "./layouts/GuestLayout";
-import Blogs from "./components/sections/blogs";
+// import Blogs from "./components/sections/blogs";
 
 export const metadata: Metadata = {
   title: "Digital Healthcare Solutions for Rwanda",
