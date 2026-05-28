@@ -3,75 +3,75 @@
         "id": "1",
         "title": "Free Plan",
         "short_desc": "Basic Features",
-        "description": "A starter plan offering essential features to get you started on your health journey.",
+        "description": "Start your wellness journey free with professional body measurements, BMI assessment, and personalized health guidance today.",
         "price": "RWF 0.00",
         "cta_button": "Sign Up",
         "cta_button_link": "/download",
         "features": [
-            "Virtual PT Appointment (non-member)",
-            "Edit Profile",
-            "Access to Blogs",
-            "Health Assessment"
+            "Height measurement",
+            "Weight measurement",
+            "BMI calculation and explanation",
+            "Basic health and wellness guidance"
         ]
     },
     {
         "id": "2",
         "title": "Standard Plan",
         "short_desc": "Popular Plan with Most Features",
-        "description": "A comprehensive plan designed for individuals seeking to enhance their health journey with personalized support and advanced features.",
-        "price": "RWF 10, 000.00",
+        "description": "Discover personalized wellness through expert-led health assessments designed to understand your unique needs for lasting results.",
+        "price": "RWF 15, 000.00",
         "highlighted": true,
         "cta_button": "Get Started",
         "cta_button_link": "/contacts",
         "features": [
-            "Virtual PT Appointment (member)",
-            "Access All Features (lessons, daily tracks, etc.)",
-            "24/7 Chat and Video Call with a Coach",
-            "Track Health Interactions",
-            "Personalized Meal Plan",
-            "Reminder Notifications",
-            "Ongoing Personal Support",
-            "Weekly Tasks (workouts, etc.)"
+            "Expert-led consultation with healthcare professionals, nutritionists, and dietitians",
+            "Comprehensive body metrics assessment",
+            "Medical history review",
+            "Lifestyle and daily habits assessment",
+            "Physical activity level evaluation",
+            "Living and working environment assessment",
+            "Personalized understanding of your unique health needs",
+            "Evidence-based recommendations tailored to your goals and condition"
         ]
     },
     {
         "id": "3",
         "title": "Premium Plan",
         "short_desc": "All Features Included",
-        "description": "An all-inclusive plan offering unlimited access to advanced features and personalized support for a complete health and wellness experience.",
-        "price": "RWF 15, 000.00",
+        "description": "Transform your health with intensive expert-guided care, personalized plans, and continuous support toward lasting wellness goals.",
+        "price": "RWF 60, 000.00 /3 Month - RWF 100,000.00 /6 Months",
         "cta_button": "Get Started",
         "cta_button_link": "/contacts",
         "features": [
-            "All Standard Plan Features",
-            "Unlimited Video Calls",
-            "Personal Coach",
-            "Daily Challenges",
-            "Join Safe Space Group",
-            "Personalized Expert Consultations",
-            "Community Membership",
-            "Data Integration with PCP"
+            "Choice of 3-month or 6-month intensive care programs",
+            "Full comprehensive health assessment included in the Standard Foundation Plan",
+            "Personalized diet and meal plan based on your health condition and goals",
+            "Customized exercise and lifestyle plan tailored to your needs",
+            "Daily and consistent follow-up from our expert healthcare team",
+            "Ongoing motivation, accountability, and progress monitoring",
+            "Evidence-based guidance from nutritionists and healthcare professionals",
+            "Continuous support to help you achieve and maintain your desired healthy outcomes"
         ]
     },
     {
         "id": "4",
         "title": "Corporate & Workplace Wellness Program",
         "short_desc": "Enhancing Employee Health & Productivity",
-        "description": "Our program is designed to support companies in fostering a healthier, more productive workforce through expert-led nutrition, fitness, and mental health solutions. Join our Comprehensive Workplace Wellness Program!",
+        "description": "Empower your workforce with preventive wellness programs that improve health, productivity, morale, and long-term wellbeing",
         "cta_button": "Book Appointment Today",
         "cta_button_link": "/appointments",
         "colspan": "2",
         "features": [
-            "Health & Nutrition Screening",
-            "Personalized Nutrition Plans",
-            "Group Nutrition Coaching.",
-            "Wellness Workshops & Sessions",
-            "On-Site Dietitian Visits (for large teams).",
-            "24/7 Chat Support – Instant expert guidance.",
-            "Weight & NCD Management Programs.",
-            "Executive Health Plan – One-on-one coaching, body composition analysis & priority consultations.",
-            "Aerobic Coaching – Guided fitness sessions by certified trainers.",
-            "Quarterly Mental Health Sessions with a certified psychologist or mental health nurse."
+            "Comprehensive workplace wellness assessments (BMI, blood pressure, waist circumference, and lifestyle screening)",
+            "Nutrition, lifestyle, stress, and mental wellbeing assessments for employees",
+            "Personalized wellness guidance and preventive health support",
+            "Employee health talks, wellness education, and behavior change sessions",
+            "Digital wellness engagement with practical nutrition and healthy lifestyle content",
+            "Workplace fitness challenges and community wellness activities",
+            "Two personalized nutrition consultations per employee annually",
+            "Aggregated corporate wellness reports with anonymized workforce health insights",
+            "Continuous follow-up and support for employees requiring additional care",
+            "Customized wellness programs tailored to organizational needs and employee well-being goals"
         ],
         "pricing": [
             {
@@ -80,7 +80,6 @@
                 "price_per_company": "$150/month per company (up to 10 employees)"
             },
             {
-
                 "employees": "Mid-Sized Teams (20-50 Employees)",
                 "price_per_employee": "$8 /employee/month",
                 "price_per_company": "$300/month per company (up to 40 employees)"
