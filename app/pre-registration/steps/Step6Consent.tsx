@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { Check } from 'lucide-react';
 import { PreRegistrationPayload } from '@/lib/api/types';
 
 interface Props {
@@ -65,11 +66,7 @@ function Step6Consent({ data, errors, onChange }: Props) {
                                     ? 'border-green-500 bg-green-500'
                                     : 'border-gray-300'
                             }`}>
-                                {checked && (
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none">
-                                        <path d="M5 12l5 5L19 7" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-                                    </svg>
-                                )}
+                                {checked && <Check className="w-3.5 h-3.5 text-white" strokeWidth={3} />}
                             </div>
                             <div>
                                 <p className={`font-semibold text-sm ${checked ? 'text-green-700' : 'text-slate-700'}`}>

@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { CheckCircle } from 'lucide-react';
 
 interface Props {
     referenceNumber: string;
@@ -12,10 +13,7 @@ function ConfirmationStep({ referenceNumber }: Props) {
         <div className="flex flex-col items-center text-center px-2">
             {/* Success icon */}
             <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center mb-6">
-                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none">
-                    <path d="M12 22c5.5 0 10-4.5 10-10S17.5 2 12 2 2 6.5 2 12s4.5 10 10 10Z" stroke="#22c55e" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                    <path d="M7.75 12l2.83 2.83 5.67-5.66" stroke="#22c55e" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
+                <CheckCircle className="w-10 h-10 text-green-500" strokeWidth={1.5} />
             </div>
 
             <h1 className="text-2xl font-bold text-slate-800">You&apos;re registered!</h1>

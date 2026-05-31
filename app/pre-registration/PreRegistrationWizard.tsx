@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { ArrowLeft } from 'lucide-react';
 import { PreRegistrationPayload } from '@/lib/api/types';
 import { preRegistrationService } from '@/lib/api/services/preRegistration';
 import { APIError } from '@/lib/api/client';
@@ -138,9 +139,7 @@ function PreRegistrationWizard() {
                         className="flex items-center gap-1.5 text-gray-500 hover:text-gray-700 transition-colors py-1"
                         aria-label="Go back"
                     >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none">
-                            <path d="M9.57 5.93 3.5 12l6.07 6.07M20.5 12H3.67" stroke="currentColor" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
+                        <ArrowLeft className="w-5 h-5" />
                         <span className="text-sm font-medium">Back</span>
                     </button>
 

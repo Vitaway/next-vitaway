@@ -1,10 +1,34 @@
 'use client';
 
 import React from 'react';
+import { Salad, Zap, Target, ShieldCheck } from 'lucide-react';
 
 interface WelcomeStepProps {
     onStart: () => void;
 }
+
+const FEATURES = [
+    {
+        icon: <Salad className="w-5 h-5 text-[#003E48] flex-shrink-0 mt-0.5" />,
+        title: 'Personalized nutrition guidance',
+        desc: 'Meal plans tailored to your goals and lifestyle',
+    },
+    {
+        icon: <Zap className="w-5 h-5 text-[#003E48] flex-shrink-0 mt-0.5" />,
+        title: 'Faster & easier registration',
+        desc: 'Complete your profile in under 5 minutes',
+    },
+    {
+        icon: <Target className="w-5 h-5 text-[#003E48] flex-shrink-0 mt-0.5" />,
+        title: 'Goal-based wellness planning',
+        desc: 'Programmes designed around what matters to you',
+    },
+    {
+        icon: <ShieldCheck className="w-5 h-5 text-[#003E48] flex-shrink-0 mt-0.5" />,
+        title: 'Privacy & data protection',
+        desc: 'Your health data is always secure with us',
+    },
+];
 
 function WelcomeStep({ onStart }: WelcomeStepProps) {
     return (
@@ -24,14 +48,9 @@ function WelcomeStep({ onStart }: WelcomeStepProps) {
             </p>
 
             <div className="mt-8 w-full space-y-3 text-left">
-                {[
-                    { icon: '🥗', title: 'Personalized nutrition guidance', desc: 'Meal plans tailored to your goals and lifestyle' },
-                    { icon: '⚡', title: 'Faster & easier registration', desc: 'Complete your profile in under 5 minutes' },
-                    { icon: '🎯', title: 'Goal-based wellness planning', desc: 'Programs designed around what matters to you' },
-                    { icon: '🔒', title: 'Privacy & data protection', desc: 'Your health data is always secure with us' },
-                ].map(({ icon, title, desc }) => (
-                    <div key={title} className="flex items-start gap-3 p-3 rounded-xl bg-gray-50 border border-gray-200">
-                        <span className="text-xl flex-shrink-0 mt-0.5">{icon}</span>
+                {FEATURES.map(({ icon, title, desc }) => (
+                    <div key={title} className="flex items-start gap-3 p-3 rounded-xl bg-gray-50 border border-gray-100">
+                        {icon}
                         <div>
                             <p className="font-semibold text-slate-700 text-sm">{title}</p>
                             <p className="text-gray-500 text-xs mt-0.5">{desc}</p>

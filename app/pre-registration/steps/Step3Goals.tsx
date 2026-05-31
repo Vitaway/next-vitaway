@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { Scale, Utensils, BatteryFull, Bike, Brain, Moon, Sparkles, Check } from 'lucide-react';
 import { PreRegistrationPayload } from '@/lib/api/types';
 
 interface Props {
@@ -9,13 +10,13 @@ interface Props {
     onChange: (data: Partial<PreRegistrationPayload>) => void;
 }
 
-const GOALS = [
-    { value: 'weight_management', label: 'Weight Management', icon: '⚖️' },
-    { value: 'better_eating', label: 'Better Eating Habits', icon: '🥦' },
-    { value: 'increased_energy', label: 'Increased Energy', icon: '⚡' },
-    { value: 'improved_fitness', label: 'Improved Fitness', icon: '🏃' },
-    { value: 'stress_reduction', label: 'Stress Reduction', icon: '🧘' },
-    { value: 'better_sleep', label: 'Better Sleep', icon: '😴' },
+const GOALS: { value: string; label: string; icon: React.ReactNode }[] = [
+    { value: 'weight_management', label: 'Weight Management', icon: <Scale className="w-6 h-6" /> },
+    { value: 'better_eating', label: 'Better Eating Habits', icon: <Utensils className="w-6 h-6" /> },
+    { value: 'increased_energy', label: 'Increased Energy', icon: <BatteryFull className="w-6 h-6" /> },
+    { value: 'improved_fitness', label: 'Improved Fitness', icon: <Bike className="w-6 h-6" /> },
+    { value: 'stress_reduction', label: 'Stress Reduction', icon: <Brain className="w-6 h-6" /> },
+    { value: 'better_sleep', label: 'Better Sleep', icon: <Moon className="w-6 h-6" /> },
 ];
 
 function Step3Goals({ data, onChange }: Props) {
@@ -47,15 +48,13 @@ function Step3Goals({ data, onChange }: Props) {
                                     : 'border-gray-200 bg-white hover:border-gray-300'
                             }`}
                         >
-                            <span className="text-2xl">{icon}</span>
+                            <span className={selected ? 'text-[#003E48]' : 'text-gray-400'}>{icon}</span>
                             <span className={`text-xs font-semibold leading-tight ${selected ? 'text-[#003E48]' : 'text-slate-600'}`}>
                                 {label}
                             </span>
                             {selected && (
                                 <div className="w-4 h-4 rounded-full bg-[#003E48] flex items-center justify-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none">
-                                        <path d="M5 12l5 5L19 7" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-                                    </svg>
+                                    <Check className="w-2.5 h-2.5 text-white" strokeWidth={3} />
                                 </div>
                             )}
                         </button>
@@ -63,7 +62,7 @@ function Step3Goals({ data, onChange }: Props) {
                 })}
             </div>
 
-            {/* Other option */}
+            {/* Other goal */}
             <div className="mt-4">
                 <button
                     type="button"
@@ -74,7 +73,7 @@ function Step3Goals({ data, onChange }: Props) {
                             : 'border-gray-200 bg-white hover:border-gray-300'
                     }`}
                 >
-                    <span className="text-xl">✨</span>
+                    <Sparkles className={`w-5 h-5 flex-shrink-0 ${goals.includes('other') ? 'text-[#003E48]' : 'text-gray-400'}`} />
                     <span className={`text-sm font-semibold ${goals.includes('other') ? 'text-[#003E48]' : 'text-slate-600'}`}>
                         Other wellness goals
                     </span>
