@@ -45,7 +45,7 @@ function SelectGrid({ options, selected, onSelect }: SelectGridProps) {
                     key={value}
                     type="button"
                     onClick={() => onSelect(value)}
-                    className={`flex flex-col p-3 rounded-xl border-2 text-left transition-all duration-150 active:scale-[0.97] ${
+                    className={`flex flex-col p-3 rounded-xl text-left transition-all duration-150 active:scale-[0.97] ${
                         selected === value
                             ? 'border-[#003E48] bg-[#003E48]/5'
                             : 'border-gray-200 bg-white hover:border-gray-300'
@@ -143,7 +143,7 @@ function Step4HealthLifestyle({ data, onChange }: Props) {
                             key={opt}
                             type="button"
                             onClick={() => onChange({ smoking_status: opt })}
-                            className={`px-2 py-2.5 rounded-xl border-2 text-xs font-semibold transition-all active:scale-[0.97] ${
+                            className={`px-2 py-2.5 rounded-xl text-xs font-semibold transition-all active:scale-[0.97] ${
                                 data.smoking_status === opt
                                     ? 'border-[#003E48] bg-[#003E48]/5 text-[#003E48]'
                                     : 'border-gray-200 text-slate-600 hover:border-gray-300'
@@ -164,7 +164,7 @@ function Step4HealthLifestyle({ data, onChange }: Props) {
                             key={opt}
                             type="button"
                             onClick={() => onChange({ alcohol_status: opt })}
-                            className={`px-2 py-2.5 rounded-xl border-2 text-xs font-semibold transition-all active:scale-[0.97] ${
+                            className={`px-2 py-2.5 rounded-xl text-xs font-semibold transition-all active:scale-[0.97] ${
                                 data.alcohol_status === opt
                                     ? 'border-[#003E48] bg-[#003E48]/5 text-[#003E48]'
                                     : 'border-gray-200 text-slate-600 hover:border-gray-300'
