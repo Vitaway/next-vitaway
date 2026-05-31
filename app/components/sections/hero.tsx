@@ -3,6 +3,7 @@ import MobileFrame from '../design/mobile-frame';
 import PatternDesign from '../design/pattern-design';
 import BackgroundBlurImage from '../design/background-blur-image';
 import Link from 'next/link';
+import { NoiseOverlay } from '../noise-overlay';
 
 function Hero() {
     return (<>
@@ -13,6 +14,9 @@ function Hero() {
                 <div className="z-[5] absolute left-1/2 top-0 aspect-[1204/394] w-full max-w-[1204px] -translate-x-1/2">
                     <BackgroundBlurImage />
                 </div>
+
+                <NoiseOverlay opacity={1} blendMode="overlay" />
+                <NoiseOverlay opacity={1} blendMode="soft-light" className="[background-size:150px_150px]" />
 
                 <div className="relative grid items-center grid-cols-1 gap-12 lg:grid-cols-2 z-10 bg-transparent">
                     <div className='ml-5'>

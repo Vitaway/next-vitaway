@@ -114,6 +114,42 @@ export type ContactResponse = APIResponse<{
 }>;
 
 /**
+ * Pre-Registration Types
+ */
+export interface PreRegistrationPayload {
+    // Step 1
+    joining_as: 'individual' | 'gym_member' | 'employer_program';
+    // Step 2
+    full_name: string;
+    date_of_birth?: string;
+    phone_number: string;
+    email?: string;
+    location?: string;
+    // Step 3
+    wellness_goals?: string[];
+    wellness_goals_other?: string;
+    // Step 4
+    health_conditions?: string[];
+    activity_level?: 'sedentary' | 'lightly_active' | 'moderately_active' | 'very_active';
+    exercise_frequency?: 'never' | '1_2_per_week' | '3_4_per_week' | 'daily';
+    smoking_status?: string;
+    alcohol_status?: string;
+    // Step 5
+    preferred_communication?: 'email' | 'phone' | 'whatsapp' | 'sms';
+    appointment_preference?: 'morning' | 'afternoon' | 'evening';
+    dietary_preferences?: string[];
+    // Step 6
+    consent_privacy_policy: boolean;
+    consent_data_usage: boolean;
+    consent_health_information: boolean;
+    consent_wellness_program: boolean;
+}
+
+export type PreRegistrationResponse = APIResponse<{
+    reference_number: string;
+}>;
+
+/**
  * Request State for hooks
  */
 export interface RequestState<T> {

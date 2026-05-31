@@ -1,4 +1,4 @@
-"use client"; // Only needed if you're using Next.js 13+ app directory
+"use client"; 
 
 import React from "react";
 
@@ -26,7 +26,7 @@ const TextInput: React.FC<TextInputProps> = ({
   disabled = false,
 }) => {
   return (
-    <div className="mt-2">
+    <div className="mt-5">
       <label className="font-semibold text-slate-700 capitalize text-md">{label}</label>
 
       <div className="mt-2 relative text-gray-400 focus-within:text-gray-600 transition-all duration-200">
@@ -43,7 +43,7 @@ const TextInput: React.FC<TextInputProps> = ({
           onKeyDown={onKeyDown}
           placeholder={placeholder}
           disabled={disabled}
-          className={`block w-full py-3 pl-12 pr-4 transition-all duration-200 border rounded-md focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600 ${
+          className={`block w-full py-3 pl-12 pr-4 transition-all duration-200 border rounded-2xl focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600 ${
             errorMessage
               ? "text-red-700 placeholder-red-500 border-red-200 bg-red-50"
               : "text-black placeholder-gray-500 border-gray-200 bg-gray-50"

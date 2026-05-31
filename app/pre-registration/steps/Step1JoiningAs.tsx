@@ -1,0 +1,61 @@
+'use client';
+
+import React from 'react';
+import { PreRegistrationPayload } from '@/lib/api/types';
+
+interface Props {
+    data: Partial<PreRegistrationPayload>;
+    errors: string[];
+    onChange: (data: Partial<PreRegistrationPayload>) => void;
+}
+
+const OPTIONS: { value: PreRegistrationPayload['joining_as']; label: string; desc: string; icon: string }[] = [
+    { value: 'individual', label: 'Individual', desc: 'Self-registering for personal wellness goals', icon: '🧑' },
+    { value: 'gym_member', label: 'Gym Member', desc: 'Joining through your gym or fitness centre', icon: '🏋️' },
+    { value: 'employer_program', label: 'Employer / Workplace Program', desc: 'Enrolling via your company wellness programme', icon: '🏢' },
+];
+
+function Step1JoiningAs({ data, errors, onChange }: Props) {
+    return (
+        <div>
+            <h2 className="text-xl font-bold text-slate-800">How are you joining us?</h2>
+            <p className="text-gray-500 text-sm mt-1">Select the option that best describes you</p>
+
+            <div className="mt-5 space-y-3">
+                {OPTIONS.map(({ value, label, desc, icon }) => (
+                    <button
+                        key={value}
+                        type="button"
+                        onClick={() => onChange({ joining_as: value })}
+                        className={`w-full flex items-start gap-4 p-4 rounded-2xl border text-left transition-all duration-150 active:scale-[0.98] ${
+                            data.joining_as === value
+                                ? 'border-[#003E48] bg-[#003E48]/5'
+                                : 'border-gray-200 bg-white hover:border-gray-300'
+                        }`}
+                    >
+                        <span className="text-2xl flex-shrink-0 mt-0.5">{icon}</span>
+                        <div className="flex-1">
+                            <p className={`font-semibold text-sm ${data.joining_as === value ? 'text-[#003E48]' : 'text-slate-700'}`}>
+                                {label}
+                            </p>
+                            <p className="text-xs text-gray-500 mt-0.5">{desc}</p>
+                        </div>
+                        <div className={`w-5 h-5 rounded-full border flex-shrink-0 mt-0.5 flex items-center justify-center transition-colors ${
+                            data.joining_as === value ? 'border-[#003E48] bg-[#003E48]' : 'border-gray-300'
+                        }`}>
+                            {data.joining_as === value && (
+                                <div className="w-2 h-2 rounded-full bg-white" />
+                            )}
+                        </div>
+                    </button>
+                ))}
+            </div>
+
+            {errors.map((err) => (
+                <p key={err} className="text-red-500 text-sm mt-3 font-medium">{err}</p>
+            ))}
+        </div>
+    );
+}
+
+export default Step1JoiningAs;
