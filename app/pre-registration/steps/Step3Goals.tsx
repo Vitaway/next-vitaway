@@ -44,16 +44,16 @@ function Step3Goals({ data, onChange }: Props) {
                             onClick={() => toggleGoal(value)}
                             className={`flex flex-col items-center justify-center gap-2 p-4 rounded-2xl border text-center transition-all duration-150 active:scale-[0.97] min-h-[100px] ${
                                 selected
-                                    ? 'border-[#003E48] bg-[#003E48]/5'
+                                    ? 'border-[#E85A2E] bg-[#E85A2E]/5'
                                     : 'border-gray-200 bg-white hover:border-gray-300'
                             }`}
                         >
-                            <span className={selected ? 'text-[#003E48]' : 'text-gray-400'}>{icon}</span>
-                            <span className={`text-xs font-semibold leading-tight ${selected ? 'text-[#003E48]' : 'text-slate-600'}`}>
+                            <span className={selected ? 'text-[#E85A2E]' : 'text-gray-400'}>{icon}</span>
+                            <span className={`text-xs font-semibold leading-tight ${selected ? 'text-[#E85A2E]' : 'text-slate-600'}`}>
                                 {label}
                             </span>
                             {selected && (
-                                <div className="w-4 h-4 rounded-full bg-[#003E48] flex items-center justify-center">
+                                <div className="w-4 h-4 rounded-full bg-[#E85A2E] flex items-center justify-center">
                                     <Check className="w-2.5 h-2.5 text-white" strokeWidth={3} />
                                 </div>
                             )}
@@ -69,19 +69,19 @@ function Step3Goals({ data, onChange }: Props) {
                     onClick={() => toggleGoal('other')}
                     className={`w-full flex items-center gap-3 p-4 rounded-2xl border text-left transition-all duration-150 ${
                         goals.includes('other')
-                            ? 'border-[#003E48] bg-[#003E48]/5'
+                            ? 'border-[#E85A2E] bg-[#E85A2E]/5'
                             : 'border-gray-200 bg-white hover:border-gray-300'
                     }`}
                 >
-                    <Sparkles className={`w-5 h-5 flex-shrink-0 ${goals.includes('other') ? 'text-[#003E48]' : 'text-gray-400'}`} />
-                    <span className={`text-sm font-semibold ${goals.includes('other') ? 'text-[#003E48]' : 'text-slate-600'}`}>
+                    <Sparkles className={`w-5 h-5 flex-shrink-0 ${goals.includes('other') ? 'text-[#E85A2E]' : 'text-gray-400'}`} />
+                    <span className={`text-sm font-semibold ${goals.includes('other') ? 'text-[#E85A2E]' : 'text-slate-600'}`}>
                         Other wellness goals
                     </span>
                 </button>
 
                 {goals.includes('other') && (
                     <textarea
-                        className="mt-2 w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-slate-700 bg-gray-50 focus:outline-none focus:border-[#003E48] focus:bg-white resize-none transition-colors"
+                        className="mt-2 w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-slate-700 bg-gray-50 focus:outline-none focus:border-[#E85A2E] focus:bg-white resize-none transition-colors"
                         rows={3}
                         placeholder="Tell us more about your other goals..."
                         value={data.wellness_goals_other || ''}

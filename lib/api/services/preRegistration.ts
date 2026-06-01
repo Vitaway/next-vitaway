@@ -30,6 +30,9 @@ export const preRegistrationService = {
             if (data.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
                 errors.push('Please provide a valid email address.');
             }
+            if (!data.organization_id && (!data.organization_other || data.organization_other.trim().length < 2)) {
+                errors.push('Please select an organization or enter a custom organization name.');
+            }
             return errors;
         },
 

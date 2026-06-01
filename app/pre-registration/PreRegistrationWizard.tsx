@@ -24,13 +24,12 @@ function ProgressDots({ current, total }: { current: number; total: number }) {
             {Array.from({ length: total }).map((_, i) => (
                 <div
                     key={i}
-                    className={`rounded-full transition-all duration-300 ${
-                        i < current
-                            ? 'bg-[#003E48] w-2 h-2'
+                    className={`rounded-full transition-all duration-300 ${i < current
+                            ? 'bg-[#E85A2E] w-2 h-2'
                             : i === current
-                            ? 'bg-[#003E48] w-5 h-2'
-                            : 'bg-gray-200 w-2 h-2'
-                    }`}
+                                ? 'bg-[#E85A2E] w-5 h-2'
+                                : 'bg-gray-200 w-2 h-2'
+                        }`}
                 />
             ))}
         </div>
@@ -54,9 +53,9 @@ function PreRegistrationWizard() {
         switch (step) {
             case 1: return preRegistrationService.validate.step1(data);
             case 2: return preRegistrationService.validate.step2(data);
-        case 3: return preRegistrationService.validate.step3();
-        case 4: return preRegistrationService.validate.step4();
-        case 5: return preRegistrationService.validate.step5();
+            case 3: return preRegistrationService.validate.step3();
+            case 4: return preRegistrationService.validate.step4();
+            case 5: return preRegistrationService.validate.step5();
             case 6: return preRegistrationService.validate.step6(data);
             default: return [];
         }
@@ -106,7 +105,7 @@ function PreRegistrationWizard() {
     // Welcome screen
     if (step === 0) {
         return (
-            <div className="min-h-screen bg-gradient-to-b from-[#003E48]/5 to-white flex items-start justify-center px-4 py-8">
+            <div className="min-h-screen bg-gradient-to-b from-[#E85A2E]/5 to-white flex items-start justify-center px-4 py-8">
                 <div className="w-full max-w-md">
                     <WelcomeStep onStart={() => setStep(1)} />
                 </div>
@@ -130,7 +129,7 @@ function PreRegistrationWizard() {
     const isLastStep = step === 6;
 
     return (
-        <div className="min-h-screen bg-gradient-to-b from-[#003E48]/3 to-white">
+        <div className="min-h-screen bg-gradient-to-b from-[#E85A2E]/3 to-white">
             {/* Header bar */}
             <div className="sticky top-0 z-10 bg-white/90 backdrop-blur-sm border-b border-gray-100 px-4 py-3">
                 <div className="max-w-md mx-auto flex items-center justify-between">
@@ -155,7 +154,7 @@ function PreRegistrationWizard() {
             {/* Progress bar */}
             <div className="h-1 bg-gray-100">
                 <div
-                    className="h-full bg-gradient-to-r from-[#003E48] to-[#005f70] transition-all duration-500"
+                    className="h-full bg-gradient-to-r from-[#E85A2E] to-[#005f70] transition-all duration-500"
                     style={{ width: `${(step / TOTAL_FORM_STEPS) * 100}%` }}
                 />
             </div>
@@ -185,13 +184,13 @@ function PreRegistrationWizard() {
                     <button
                         onClick={handleNext}
                         disabled={loading}
-                        className="w-full py-4 rounded-2xl bg-gradient-to-b from-[#003E48] to-[#282e33] text-white font-semibold text-base shadow-lg disabled:opacity-60 active:scale-[0.98] transition-all duration-150"
+                        className="w-full py-4 rounded-2xl bg-gradient-to-b from-[#E85A2E] to-[#E85A2E] text-white font-semibold text-base shadow-lg disabled:opacity-60 active:scale-[0.98] transition-all duration-150"
                     >
                         {loading
                             ? 'Submitting…'
                             : isLastStep
-                            ? 'Submit Registration'
-                            : 'Continue'}
+                                ? 'Submit Registration'
+                                : 'Continue'}
                     </button>
                 </div>
             </div>

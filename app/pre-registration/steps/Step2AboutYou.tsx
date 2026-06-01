@@ -1,7 +1,9 @@
 'use client';
 
-import React from 'react';
-import { PreRegistrationPayload } from '@/lib/api/types';
+import React, { useEffect, useState } from 'react';
+import { Building2 } from 'lucide-react';
+import { PreRegistrationPayload, Organization } from '@/lib/api/types';
+import { organizationService } from '@/lib/api/services/organizations';
 import TextInput from '@/app/components/inputs/TextInput';
 
 interface Props {
@@ -11,10 +13,76 @@ interface Props {
 }
 
 function Step2AboutYou({ data, errors, onChange }: Props) {
+    const [organizations, setOrganizations] = useState<Organization[]>([]);
+    const [orgsLoading, setOrgsLoading] = useState(true);
+    const [orgsError, setOrgsError] = useState('');
+    const [showCustomOrganization, setShowCustomOrganization] = useState(
+        () => Boolean(data.organization_other && !data.organization_id)
+    );
+
+    useEffect(() => {
+        let cancelled = false;
+
+        organizationService
+            .list()
+            .then((response) => {
+                if (!cancelled) {
+                    setOrganizations(response.data || []);
+                }
+            })
+            .catch(() => {
+                if (!cancelled) {
+                    setOrgsError('Could not load organizations. You can enter a custom name below.');
+                }
+            })
+            .finally(() => {
+                if (!cancelled) {
+                    setOrgsLoading(false);
+                }
+            });
+
+        return () => {
+            cancelled = true;
+        };
+    }, []);
+
     const errorFor = (field: string) => {
         const msg = errors.find((e) => e.toLowerCase().includes(field.toLowerCase()));
         return msg;
     };
+
+    const organizationSelectValue = showCustomOrganization
+        ? 'other'
+        : data.organization_id
+          ? String(data.organization_id)
+          : '';
+
+    const handleOrganizationChange = (value: string) => {
+        if (value === 'other') {
+            setShowCustomOrganization(true);
+            onChange({
+                organization_id: null,
+                organization_other: data.organization_other || '',
+            });
+            return;
+        }
+
+        setShowCustomOrganization(false);
+
+        if (value === '') {
+            onChange({ organization_id: null, organization_other: null });
+            return;
+        }
+
+        onChange({
+            organization_id: Number(value),
+            organization_other: null,
+        });
+    };
+
+    const organizationError =
+        errorFor('organization') ||
+        errors.find((e) => e.toLowerCase().includes('custom organization'));
 
     return (
         <div>
@@ -74,6 +142,59 @@ function Step2AboutYou({ data, errors, onChange }: Props) {
                     </svg>
                 </TextInput>
 
+                {/* Organization */}
+                <div className="mt-5">
+                    <label className="font-semibold text-slate-700 capitalize text-md">
+                        Organization *
+                    </label>
+                    <div className="mt-2 relative text-gray-400 focus-within:text-gray-600 transition-all duration-200">
+                        <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                            <Building2 className="w-[18px] h-[18px]" />
+                        </div>
+                        <select
+                            value={organizationSelectValue}
+                            onChange={(e) => handleOrganizationChange(e.target.value)}
+                            disabled={orgsLoading}
+                            className={`block w-full py-3 pl-12 pr-4 transition-all duration-200 border rounded-2xl focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600 appearance-none bg-no-repeat bg-[length:16px] bg-[right_12px_center] bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2024%2024%27%20fill=%27none%27%20stroke=%27%236b7280%27%20stroke-width=%272%27%20stroke-linecap=%27round%27%20stroke-linejoin=%27round%27%3e%3cpath%20d=%27m6%209%206%206%206-6%27/%3e%3c/svg%3e')] ${
+                                organizationError
+                                    ? 'text-red-700 border-red-200 bg-red-50'
+                                    : 'text-black border-gray-200 bg-gray-50'
+                            }`}
+                        >
+                            <option value="">
+                                {orgsLoading ? 'Loading organizations...' : 'Select your organization'}
+                            </option>
+                            {organizations.map((org) => (
+                                <option key={org.id} value={org.id}>
+                                    {org.name}
+                                    {org.city ? ` (${org.city})` : ''}
+                                </option>
+                            ))}
+                            <option value="other">Other (type custom name)</option>
+                        </select>
+                    </div>
+                    {organizationError && (
+                        <small className="text-red-500 font-semibold mt-2 flex items-center">
+                            <span className="ml-2">{organizationError}</span>
+                        </small>
+                    )}
+                    {orgsError && !organizationError && (
+                        <p className="text-amber-600 text-xs mt-2">{orgsError}</p>
+                    )}
+                </div>
+
+                {showCustomOrganization && (
+                    <TextInput
+                        label="Organization Name *"
+                        placeholder="Enter your organization name"
+                        value={data.organization_other || ''}
+                        errorMessage={organizationError}
+                        onChange={(v) => onChange({ organization_other: v, organization_id: null })}
+                    >
+                        <Building2 className="w-[18px] h-[18px]" />
+                    </TextInput>
+                )}
+
                 <TextInput
                     label="City / Region"
                     placeholder="e.g. Kigali, Rwanda"
@@ -87,7 +208,7 @@ function Step2AboutYou({ data, errors, onChange }: Props) {
                 </TextInput>
             </div>
 
-            {errors.filter((e) => !['name', 'phone', 'email'].some((k) => e.toLowerCase().includes(k))).map((err) => (
+            {errors.filter((e) => !['name', 'phone', 'email', 'organization', 'custom organization'].some((k) => e.toLowerCase().includes(k))).map((err) => (
                 <p key={err} className="text-red-500 text-sm mt-2 font-medium">{err}</p>
             ))}
         </div>

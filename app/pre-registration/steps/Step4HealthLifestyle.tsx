@@ -45,13 +45,13 @@ function SelectGrid({ options, selected, onSelect }: SelectGridProps) {
                     key={value}
                     type="button"
                     onClick={() => onSelect(value)}
-                    className={`flex flex-col p-3 rounded-xl text-left transition-all duration-150 active:scale-[0.97] ${
+                    className={`flex flex-col p-3 rounded-xl text-left transition-all duration-150 active:scale-[0.97] border ${
                         selected === value
-                            ? 'border-[#003E48] bg-[#003E48]/5'
+                            ? 'border-[#E85A2E] bg-[#E85A2E]/5'
                             : 'border-gray-200 bg-white hover:border-gray-300'
                     }`}
                 >
-                    <span className={`text-sm font-semibold ${selected === value ? 'text-[#003E48]' : 'text-slate-700'}`}>
+                    <span className={`text-sm font-semibold ${selected === value ? 'text-[#E85A2E]' : 'text-slate-700'}`}>
                         {label}
                     </span>
                     {desc && <span className="text-xs text-gray-400 mt-0.5">{desc}</span>}
@@ -96,16 +96,16 @@ function Step4HealthLifestyle({ data, onChange }: Props) {
                                 onClick={() => toggleCondition(cond)}
                                 className={`flex items-center gap-2 px-3 py-2.5 rounded-xl border text-left transition-all duration-150 ${
                                     selected
-                                        ? 'border-[#003E48] bg-[#003E48]/5'
+                                        ? 'border-[#E85A2E] bg-[#E85A2E]/5'
                                         : 'border-gray-200 bg-white hover:border-gray-300'
                                 }`}
                             >
                                 <div className={`w-4 h-4 rounded border flex-shrink-0 flex items-center justify-center transition-colors ${
-                                    selected ? 'border-[#003E48] bg-[#003E48]' : 'border-gray-300'
+                                    selected ? 'border-[#E85A2E] bg-[#E85A2E]' : 'border-gray-300'
                                 }`}>
                                     {selected && <Check className="w-2.5 h-2.5 text-white" strokeWidth={3} />}
                                 </div>
-                                <span className={`text-xs font-medium ${selected ? 'text-[#003E48]' : 'text-slate-600'}`}>
+                                <span className={`text-xs font-medium ${selected ? 'text-[#E85A2E]' : 'text-slate-600'}`}>
                                     {cond}
                                 </span>
                             </button>
@@ -143,9 +143,9 @@ function Step4HealthLifestyle({ data, onChange }: Props) {
                             key={opt}
                             type="button"
                             onClick={() => onChange({ smoking_status: opt })}
-                            className={`px-2 py-2.5 rounded-xl text-xs font-semibold transition-all active:scale-[0.97] ${
+                            className={`px-2 py-2.5 rounded-xl text-xs font-semibold transition-all border active:scale-[0.97] ${
                                 data.smoking_status === opt
-                                    ? 'border-[#003E48] bg-[#003E48]/5 text-[#003E48]'
+                                    ? 'border-[#E85A2E] bg-[#E85A2E]/5 text-[#E85A2E]'
                                     : 'border-gray-200 text-slate-600 hover:border-gray-300'
                             }`}
                         >
@@ -164,9 +164,9 @@ function Step4HealthLifestyle({ data, onChange }: Props) {
                             key={opt}
                             type="button"
                             onClick={() => onChange({ alcohol_status: opt })}
-                            className={`px-2 py-2.5 rounded-xl text-xs font-semibold transition-all active:scale-[0.97] ${
+                            className={`px-2 py-2.5 rounded-xl text-xs font-semibold border transition-all active:scale-[0.97] ${
                                 data.alcohol_status === opt
-                                    ? 'border-[#003E48] bg-[#003E48]/5 text-[#003E48]'
+                                    ? 'border-[#E85A2E] bg-[#E85A2E]/5 text-[#E85A2E]'
                                     : 'border-gray-200 text-slate-600 hover:border-gray-300'
                             }`}
                         >

@@ -77,12 +77,12 @@ function Step5Preferences({ data, onChange }: Props) {
                                 onClick={() => onChange({ preferred_communication: value })}
                                 className={`flex items-center gap-3 p-3 rounded-xl border text-left transition-all active:scale-[0.97] ${
                                     selected
-                                        ? 'border-[#003E48] bg-[#003E48]/5'
+                                        ? 'border-[#E85A2E] bg-[#E85A2E]/5'
                                         : 'border-gray-200 bg-white hover:border-gray-300'
                                 }`}
                             >
-                                <span className={selected ? 'text-[#003E48]' : 'text-gray-400'}>{icon}</span>
-                                <span className={`text-sm font-semibold ${selected ? 'text-[#003E48]' : 'text-slate-600'}`}>
+                                <span className={selected ? 'text-[#E85A2E]' : 'text-gray-400'}>{icon}</span>
+                                <span className={`text-sm font-semibold ${selected ? 'text-[#E85A2E]' : 'text-slate-600'}`}>
                                     {label}
                                 </span>
                             </button>
@@ -104,12 +104,12 @@ function Step5Preferences({ data, onChange }: Props) {
                                 onClick={() => onChange({ appointment_preference: value })}
                                 className={`flex flex-col items-center justify-center gap-1.5 p-3 rounded-xl border transition-all active:scale-[0.97] ${
                                     selected
-                                        ? 'border-[#003E48] bg-[#003E48]/5'
+                                        ? 'border-[#E85A2E] bg-[#E85A2E]/5'
                                         : 'border-gray-200 bg-white hover:border-gray-300'
                                 }`}
                             >
-                                <span className={selected ? 'text-[#003E48]' : 'text-gray-400'}>{icon}</span>
-                                <span className={`text-xs font-semibold ${selected ? 'text-[#003E48]' : 'text-slate-600'}`}>
+                                <span className={selected ? 'text-[#E85A2E]' : 'text-gray-400'}>{icon}</span>
+                                <span className={`text-xs font-semibold ${selected ? 'text-[#E85A2E]' : 'text-slate-600'}`}>
                                     {label}
                                 </span>
                             </button>
@@ -131,16 +131,16 @@ function Step5Preferences({ data, onChange }: Props) {
                                 onClick={() => toggleDiet(value)}
                                 className={`flex items-center gap-2 px-3 py-2.5 rounded-xl border text-left transition-all active:scale-[0.97] ${
                                     selected
-                                        ? 'border-[#003E48] bg-[#003E48]/5'
+                                        ? 'border-[#E85A2E] bg-[#E85A2E]/5'
                                         : 'border-gray-200 bg-white hover:border-gray-300'
                                 }`}
                             >
                                 <div className={`w-4 h-4 rounded border flex-shrink-0 flex items-center justify-center transition-colors ${
-                                    selected ? 'border-[#003E48] bg-[#003E48]' : 'border-gray-300'
+                                    selected ? 'border-[#E85A2E] bg-[#E85A2E]' : 'border-gray-300'
                                 }`}>
                                     {selected && <Check className="w-2.5 h-2.5 text-white" strokeWidth={3} />}
                                 </div>
-                                <span className={`text-xs font-medium ${selected ? 'text-[#003E48]' : 'text-slate-600'}`}>
+                                <span className={`text-xs font-medium ${selected ? 'text-[#E85A2E]' : 'text-slate-600'}`}>
                                     {label}
                                 </span>
                             </button>

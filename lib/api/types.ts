@@ -125,6 +125,8 @@ export interface PreRegistrationPayload {
     phone_number: string;
     email?: string;
     location?: string;
+    organization_id?: number | null;
+    organization_other?: string | null;
     // Step 3
     wellness_goals?: string[];
     wellness_goals_other?: string;
@@ -148,6 +150,19 @@ export interface PreRegistrationPayload {
 export type PreRegistrationResponse = APIResponse<{
     reference_number: string;
 }>;
+
+/**
+ * Organization (public list for pre-registration)
+ */
+export interface Organization {
+    id: number;
+    name: string;
+    type: string;
+    city?: string | null;
+    country?: string | null;
+}
+
+export type OrganizationListResponse = APIResponse<Organization[]>;
 
 /**
  * Request State for hooks
