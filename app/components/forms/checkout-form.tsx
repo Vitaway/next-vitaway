@@ -283,7 +283,19 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
         } catch (error) {
             console.error('Payment init error:', error);
             setLoading(false);
-            
+
+            const axiosError = error as { response?: { status?: number; data?: { message?: string } } };
+            const status = axiosError.response?.status;
+            const apiMessage = axiosError.response?.data?.message;
+
+            // CSRF/session expiry cannot be fixed by retrying the same request
+            if (status === 419) {
+                setRetryCount(0);
+                setMessageType('error');
+                setMessage(apiMessage || 'Your session expired. Please refresh the page and try again.');
+                return;
+            }
+
             if (retryCount < MAX_RETRIES) {
                 setRetryCount(prev => prev + 1);
                 setMessageType('error');
@@ -291,7 +303,7 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
                 setTimeout(() => processPayment(), 2000);
             } else {
                 setMessageType('error');
-                setMessage('Payment initialization failed. Please check your connection and try again.');
+                setMessage(apiMessage || 'Payment initialization failed. Please check your connection and try again.');
                 setRetryCount(0);
             }
         }
