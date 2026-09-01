@@ -1,5 +1,6 @@
 import { post } from '../client';
 import { PreRegistrationPayload, PreRegistrationResponse } from '../types';
+import { isValidFullPhone } from '@/lib/phone';
 
 export const preRegistrationService = {
     submit: async (payload: PreRegistrationPayload): Promise<PreRegistrationResponse> => {
@@ -24,7 +25,7 @@ export const preRegistrationService = {
             if (!data.full_name || data.full_name.trim().length < 2) {
                 errors.push('Full name must be at least 2 characters.');
             }
-            if (!data.phone_number || data.phone_number.trim().length < 8) {
+            if (!data.phone_number || !isValidFullPhone(data.phone_number)) {
                 errors.push('Please provide a valid phone number.');
             }
             if (data.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {

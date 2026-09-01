@@ -92,12 +92,39 @@ export interface AppointmentPayload {
     type: string;
     appointment_date: string;
     appointment_time: string;
+    organization_id?: number | null;
+    organization_other?: string | null;
+    referral_code?: string | null;
 }
 
 export type AppointmentResponse = APIResponse<{
     id: string;
     status: string;
 }>;
+
+/**
+ * Referral code resolve (public booking attribution)
+ */
+export interface ReferralResolveResult {
+    type: 'coach' | 'organization';
+    organization: { id: number; name: string } | null;
+    coach: { id: number; name: string } | null;
+}
+
+export type ReferralResolveResponse = APIResponse<ReferralResolveResult>;
+
+/**
+ * Coach option for public booking attribution dropdown
+ */
+export interface ReferralCoach {
+    id: number;
+    first_name: string;
+    referral_code: string;
+    organization_id: number | null;
+    organization_name: string | null;
+}
+
+export type ReferralCoachListResponse = APIResponse<ReferralCoach[]>;
 
 /**
  * Contact Form Types
