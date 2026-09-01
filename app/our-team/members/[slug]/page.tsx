@@ -139,7 +139,7 @@ export default function MemberPage() {
   return (
     <GuestLayout>
       <Head>
-        <title>{member.name} — Vitaway Health</title>
+        <title>{member.name}; Vitaway Health</title>
         <meta name="description" content={member.bio || member.description} />
         <meta name="keywords" content="Vitaway, Our Team, Healthcare, Medical Professionals" />
         <meta property="og:title" content={member.name} />

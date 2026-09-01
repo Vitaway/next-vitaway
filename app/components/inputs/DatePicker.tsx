@@ -119,7 +119,7 @@ function defaultViewDate(defaultViewYearsAgo: number, maxDate: Date): Date {
 }
 
 const headerSelectClass =
-    'rounded-lg border border-gray-200 bg-gray-50 py-1.5 pl-2 pr-7 text-sm font-semibold text-slate-700 focus:border-blue-600 focus:bg-white focus:outline-none appearance-none bg-no-repeat bg-[length:14px] bg-[right_6px_center] bg-[url(\'data:image/svg+xml;charset=UTF-8,%3csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2024%2024%27%20fill=%27none%27%20stroke=%27%236b7280%27%20stroke-width=%272%27%20stroke-linecap=%27round%27%20stroke-linejoin=%27round%27%3e%3cpath%20d=%27m6%209%206%206%206-6%27/%3e%3c/svg%3e\')]';
+    'rounded-lg border border-gray-200 bg-gray-50 py-1.5 pl-2 pr-7 text-sm font-semibold text-slate-700 focus:border-blue-600 focus:bg-white focus:outline-none select-chevron-sm';
 
 function DatePicker({
     label = 'Date',

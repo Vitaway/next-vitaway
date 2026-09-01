@@ -174,7 +174,7 @@ function Diary() {
                     Health benefit of Dairy group
                   </h2>
                   <p className='my-8'>
-                    Consuming dairy products provides health benefits — especially building and maintaining strong bones. Foods in the Dairy Group provide nutrients that are vital for health and maintenance of your body. These nutrients include calcium, potassium, vitamin D, and protein.
+                    Consuming dairy products provides health benefits; especially building and maintaining strong bones. Foods in the Dairy Group provide nutrients that are vital for health and maintenance of your body. These nutrients include calcium, potassium, vitamin D, and protein.
                   </p>
                   <p className='my-8'>
                     Calcium and vitamin D are important nutrients at any age. Intake of dairy products that contain these nutrients help to:

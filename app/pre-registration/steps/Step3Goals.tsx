@@ -32,7 +32,7 @@ function Step3Goals({ data, onChange }: Props) {
     return (
         <div>
             <h2 className="text-xl font-bold text-slate-800">Your wellness goals</h2>
-            <p className="text-gray-500 text-sm mt-1">Select all that apply — we&apos;ll tailor your programme accordingly</p>
+            <p className="text-gray-500 text-sm mt-1">Select all that apply; we&apos;ll tailor your programme accordingly</p>
 
             <div className="mt-5 grid grid-cols-2 gap-3">
                 {GOALS.map(({ value, label, icon }) => {
