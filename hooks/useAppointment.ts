@@ -38,9 +38,26 @@ export const useAppointment = (): UseAppointmentReturn => {
             setSuccess('Appointment booked successfully! We will contact you soon.');
             return true;
         } catch (err) {
-            const errorMessage = err instanceof APIError 
-                ? err.message 
-                : 'Failed to book appointment. Please try again later.';
+            let errorMessage =
+                err instanceof APIError
+                    ? err.message
+                    : 'Failed to book appointment. Please try again later.';
+
+            if (err instanceof APIError && err.data && typeof err.data === 'object') {
+                const payload = err.data as {
+                    message?: string;
+                    errors?: Record<string, string[]>;
+                };
+                const fieldErrors = payload.errors
+                    ? Object.values(payload.errors).flat()
+                    : [];
+                if (fieldErrors.length > 0) {
+                    errorMessage = fieldErrors.join(', ');
+                } else if (payload.message) {
+                    errorMessage = payload.message;
+                }
+            }
+
             setError(errorMessage);
             console.error('Error creating appointment:', err);
             return false;
