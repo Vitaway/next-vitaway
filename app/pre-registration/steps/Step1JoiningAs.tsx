@@ -3,6 +3,7 @@
 import React from 'react';
 import { User, Dumbbell, Briefcase } from 'lucide-react';
 import { PreRegistrationPayload } from '@/lib/api/types';
+import { RequiredMark } from '@/app/components/inputs/FormLabel';
 
 interface Props {
     data: Partial<PreRegistrationPayload>;
@@ -39,7 +40,10 @@ const OPTIONS: {
 function Step1JoiningAs({ data, errors, onChange }: Props) {
     return (
         <div>
-            <h2 className="text-xl font-bold text-slate-800">How are you joining us?</h2>
+            <h2 className="text-xl font-bold text-slate-800">
+                <RequiredMark />
+                How are you joining us?
+            </h2>
             <p className="text-gray-500 text-sm mt-1">Select the option that best describes you</p>
 
             <div className="mt-5 space-y-3">

@@ -3,6 +3,7 @@
 import React from 'react';
 import { Check } from 'lucide-react';
 import { PreRegistrationPayload } from '@/lib/api/types';
+import { RequiredMark } from '@/app/components/inputs/FormLabel';
 
 interface Props {
     data: Partial<PreRegistrationPayload>;
@@ -44,7 +45,7 @@ function Step6Consent({ data, errors, onChange }: Props) {
         <div>
             <h2 className="text-xl font-bold text-slate-800">Review & consent</h2>
             <p className="text-gray-500 text-sm mt-1">
-                Please read and acknowledge each item before submitting
+                Please read and acknowledge each required item before submitting
             </p>
 
             <div className="mt-5 space-y-3">
@@ -70,6 +71,7 @@ function Step6Consent({ data, errors, onChange }: Props) {
                             </div>
                             <div>
                                 <p className={`font-semibold text-sm ${checked ? 'text-green-700' : 'text-slate-700'}`}>
+                                    <RequiredMark />
                                     {title}
                                 </p>
                                 <p className="text-xs text-gray-500 mt-1 leading-relaxed">

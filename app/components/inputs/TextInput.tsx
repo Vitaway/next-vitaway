@@ -1,12 +1,14 @@
-"use client"; 
+"use client";
 
 import React from "react";
+import FormLabel from "./FormLabel";
 
 interface TextInputProps {
   label: string;
   placeholder: string;
   value: string;
   type?: string;
+  required?: boolean;
   errorMessage?: string;
   onChange: (value: string) => void;
   onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
@@ -19,6 +21,7 @@ const TextInput: React.FC<TextInputProps> = ({
   placeholder,
   value,
   type = "text",
+  required = false,
   errorMessage,
   onChange,
   onKeyDown,
@@ -27,7 +30,7 @@ const TextInput: React.FC<TextInputProps> = ({
 }) => {
   return (
     <div className="mt-5">
-      <label className="font-semibold text-slate-700 capitalize text-md">{label}</label>
+      <FormLabel required={required}>{label}</FormLabel>
 
       <div className="mt-2 relative text-gray-400 focus-within:text-gray-600 transition-all duration-200">
         {children && (

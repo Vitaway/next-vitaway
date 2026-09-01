@@ -1,4 +1,9 @@
-import { CountryDialCode } from './country-codes';
+import {
+    COUNTRY_DIAL_CODES,
+    CountryDialCode,
+    DEFAULT_COUNTRY_ISO2,
+    getCountryByIso2,
+} from './country-codes';
 
 export function normalizeLocalPhoneDigits(localPhone: string): string {
     let digits = localPhone.replace(/\D/g, '');
@@ -42,4 +47,44 @@ export function phonePlaceholder(country: CountryDialCode): string {
     }
 
     return 'Phone number';
+}
+
+export function parseStoredPhone(phone: string): { iso2: string; local: string } {
+    const trimmed = phone.trim();
+
+    if (!trimmed) {
+        return { iso2: DEFAULT_COUNTRY_ISO2, local: '' };
+    }
+
+    if (trimmed.startsWith('+')) {
+        const sortedCountries = [...COUNTRY_DIAL_CODES].sort(
+            (a, b) => b.dialCode.length - a.dialCode.length,
+        );
+
+        for (const country of sortedCountries) {
+            const prefix = `+${country.dialCode}`;
+            if (trimmed.startsWith(prefix)) {
+                return {
+                    iso2: country.iso2,
+                    local: normalizeLocalPhoneDigits(trimmed.slice(prefix.length)),
+                };
+            }
+        }
+    }
+
+    return {
+        iso2: DEFAULT_COUNTRY_ISO2,
+        local: normalizeLocalPhoneDigits(trimmed),
+    };
+}
+
+export function isValidFullPhone(phone: string): boolean {
+    const parsed = parseStoredPhone(phone);
+    const country = getCountryByIso2(parsed.iso2);
+
+    if (!country) {
+        return false;
+    }
+
+    return isValidLocalPhone(parsed.local, country);
 }

@@ -5,6 +5,9 @@ import { Building2 } from 'lucide-react';
 import { PreRegistrationPayload, Organization } from '@/lib/api/types';
 import { organizationService } from '@/lib/api/services/organizations';
 import TextInput from '@/app/components/inputs/TextInput';
+import DateOfBirthPicker from '@/app/components/inputs/DateOfBirthPicker';
+import PhoneInput from '@/app/components/inputs/PhoneInput';
+import FormLabel from '@/app/components/inputs/FormLabel';
 
 interface Props {
     data: Partial<PreRegistrationPayload>;
@@ -87,11 +90,15 @@ function Step2AboutYou({ data, errors, onChange }: Props) {
     return (
         <div>
             <h2 className="text-xl font-bold text-slate-800">About you</h2>
-            <p className="text-gray-500 text-sm mt-1">Tell us a little about yourself to create your profile</p>
+            <p className="text-gray-500 text-sm mt-1">
+                Tell us a little about yourself to create your profile. Fields marked with{' '}
+                <span className="text-red-500 font-semibold">*</span> are required.
+            </p>
 
             <div className="mt-5 space-y-1">
                 <TextInput
-                    label="Full Name *"
+                    label="Full Name"
+                    required
                     placeholder="e.g. Jane Doe"
                     value={data.full_name || ''}
                     errorMessage={errorFor('name')}
@@ -103,22 +110,18 @@ function Step2AboutYou({ data, errors, onChange }: Props) {
                     </svg>
                 </TextInput>
 
-                <TextInput
-                    label="Date of Birth"
-                    placeholder="YYYY-MM-DD"
-                    type="date"
+                <DateOfBirthPicker
                     value={data.date_of_birth || ''}
+                    errorMessage={errorFor('birth') || errorFor('date')}
                     onChange={(v) => onChange({ date_of_birth: v })}
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none">
                         <path d="M8 2v3M16 2v3M3.5 9.09h17M21 8.5V17c0 3-1.5 5-5 5H8c-3.5 0-5-2-5-5V8.5c0-3 1.5-5 5-5h8c3.5 0 5 2 5 5Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
-                </TextInput>
+                </DateOfBirthPicker>
 
-                <TextInput
-                    label="Phone Number *"
-                    placeholder="+250 7XX XXX XXX"
-                    type="tel"
+                <PhoneInput
+                    required
                     value={data.phone_number || ''}
                     errorMessage={errorFor('phone')}
                     onChange={(v) => onChange({ phone_number: v })}
@@ -126,7 +129,7 @@ function Step2AboutYou({ data, errors, onChange }: Props) {
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none">
                         <path d="M21.97 18.33c0 .36-.08.71-.25 1.05-.17.34-.39.66-.68.96-.49.54-1.03.8-1.6.8-.41 0-.85-.1-1.32-.31s-.97-.5-1.47-.89c-.52-.41-1.01-.86-1.48-1.34L13.1 16.6c-.48-.48-.92-.97-1.33-1.47-.4-.5-.69-1-.89-1.49-.2-.49-.3-.96-.3-1.4 0-.42.09-.82.27-1.18.18-.36.45-.69.81-.99.36-.3.75-.44 1.16-.44.16 0 .32.03.47.09.15.06.29.15.4.28l3.48 4.91" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
-                </TextInput>
+                </PhoneInput>
 
                 <TextInput
                     label="Email Address"
@@ -142,11 +145,8 @@ function Step2AboutYou({ data, errors, onChange }: Props) {
                     </svg>
                 </TextInput>
 
-                {/* Organization */}
                 <div className="mt-5">
-                    <label className="font-semibold text-slate-700 capitalize text-md">
-                        Organization *
-                    </label>
+                    <FormLabel required>Organization</FormLabel>
                     <div className="mt-2 relative text-gray-400 focus-within:text-gray-600 transition-all duration-200">
                         <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                             <Building2 className="w-[18px] h-[18px]" />
@@ -185,7 +185,8 @@ function Step2AboutYou({ data, errors, onChange }: Props) {
 
                 {showCustomOrganization && (
                     <TextInput
-                        label="Organization Name *"
+                        label="Organization Name"
+                        required
                         placeholder="Enter your organization name"
                         value={data.organization_other || ''}
                         errorMessage={organizationError}
@@ -208,7 +209,7 @@ function Step2AboutYou({ data, errors, onChange }: Props) {
                 </TextInput>
             </div>
 
-            {errors.filter((e) => !['name', 'phone', 'email', 'organization', 'custom organization'].some((k) => e.toLowerCase().includes(k))).map((err) => (
+            {errors.filter((e) => !['name', 'phone', 'email', 'organization', 'custom organization', 'birth', 'date'].some((k) => e.toLowerCase().includes(k))).map((err) => (
                 <p key={err} className="text-red-500 text-sm mt-2 font-medium">{err}</p>
             ))}
         </div>

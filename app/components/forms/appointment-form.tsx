@@ -13,6 +13,7 @@ import {
     getDefaultCountry,
 } from '@/lib/country-codes';
 import { formatFullPhone, isValidLocalPhone, phonePlaceholder } from '@/lib/phone';
+import DatePicker from '@/app/components/inputs/DatePicker';
 
 const inputClass =
     'w-full h-12 px-4 font-normal transition duration-200 bg-white border border-gray-300 rounded appearance-none focus:border-[#003E48] focus:outline-none focus:ring-1 focus:ring-[#003E48]';
@@ -31,8 +32,8 @@ function FormLabel({
 }) {
     return (
         <label className={labelClass}>
+            {required ? <span className="text-red-500 mr-0.5">*</span> : null}
             {children}
-            {required ? <span className="text-red-500 ml-0.5">*</span> : null}
         </label>
     );
 }
@@ -435,17 +436,18 @@ function AppointmentForm() {
                     <h4 className={sectionTitleClass}>Appointment</h4>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
-                            <FormLabel required>Appointment Date</FormLabel>
-                            <input
+                            <DatePicker
+                                className="mt-0"
+                                label="Appointment Date"
+                                required
                                 value={appointmentDate}
-                                onChange={(e) => {
-                                    setAppointmentDate(e.target.value);
+                                placeholder="Select appointment date"
+                                defaultViewYearsAgo={0}
+                                minDate={new Date()}
+                                onChange={(v) => {
+                                    setAppointmentDate(v);
                                     setAppointmentTime('');
                                 }}
-                                type="date"
-                                className={inputClass}
-                                required
-                                min={new Date().toISOString().split('T')[0]}
                             />
                         </div>
                         <div>
