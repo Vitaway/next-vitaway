@@ -1,3 +1,4 @@
+import { isSlotBookable } from '@/lib/appointment-slots';
 import { post } from '../client';
 import { AppointmentPayload, AppointmentResponse } from '../types';
 
@@ -27,24 +28,12 @@ export const appointmentService = {
             errors.push('Name must be at least 2 characters long');
         }
 
-        if (!payload.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.email)) {
+        if (payload.email && payload.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.email)) {
             errors.push('Please provide a valid email address');
         }
 
         if (!payload.phone || payload.phone.trim().length < 10) {
             errors.push('Please provide a valid phone number');
-        }
-
-        if (!payload.subject || payload.subject.trim().length < 3) {
-            errors.push('Subject must be at least 3 characters long');
-        }
-
-        if (!payload.message || payload.message.trim().length < 10) {
-            errors.push('Message must be at least 10 characters long');
-        }
-
-        if (!payload.type) {
-            errors.push('Please select an appointment type');
         }
 
         if (!payload.appointment_date) {
@@ -53,6 +42,11 @@ export const appointmentService = {
 
         if (!payload.appointment_time) {
             errors.push('Please select an appointment time');
+        } else if (
+            payload.appointment_date &&
+            !isSlotBookable(payload.appointment_date, payload.appointment_time)
+        ) {
+            errors.push('Please pick a time at least one hour from now');
         }
 
         return errors;

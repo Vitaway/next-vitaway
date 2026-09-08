@@ -14,7 +14,7 @@ interface FormLabelProps {
 
 function FormLabel({ children, required = false, className = '' }: FormLabelProps) {
     return (
-        <label className={`font-semibold text-slate-700 capitalize text-md ${className}`}>
+        <label className={`font-semibold text-[#003E48] capitalize text-md ${className}`}>
             {required ? <RequiredMark /> : null}
             {children}
         </label>
