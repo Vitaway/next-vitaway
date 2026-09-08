@@ -8,6 +8,7 @@ interface Props {
     data: Partial<PreRegistrationPayload>;
     errors?: string[];
     onChange: (data: Partial<PreRegistrationPayload>) => void;
+    hideHeader?: boolean;
 }
 
 const COMMUNICATION: {
@@ -42,7 +43,7 @@ const DIETARY = [
     { value: 'keto', label: 'Keto' },
 ];
 
-function Step5Preferences({ data, onChange }: Props) {
+function Step5Preferences({ data, onChange, hideHeader = false }: Props) {
     const dietary = data.dietary_preferences || [];
 
     const toggleDiet = (value: string) => {
@@ -59,14 +60,16 @@ function Step5Preferences({ data, onChange }: Props) {
 
     return (
         <div className="space-y-6">
+            {hideHeader ? null : (
             <div>
-                <h2 className="text-xl font-bold text-slate-800">Your preferences</h2>
-                <p className="text-gray-500 text-sm mt-1">Help us connect with you in the way that works best</p>
+                <h2 className="text-xl font-bold text-[#003E48]">Your <span className="font-accent">preferences</span></h2>
+                <p className="mt-1 text-sm text-[#003E48]/60">Help us connect with you in the way that works best</p>
             </div>
+            )}
 
             {/* Communication */}
             <div>
-                <p className="font-semibold text-slate-700 text-sm mb-2">Preferred way to contact you</p>
+                <p className="mb-2 text-sm font-semibold text-[#003E48]">Preferred way to contact you</p>
                 <div className="grid grid-cols-2 gap-2">
                     {COMMUNICATION.map(({ value, label, icon }) => {
                         const selected = data.preferred_communication === value;
@@ -75,14 +78,14 @@ function Step5Preferences({ data, onChange }: Props) {
                                 key={value}
                                 type="button"
                                 onClick={() => onChange({ preferred_communication: value })}
-                                className={`flex items-center gap-3 p-3 rounded-xl border text-left transition-all active:scale-[0.97] ${
+                                className={`flex items-center gap-3 rounded-[24px] border p-3 text-left transition-all active:scale-[0.97] ${
                                     selected
-                                        ? 'border-[#E85A2E] bg-[#E85A2E]/5'
-                                        : 'border-gray-200 bg-white hover:border-gray-300'
+                                        ? 'border-[#E85A2E] bg-[#F6F3EE]'
+                                        : 'border-transparent bg-[#F6F3EE] hover:border-[#003E48]/20'
                                 }`}
                             >
-                                <span className={selected ? 'text-[#E85A2E]' : 'text-gray-400'}>{icon}</span>
-                                <span className={`text-sm font-semibold ${selected ? 'text-[#E85A2E]' : 'text-slate-600'}`}>
+                                <span className={selected ? 'text-[#E85A2E]' : 'text-[#003E48]/40'}>{icon}</span>
+                                <span className={`text-sm font-semibold ${selected ? 'text-[#E85A2E]' : 'text-[#003E48]'}`}>
                                     {label}
                                 </span>
                             </button>
@@ -93,7 +96,7 @@ function Step5Preferences({ data, onChange }: Props) {
 
             {/* Appointment preference */}
             <div>
-                <p className="font-semibold text-slate-700 text-sm mb-2">Preferred appointment time</p>
+                <p className="mb-2 text-sm font-semibold text-[#003E48]">Preferred appointment time</p>
                 <div className="grid grid-cols-3 gap-2">
                     {APPOINTMENT.map(({ value, label, icon }) => {
                         const selected = data.appointment_preference === value;
@@ -102,14 +105,14 @@ function Step5Preferences({ data, onChange }: Props) {
                                 key={value}
                                 type="button"
                                 onClick={() => onChange({ appointment_preference: value })}
-                                className={`flex flex-col items-center justify-center gap-1.5 p-3 rounded-xl border transition-all active:scale-[0.97] ${
+                                className={`flex flex-col items-center justify-center gap-1.5 rounded-[24px] border p-3 transition-all active:scale-[0.97] ${
                                     selected
-                                        ? 'border-[#E85A2E] bg-[#E85A2E]/5'
-                                        : 'border-gray-200 bg-white hover:border-gray-300'
+                                        ? 'border-[#E85A2E] bg-[#F6F3EE]'
+                                        : 'border-transparent bg-[#F6F3EE] hover:border-[#003E48]/20'
                                 }`}
                             >
-                                <span className={selected ? 'text-[#E85A2E]' : 'text-gray-400'}>{icon}</span>
-                                <span className={`text-xs font-semibold ${selected ? 'text-[#E85A2E]' : 'text-slate-600'}`}>
+                                <span className={selected ? 'text-[#E85A2E]' : 'text-[#003E48]/40'}>{icon}</span>
+                                <span className={`text-xs font-semibold ${selected ? 'text-[#E85A2E]' : 'text-[#003E48]'}`}>
                                     {label}
                                 </span>
                             </button>
@@ -120,7 +123,7 @@ function Step5Preferences({ data, onChange }: Props) {
 
             {/* Dietary preferences */}
             <div>
-                <p className="font-semibold text-slate-700 text-sm mb-2">Dietary preferences</p>
+                <p className="mb-2 text-sm font-semibold text-[#003E48]">Dietary preferences</p>
                 <div className="grid grid-cols-2 gap-2">
                     {DIETARY.map(({ value, label }) => {
                         const selected = dietary.includes(value);
@@ -129,18 +132,18 @@ function Step5Preferences({ data, onChange }: Props) {
                                 key={value}
                                 type="button"
                                 onClick={() => toggleDiet(value)}
-                                className={`flex items-center gap-2 px-3 py-2.5 rounded-xl border text-left transition-all active:scale-[0.97] ${
+                                className={`flex items-center gap-2 rounded-[24px] border px-3 py-2.5 text-left transition-all active:scale-[0.97] ${
                                     selected
-                                        ? 'border-[#E85A2E] bg-[#E85A2E]/5'
-                                        : 'border-gray-200 bg-white hover:border-gray-300'
+                                        ? 'border-[#E85A2E] bg-[#F6F3EE]'
+                                        : 'border-transparent bg-[#F6F3EE] hover:border-[#003E48]/20'
                                 }`}
                             >
-                                <div className={`w-4 h-4 rounded border flex-shrink-0 flex items-center justify-center transition-colors ${
-                                    selected ? 'border-[#E85A2E] bg-[#E85A2E]' : 'border-gray-300'
+                                <div className={`flex h-4 w-4 flex-shrink-0 items-center justify-center rounded border transition-colors ${
+                                    selected ? 'border-[#E85A2E] bg-[#E85A2E]' : 'border-[#003E48]/25'
                                 }`}>
-                                    {selected && <Check className="w-2.5 h-2.5 text-white" strokeWidth={3} />}
+                                    {selected && <Check className="h-2.5 w-2.5 text-white" strokeWidth={3} />}
                                 </div>
-                                <span className={`text-xs font-medium ${selected ? 'text-[#E85A2E]' : 'text-slate-600'}`}>
+                                <span className={`text-xs font-medium ${selected ? 'text-[#E85A2E]' : 'text-[#003E48]'}`}>
                                     {label}
                                 </span>
                             </button>

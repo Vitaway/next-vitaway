@@ -13,9 +13,10 @@ interface Props {
     data: Partial<PreRegistrationPayload>;
     errors: string[];
     onChange: (data: Partial<PreRegistrationPayload>) => void;
+    hideHeader?: boolean;
 }
 
-function Step2AboutYou({ data, errors, onChange }: Props) {
+function Step2AboutYou({ data, errors, onChange, hideHeader = false }: Props) {
     const [organizations, setOrganizations] = useState<Organization[]>([]);
     const [orgsLoading, setOrgsLoading] = useState(true);
     const [orgsError, setOrgsError] = useState('');
@@ -89,26 +90,32 @@ function Step2AboutYou({ data, errors, onChange }: Props) {
 
     return (
         <div>
-            <h2 className="text-xl font-bold text-slate-800">About you</h2>
-            <p className="text-gray-500 text-sm mt-1">
-                Tell us a little about yourself to create your profile. Fields marked with{' '}
-                <span className="text-red-500 font-semibold">*</span> are required.
-            </p>
+            {hideHeader ? null : (
+                <>
+                    <h2 className="text-xl font-bold text-[#003E48]">About <span className="font-accent">you</span></h2>
+                    <p className="mt-1 text-sm text-[#003E48]/60">
+                        Tell us a little about yourself to create your profile. Fields marked with{' '}
+                        <span className="font-semibold text-red-500">*</span> are required.
+                    </p>
+                </>
+            )}
 
-            <div className="mt-5 space-y-1">
-                <TextInput
-                    label="Full Name"
-                    required
-                    placeholder="e.g. Jane Doe"
-                    value={data.full_name || ''}
-                    errorMessage={errorFor('name')}
-                    onChange={(v) => onChange({ full_name: v })}
-                >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none">
-                        <path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                        <path opacity=".4" d="M3.41 22c0-3.87 3.85-7 8.59-7s8.59 3.13 8.59 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                </TextInput>
+            <div className={hideHeader ? 'grid gap-x-3 sm:grid-cols-2' : 'mt-5 space-y-1 rounded-[24px] bg-white px-4 pb-4'}>
+                <div className={hideHeader ? 'sm:col-span-2' : undefined}>
+                    <TextInput
+                        label="Full Name"
+                        required
+                        placeholder="e.g. Jane Doe"
+                        value={data.full_name || ''}
+                        errorMessage={errorFor('name')}
+                        onChange={(v) => onChange({ full_name: v })}
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none">
+                            <path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                            <path opacity=".4" d="M3.41 22c0-3.87 3.85-7 8.59-7s8.59 3.13 8.59 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                    </TextInput>
+                </div>
 
                 <DateOfBirthPicker
                     value={data.date_of_birth || ''}
@@ -122,6 +129,7 @@ function Step2AboutYou({ data, errors, onChange }: Props) {
 
                 <PhoneInput
                     required
+                    compact={hideHeader}
                     value={data.phone_number || ''}
                     errorMessage={errorFor('phone')}
                     onChange={(v) => onChange({ phone_number: v })}
@@ -145,20 +153,32 @@ function Step2AboutYou({ data, errors, onChange }: Props) {
                     </svg>
                 </TextInput>
 
-                <div className="mt-5">
+                <TextInput
+                    label="City / Region"
+                    placeholder="e.g. Kigali, Rwanda"
+                    value={data.location || ''}
+                    onChange={(v) => onChange({ location: v })}
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none">
+                        <path d="M12 13.43a3.12 3.12 0 1 0 0-6.24 3.12 3.12 0 0 0 0 6.24Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                        <path d="M3.62 8.49c1.97-8.66 14.8-8.65 16.76.01 1.15 5.08-2.01 9.38-4.78 12.04a5.193 5.193 0 0 1-7.21 0c-2.76-2.66-5.92-6.97-4.77-12.05Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                </TextInput>
+
+                <div className={`mt-5 ${hideHeader ? 'sm:col-span-2' : ''}`}>
                     <FormLabel required>Organization</FormLabel>
-                    <div className="mt-2 relative text-gray-400 focus-within:text-gray-600 transition-all duration-200">
-                        <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                            <Building2 className="w-[18px] h-[18px]" />
+                    <div className="relative mt-2 text-[#003E48]/40 transition-all duration-200 focus-within:text-[#003E48]">
+                        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                            <Building2 className="h-[18px] w-[18px]" />
                         </div>
                         <select
                             value={organizationSelectValue}
                             onChange={(e) => handleOrganizationChange(e.target.value)}
                             disabled={orgsLoading}
-                            className={`block w-full py-3 pl-12 pr-4 transition-all duration-200 border rounded-2xl focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600 appearance-none bg-no-repeat bg-[length:16px] bg-[right_12px_center] bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2024%2024%27%20fill=%27none%27%20stroke=%27%236b7280%27%20stroke-width=%272%27%20stroke-linecap=%27round%27%20stroke-linejoin=%27round%27%3e%3cpath%20d=%27m6%209%206%206%206-6%27/%3e%3c/svg%3e')] ${
+                            className={`w-full appearance-none rounded-2xl border py-3 pl-12 pr-10 font-normal transition duration-200 focus:outline-none bg-no-repeat bg-[length:16px] bg-[right_12px_center] bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2024%2024%27%20fill=%27none%27%20stroke=%27%23003E48%27%20stroke-width=%272%27%20stroke-linecap=%27round%27%20stroke-linejoin=%27round%27%3e%3cpath%20d=%27m6%209%206%206%206-6%27/%3e%3c/svg%3e')] ${
                                 organizationError
-                                    ? 'text-red-700 border-red-200 bg-red-50'
-                                    : 'text-black border-gray-200 bg-gray-50'
+                                    ? 'border-red-200 bg-red-50 text-red-700'
+                                    : 'border-transparent bg-[#F6F3EE] text-[#003E48] focus:border-[#003E48] focus:bg-white'
                             }`}
                         >
                             <option value="">
@@ -184,6 +204,7 @@ function Step2AboutYou({ data, errors, onChange }: Props) {
                 </div>
 
                 {showCustomOrganization && (
+                    <div className={hideHeader ? 'sm:col-span-2' : undefined}>
                     <TextInput
                         label="Organization Name"
                         required
@@ -194,19 +215,9 @@ function Step2AboutYou({ data, errors, onChange }: Props) {
                     >
                         <Building2 className="w-[18px] h-[18px]" />
                     </TextInput>
+                    </div>
                 )}
 
-                <TextInput
-                    label="City / Region"
-                    placeholder="e.g. Kigali, Rwanda"
-                    value={data.location || ''}
-                    onChange={(v) => onChange({ location: v })}
-                >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none">
-                        <path d="M12 13.43a3.12 3.12 0 1 0 0-6.24 3.12 3.12 0 0 0 0 6.24Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                        <path d="M3.62 8.49c1.97-8.66 14.8-8.65 16.76.01 1.15 5.08-2.01 9.38-4.78 12.04a5.193 5.193 0 0 1-7.21 0c-2.76-2.66-5.92-6.97-4.77-12.05Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                </TextInput>
             </div>
 
             {errors.filter((e) => !['name', 'phone', 'email', 'organization', 'custom organization', 'birth', 'date'].some((k) => e.toLowerCase().includes(k))).map((err) => (
