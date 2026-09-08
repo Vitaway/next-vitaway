@@ -1,18 +1,12 @@
-import AppointmentButton from "../components/buttons/AppointmentButton";
-import Footer from "../components/footer";
-import Navbar from "../components/navbar";
-import Subscriber from "../components/subscriber";
-
-export default function GuestLayout({ children }: Readonly<{
+/**
+ * Pages historically wrapped content in GuestLayout.
+ * Chrome now lives in the root SiteShell so this is a passthrough —
+ * keeping call sites avoids a mass page rewrite.
+ */
+export default function GuestLayout({
+    children,
+}: Readonly<{
     children: React.ReactNode;
 }>) {
-    return (
-        <>
-            <Navbar />
-            {children}
-            <Footer />
-            <Subscriber />
-            <AppointmentButton />
-        </>
-    );
+    return children;
 }
