@@ -3,7 +3,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {
     COUNTRY_DIAL_CODE_OPTIONS,
-    DEFAULT_COUNTRY_ISO2,
     countryOptionLabel,
     getCountryByIso2,
     getDefaultCountry,
@@ -59,7 +58,7 @@ function PhoneInput({
             : 'text-[#003E48] placeholder:text-[#003E48]/40 border-transparent bg-[#F6F3EE]'
     }`;
 
-    const selectClass = `${inputClass} appearance-none bg-no-repeat bg-[length:16px] bg-[right_12px_center] bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2024%2024%27%20fill=%27none%27%20stroke=%27%23003E48%27%20stroke-width=%272%27%20stroke-linecap=%27round%27%20stroke-linejoin=%27round%27%3e%3cpath%20d=%27m6%209%206%206%206-6%27/%3e%3c/svg%3e')] pr-10`;
+    const selectClass = `${inputClass} select-chevron pr-10`;
 
     const handleCountryChange = (iso2: string) => {
         setCountryIso2(iso2);

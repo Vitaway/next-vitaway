@@ -175,7 +175,7 @@ function Step2AboutYou({ data, errors, onChange, hideHeader = false }: Props) {
                             value={organizationSelectValue}
                             onChange={(e) => handleOrganizationChange(e.target.value)}
                             disabled={orgsLoading}
-                            className={`w-full appearance-none rounded-2xl border py-3 pl-12 pr-10 font-normal transition duration-200 focus:outline-none bg-no-repeat bg-[length:16px] bg-[right_12px_center] bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2024%2024%27%20fill=%27none%27%20stroke=%27%23003E48%27%20stroke-width=%272%27%20stroke-linecap=%27round%27%20stroke-linejoin=%27round%27%3e%3cpath%20d=%27m6%209%206%206%206-6%27/%3e%3c/svg%3e')] ${
+                            className={`w-full rounded-2xl border py-3 pl-12 pr-10 font-normal transition duration-200 focus:outline-none select-chevron ${
                                 organizationError
                                     ? 'border-red-200 bg-red-50 text-red-700'
                                     : 'border-transparent bg-[#F6F3EE] text-[#003E48] focus:border-[#003E48] focus:bg-white'
