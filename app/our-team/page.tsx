@@ -5,6 +5,9 @@ import React from 'react';
 import membersData from '../../content/members.json';
 import { Metadata } from 'next';
 import GuestLayout from '../layouts/GuestLayout';
+import PageHeader from '../components/headers/page-header';
+import SectionCard from '../components/sections/section-card';
+import { memberImageClass } from '@/lib/member-image-focus';
 
 export const metadata: Metadata = {
   title: "Our Team",
@@ -42,22 +45,22 @@ function TwitterIcon() {
 
 function SocialLinks({ social_media }: { social_media: { linkedin?: string; twitter?: string; instagram?: string } }) {
   return (
-    <div className="flex items-center space-x-3 mt-4">
+    <div className="mt-4 flex items-center space-x-3">
       {social_media?.linkedin && (
         <a href={social_media.linkedin} target="_blank" rel="noreferrer"
-          className="text-gray-400 hover:text-[#003E48] transition-colors duration-300">
+          className="text-[#003E48]/40 transition-colors duration-300 hover:text-[#E85A2E]">
           <LinkedInIcon />
         </a>
       )}
       {social_media?.instagram && (
         <a href={social_media.instagram} target="_blank" rel="noreferrer"
-          className="text-gray-400 hover:text-[#003E48] transition-colors duration-300">
+          className="text-[#003E48]/40 transition-colors duration-300 hover:text-[#E85A2E]">
           <InstagramIcon />
         </a>
       )}
       {social_media?.twitter && (
         <a href={social_media.twitter} target="_blank" rel="noreferrer"
-          className="text-gray-400 hover:text-[#003E48] transition-colors duration-300">
+          className="text-[#003E48]/40 transition-colors duration-300 hover:text-[#E85A2E]">
           <TwitterIcon />
         </a>
       )}
@@ -66,43 +69,25 @@ function SocialLinks({ social_media }: { social_media: { linkedin?: string; twit
 }
 
 
-function SectionHeader({ label, title }: { label: string; title: string }) {
-  return (
-    <div className="max-w-xl mb-10 sm:text-left lg:max-w-2xl md:mb-10 mt-10">
-      <p className="inline-block font-normal py-px mb-4 text-xs tracking-wider text-[#003E48] uppercase rounded-full bg-teal-accent-400">
-        {label}
-      </p>
-      <h2 className="max-w-lg font-bold mb-6 text-3xl leading-none tracking-tight text-[#003E48] sm:text-4xl">
-        {title}
-      </h2>
-      <div className="flex items-center gap-2">
-        <div className="h-1 w-12 rounded-full bg-[#003E48]" />
-        <div className="h-1 w-6 rounded-full bg-[#003E48] opacity-40" />
-        <div className="h-1 w-3 rounded-full bg-[#003E48] opacity-20" />
-      </div>
-    </div>
-  );
-}
-
-function MemberCard({ member }: { member: any }) {
+function MemberCard({ member, cardClass }: { member: any; cardClass: string }) {
   return (
     <Link
       href={`/our-team/members/${member.slug}`}
-      className="grid sm:grid-cols-6 hover:bg-gray-50 rounded-xl cursor-pointer transition-colors duration-200"
+      className={`grid overflow-hidden rounded-[24px] transition duration-200 sm:grid-cols-6 ${cardClass}`}
     >
-      <div className="relative w-full !h-64 max-h-full rounded-xl sm:h-auto sm:col-span-3 border-gray-200 border overflow-hidden">
+      <div className="relative h-72 w-full overflow-hidden bg-[#EEF6F4] sm:col-span-3 sm:h-full sm:min-h-[300px]">
         <Image
-          width={500}
-          height={500}
-          className="absolute object-cover object-top w-full h-full rounded-xl bg-top"
+          fill
+          sizes="(min-width: 1024px) 22vw, (min-width: 640px) 40vw, 100vw"
+          className={memberImageClass(member.slug)}
           src={member.image}
           alt={member.name}
         />
       </div>
-      <div className="flex flex-col mt-2 sm:mt-0 sm:p-5 sm:col-span-3">
-        <p className="text-lg font-bold text-gray-900">{member.name}</p>
-        <p className="mb-4 text-sm leading-5 text-[#003E48] mt-1 font-medium">{member.role}</p>
-        <p className="text-slate-600 text-sm leading-6 line-clamp-4">{member.description}</p>
+      <div className="flex flex-col p-5 sm:col-span-3">
+        <p className="text-lg font-bold text-[#003E48]">{member.name}</p>
+        <p className="mt-1 mb-4 text-sm font-medium leading-5 text-[#E85A2E]">{member.role}</p>
+        <p className="line-clamp-4 text-sm leading-6 text-[#003E48]/65">{member.description}</p>
         <SocialLinks social_media={member.social_media} />
       </div>
     </Link>
@@ -110,58 +95,69 @@ function MemberCard({ member }: { member: any }) {
 }
 
 
-function TeamSection({ label, title, members }: { label: string; title: string; members: any[] }) {
+function TeamSection({
+  title,
+  members,
+  className,
+  cardClass,
+}: {
+  title: React.ReactNode;
+  members: any[];
+  className: string;
+  cardClass: string;
+}) {
   if (!members || members.length === 0) return null;
 
   return (
-    <div className="relative bg-white rounded-xl px-3 py-2 md:px-10 md:py-5 mb-6">
-      <SectionHeader label={label} title={title} />
-      <div className="grid gap-5 mx-auto lg:grid-cols-2 lg:max-w-screen-xl mt-2 md:mt-5">
-        {members.map((member, index) => (
-          <MemberCard key={index} member={member} />
-        ))}
+    <SectionCard className={`py-16 sm:py-20 ${className}`}>
+      <div className="mx-auto max-w-[1440px] px-5 lg:px-12">
+        <h2 className="max-w-lg text-3xl font-bold tracking-tight text-[#003E48] sm:text-4xl">
+          {title}
+        </h2>
+        <div className="mt-10 grid gap-4 lg:grid-cols-2">
+          {members.map((member, index) => (
+            <MemberCard key={index} member={member} cardClass={cardClass} />
+          ))}
+        </div>
       </div>
-    </div>
+    </SectionCard>
   );
 }
 
 
 function CeoMessage({ ceo }: { ceo: any }) {
   return (
-    <div className="relative bg-white rounded-xl px-3 py-2 md:px-10 md:py-8 mb-6">
-      <SectionHeader label="A Word From Our Founder" title="CEO's Message" />
-
-      <div className="flex flex-col md:flex-row gap-8 items-start lg:max-w-screen-xl mt-2 md:mt-5">
-        {/* Photo */}
-        <div className="flex-shrink-0">
-          <div className="relative w-58 h-58 rounded-2xl overflow-hidden border border-gray-200 shadow-sm">
+    <SectionCard className="bg-white py-16 sm:py-20">
+      <div className="mx-auto grid max-w-[1440px] items-start gap-10 px-5 lg:grid-cols-12 lg:gap-14 lg:px-12">
+        <div className="lg:col-span-4">
+          <div className="relative min-h-[320px] overflow-hidden rounded-[24px] sm:min-h-[380px] sm:rounded-[28px]">
             <Image
-              width={200}
-              height={200}
-              className="object-cover object-top w-full h-full"
+              fill
+              sizes="(min-width: 1024px) 28vw, 100vw"
+              className={memberImageClass(ceo.slug, 'object-cover object-[center_18%]')}
               src={ceo.image}
               alt={ceo.name}
             />
           </div>
-          <div className="mt-3 text-left">
-            <p className="font-bold text-gray-900 text-base">{ceo.name}</p>
-            <p className="text-xs text-[#003E48] font-medium mt-1">{ceo.postion}</p>
+          <div className="mt-4">
+            <p className="text-base font-bold text-[#003E48]">{ceo.name}</p>
+            <p className="mt-1 text-sm font-medium text-[#E85A2E]">{ceo.postion}</p>
           </div>
         </div>
 
-        {/* Message */}
-        <div className="flex-1">
-          {/* Opening quote mark */}
-          <svg className="w-10 h-10 text-[#003E48] opacity-20 mb-2" fill="currentColor" viewBox="0 0 32 32">
+        <div className="lg:col-span-8">
+          <h2 className="text-3xl font-bold tracking-tight text-[#003E48] sm:text-4xl">
+            CEO&apos;s <span className="font-accent">Message</span>
+          </h2>
+          <svg className="mb-2 mt-6 h-10 w-10 text-[#003E48] opacity-20" fill="currentColor" viewBox="0 0 32 32" aria-hidden>
             <path d="M9.352 4C4.456 7.456 1 13.12 1 19.36c0 5.088 3.072 8.064 6.624 8.064 3.36 0 5.856-2.688 5.856-5.856 0-3.168-2.208-5.472-5.088-5.472-.576 0-1.344.096-1.536.192.48-3.264 3.552-7.104 6.624-9.024L9.352 4zm16.512 0c-4.8 3.456-8.256 9.12-8.256 15.36 0 5.088 3.072 8.064 6.624 8.064 3.264 0 5.856-2.688 5.856-5.856 0-3.168-2.304-5.472-5.184-5.472-.576 0-1.248.096-1.44.192.48-3.264 3.456-7.104 6.528-9.024L25.864 4z" />
           </svg>
-
-          <p className="text-slate-600 text-base leading-7 italic">
+          <p className="text-base italic leading-7 text-[#003E48]/70">
             {ceo.message}
           </p>
         </div>
       </div>
-    </div>
+    </SectionCard>
   );
 }
 
@@ -170,64 +166,42 @@ function OurTeam() {
 
   return (
     <GuestLayout>
-      <div className="team-section relative w-full h-full">
-        {/* Hero gradient */}
-        <div className="absolute w-full bg-gradient-to-b from-[#003E48] to-[#282e33] lg:block h-[500px]" />
+      <PageHeader
+        title={
+          <>
+            Our Experts &amp; <span className="font-accent">Leadership</span>
+          </>
+        }
+        description="This dedicated group of individuals forms the backbone of Vitaway, and their collective expertise and commitment drive the mission forward."
+        backgroundImage="/images/Gallery/image-12.jpg"
+        imageClassName="object-cover object-[center_28%]"
+        className="min-h-[320px] sm:min-h-[400px]"
+      />
 
-        <div className="relative px-4 py-20 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-20 lg:px-10 lg:py-20">
+      {ceo_message?.[0] && (
+        <CeoMessage ceo={ceo_message[0]} />
+      )}
 
-          {/* Page Header */}
-          <div className="max-w-xl mb-20 md:mx-auto sm:text-center lg:max-w-2xl md:mb-20">
-            <p className="inline-block font-normal px-3 py-px mb-4 text-xs tracking-wider text-white uppercase rounded-full bg-teal-accent-400">
-              Meet the Team Behind Your Health
-            </p>
-            <h2 className="max-w-lg font-bold mb-6 text-3xl leading-none tracking-tight text-white sm:text-4xl md:mx-auto">
-              <span className="relative inline-block">
-                <svg viewBox="0 0 52 24" fill="currentColor"
-                  className="absolute top-9 -right-1 z-0 hidden w-28 -mt-8 -ml-20 text-blue-gray-100 lg:w-28 lg:-ml-28 lg:-mt-10 sm:block">
-                  <defs>
-                    <pattern id="dot-pattern" x="0" y="0" width=".135" height=".30">
-                      <circle cx="1" cy="1" r=".7" />
-                    </pattern>
-                  </defs>
-                  <rect fill="url(#dot-pattern)" width="52" height="24" />
-                </svg>
-              </span>
-              Our Experts &amp; Leadership
-            </h2>
-            <p className="text-base text-gray-200 md:text-lg font-merri font-normal">
-              This dedicated group of individuals forms the backbone of Vitaway, and their collective expertise
-              and commitment drive the mission forward.
-            </p>
-          </div>
+      <TeamSection
+        title={<>Advisory <span className="font-accent">Board</span></>}
+        members={advisory_boad}
+        className="bg-[#F6F3EE]"
+        cardClass="bg-white"
+      />
 
-          {/* CEO Message */}
-          {ceo_message?.[0] && (
-            <CeoMessage ceo={ceo_message[0]} />
-          )}
+      <TeamSection
+        title={<>Clinical &amp; Nutrition <span className="font-accent">Team</span></>}
+        members={clinical_members}
+        className="bg-white"
+        cardClass="bg-[#F6F3EE]"
+      />
 
-          {/* Advisory Board */}
-          <TeamSection
-            label="Meet the Team Behind Your Health"
-            title="Advisory Board"
-            members={advisory_boad}
-          />
-
-          {/* Clinical & Nutrition Team */}
-          <TeamSection
-            label="Meet the Team Behind Your Health"
-            title="Clinical & Nutrition Team"
-            members={clinical_members}
-          />
-
-          {/* Coaching Team */}
-          <TeamSection
-            label="Meet the Team Behind Your Health"
-            title="Coaching Team"
-            members={coaching_team}
-          />
-        </div>
-      </div>
+      <TeamSection
+        title={<>Coaching <span className="font-accent">Team</span></>}
+        members={coaching_team}
+        className="bg-[#F6F3EE]"
+        cardClass="bg-white"
+      />
     </GuestLayout>
   );
 }

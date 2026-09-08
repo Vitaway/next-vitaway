@@ -7,6 +7,10 @@ import { notFound, useParams } from 'next/navigation';
 import GuestLayout from "@/app/layouts/GuestLayout";
 import membersData from '@/content/members.json';
 import Head from "next/head";
+import PageHeader from "@/app/components/headers/page-header";
+import SectionCard from "@/app/components/sections/section-card";
+import PressButton from "@/app/components/buttons/press-button";
+import { memberImageClass } from "@/lib/member-image-focus";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -40,6 +44,19 @@ function getAllMembers(): Member[] {
     ...tagged(clinical_members, "Clinical & Nutrition Team"),
     ...tagged(coaching_team, "Coaching Team"),
   ];
+}
+
+function accentName(name: string) {
+  const parts = name.trim().split(/\s+/);
+  if (parts.length === 1) {
+    return <span className="font-accent">{parts[0]}</span>;
+  }
+  const last = parts.pop();
+  return (
+    <>
+      {parts.join(' ')} <span className="font-accent">{last}</span>
+    </>
+  );
 }
 
 // ─── Social Icons ─────────────────────────────────────────────────────────────
@@ -83,7 +100,7 @@ function SocialLinks({ social_media }: { social_media?: SocialMedia }) {
 
   return (
     <div className="mt-8">
-      <p className="text-xs uppercase tracking-widest text-gray-400 font-semibold mb-3">
+      <p className="mb-3 text-sm font-medium text-[#003E48]/55">
         Connect
       </p>
       <div className="flex items-center gap-3">
@@ -94,7 +111,7 @@ function SocialLinks({ social_media }: { social_media?: SocialMedia }) {
             target="_blank"
             rel="noreferrer"
             aria-label={label}
-            className="flex items-center justify-center w-10 h-10 rounded-full border border-gray-200 text-gray-500 hover:text-[#003E48] hover:border-[#003E48] transition-all duration-200"
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-[#F6F3EE] text-[#003E48]/55 transition-all duration-200 hover:bg-[#003E48] hover:text-white"
           >
             {icon}
           </a>
@@ -110,7 +127,7 @@ function BackButton() {
   return (
     <Link
       href="/our-team"
-      className="inline-flex items-center gap-2 text-white/70 hover:text-white text-sm font-medium transition-colors duration-200 mb-6 group"
+      className="group mb-8 inline-flex items-center gap-2 text-sm font-semibold text-[#E85A2E] transition-colors duration-200 hover:underline"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -118,7 +135,7 @@ function BackButton() {
         viewBox="0 0 24 24" fill="none"
         stroke="currentColor" strokeWidth="2"
         strokeLinecap="round" strokeLinejoin="round"
-        className="group-hover:-translate-x-1 transition-transform duration-200"
+        className="transition-transform duration-200 group-hover:-translate-x-1"
       >
         <path d="M19 12H5M12 5l-7 7 7 7" />
       </svg>
@@ -149,134 +166,69 @@ export default function MemberPage() {
         <meta property="og:image" content={member.image} />
       </Head>
 
-      <div className="team-section relative w-full h-full">
-        {/* Hero gradient */}
-        <div className="absolute w-full bg-gradient-to-b from-[#003E48] to-[#282e33] lg:block h-[500px]" />
+      <PageHeader
+        title={accentName(member.name)}
+        description={member.role}
+        backgroundImage={member.image}
+        imageClassName={memberImageClass(member.slug, 'object-cover object-[center_20%]')}
+        className="min-h-[300px] sm:min-h-[360px]"
+      />
 
-        <div className="relative px-4 py-16 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-20 lg:px-10 lg:py-20">
-
-          {/* Back link */}
+      <SectionCard className="bg-white py-12 sm:py-16">
+        <div className="mx-auto max-w-[1440px] px-5 lg:px-12">
           <BackButton />
 
-          {/* Hero header */}
-          <div className="max-w-xl mb-16 md:mx-auto sm:text-center lg:max-w-2xl md:mb-16">
-            {member.teamLabel && (
-              <p className="inline-block font-normal px-3 py-px mb-4 text-xs tracking-wider text-white uppercase rounded-full bg-teal-accent-400">
-                {member.teamLabel}
-              </p>
-            )}
-            <h2 className="max-w-lg font-bold mb-4 text-4xl leading-tight tracking-tight text-white sm:text-4xl md:mx-auto">
-              {member.name}
-            </h2>
-            <p className="text-base text-[#7ecfc0] md:text-lg font-medium">
-              {member.role}
-            </p>
-          </div>
-
-          {/* Content card */}
-          <div className="relative bg-white rounded-3xl">
-            <section className="bg-white rounded-3xl px-4 py-6 md:px-10 md:py-10">
-              <div className="mx-auto max-w-7xl">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-10 xl:gap-x-16 gap-y-10 items-start">
-
-                  {/* Photo column */}
-                  <div className="relative lg:mb-8">
-                    {/* Decorative dots */}
-                    <Image
-                      width={100}
-                      height={100}
-                      className="absolute -right-0 -bottom-8 xl:-bottom-12 xl:-right-4 hidden lg:block"
-                      src="https://cdn.rareblocks.xyz/collection/celebration/images/content/3/dots-pattern.svg"
-                      alt=""
-                    />
-                    <div className="pl-0 pr-0 sm:pl-6 sm:pr-6">
-                      <Image
-                        width={600}
-                        height={500}
-                        className="relative w-full max-w-md sm:max-w-lg lg:max-w-xl xl:max-w-2xl rounded-2xl mx-auto object-cover object-top"
-                        src={member.image}
-                        alt={member.name}
-                      />
-                    </div>
-
-                    {/* Role badge under photo */}
-                    <div className="mt-6 sm:pl-6 flex items-center gap-3">
-                      <div className="h-px flex-1 bg-gray-100" />
-                      <span className="text-xs font-semibold uppercase tracking-widest text-[#003E48] whitespace-nowrap">
-                        {member.role}
-                      </span>
-                      <div className="h-px flex-1 bg-gray-100" />
-                    </div>
-                  </div>
-
-                  {/* Bio column */}
-                  <div className="2xl:pl-8 flex flex-col">
-                    {/* Short description */}
-                    <p className="text-base font-semibold leading-snug text-[#003E48] sm:text-lg lg:text-xl border-l-4 border-[#003E48] pl-4">
-                      {member.description}
-                    </p>
-
-                    {/* Divider */}
-                    {member.bio && (
-                      <>
-                        <div className="my-6 flex items-center gap-2">
-                          <div className="h-px flex-1 bg-gray-100" />
-                          <span className="text-xs font-semibold uppercase tracking-widest text-gray-400">
-                            About
-                          </span>
-                          <div className="h-px flex-1 bg-gray-100" />
-                        </div>
-
-                        {/* Full bio */}
-                        <p className="text-base leading-relaxed text-gray-600">
-                          {member.bio}
-                        </p>
-                      </>
-                    )}
-
-                    {/* Social links */}
-                    <SocialLinks social_media={member.social_media} />
-
-                    {/* Appointment CTA */}
-                    {member.teamLabel != "Advisory Board" && (
-                      <div className="mt-8 pt-8 border-t border-gray-100">
-                        <p className="text-sm text-gray-500 mb-4">
-                          Ready to take the next step in your health journey?
-                        </p>
-                        <div className="flex flex-col sm:flex-row gap-3">
-                          <Link
-                            href={`/appointments/book?member=${member.slug}`}
-                            className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#003E48] text-white text-sm font-semibold rounded-xl hover:bg-[#005060] active:scale-95 transition-all duration-200 shadow-sm"
-                          >
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                              <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                              <line x1="16" y1="2" x2="16" y2="6" />
-                              <line x1="8" y1="2" x2="8" y2="6" />
-                              <line x1="3" y1="10" x2="21" y2="10" />
-                            </svg>
-                            Book an Appointment
-                          </Link>
-                          <Link
-                            href="/contact"
-                            className="inline-flex items-center justify-center gap-2 px-6 py-3 border border-[#003E48] text-[#003E48] text-sm font-semibold rounded-xl hover:bg-[#003E48]/5 active:scale-95 transition-all duration-200"
-                          >
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                            </svg>
-                            Send a Message
-                          </Link>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-                </div>
+          <div className="grid grid-cols-1 items-start gap-x-10 gap-y-10 lg:grid-cols-2 xl:gap-x-16">
+            <div>
+              <div className="relative min-h-[360px] overflow-hidden rounded-[24px] bg-[#EEF6F4] sm:min-h-[440px] sm:rounded-[28px]">
+                <Image
+                  fill
+                  sizes="(min-width: 1024px) 45vw, 100vw"
+                  className={memberImageClass(member.slug)}
+                  src={member.image}
+                  alt={member.name}
+                />
               </div>
-            </section>
-          </div>
+              <p className="mt-4 text-sm font-medium text-[#E85A2E]">
+                {member.role}
+              </p>
+            </div>
 
+            <div className="flex flex-col">
+              <p className="text-base font-semibold leading-snug text-[#003E48] sm:text-lg lg:text-xl">
+                {member.description}
+              </p>
+
+              {member.bio && (
+                <p className="mt-6 text-base leading-relaxed text-[#003E48]/70">
+                  {member.bio}
+                </p>
+              )}
+
+              <SocialLinks social_media={member.social_media} />
+
+              {member.teamLabel != "Advisory Board" && (
+                <div className="mt-8">
+                  <p className="mb-4 text-sm text-[#003E48]/60">
+                    Ready to take the next step in your health journey?
+                  </p>
+                  <div className="flex flex-col gap-3 sm:flex-row">
+                    <PressButton href={`/appointments/book?member=${member.slug}`}>
+                      Book an Appointment
+                    </PressButton>
+                    <Link
+                      href="/contact"
+                      className="inline-flex items-center justify-center rounded-full bg-[#F6F3EE] px-6 py-3 text-sm font-semibold text-[#003E48] hover:bg-[#E8F7F4]"
+                    >
+                      Send a Message
+                    </Link>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
-      </div>
+      </SectionCard>
     </GuestLayout>
   );
 }
