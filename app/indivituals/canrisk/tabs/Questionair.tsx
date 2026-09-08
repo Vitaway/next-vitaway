@@ -234,9 +234,9 @@ function Questionair({ onComplete }: { onComplete?: (finalScore: number, data: I
   }
 
   return (
-    <div className='border border-gray-200 p-6 rounded-xl bg-white flex flex-col items-center'>
+    <div className='flex flex-col items-center rounded-[24px] bg-[#F6F3EE] p-5 sm:p-6'>
       <div className='w-full'>
-        <div className='mt-4 text-slate-800 questionnaire'>
+        <div className='mt-2 text-[#003E48] questionnaire'>
           {steps[currentStep].component}
         </div>
       </div>
@@ -251,28 +251,28 @@ function Questionair({ onComplete }: { onComplete?: (finalScore: number, data: I
 
       <div tabIndex={-1} className="progressTracking mt-5 w-full text-center">
         <progress id="progressbar" className='rounded' value={currentStep + 1} max={steps.length}></progress>
-        <div id="progressText" className="mt-2 text-sm text-gray-600">
+        <div id="progressText" className="mt-2 text-sm text-[#003E48]/60">
           Step {currentStep + 1} of {steps.length}
         </div>
       </div>
 
-      <div className='mt-6 flex space-x-4'>
+      <div className='mt-6 flex flex-wrap justify-center gap-3'>
         <button
-          className='px-4 py-2 bg-gray-300 text-gray-700 rounded'
+          className='rounded-full bg-white px-5 py-2.5 font-semibold text-[#003E48] disabled:cursor-not-allowed disabled:opacity-50'
           onClick={handlePrevious}
           disabled={currentStep === 0}
         >
           Previous
         </button>
         <button
-          className='px-4 py-2 bg-blue-500 text-white rounded'
+          className='press-btn press-btn--sm'
           onClick={handleNext}
           disabled={currentStep === steps.length - 1}
         >
           Next
         </button>
         <button
-          className='px-4 py-2 bg-red-500 text-white rounded'
+          className='rounded-full bg-white px-5 py-2.5 font-semibold text-[#E85A2E] disabled:cursor-not-allowed disabled:opacity-50'
           onClick={handleRestart}
         >
           Restart

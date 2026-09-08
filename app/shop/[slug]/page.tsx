@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { Products } from "@/types/products";
 import ProductDetails from "./ProductDetails";
 import { Metadata } from "next";
+import SectionCard from "@/app/components/sections/section-card";
 
 interface ProductResponse {
     data: {
@@ -68,7 +69,11 @@ export default async function ProductDetailsPage({ params }: { params: Promise<{
 
     return (
         <GuestLayout>
-            <ProductDetails product={product} relatedProducts={relatedProducts} loading={false} />
+            <SectionCard overflow="visible" className="bg-white py-12 sm:py-16">
+                <div className="mx-auto max-w-[1440px] px-5 lg:px-12">
+                    <ProductDetails product={product} relatedProducts={relatedProducts} loading={false} />
+                </div>
+            </SectionCard>
         </GuestLayout>
     );
 }

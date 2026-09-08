@@ -3,6 +3,7 @@ import PageHeader from '../components/headers/page-header'
 import GuestLayout from '../layouts/GuestLayout';
 import { Metadata } from 'next';
 import AllBlogs from '../components/sections/all-blogs';
+import SectionCard from '../components/sections/section-card';
 
 export const metadata: Metadata = {
     title: "Health & Wellness Blog | Expert Nutrition Tips from Rwanda",
@@ -50,29 +51,24 @@ export const metadata: Metadata = {
 }
 
 function Blogs() {
-    return (<>
+    return (
         <GuestLayout>
             <PageHeader
-                sup_title='Our Blogs'
-                title='Our Recent Blogs and Articles'
-                description='Explore our latest blogs and articles to learn more about the latest trends in health and wellness. Stay up to date with the latest news and information to help you live a healthier life.'
-                backgroundImage=''
+                title={
+                    <>
+                        Stories, lessons, and the numbers that <span className="font-accent">moved</span>
+                    </>
+                }
+                description="What our nutritionists write between visits — food, conditions, and care you can use."
             />
 
-            <section className=" bg-white px-4 py-20 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-20 lg:px-10 lg:py-20">
-                <div className="flex items-end justify-between">
-                    <div className="flex-1 text-center lg:text-left">
-                        <h2 className="text-3xl font-bold leading-tight text-black sm:text-3xl lg:text-4xl">Latest from blog</h2>
-                        <p className="max-w-xl mx-auto mt-4 text-sm leading-relaxed text-gray-600 lg:mx-0">
-                            Stay updated with our latest blogs and articles. Explore expert insights, tips, and inspiring stories to help you stay informed and lead a healthier, happier life.
-                        </p>
-                    </div>
+            <SectionCard className="bg-white py-12 sm:py-16">
+                <div className="mx-auto max-w-[1440px] px-5 lg:px-12">
+                    <AllBlogs />
                 </div>
-
-                <AllBlogs />
-            </section>
+            </SectionCard>
         </GuestLayout>
-    </>)
+    )
 }
 
 export default Blogs

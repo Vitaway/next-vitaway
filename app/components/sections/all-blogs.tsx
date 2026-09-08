@@ -69,7 +69,7 @@ const AllBlogs = React.memo(function AllBlogs() {
                         placeholder="Search blogs by title, content, or author..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full py-3 pl-12 pr-4 text-gray-700 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 outline-0 focus:border-transparent"
+                        className="w-full py-3 pl-12 pr-4 text-[#003E48] bg-[#F6F3EE] rounded-full focus:outline-none focus:bg-white focus:ring-1 focus:ring-[#003E48]"
                     />
                     {searchQuery && (
                         <button
@@ -87,14 +87,14 @@ const AllBlogs = React.memo(function AllBlogs() {
                 <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
                     {/* Category Filter */}
                     <div className="flex flex-wrap gap-2 items-center">
-                        <span className="text-sm font-semibold text-gray-700 mr-2">Category:</span>
+                        <span className="text-sm font-semibold text-[#003E48] mr-2">Category:</span>
                         {categories.map((category) => (
                             <button
                                 key={category}
                                 onClick={() => setSelectedCategory(category)}
                                 className={`px-4 py-2 text-sm font-medium rounded-full transition-colors duration-200 ${selectedCategory === category
-                                        ? 'bg-gradient-to-b from-[#003E48] to-[#282e33] text-white'
-                                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                        ? 'bg-[#003E48] text-white'
+                                        : 'bg-[#F6F3EE] text-[#003E48] hover:bg-[#E8F7F4]'
                                     }`}
                             >
                                 {category}
@@ -104,11 +104,11 @@ const AllBlogs = React.memo(function AllBlogs() {
 
                     {/* Sort Dropdown */}
                     <div className="flex items-center gap-2">
-                        <span className="text-sm font-semibold text-gray-700">Sort by:</span>
+                        <span className="text-sm font-semibold text-[#003E48]">Sort by:</span>
                         <select
                             value={sortBy}
                             onChange={(e) => setSortBy(e.target.value as 'newest' | 'oldest' | 'title')}
-                            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                            className="px-4 py-2 text-sm font-medium text-[#003E48] bg-[#F6F3EE] rounded-full focus:outline-none"
                         >
                             <option value="newest">Newest First</option>
                             <option value="oldest">Oldest First</option>
@@ -118,9 +118,9 @@ const AllBlogs = React.memo(function AllBlogs() {
                 </div>
 
                 {/* Results Count */}
-                <div className="flex items-center justify-between text-sm text-gray-600">
+                <div className="flex items-center justify-between text-sm text-[#003E48]/60">
                     <span>
-                        Showing <strong>{filteredBlogs.length}</strong> of <strong>{pagination.total}</strong> blogs
+                        Showing <strong className="text-[#003E48]">{filteredBlogs.length}</strong> of <strong className="text-[#003E48]">{pagination.total}</strong> blogs
                     </span>
                     {(searchQuery || selectedCategory !== 'All') && (
                         <button
@@ -128,7 +128,7 @@ const AllBlogs = React.memo(function AllBlogs() {
                                 setSearchQuery('');
                                 setSelectedCategory('All');
                             }}
-                            className="text-indigo-600 hover:text-indigo-700 font-medium"
+                            className="text-[#E85A2E] hover:underline font-medium"
                         >
                             Clear all filters
                         </button>

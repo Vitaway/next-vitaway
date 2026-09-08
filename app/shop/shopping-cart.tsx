@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState } from 'react';
 import ShopCartItem from './shop-cart-item';
 import { useCart } from '@/context/CartContext';
@@ -5,13 +7,14 @@ import { Products } from '@/types/products';
 import CheckoutForm from '../components/forms/checkout-form';
 import Image from 'next/image';
 import AlertModal from '../components/alerts/alert-modal';
+import PressButton from '../components/buttons/press-button';
 
 interface CartItem {
     price: number;
     quantity: number;
 }
 
-function ShoppingCart() {
+function ShoppingCart({ className = 'text-[#003E48]' }: { className?: string }) {
     const [isCartOpen, setCartOpen] = useState(false);
     const [isCheckoutOpen, setOpenCheckout] = useState(false);
 
@@ -40,7 +43,7 @@ function ShoppingCart() {
 
     const handlePaymentCallback = () => {
         setShowAlert(true);
-        
+
         setAlert({
             title: 'Payment Successful',
             message: 'Your payment has been successfully processed. Thank you for your purchase!',
@@ -53,55 +56,48 @@ function ShoppingCart() {
 
     return (
         <>
-            {/* Cart Icon */}
-            <div className="relative cursor-pointer hover:bg-gray-200 rounded-full" onClick={openCart}>
-                <div>
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                    >
-                        <path
-                            d="M8.4 6.5h7.2c3.4 0 3.74 1.59 3.97 3.53l.9 7.5C20.76 19.99 20 22 16.5 22H7.51C4 22 3.24 19.99 3.54 17.53l.9-7.5C4.66 8.09 5 6.5 8.4 6.5Z"
-                            stroke="#697689"
-                            strokeWidth="1.5"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                        ></path>
-                        <path
-                            opacity=".4"
-                            d="M8 8V4.5C8 3 9 2 10.5 2h3C15 2 16 3 16 4.5V8M20.41 17.031H8"
-                            stroke="#697689"
-                            strokeWidth="1.5"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                        ></path>
-                    </svg>
-                </div>
+            <button
+                type="button"
+                onClick={openCart}
+                aria-label="Shopping cart"
+                className={`relative flex h-11 w-11 items-center justify-center rounded-full transition-colors hover:bg-[#003E48]/8 ${className}`}
+            >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M6 6h15l-1.5 9h-12z" />
+                    <path d="M6 6 5 3H2" />
+                    <circle cx="9" cy="20" r="1.2" fill="currentColor" stroke="none" />
+                    <circle cx="18" cy="20" r="1.2" fill="currentColor" stroke="none" />
+                </svg>
                 {totalItems > 0 && (
-                    <div className="absolute -top-1 -right-1 bg-[#1a1a2e] w-5 h-5 rounded-full text-white text-sm px-1 py-1 flex items-center justify-center">
+                    <span className="absolute top-1.5 right-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#E85A2E] px-1 text-[10px] font-semibold text-white">
                         {totalItems > 9 ? '9+' : totalItems}
-                    </div>
+                    </span>
                 )}
-            </div>
+            </button>
 
-            {/* Cart Modal */}
-            <div className={`fixed max-w-xl top-0 right-0 bottom-0 bg-white rounded-tl-xl rounded-bl-xl border border-gray-200 z-20 text-slate-700 shadow-md transform transition-transform duration-300 ${isCartOpen ? 'translate-x-0' : 'translate-x-full'}`} id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
-                <div className="border-b px-5 py-5 relative border-gray-300">
-                    <div className="bg-green-400/50 w-full px-5 py-2 mt-5 rounded-3xl text-sm text-center mb-5">
+            {isCartOpen && (
+                <button
+                    type="button"
+                    aria-label="Close cart overlay"
+                    onClick={closeCart}
+                    className="fixed inset-0 z-40 bg-[#003E48]/30"
+                />
+            )}
+
+            <div className={`fixed top-0 right-0 bottom-0 z-50 max-w-xl overflow-hidden rounded-tl-[22px] rounded-bl-[22px] bg-white text-[#003E48] shadow-xl transform transition-transform duration-300 sm:rounded-tl-[28px] sm:rounded-bl-[28px] ${isCartOpen ? 'translate-x-0' : 'invisible pointer-events-none translate-x-full'}`} id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+                <div className="relative border-b border-[#003E48]/10 bg-[#F6F3EE] px-5 py-5">
+                    <div className="mb-5 mt-5 w-full rounded-full bg-[#5CE0C6]/40 px-5 py-2 text-center text-sm text-[#003E48]">
                         <p>Free delivery anywhere for order above 50K in kigali</p>
                     </div>
                     <div>
-                        <h5 className="text-xl font-bold">Shopping Cart</h5>
-                        <span className='mt-1'>Total: {Number(total).toLocaleString()}</span>
+                        <h5 className="text-xl font-bold text-[#003E48]">Shopping Cart</h5>
+                        <span className="mt-1 text-[#003E48]/70">Total: {Number(total).toLocaleString()}</span>
                     </div>
 
-                    <button onClick={closeCart} type="button" className="btn-close text-inherit absolute right-3 top-3 cursor-pointer" data-bs-dismiss="offcanvas" aria-label="Close">
+                    <button onClick={closeCart} type="button" className="absolute right-3 top-3 cursor-pointer rounded-full p-1 text-[#003E48] hover:bg-white" data-bs-dismiss="offcanvas" aria-label="Close">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
-                            className="icon icon-tabler icon-tabler-x text-gray-700"
+                            className="icon icon-tabler icon-tabler-x"
                             width="24"
                             height="24"
                             viewBox="0 0 24 24"
@@ -118,38 +114,38 @@ function ShoppingCart() {
                     </button>
                 </div>
 
-                {/* Modal Body */}
-                <div className="offcanvas-body p-4">
+                <div className="offcanvas-body bg-white p-4">
                     <div>
-                        {cart.length === 0 && <div className="text-center flex items-center justify-center">
-                            <div className=''>
+                        {cart.length === 0 && <div className="flex items-center justify-center text-center">
+                            <div>
                                 <Image src='/svgs/carts.svg' alt='blogs' width={300} height={300} />
-                                <span className='font-bold text-slate-700'>No Items in Cart.</span>
+                                <span className='font-bold text-[#003E48]'>No Items in Cart.</span>
                             </div>
                         </div>}
 
-                        <ul className="list-none overflow-auto max-h-[58vh]">
+                        <ul className="list-none max-h-[58vh] overflow-auto">
                             {cart && cart.map((product: Products) => (<ShopCartItem key={product.id} product={product} onRemoveFromCart={removeFromCart} />))}
                         </ul>
 
-                        <div className="flex justify-between border-t border-gray-200 pt-4">
+                        <div className="flex items-center justify-between border-t border-[#003E48]/10 pt-4">
                             {cart.length > 0 && (
-                                <div onClick={openCheckout} className="rounded-lg cursor-pointer px-3 py-2 inline-flex items-center gap-x-2 bg-[#1a1a2e] text-white border-[#1a1a2e] disabled:opacity-50 disabled:pointer-events-none hover:text-white hover:bg-green-700 hover:border-green-700 active:bg-green-700 active:border-green-700 focus:outline-none focus:ring-4 focus:ring-green-300">
-                                    <span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 19c0 .75-.21 1.46-.58 2.06A3.97 3.97 0 0 1 5 23a3.97 3.97 0 0 1-3.42-1.94A3.92 3.92 0 0 1 1 19c0-2.21 1.79-4 4-4s4 1.79 4 4Z" stroke="#ffffff" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path><path d="m3.441 19 .99.99 2.13-1.97" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path><path opacity=".4" d="M17.751 7.05c-.24-.04-.49-.05-.75-.05h-10c-.28 0-.55.02-.81.06.14-.28.34-.54.58-.78l3.25-3.26a3.525 3.525 0 0 1 4.96 0l1.75 1.77c.64.63.98 1.43 1.02 2.26Z" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path><path d="M22 12v5c0 3-2 5-5 5H7.63c.31-.26.58-.58.79-.94.37-.6.58-1.31.58-2.06 0-2.21-1.79-4-4-4-1.2 0-2.27.53-3 1.36V12c0-2.72 1.64-4.62 4.19-4.94.26-.04.53-.06.81-.06h10c.26 0 .51.01.75.05C20.33 7.35 22 9.26 22 12Z" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path><path opacity=".4" d="M22 12.5h-3c-1.1 0-2 .9-2 2s.9 2 2 2h3" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path></svg></span>
-                                    <span className='ml-2'>Checkout Now</span>
-                                </div>
+                                <PressButton onClick={openCheckout} size="sm">
+                                    Checkout Now
+                                </PressButton>
                             )}
 
-                            <div onClick={closeCart} className="rounded-lg cursor-pointer px-3 py-2 inline-flex items-center gap-x-2 bg-white text-red-700 borde  disabled:opacity-50 disabled:pointer-events-none hover:text-white hover:bg-red-900 hover:border-red-900 active:bg-red-900 active:border-red-900 focus:outline-none focus:ring-4 focus:ring-red-300">
-                                <span>Cancel</span>
-                                <span className='ml-2'><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"><path stroke="#ffffff" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" strokeWidth="1.5" d="M14.43 5.93L20.5 12l-6.07 6.07"></path><path stroke="#ffffff" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" strokeWidth="1.5" d="M3.5 12h16.83" opacity=".4"></path></svg></span>
-                            </div>
+                            <button
+                                type="button"
+                                onClick={closeCart}
+                                className="inline-flex cursor-pointer items-center rounded-full bg-[#F6F3EE] px-4 py-2 text-sm font-semibold text-[#003E48] hover:bg-[#003E48]/8"
+                            >
+                                Cancel
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* Checkout Form */}
             <CheckoutForm isOpen={isCheckoutOpen} onClose={closeCheckout} callback={handlePaymentCallback} />
 
             {showAlert && <AlertModal title={alert.title} message={alert.message} status={alert.status} actionUrl={alert.actionUrl} onOk={() => setShowAlert(false)} onClose={() => setShowAlert(false)} />}

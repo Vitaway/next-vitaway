@@ -1,6 +1,8 @@
 import GuestLayout from '@/app/layouts/GuestLayout';
 import { Metadata } from 'next';
 import Stepper from './Stepper';
+import PageHeader from '@/app/components/headers/page-header';
+import SectionCard from '@/app/components/sections/section-card';
 
 export const metadata: Metadata = {
   title: "CanRisk - Diabetes Risk Assessment",
@@ -12,18 +14,22 @@ export const metadata: Metadata = {
 function CanRisk() {
   return (
     <GuestLayout>
-      <div className="relative px-4 py-10 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-8 lg:px-6 lg:py-16">
-        <div className="border border-gray-200 p-4 sm:p-6 md:p-8 rounded-3xl">
-          <h1 className="text-2xl sm:text-3xl font-bold text-slate-800">Diabetes</h1>
-          <h1 className="text-2xl sm:text-3xl font-bold text-slate-800">Are you at risk?</h1>
-          <p className="mt-4 text-slate-800 text-sm sm:text-base">
-            This page will help you determine if you are at risk for certain conditions.
-          </p>
-          <div className="mt-6">
+      <PageHeader
+        title={
+          <>
+            Diabetes. Are you at <span className="font-accent">risk</span>?
+          </>
+        }
+        description="This page will help you determine if you are at risk for certain conditions."
+      />
+
+      <SectionCard className="bg-[#F6F3EE] py-12 sm:py-16">
+        <div className="mx-auto max-w-[1440px] px-5 lg:px-12">
+          <div className="rounded-[24px] bg-white p-5 sm:p-8 md:p-10">
             <Stepper />
           </div>
         </div>
-      </div>
+      </SectionCard>
     </GuestLayout>
   );
 }
