@@ -10,6 +10,7 @@ import { Truck, Store } from 'lucide-react';
 import rwandaData from '@/data/rwanda_geo.json';
 import AlertModal from '../alerts/alert-modal';
 import { ButtonSpinner } from '../spinners/Spinner';
+import PressButton from '../buttons/press-button';
 
 declare global {
     interface Window {
@@ -534,7 +535,7 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
     return (<>
         <FormModal width='max-w-[80vw]' height='max-h-[90vh]' isOpen={isOpen} onClose={onClose}>
             <div>
-                <h1 className='text-slate-700 text-xl font-semibold'>Checkout Form</h1>
+                <h1 className='text-xl font-semibold text-[#003E48]'>Checkout Form</h1>
 
                 <div className='flex w-full flex-col md:flex-row'>
                     <div className="flex flex-col gap-2 p-0 w-full mt-5 md:mt-0 md:p-4 md:max-w-1/2">
@@ -582,14 +583,14 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
                         <div className="flex gap-4">
                             {/* Province (customerCountry) */}
                             <div className="w-full sm:w-1/2">
-                                <label className="font-semibold text-slate-700 capitalize text-md">Province</label>
+                                <label className="text-md font-semibold capitalize text-[#003E48]">Province</label>
 
                                 <div className="mt-2 relative text-gray-400 focus-within:text-gray-600 transition-all duration-200">
                                     <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M21 7v10c0 3-1.5 5-5 5H8c-3.5 0-5-2-5-5V7c0-3 1.5-5 5-5h8c3.5 0 5 2 5 5Z" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path><path opacity=".4" d="M14.5 4.5v2c0 1.1.9 2 2 2h2M8 13h4M8 17h8" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path></svg>
                                     </div>
                                     <select
-                                        className="block w-full py-3 pl-12 pr-4 transition-all duration-200 border rounded-md focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
+                                        className="block w-full rounded-2xl border border-transparent bg-[#F6F3EE] py-3 pl-12 pr-4 text-[#003E48] caret-[#003E48] transition-all duration-200 focus:border-[#003E48] focus:bg-white focus:outline-none"
                                         value={selectedCustomerProvince}
                                         onChange={handleCustomerProvinceChange}
                                     >
@@ -601,19 +602,19 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
                                         ))}
                                     </select>
                                 </div>
-                                <span className="text-slate-800 mt-2">{selectedCustomerProvince}</span>
+                                <span className="mt-2 text-[#003E48]">{selectedCustomerProvince}</span>
                                 {customerCountryError && <p className="text-red-500 text-sm">{customerCountryError}</p>}
                             </div>
 
                             {/* District (customerCity) */}
                             <div className="w-full sm:w-1/2">
-                                <label className="font-semibold text-slate-700 capitalize text-md">District</label>
+                                <label className="text-md font-semibold capitalize text-[#003E48]">District</label>
                                 <div className="mt-2 relative text-gray-400 focus-within:text-gray-600 transition-all duration-200">
                                     <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M21 7v10c0 3-1.5 5-5 5H8c-3.5 0-5-2-5-5V7c0-3 1.5-5 5-5h8c3.5 0 5 2 5 5Z" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path><path opacity=".4" d="M14.5 4.5v2c0 1.1.9 2 2 2h2M8 13h4M8 17h8" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path></svg>
                                     </div>
                                     <select
-                                        className="block w-full py-3 pl-12 pr-4 transition-all duration-200 border rounded-md focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
+                                        className="block w-full rounded-2xl border border-transparent bg-[#F6F3EE] py-3 pl-12 pr-4 text-[#003E48] caret-[#003E48] transition-all duration-200 focus:border-[#003E48] focus:bg-white focus:outline-none"
                                         value={customerCity}
                                         onChange={handleCustomerDistrictChange}
                                         disabled={!selectedCustomerProvince}
@@ -627,16 +628,16 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
                                             ))}
                                     </select>
                                 </div>
-                                <span className="text-slate-800 mt-2">{customerCity}</span>
+                                <span className="mt-2 text-[#003E48]">{customerCity}</span>
                                 {customerCityError && <p className="text-red-500 text-sm">{customerCityError}</p>}
                             </div>
                         </div>
 
-                        <div className="flex items-center gap-2 border-t border-b border-gray-200 py-3 my-4">
+                        <div className="my-4 flex items-center gap-2 border-t border-b border-[#003E48]/10 py-3">
                             <input
                                 type="checkbox"
                                 id="differentRecipient"
-                                className="w-4 h-4"
+                                className="h-4 w-4 accent-[#003E48]"
                                 onChange={(e) => {
                                     if (!e.target.checked) {
                                         setCustomerDiffRecipient(false)
@@ -645,7 +646,7 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
                                     }
                                 }}
                             />
-                            <label htmlFor="differentRecipient" className="text-md font-bold text-gray-700">
+                            <label htmlFor="differentRecipient" className="text-md font-bold text-[#003E48]">
                                 Recipient is different from customer (Want someone to recieve an items)
                             </label>
                         </div>
@@ -695,14 +696,14 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
                                 <div className="flex gap-4">
                                     {/* Province (customerCountry) */}
                                     <div className="w-full sm:w-1/2">
-                                        <label className="font-semibold text-slate-700 capitalize text-md">Province</label>
+                                        <label className="text-md font-semibold capitalize text-[#003E48]">Province</label>
 
                                         <div className="mt-2 relative text-gray-400 focus-within:text-gray-600 transition-all duration-200">
                                             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M21 7v10c0 3-1.5 5-5 5H8c-3.5 0-5-2-5-5V7c0-3 1.5-5 5-5h8c3.5 0 5 2 5 5Z" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path><path opacity=".4" d="M14.5 4.5v2c0 1.1.9 2 2 2h2M8 13h4M8 17h8" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path></svg>
                                             </div>
                                             <select
-                                                className="block w-full py-3 pl-12 pr-4 transition-all duration-200 border rounded-md focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
+                                                className="block w-full rounded-2xl border border-transparent bg-[#F6F3EE] py-3 pl-12 pr-4 text-[#003E48] caret-[#003E48] transition-all duration-200 focus:border-[#003E48] focus:bg-white focus:outline-none"
                                                 value={selectedRecipientProvince}
                                                 onChange={handleRecipientProvinceChange}
                                             >
@@ -721,13 +722,13 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
 
                                     {/* District (customerCity) */}
                                     <div className="w-full sm:w-1/2">
-                                        <label className="font-semibold text-slate-700 capitalize text-md">District</label>
+                                        <label className="text-md font-semibold capitalize text-[#003E48]">District</label>
                                         <div className="mt-2 relative text-gray-400 focus-within:text-gray-600 transition-all duration-200">
                                             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M21 7v10c0 3-1.5 5-5 5H8c-3.5 0-5-2-5-5V7c0-3 1.5-5 5-5h8c3.5 0 5 2 5 5Z" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path><path opacity=".4" d="M14.5 4.5v2c0 1.1.9 2 2 2h2M8 13h4M8 17h8" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path></svg>
                                             </div>
                                             <select
-                                                className="block w-full py-3 pl-12 pr-4 transition-all duration-200 border rounded-md focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
+                                                className="block w-full rounded-2xl border border-transparent bg-[#F6F3EE] py-3 pl-12 pr-4 text-[#003E48] caret-[#003E48] transition-all duration-200 focus:border-[#003E48] focus:bg-white focus:outline-none"
                                                 value={recipientCity}
                                                 onChange={handleRecipientDistrictChange}
                                                 disabled={!selectedRecipientProvince}
@@ -748,18 +749,18 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
                             </div>
                         )}
                     </div>
-                    <div className='border-none md:border-l border-gray-300 pl-0 md:pl-5 w-full md:max-w-1/2'>
+                    <div className='w-full border-none border-[#003E48]/10 pl-0 md:max-w-1/2 md:border-l md:pl-5'>
                         <ul className="list-none overflow-auto max-h-[70vh]">
                             {cart && cart.map((product: Products) => (<ShopCartItem key={product.id} product={product} onRemoveFromCart={removeFromCart} />))}
                         </ul>
 
-                        <div className="max-w-md mx-auto my-5">
-                            <h2 className="text-slate-700 font-semibold mb-4">Delivery</h2>
-                            <div className="rounded-md border overflow-hidden divide-y divide-gray-200">
+                        <div className="mx-auto my-5 max-w-md">
+                            <h2 className="mb-4 font-semibold text-[#003E48]">Delivery</h2>
+                            <div className="overflow-hidden divide-y divide-[#003E48]/10 rounded-[20px] border border-[#003E48]/10">
                                 {/* Ship Option */}
                                 <label
-                                    className={`flex items-center justify-between p-4 cursor-pointer ${selected === 'ship'
-                                        ? 'bg-[#272749]/30 border-l-4 border-[#272749]'
+                                    className={`flex cursor-pointer items-center justify-between p-4 ${selected === 'ship'
+                                        ? 'border-l-4 border-[#003E48] bg-[#F6F3EE]'
                                         : 'bg-white'
                                         }`}
                                 >
@@ -770,20 +771,20 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
                                             value="ship"
                                             checked={selected === 'ship'}
                                             onChange={(e) => handleShipOption(e)}
-                                            className="accent-[#272749] w-5 h-5"
+                                            className="h-5 w-5 accent-[#003E48]"
                                         />
-                                        <span className="text-black font-medium">Ship</span>
+                                        <span className="font-medium text-[#003E48]">Ship</span>
                                     </div>
                                     <Truck
-                                        className={`w-5 h-5 ${selected === 'ship' ? 'text-[#272749]' : 'text-gray-400'
+                                        className={`h-5 w-5 ${selected === 'ship' ? 'text-[#003E48]' : 'text-[#003E48]/35'
                                             }`}
                                     />
                                 </label>
 
                                 {/* Pickup Option */}
                                 <label
-                                    className={`flex items-center justify-between p-4 cursor-pointer ${selected === 'pickup'
-                                        ? 'bg-[#272749]/30 border-l-4 border-[#272749]'
+                                    className={`flex cursor-pointer items-center justify-between p-4 ${selected === 'pickup'
+                                        ? 'border-l-4 border-[#003E48] bg-[#F6F3EE]'
                                         : 'bg-white'
                                         }`}
                                 >
@@ -794,19 +795,19 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
                                             value="pickup"
                                             checked={selected === 'pickup'}
                                             onChange={(e) => handleShipOption(e)}
-                                            className="accent-[#272749] w-5 h-5"
+                                            className="h-5 w-5 accent-[#003E48]"
                                         />
-                                        <span className="text-black font-medium">Pickup in store</span>
+                                        <span className="font-medium text-[#003E48]">Pickup in store</span>
                                     </div>
                                     <Store
-                                        className={`w-5 h-5 ${selected === 'pickup' ? 'text-[#272749]' : 'text-gray-400'
+                                        className={`h-5 w-5 ${selected === 'pickup' ? 'text-[#003E48]' : 'text-[#003E48]/35'
                                             }`}
                                     />
                                 </label>
                             </div>
                         </div>
 
-                        <div className='border-t border-gray-200 pt-5 text-slate-700 w-full'>
+                        <div className='w-full border-t border-[#003E48]/10 pt-5 text-[#003E48]'>
                             <div className='mt-1 flex items-center justify-between w-full'><div className='font-bold'>Customer Name:</div> <div className='max-w-42 line-clamp-1'>{customerDiffRecipient ? recipientName : customerName}</div></div>
                             <div className='mt-1 flex items-center justify-between w-full'>
                                 <div className='font-bold'>Shipping Address:</div>
@@ -820,24 +821,20 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
                             <div className='mt-1 flex items-center justify-between w-full'><div className='font-bold'>Total Amount:</div> <div className='max-w-42 line-clamp-1'>RWF {Number(total + shippingAmount).toLocaleString()}</div></div>
                         </div>
 
-                        <div className="flex justify-between border-t border-gray-200 pt-5 mt-5">
+                        <div className="mt-5 flex justify-between border-t border-[#003E48]/10 pt-5">
                             <div></div>
-                            <button 
-                                onClick={processPayment} 
+                            <PressButton
+                                onClick={processPayment}
                                 disabled={loading || paymentProcessing || cart.length === 0 || scriptError}
-                                className="rounded-lg cursor-pointer px-3 py-2 inline-flex items-center gap-x-2 bg-[#1a1a2e] text-white border-[#1a1a2e] disabled:opacity-50 disabled:cursor-not-allowed hover:text-white hover:bg-green-700 hover:border-green-700 active:bg-green-700 active:border-green-700 focus:outline-none focus:ring-4 focus:ring-green-300"
                             >
                                 {loading || paymentProcessing ? (
                                     <ButtonSpinner loadingText={paymentProcessing ? "Processing" : "Initializing"} />
                                 ) : !scriptLoaded ? (
                                     <ButtonSpinner loadingText="Loading payment gateway" />
                                 ) : (
-                                    <>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 19c0 .75-.21 1.46-.58 2.06A3.97 3.97 0 0 1 5 23a3.97 3.97 0 0 1-3.42-1.94A3.92 3.92 0 0 1 1 19c0-2.21 1.79-4 4-4s4 1.79 4 4Z" stroke="#ffffff" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path><path d="m3.441 19 .99.99 2.13-1.97" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path><path opacity=".4" d="M17.751 7.05c-.24-.04-.49-.05-.75-.05h-10c-.28 0-.55.02-.81.06.14-.28.34-.54.58-.78l3.25-3.26a3.525 3.525 0 0 1 4.96 0l1.75 1.77c.64.63.98 1.43 1.02 2.26Z" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path><path d="M22 12v5c0 3-2 5-5 5H7.63c.31-.26.58-.58.79-.94.37-.6.58-1.31.58-2.06 0-2.21-1.79-4-4-4-1.2 0-2.27.53-3 1.36V12c0-2.72 1.64-4.62 4.19-4.94.26-.04.53-.06.81-.06h10c.26 0 .51.01.75.05C20.33 7.35 22 9.26 22 12Z" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path><path opacity=".4" d="M22 12.5h-3c-1.1 0-2 .9-2 2s.9 2 2 2h3" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path></svg>
-                                        <span className='ml-2'>Process Payment</span>
-                                    </>
+                                    <span>Process Payment</span>
                                 )}
-                            </button>
+                            </PressButton>
                         </div>
                     </div>
                 </div>

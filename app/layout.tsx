@@ -1,9 +1,25 @@
 import { Metadata } from "next";
 import { Suspense } from "react";
+import { DM_Sans, Schoolbell } from "next/font/google";
 import TopProgressBar from "./components/top-progress-bar";
 import { CartProvider } from '@/context/CartContext';
+import SiteShell from "./components/site-shell";
 import "./globals.css";
 import Script from 'next/script';
+
+const dmSans = DM_Sans({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-dm-sans",
+  weight: ["400", "500", "600", "700"],
+});
+
+const schoolbell = Schoolbell({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-schoolbell",
+  weight: "400",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.vitaway.org"),
@@ -157,22 +173,21 @@ export default function RootLayout({ children }: Readonly<{
   };
 
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className={`${dmSans.variable} ${schoolbell.variable}`}>
       <head>
         <Script 
           id="structured-data"
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
         />
-        <Script src="//code.tidio.co/mwzeombpb11eeirlfz6ba2uar9jhcvoc.js" strategy="afterInteractive" />
       </head>
-      <body className="app-body" suppressHydrationWarning>
+      <body className={`app-body ${dmSans.className}`} suppressHydrationWarning>
         <Suspense fallback={null}>
           <TopProgressBar />
         </Suspense>
-        
+
         <CartProvider>
-          {children}
+          <SiteShell>{children}</SiteShell>
         </CartProvider>
       </body>
     </html>

@@ -7,11 +7,12 @@ import { Products } from '@/types/products';
 import AlertMessage from '../components/alerts/alert-message';
 import { useProducts, useCategories } from '@/hooks';
 import { InlineSpinner } from '@/app/components/spinners';
+import Pagination from '../components/pagination';
 
 const ProductsList = React.memo(function ProductsList() {
 	const { products, loading: productsLoading, error: productsError } = useProducts();
 	const { categories, loading: categoriesLoading } = useCategories();
-	
+
 	const [filteredProducts, setFilteredProducts] = useState<Products[]>([]);
 	const [searchQuery, setSearchQuery] = useState('');
 	const [selectedCategory, setSelectedCategory] = useState('');
@@ -42,7 +43,7 @@ const ProductsList = React.memo(function ProductsList() {
 			if (selectedCategory && product.category?.id?.toString() !== selectedCategory) {
 				return false;
 			}
-			
+
 			// Filter by search query
 			if (searchQuery) {
 				return (
@@ -52,7 +53,7 @@ const ProductsList = React.memo(function ProductsList() {
 					product.category?.name.toLowerCase().includes(searchQuery.toLowerCase())
 				);
 			}
-			
+
 			return true;
 		});
 
@@ -74,134 +75,134 @@ const ProductsList = React.memo(function ProductsList() {
 		setFilteredProducts(filtered);
 	}, [searchQuery, products, sortBy, selectedCategory]);
 
+	const from = filteredProducts.length === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1;
+	const to = Math.min(currentPage * itemsPerPage, filteredProducts.length);
+
 	return (
 		<>
-			<section className="bg-white">
-				<div className="px-4 pb-20 pt-10 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-20 lg:px-10 lg:pb-20 lg:pt-10">
-					<div className="flex flex-wrap">
-						<div className="w-full mb-6">
-							<h2 className="text-2xl text-slate-700 font-bold">Popular Products</h2>
-						</div>
+			<div className="space-y-4">
+				<div className="relative">
+					<div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
+						<svg className="h-5 w-5 text-[#003E48]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+						</svg>
 					</div>
-
-					<div className="bg-transparent rounded-lg flex flex-wrap gap-4 items-center mb-7">
-						<div className="flex items-center w-full md:w-auto flex-col md:flex-row justify-center">
-							<div className="border border-gray-300 rounded-full px-4 py-3 w-full md:w-[500px] text-sm focus:outline-none flex items-center bg-white">
-								<span>
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										width="16"
-										height="16"
-										viewBox="0 0 24 24"
-										fill="none"
-									>
-										<path
-											d="M11 20a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z"
-											stroke="#697689"
-											strokeWidth="1.5"
-											strokeLinecap="round"
-											strokeLinejoin="round"
-										></path>
-										<path
-											opacity=".4"
-											d="M18.93 20.689c.53 1.6 1.74 1.76 2.67.36.85-1.28.29-2.33-1.25-2.33-1.14-.01-1.78.88-1.42 1.97Z"
-											stroke="#697689"
-											strokeWidth="1.5"
-											strokeLinecap="round"
-											strokeLinejoin="round"
-										></path>
-									</svg>
-								</span>
-
-								<input
-									type="text"
-									value={searchQuery}
-									onChange={(e) => setSearchQuery(e.target.value)}
-									placeholder="Search different products... (press enter to search)"
-									className="border-none outline-none focus:border-none focus:outline-none ml-3 text-slate-700 bg-white w-full h-full placeholder:text-gray-400"
-								/>
-							</div>
-						</div>
-						<div className="flex items-center w-full md:w-auto flex-col md:flex-row justify-center">
-							<div className="border border-gray-300 rounded-full px-4 py-3 w-full md:w-[200px] text-sm focus:outline-none flex items-center bg-white">
-								<select
-									value={selectedCategory}
-									onChange={(e) => handleCategoryChange(e.target.value)}
-									className="border-none outline-none focus:border-none focus:outline-none ml-3 text-slate-700 bg-white w-full h-full placeholder:text-gray-400"
-								>
-									<option value="">All Products</option>
-
-									{categories.map((category: { name: string; id: string | number; }) => (
-										<option key={category.id} value={category.id}>{category.name}</option>
-									))}
-								</select>
-							</div>
-						</div>
-						<div className="flex items-center w-full md:w-auto flex-col md:flex-row justify-center">
-							<div className="border border-gray-300 rounded-full px-4 py-3 w-full md:w-[200px] text-sm focus:outline-none flex items-center bg-white">
-								<select
-									value={sortBy}
-									onChange={(e) => setSortBy(e.target.value)}
-									className="border-none outline-none focus:border-none focus:outline-none ml-3 text-slate-700 bg-white w-full h-full placeholder:text-gray-400"
-								>
-									<option value="name-desc">Name (Z-A)</option>
-									<option value="name-asc">Name (A-Z)</option>
-									<option value="price-desc">Price (High-Low)</option>
-									<option value="price-asc">Price (Low-High)</option>
-								</select>
-							</div>
-						</div>
-					</div>
-
-					{filteredProducts.length === 0 && !loading && (
-						<div className="text-center flex items-center justify-center">
-							<div className="">
-								<Image src="/svgs/exercise.svg" alt="blogs" width={300} height={300} />
-								<span className="font-bold text-slate-700">No Products Found.</span>
-							</div>
-						</div>
-					)}
-
-					{loading ? (
-						<InlineSpinner message="Loading products..." />
-					) : (
-						<div className="grid gap-4 grid-cols-1 sm:grid-cols-1 md:grid-cols-3 xl:grid-cols-4">
-							{paginatedProducts.map((product, index) => (
-								<ProductCard key={index} product={product} />
-							))}
-						</div>
-					)}
-
-					<hr className='my-5' />
-
-					<div className="flex justify-center items-center">
+					<input
+						type="text"
+						value={searchQuery}
+						onChange={(e) => setSearchQuery(e.target.value)}
+						placeholder="Search different products... (press enter to search)"
+						className="w-full rounded-full bg-[#F6F3EE] py-3 pl-12 pr-4 text-[#003E48] placeholder:text-[#003E48]/40 focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#003E48]"
+					/>
+					{searchQuery && (
 						<button
-							className="px-4 py-2 mx-1 bg-gray-300 text-gray-700 rounded-full text-sm cursor-pointer"
-							onClick={() => handlePageChange(currentPage - 1)}
-							disabled={currentPage === 1}
+							type="button"
+							onClick={() => setSearchQuery('')}
+							className="absolute inset-y-0 right-0 flex items-center pr-4 text-[#003E48]/40 hover:text-[#003E48]"
 						>
-							Previous
+							<svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+							</svg>
 						</button>
-						{Array.from({ length: totalPages }, (_, index) => (
+					)}
+				</div>
+
+				<div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
+					<div className="flex flex-wrap items-center gap-2">
+						<span className="mr-2 text-sm font-semibold text-[#003E48]">Category:</span>
+						<button
+							type="button"
+							onClick={() => handleCategoryChange('')}
+							className={`rounded-full px-4 py-2 text-sm font-medium transition-colors duration-200 ${
+								selectedCategory === ''
+									? 'bg-[#003E48] text-white'
+									: 'bg-[#F6F3EE] text-[#003E48] hover:bg-[#E8F7F4]'
+							}`}
+						>
+							All Products
+						</button>
+						{categories.map((category: { name: string; id: string | number }) => (
 							<button
-								key={index}
-								className={`px-4 py-2 mx-1 rounded-full text-sm cursor-pointer ${currentPage === index + 1 ? 'bg-[#003E48] text-white' : 'bg-gray-300 text-gray-700'}`}
-								onClick={() => handlePageChange(index + 1)}
+								key={category.id}
+								type="button"
+								onClick={() => handleCategoryChange(String(category.id))}
+								className={`rounded-full px-4 py-2 text-sm font-medium transition-colors duration-200 ${
+									selectedCategory === String(category.id)
+										? 'bg-[#003E48] text-white'
+										: 'bg-[#F6F3EE] text-[#003E48] hover:bg-[#E8F7F4]'
+								}`}
 							>
-								{index + 1}
+								{category.name}
 							</button>
 						))}
-						<button
-							className="px-4 py-2 mx-1 bg-gray-300 text-gray-700 rounded-full text-sm cursor-pointer"
-							onClick={() => handlePageChange(currentPage + 1)}
-							disabled={currentPage === totalPages}
+					</div>
+
+					<div className="flex items-center gap-2">
+						<span className="text-sm font-semibold text-[#003E48]">Sort by:</span>
+						<select
+							value={sortBy}
+							onChange={(e) => setSortBy(e.target.value)}
+							className="rounded-full bg-[#F6F3EE] px-4 py-2 text-sm font-medium text-[#003E48] focus:outline-none"
 						>
-							Next
-						</button>
+							<option value="name-desc">Name (Z-A)</option>
+							<option value="name-asc">Name (A-Z)</option>
+							<option value="price-desc">Price (High-Low)</option>
+							<option value="price-asc">Price (Low-High)</option>
+						</select>
 					</div>
 				</div>
 
-			</section>
+				<div className="flex items-center justify-between text-sm text-[#003E48]/60">
+					<span>
+						Showing <strong className="text-[#003E48]">{filteredProducts.length}</strong> products
+					</span>
+					{(searchQuery || selectedCategory) && (
+						<button
+							type="button"
+							onClick={() => {
+								setSearchQuery('');
+								setSelectedCategory('');
+							}}
+							className="font-medium text-[#E85A2E] hover:underline"
+						>
+							Clear all filters
+						</button>
+					)}
+				</div>
+			</div>
+
+			{filteredProducts.length === 0 && !loading && (
+				<div className="mt-10 flex items-center justify-center text-center">
+					<div>
+						<Image src="/svgs/exercise.svg" alt="blogs" width={300} height={300} />
+						<span className="font-bold text-[#003E48]">No Products Found.</span>
+					</div>
+				</div>
+			)}
+
+			{loading ? (
+				<div className="mt-10">
+					<InlineSpinner message="Loading products..." />
+				</div>
+			) : (
+				<div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-1 md:grid-cols-3 xl:grid-cols-4">
+					{paginatedProducts.map((product, index) => (
+						<ProductCard key={index} product={product} />
+					))}
+				</div>
+			)}
+
+			{!loading && filteredProducts.length > 0 && (
+				<Pagination
+					currentPage={currentPage}
+					lastPage={totalPages}
+					total={filteredProducts.length}
+					from={from}
+					to={to}
+					onPageChange={handlePageChange}
+					loading={loading}
+				/>
+			)}
 
 			{productsError && <AlertMessage message={productsError} type="error" />}
 		</>

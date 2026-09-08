@@ -1,6 +1,8 @@
 import { Metadata } from 'next';
 import GuestLayout from '../layouts/GuestLayout';
 import ProductsList from './products-list';
+import PageHeader from '../components/headers/page-header';
+import SectionCard from '../components/sections/section-card';
 
 export const metadata: Metadata = {
 	title: 'Shop Now',
@@ -35,7 +37,20 @@ export const metadata: Metadata = {
 function Shop() {
 	return (
 		<GuestLayout>
-			<ProductsList />
+			<PageHeader
+				title={
+					<>
+						Clinic essentials you can take <span className="font-accent">home</span>
+					</>
+				}
+				description="Supplements and wellness products we use in the plan — delivered in Kigali."
+			/>
+
+			<SectionCard className="bg-white py-12 sm:py-16">
+				<div className="mx-auto max-w-[1440px] px-5 lg:px-12">
+					<ProductsList />
+				</div>
+			</SectionCard>
 		</GuestLayout>
 	);
 }

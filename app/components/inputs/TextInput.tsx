@@ -32,7 +32,7 @@ const TextInput: React.FC<TextInputProps> = ({
     <div className="mt-5">
       <FormLabel required={required}>{label}</FormLabel>
 
-      <div className="mt-2 relative text-gray-400 focus-within:text-gray-600 transition-all duration-200">
+      <div className="mt-2 relative text-[#003E48]/40 focus-within:text-[#003E48] transition-all duration-200">
         {children && (
           <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
             {children}
@@ -46,10 +46,10 @@ const TextInput: React.FC<TextInputProps> = ({
           onKeyDown={onKeyDown}
           placeholder={placeholder}
           disabled={disabled}
-          className={`block w-full py-3 pl-12 pr-4 transition-all duration-200 border rounded-2xl focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600 ${
+          className={`block w-full py-3 pl-12 pr-4 font-normal transition duration-200 border rounded-2xl appearance-none focus:outline-none focus:border-[#003E48] caret-[#003E48] ${
             errorMessage
               ? "text-red-700 placeholder-red-500 border-red-200 bg-red-50"
-              : "text-black placeholder-gray-500 border-gray-200 bg-gray-50"
+              : "text-[#003E48] placeholder:text-[#003E48]/40 border-transparent bg-[#F6F3EE] focus:bg-white"
           }`}
         />
       </div>

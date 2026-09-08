@@ -9,7 +9,8 @@ import ImageSlider from '@/app/components/cards/images-slider';
 import Script from 'next/script';
 import Head from 'next/head';
 import "../../styles/blog-content.css";
-import Link from 'next/link';
+import SectionCard from '@/app/components/sections/section-card';
+import PressButton from '@/app/components/buttons/press-button';
 
 const BlogPost: React.FC = () => {
   const params = useParams();
@@ -72,7 +73,9 @@ const BlogPost: React.FC = () => {
   if (loading) {
     return (
       <GuestLayout>
-        <div className="min-h-[300px] flex items-center justify-center text-gray-800 text-lg">Loading...</div>
+        <SectionCard className="bg-white py-12 sm:py-16">
+          <div className="flex min-h-[300px] items-center justify-center text-lg text-[#003E48]">Loading...</div>
+        </SectionCard>
       </GuestLayout>
     );
   }
@@ -206,11 +209,12 @@ const BlogPost: React.FC = () => {
         {JSON.stringify(structuredData)}
       </Script>
 
-      <article className="relative border-t border-gray-200" itemScope itemType="https://schema.org/BlogPosting">
-        <div className="max-w-3xl mx-auto bg-white p-6 rounded">
+      <SectionCard className="bg-white py-12 sm:py-16">
+      <article className="relative" itemScope itemType="https://schema.org/BlogPosting">
+        <div className="mx-auto max-w-3xl px-5 lg:px-12">
           <header>
-            <p className="text-indigo-600 text-sm mb-2 font-semibold" itemProp="articleSection">{blog.category.name}</p>
-            <h1 className="text-gray-900 font-bold text-4xl mb-3 capitalize" itemProp="headline">{blog.title}</h1>
+            <p className="mb-3 inline-block rounded-full bg-[#F6F3EE] px-4 py-1.5 text-xs font-semibold text-[#003E48]" itemProp="articleSection">{blog.category.name}</p>
+            <h1 className="mb-3 text-3xl font-bold capitalize text-[#003E48] sm:text-4xl" itemProp="headline">{blog.title}</h1>
 
             {/* Hidden meta for SEO */}
             <meta itemProp="image" content={blog.images && blog.images.length > 0 ? blog.images[0].image_url : ''} />
@@ -223,9 +227,9 @@ const BlogPost: React.FC = () => {
               </div>
             </div>
 
-            <div className="text-sm text-gray-600 flex flex-wrap gap-4 mb-4">
+            <div className="mb-4 flex flex-wrap gap-4 text-sm text-[#003E48]/60">
               <span className="flex items-center gap-1">
-                <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                <svg className="h-4 w-4 text-[#003E48]/50" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
                   <path d="M20.75 13.25c0 4.83-3.92 8.75-8.75 8.75s-8.75-3.92-8.75-8.75S7.17 4.5 12 4.5s8.75 3.92 8.75 8.75Z" />
                   <path d="M12 8v5" opacity=".4" />
                   <path d="M9 2h6" opacity=".4" />
@@ -239,7 +243,7 @@ const BlogPost: React.FC = () => {
               </span>
 
               <span className="flex items-center gap-1" itemProp="author" itemScope itemType="https://schema.org/Person">
-                <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                <svg className="h-4 w-4 text-[#003E48]/50" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
                   <path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z" />
                   <path d="M20.59 22c0-3.87-3.85-7-8.59-7s-8.59 3.13-8.59 7" opacity=".4" />
                 </svg>
@@ -247,7 +251,7 @@ const BlogPost: React.FC = () => {
               </span>
 
               <span className="flex items-center gap-1">
-                <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                <svg className="h-4 w-4 text-[#003E48]/50" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
                   <path d="m4.17 15.3 4.53 4.53a4.78 4.78 0 0 0 6.75 0l4.39-4.39a4.78 4.78 0 0 0 0-6.75L15.3 4.17a4.75 4.75 0 0 0-3.6-1.39l-5 .24c-2 .09-3.59 1.68-3.69 3.67l-.24 5c-.06 1.35.45 2.66 1.4 3.61Z" />
                   <path d="M9.5 12a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z" opacity=".4" />
                 </svg>
@@ -255,15 +259,15 @@ const BlogPost: React.FC = () => {
               </span>
             </div>
 
-            <hr className="my-4" />
+            <hr className="my-4 border-[#003E48]/10" />
           </header>
           {/* Social Share Section */}
-          <div className="mb-6 pb-4 border-b border-gray-200">
-            <h3 className="text-sm font-semibold text-gray-700 mb-3">Share this article:</h3>
+          <div className="mb-6 border-b border-[#003E48]/10 pb-4">
+            <h3 className="mb-3 text-sm font-semibold text-[#003E48]">Share this article:</h3>
             <div className="flex flex-wrap gap-3">
               <button
                 onClick={() => handleShare('facebook')}
-                className="flex items-center gap-2 px-4 py-2 bg-blue-700 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200"
+                className="flex items-center gap-2 rounded-full bg-[#F6F3EE] px-4 py-2 text-[#003E48] transition-colors duration-200 hover:bg-[#003E48] hover:text-white"
                 aria-label="Share on Facebook"
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -273,7 +277,7 @@ const BlogPost: React.FC = () => {
 
               <button
                 onClick={() => handleShare('twitter')}
-                className="flex items-center gap-2 px-4 py-2 bg-sky-600 hover:bg-sky-600 text-white rounded-lg transition-colors duration-200"
+                className="flex items-center gap-2 rounded-full bg-[#F6F3EE] px-4 py-2 text-[#003E48] transition-colors duration-200 hover:bg-[#003E48] hover:text-white"
                 aria-label="Share on Twitter"
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -283,7 +287,7 @@ const BlogPost: React.FC = () => {
 
               <button
                 onClick={() => handleShare('linkedin')}
-                className="flex items-center gap-2 px-4 py-2 bg-blue-800 hover:bg-blue-800 text-white rounded-lg transition-colors duration-200"
+                className="flex items-center gap-2 rounded-full bg-[#F6F3EE] px-4 py-2 text-[#003E48] transition-colors duration-200 hover:bg-[#003E48] hover:text-white"
                 aria-label="Share on LinkedIn"
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -293,7 +297,7 @@ const BlogPost: React.FC = () => {
 
               <button
                 onClick={() => handleShare('whatsapp')}
-                className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-600 text-white rounded-lg transition-colors duration-200"
+                className="flex items-center gap-2 rounded-full bg-[#F6F3EE] px-4 py-2 text-[#003E48] transition-colors duration-200 hover:bg-[#003E48] hover:text-white"
                 aria-label="Share on WhatsApp"
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -303,7 +307,7 @@ const BlogPost: React.FC = () => {
 
               <button
                 onClick={() => handleShare('email')}
-                className="flex items-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-700 text-white rounded-lg transition-colors duration-200"
+                className="flex items-center gap-2 rounded-full bg-[#F6F3EE] px-4 py-2 text-[#003E48] transition-colors duration-200 hover:bg-[#003E48] hover:text-white"
                 aria-label="Share via Email"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -313,7 +317,7 @@ const BlogPost: React.FC = () => {
 
               <button
                 onClick={copyToClipboard}
-                className="flex items-center gap-2 px-4 py-2 bg-gray-600 hover:bg-gray-600 text-white rounded-lg transition-colors duration-200"
+                className="flex items-center gap-2 rounded-full bg-[#F6F3EE] px-4 py-2 text-[#003E48] transition-colors duration-200 hover:bg-[#003E48] hover:text-white"
                 aria-label="Copy link"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -328,57 +332,51 @@ const BlogPost: React.FC = () => {
           </div>
 
           {/* Blog Content */}
-          <section className="blog-content prose prose-lg max-w-none text-gray-800 blog-content mb-8" itemProp="articleBody" dangerouslySetInnerHTML={{ __html: blog.content }} />
+          <section className="blog-content prose-vitaway mb-8 max-w-none text-[#003E48]" itemProp="articleBody" dangerouslySetInnerHTML={{ __html: blog.content }} />
 
           {/* Disclaimer Section - Only show if disclaimer exists */}
           {blog.disclaimer && (
-            <div className="mt-8 p-6 bg-amber-50 border-l-4 border-amber-500 rounded-r-lg">
+            <div className="mt-8 rounded-r-[20px] border-l-4 border-[#E85A2E] bg-[#F6F3EE] p-6">
               <div className="flex items-start gap-3">
-                <svg className="w-6 h-6 text-amber-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <svg className="mt-0.5 h-6 w-6 shrink-0 text-[#E85A2E]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                 </svg>
                 <div>
-                  <h3 className="text-lg font-semibold text-amber-900 mb-2">Disclaimer</h3>
-                  <div className="text-sm text-amber-800 leading-relaxed" dangerouslySetInnerHTML={{ __html: blog.disclaimer }} />
+                  <h3 className="mb-2 text-lg font-semibold text-[#003E48]">Disclaimer</h3>
+                  <div className="text-sm leading-relaxed text-[#003E48]/70" dangerouslySetInnerHTML={{ __html: blog.disclaimer }} />
                 </div>
               </div>
             </div>
           )}
 
           {/* Author Info & Call to Action */}
-          <div className="mt-8 p-6 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg border border-indigo-100">
-            <div className="flex items-center gap-4 mb-4">
+          <div className="mt-8 rounded-[20px] bg-[#F6F3EE] p-6">
+            <div className="mb-4 flex items-center gap-4">
               <div>
-                <p className="text-lg font-semibold text-gray-900">Written by {blog.author}</p>
-                <p className="text-sm text-gray-600">Health & Wellness Expert at Vitaway Health</p>
+                <p className="text-lg font-semibold text-[#003E48]">Written by {blog.author}</p>
+                <p className="text-sm text-[#003E48]/60">Health & Wellness Expert at Vitaway Health</p>
               </div>
             </div>
-            <div className="mt-4 pt-4 border-t border-indigo-200">
-              <p className="text-sm text-gray-700 mb-3">
+            <div className="mt-4 border-t border-[#003E48]/10 pt-4">
+              <p className="mb-3 text-sm text-[#003E48]/70">
                 Want personalized health guidance? Our team of experts is here to help you achieve your wellness goals and mantain a balanced lifestyle.
               </p>
-              <Link
-                href="/appointments"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-b from-[#003E48] to-[#282e33] text-white font-medium rounded-lg transition-colors duration-200"
-              >
-                <span>Book a Consultation</span>
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <path d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
-              </Link>
+              <PressButton href="/appointments" size="sm">
+                Book a Consultation
+              </PressButton>
             </div>
           </div>
 
           {/* Social Media Follow Section */}
-          <div className="mt-8 p-6 bg-gray-50 rounded-lg text-center">
-            <h3 className="text-lg font-semibold text-gray-900 mb-3">Follow Vitaway Health</h3>
-            <p className="text-sm text-gray-600 mb-4">Stay updated with the latest health tips and wellness insights</p>
+          <div className="mt-8 rounded-[20px] bg-[#F6F3EE] p-6 text-center">
+            <h3 className="mb-3 text-lg font-semibold text-[#003E48]">Follow Vitaway Health</h3>
+            <p className="mb-4 text-sm text-[#003E48]/60">Stay updated with the latest health tips and wellness insights</p>
             <div className="flex justify-center gap-4">
               <a
                 href="Facebook: https://www.facebook.com/VitawayEClinic/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-12 h-12 flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white rounded-full transition-colors duration-200"
+                className="flex h-12 w-12 items-center justify-center rounded-full bg-[#003E48] text-white transition-colors duration-200 hover:bg-[#003E48]/90"
                 aria-label="Follow us on Facebook"
               >
                 <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
@@ -389,7 +387,7 @@ const BlogPost: React.FC = () => {
                 href="X: https://x.com/Vitawayeclinic"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-12 h-12 flex items-center justify-center bg-sky-500 hover:bg-sky-600 text-white rounded-full transition-colors duration-200"
+                className="flex h-12 w-12 items-center justify-center rounded-full bg-[#003E48] text-white transition-colors duration-200 hover:bg-[#003E48]/90"
                 aria-label="Follow us on Twitter"
               >
                 <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
@@ -400,7 +398,7 @@ const BlogPost: React.FC = () => {
                 href="https://www.linkedin.com/in/vitaway-e-clinic-ba1009206/?originalSubdomain=rw"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-12 h-12 flex items-center justify-center bg-blue-700 hover:bg-blue-800 text-white rounded-full transition-colors duration-200"
+                className="flex h-12 w-12 items-center justify-center rounded-full bg-[#003E48] text-white transition-colors duration-200 hover:bg-[#003E48]/90"
                 aria-label="Follow us on LinkedIn"
               >
                 <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
@@ -411,7 +409,7 @@ const BlogPost: React.FC = () => {
                 href="https://www.instagram.com/vitawayeclinic/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-12 h-12 flex items-center justify-center bg-gradient-to-br from-purple-600 via-pink-600 to-orange-500 hover:from-purple-700 hover:via-pink-700 hover:to-orange-600 text-white rounded-full transition-colors duration-200"
+                className="flex h-12 w-12 items-center justify-center rounded-full bg-[#003E48] text-white transition-colors duration-200 hover:bg-[#003E48]/90"
                 aria-label="Follow us on Instagram"
               >
                 <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
@@ -422,6 +420,7 @@ const BlogPost: React.FC = () => {
           </div>
         </div>
       </article>
+      </SectionCard>
     </GuestLayout>
   );
 };

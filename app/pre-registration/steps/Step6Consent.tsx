@@ -9,6 +9,7 @@ interface Props {
     data: Partial<PreRegistrationPayload>;
     errors: string[];
     onChange: (data: Partial<PreRegistrationPayload>) => void;
+    hideHeader?: boolean;
 }
 
 const CONSENTS: {
@@ -40,15 +41,19 @@ const CONSENTS: {
     },
 ];
 
-function Step6Consent({ data, errors, onChange }: Props) {
+function Step6Consent({ data, errors, onChange, hideHeader = false }: Props) {
     return (
         <div>
-            <h2 className="text-xl font-bold text-slate-800">Review & consent</h2>
-            <p className="text-gray-500 text-sm mt-1">
-                Please read and acknowledge each required item before submitting
-            </p>
+            {hideHeader ? null : (
+                <>
+                    <h2 className="text-xl font-bold text-[#003E48]">Review & <span className="font-accent">consent</span></h2>
+                    <p className="mt-1 text-sm text-[#003E48]/60">
+                        Please read and acknowledge each required item before submitting
+                    </p>
+                </>
+            )}
 
-            <div className="mt-5 space-y-3">
+            <div className={hideHeader ? 'space-y-2' : 'mt-5 space-y-3'}>
                 {CONSENTS.map(({ field, title, description }) => {
                     const checked = !!data[field];
                     return (
@@ -56,25 +61,25 @@ function Step6Consent({ data, errors, onChange }: Props) {
                             key={field}
                             type="button"
                             onClick={() => onChange({ [field]: !checked })}
-                            className={`w-full flex items-start gap-4 p-4 rounded-2xl border text-left transition-all duration-150 active:scale-[0.99] ${
+                            className={`flex w-full items-start gap-4 rounded-[24px] border p-4 text-left transition-all duration-150 active:scale-[0.99] ${
                                 checked
-                                    ? 'border-green-400 bg-green-50'
-                                    : 'border-gray-200 bg-white hover:border-gray-300'
+                                    ? 'border-[#003E48] bg-white'
+                                    : 'border-transparent bg-white hover:border-[#003E48]/20'
                             }`}
                         >
-                            <div className={`w-6 h-6 rounded-full border flex-shrink-0 mt-0.5 flex items-center justify-center transition-all ${
+                            <div className={`mt-0.5 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border transition-all ${
                                 checked
-                                    ? 'border-green-500 bg-green-500'
-                                    : 'border-gray-300'
+                                    ? 'border-[#003E48] bg-[#003E48]'
+                                    : 'border-[#003E48]/25'
                             }`}>
-                                {checked && <Check className="w-3.5 h-3.5 text-white" strokeWidth={3} />}
+                                {checked && <Check className="h-3.5 w-3.5 text-white" strokeWidth={3} />}
                             </div>
                             <div>
-                                <p className={`font-semibold text-sm ${checked ? 'text-green-700' : 'text-slate-700'}`}>
+                                <p className={`text-sm font-semibold ${checked ? 'text-[#003E48]' : 'text-[#003E48]/80'}`}>
                                     <RequiredMark />
                                     {title}
                                 </p>
-                                <p className="text-xs text-gray-500 mt-1 leading-relaxed">
+                                <p className="mt-1 text-xs leading-relaxed text-[#003E48]/55">
                                     {description}
                                 </p>
                             </div>
@@ -84,14 +89,14 @@ function Step6Consent({ data, errors, onChange }: Props) {
             </div>
 
             {errors.length > 0 && (
-                <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-xl">
+                <div className="mt-4 rounded-[24px] border border-red-200 bg-red-50 p-3">
                     {errors.map((err) => (
-                        <p key={err} className="text-red-600 text-sm font-medium">{err}</p>
+                        <p key={err} className="text-sm font-medium text-red-600">{err}</p>
                     ))}
                 </div>
             )}
 
-            <p className="text-xs text-gray-400 mt-4 text-center leading-relaxed">
+            <p className="mt-4 text-center text-xs leading-relaxed text-[#003E48]/45">
                 By submitting this form, you confirm that all information provided is accurate and complete to the best of your knowledge.
             </p>
         </div>

@@ -3,6 +3,7 @@ import PageHeader from '../components/headers/page-header';
 import GuestLayout from '../layouts/GuestLayout';
 import { Metadata } from 'next';
 import Image from 'next/image';
+import SectionCard from '../components/sections/section-card';
 
 export const metadata: Metadata = {
     title: "Who we serve",
@@ -28,8 +29,8 @@ export const metadata: Metadata = {
 const services = [
     {
         title: 'Individuals & Families',
+        heading: <>Individuals & <span className="font-accent">Families</span></>,
         descriptioin: 'Personalized Health Support for Your Wellness Journey Every health journey is unique.Whether you’re living with or at risk of diabetes, hypertension, obesity, or high cholesterol, we help you take control through:',
-        backgroundColor: '#f8fafc',
         image: "https://images.unsplash.com/photo-1636830632657-1dcda9360a3a?q=80&w=1949&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         subServices: [
             {
@@ -56,8 +57,8 @@ const services = [
     },
     {
         title: 'Employers & Workplace Wellness Programs',
+        heading: <>Employers & Workplace Wellness <span className="font-accent">Programs</span></>,
         descriptioin: 'Empowering Your Team, Improving Performance Healthier employees are more productive, motivated, and loyal. Vitaway partners with organizations to improve workforce well-being through:',
-        backgroundColor: '#fff',
         image: "https://images.unsplash.com/photo-1573496130141-209d200cebd8?q=80&w=2069&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         subServices: [
             {
@@ -84,8 +85,8 @@ const services = [
     },
     {
         title: 'Insurance Companies',
+        heading: <>Insurance <span className="font-accent">Companies</span></>,
         descriptioin: 'Innovating Preventive Care with Technology We help insurers shift from reactive claims to proactive health management by integrating digital tools and data-driven insights into member care.',
-        backgroundColor: '#f3f4f6',
         image: 'https://images.unsplash.com/photo-1610374792793-f016b77ca51a?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
         subServices: [
             {
@@ -113,54 +114,68 @@ const services = [
 ];
 
 function WhoWeServe() {
-    return (<>
+    return (
         <GuestLayout>
             <PageHeader
-                title='Your well being with vitaway’s Health Plan'
+                title={
+                    <>
+                        Your well being with vitaway’s Health <span className="font-accent">Plan</span>
+                    </>
+                }
                 description="At Vitaway, we’re on a mission to make preventive and personalized healthcare accessible to individuals, families, companies, and institutions across Rwanda and beyond. Whether you're managing a chronic condition, looking to build healthier habits, or aiming to boost your organization's wellness strategy."
-                sup_title='Who We Serve'
                 backgroundImage='https://res.cloudinary.com/dzhuhtn30/image/upload/v1671533556/vite-guest-imgs/allgo-an-app-for-plus-size-people-eqlRthvN188-unsplash_mjb1s7.jpg'
             />
 
             {services.map((service, serviceIndex) => (
-                <section key={serviceIndex} style={{ backgroundColor: service.backgroundColor }} className="relative px-4 py-20 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-20 lg:px-10 lg:py-20">
-                    <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
-                        <div>
-                            <h2 className="text-3xl font-bold leading-tight text-gray-900 sm:text-4xl lg:text-5xl">{service.title}</h2>
-                            <blockquote className="mt-4">
-                                <p className="text-base text-gray-700 md:text-lg font-merri font-normal">
+                <SectionCard
+                    key={serviceIndex}
+                    className={`py-16 sm:py-20 ${serviceIndex % 2 === 0 ? 'bg-white' : 'bg-[#F6F3EE]'}`}
+                >
+                    <div className="mx-auto max-w-[1440px] px-5 lg:px-12">
+                        <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
+                            <div className={serviceIndex % 2 === 1 ? 'lg:order-2' : ''}>
+                                <h2 className="text-3xl font-bold tracking-tight text-[#003E48] sm:text-4xl">
+                                    {service.heading}
+                                </h2>
+                                <p className="mt-4 text-base leading-relaxed text-[#003E48]/70">
                                     {service.descriptioin}
                                 </p>
-                            </blockquote>
 
-                            <div className="mt-10 grid grid-cols-1 gap-8 md:grid-cols-2 items-center">
-                                <div className="relative flex items-center justify-center">
-                                    <ul>
-                                        {service.subServices.map((subService, subServiceIndex) => (
-                                            <li key={subServiceIndex} className="relative flex items-start my-5">
-                                                <div className="relative flex items-center justify-center flex-shrink-0 w-16 h-16 bg-white rounded-full shadow">
-                                                    {subService.icon}
-                                                </div>
-                                                <div className="ml-6">
-                                                    <h3 className="text-lg font-semibold text-black">{subService.title}</h3>
-                                                    <p className="text-base text-gray-600">{subService.description}</p>
-                                                </div>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-                                <div>
-                                    <div className="bg-white border border-gray-200 rounded-lg h-[25rem]">
-                                        <Image src={service.image} alt={service.title} width={500} height={500} style={{ objectFit: 'cover' }} className="w-full h-full rounded-lg" />
-                                    </div>
+                                <ul className="mt-8 grid gap-3 sm:grid-cols-2">
+                                    {service.subServices.map((subService, subServiceIndex) => (
+                                        <li
+                                            key={subServiceIndex}
+                                            className={`rounded-[24px] p-5 ${serviceIndex % 2 === 0 ? 'bg-[#F6F3EE]' : 'bg-white'}`}
+                                        >
+                                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#003E48] [&_g]:stroke-[#5CE0C6] [&_path]:stroke-[#5CE0C6] [&_svg]:h-5 [&_svg]:w-5">
+                                                {subService.icon}
+                                            </div>
+                                            <h3 className="mt-4 text-lg font-bold text-[#003E48]">{subService.title}</h3>
+                                            <p className="mt-1.5 text-sm leading-relaxed text-[#003E48]/65">{subService.description}</p>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+
+                            <div className={`relative min-h-[320px] overflow-hidden rounded-[28px] sm:min-h-[420px] ${serviceIndex % 2 === 1 ? 'lg:order-1' : ''}`}>
+                                <Image
+                                    src={service.image}
+                                    alt={service.title}
+                                    fill
+                                    sizes="(min-width: 1024px) 45vw, 100vw"
+                                    className="object-cover"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-[#003E48]/90 via-[#003E48]/25 to-transparent" />
+                                <div className="absolute inset-x-0 bottom-0 p-6">
+                                    <h3 className="text-2xl font-bold text-white">{service.title}</h3>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </section>
+                </SectionCard>
             ))}
         </GuestLayout>
-    </>)
+    )
 }
 
-export default WhoWeServe;
+export default WhoWeServe

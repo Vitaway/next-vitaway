@@ -81,10 +81,10 @@ const Pagination: React.FC<PaginationProps> = ({
     return (
         <div className="flex flex-col items-center justify-center mt-12 space-y-4">
             {/* Results Info */}
-            <div className="text-sm text-gray-600">
-                Showing <span className="font-semibold text-gray-900">{from}</span> to{' '}
-                <span className="font-semibold text-gray-900">{to}</span> of{' '}
-                <span className="font-semibold text-gray-900">{total}</span> results
+            <div className="text-sm text-[#003E48]/60">
+                Showing <span className="font-semibold text-[#003E48]">{from}</span> to{' '}
+                <span className="font-semibold text-[#003E48]">{to}</span> of{' '}
+                <span className="font-semibold text-[#003E48]">{total}</span> results
             </div>
 
             {/* Pagination Controls */}
@@ -93,10 +93,10 @@ const Pagination: React.FC<PaginationProps> = ({
                 <button
                     onClick={handlePrevious}
                     disabled={currentPage === 1 || loading}
-                    className={`flex items-center justify-center px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
+                    className={`flex items-center justify-center px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 ${
                         currentPage === 1 || loading
-                            ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                            : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 hover:border-indigo-500'
+                            ? 'bg-[#F6F3EE] text-[#003E48]/35 cursor-not-allowed'
+                            : 'bg-white text-[#003E48] hover:bg-[#F6F3EE]'
                     }`}
                     aria-label="Previous page"
                 >
@@ -127,10 +127,10 @@ const Pagination: React.FC<PaginationProps> = ({
                                 <button
                                     onClick={() => handlePageClick(page)}
                                     disabled={loading}
-                                    className={`px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
+                                    className={`px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 ${
                                         page === currentPage
-                                            ? 'bg-gradient-to-b from-[#003E48] to-[#282e33] text-white'
-                                            : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 hover:border-indigo-500'
+                                            ? 'bg-[#003E48] text-white'
+                                            : 'bg-white text-[#003E48] hover:bg-[#F6F3EE]'
                                     } ${loading ? 'cursor-not-allowed opacity-50' : ''}`}
                                     aria-label={`Page ${page}`}
                                     aria-current={page === currentPage ? 'page' : undefined}
@@ -143,7 +143,7 @@ const Pagination: React.FC<PaginationProps> = ({
                 </div>
 
                 {/* Mobile Page Indicator */}
-                <div className="md:hidden px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg">
+                <div className="md:hidden px-4 py-2 text-sm font-medium text-[#003E48] bg-white rounded-full">
                     {currentPage} / {lastPage}
                 </div>
 
@@ -151,10 +151,10 @@ const Pagination: React.FC<PaginationProps> = ({
                 <button
                     onClick={handleNext}
                     disabled={currentPage === lastPage || loading}
-                    className={`flex items-center justify-center px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
+                    className={`flex items-center justify-center px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 ${
                         currentPage === lastPage || loading
-                            ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                            : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 hover:border-indigo-500'
+                            ? 'bg-[#F6F3EE] text-[#003E48]/35 cursor-not-allowed'
+                            : 'bg-white text-[#003E48] hover:bg-[#F6F3EE]'
                     }`}
                     aria-label="Next page"
                 >

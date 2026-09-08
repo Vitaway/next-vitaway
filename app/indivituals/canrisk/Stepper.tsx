@@ -38,14 +38,14 @@ function Stepper() {
     return (
         <>
             {/* Tabs */}
-            <div className='mt-6 flex flex-wrap space-x-2 sm:space-x-4 space-y-2 sm:space-y-0'>
+            <div className='mt-2 flex flex-wrap gap-2'>
                 {tabs.map((tab) => (
                     <button
                         key={tab}
-                        className={`px-3 py-2 text-sm sm:px-4 sm:py-2 sm:text-base font-semibold rounded-lg ${
+                        className={`rounded-full px-4 py-2 text-sm font-semibold sm:px-5 sm:text-base ${
                             activeTab === tab
-                                ? 'bg-gradient-to-b from-[#003E48] to-[#282e33] text-white'
-                                : 'bg-gray-200 text-gray-700'
+                                ? 'bg-[#003E48] text-white'
+                                : 'bg-[#F6F3EE] text-[#003E48] hover:bg-[#003E48]/10'
                         }`}
                         onClick={() => setActiveTab(tab)}
                     >

@@ -84,11 +84,11 @@ export type CategoriesResponse = APIResponse<Category[]>;
  */
 export interface AppointmentPayload {
     name: string;
-    email: string;
+    email?: string;
     phone: string;
     subject: string;
     reasons: string;
-    message: string;
+    message?: string;
     type: string;
     appointment_date: string;
     appointment_time: string;

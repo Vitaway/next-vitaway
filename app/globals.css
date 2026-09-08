@@ -1,29 +1,31 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Oxygen:wght@300;400;700&display=swap");
 @import "tailwindcss";
 
 @theme {
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-accent: var(--font-schoolbell), cursive;
+  --color-brand: #003e48;
+  --color-mint: #5ce0c6;
+  --color-coral: #e85a2e;
+  --color-canvas: #f6f3ee;
 }
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --foreground: #003e48;
 }
 
 body {
   color: var(--foreground);
-  font-family: "Inter", sans-serif;
+  font-family: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
   font-optical-sizing: auto;
   font-style: normal;
   overflow-x: hidden !important;
+}
+
+.font-accent {
+  font-family: var(--font-schoolbell), cursive;
+  font-weight: 400;
 }
 
 .hero-circle-gradient:before,
@@ -47,21 +49,19 @@ body {
   );
 }
 
-/* Customize nprogress bar */
 #nprogress {
   pointer-events: none;
 }
 
 #nprogress .bar {
-  background: #2563eb; /* Blue color */
+  background: #e85a2e;
   height: 3px;
 }
 
 #nprogress .peg {
-  box-shadow: 0 0 10px #2563eb, 0 0 5px #2563eb;
+  box-shadow: 0 0 10px #e85a2e, 0 0 5px #e85a2e;
 }
 
-/* Fetching Data Spinner */
 .fetch-loader {
   width: 40px;
   height: 40px;
@@ -75,7 +75,7 @@ body {
   position: absolute;
   inset: 0px;
   border-radius: 50%;
-  border: 5px solid #1a1a2e;
+  border: 5px solid #003e48;
   animation: prixClipFix 2s linear infinite;
 }
 
@@ -107,13 +107,138 @@ body {
   color: #000;
 }
 
+.press-btn,
+a.press-btn {
+  padding: 15px 32px;
+  border-radius: 50px;
+  cursor: pointer;
+  border: 0;
+  background-color: #e85a2e !important;
+  color: #ffffff !important;
+  letter-spacing: 0;
+  text-transform: none;
+  font-size: 15px;
+  font-weight: 700;
+  font-family: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-decoration: none;
+  transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.press-btn svg,
+a.press-btn svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.press-btn:hover,
+a.press-btn:hover {
+  background-color: #d14e26 !important;
+  color: #ffffff !important;
+}
+
+.press-btn:active {
+  background-color: #c44722;
+}
+
+.press-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.press-btn--sm {
+  padding: 10px 18px;
+  font-size: 12px;
+}
+
+.press-btn--sm.press-btn--secondary,
+a.press-btn--sm.press-btn--secondary,
+.press-btn--sm.press-btn--secondary-light,
+a.press-btn--sm.press-btn--secondary-light {
+  padding: 8px 12px;
+}
+
+.press-btn--sm svg,
+a.press-btn--sm svg {
+  width: 14px;
+  height: 14px;
+}
+
+.press-btn--secondary,
+a.press-btn--secondary {
+  background-color: transparent !important;
+  color: #ffffff !important;
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.75);
+}
+
+.press-btn--secondary:hover,
+a.press-btn--secondary:hover {
+  background-color: rgba(255, 255, 255, 0.12) !important;
+  color: #ffffff !important;
+}
+
+.press-btn--secondary-light,
+a.press-btn--secondary-light {
+  background-color: transparent !important;
+  color: #003e48 !important;
+  box-shadow: inset 0 0 0 1.5px #003e48;
+}
+
+.press-btn--secondary-light:hover,
+a.press-btn--secondary-light:hover {
+  background-color: #f6f3ee !important;
+  color: #003e48 !important;
+}
+
+.prose-vitaway {
+  color: #003e48;
+}
+
+.prose-vitaway h2 {
+  margin-top: 1.75rem;
+  margin-bottom: 0.75rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #003e48;
+}
+
+.prose-vitaway p {
+  margin-top: 0.75rem;
+  line-height: 1.7;
+  color: rgb(0 62 72 / 0.7);
+}
+
+.prose-vitaway a {
+  color: #e85a2e;
+  font-weight: 600;
+}
+
+.prose-vitaway a:hover {
+  text-decoration: underline;
+}
+
+.prose-vitaway ul {
+  margin-top: 0.75rem;
+  list-style: disc;
+  padding-left: 1.25rem;
+  color: rgb(0 62 72 / 0.7);
+}
+
+.prose-vitaway li + li {
+  margin-top: 0.35rem;
+}
+
 /*
  * Custom select chevron — do NOT use Tailwind arbitrary bg-[url('data:...')]
  * values; css-loader mangles nested quotes and fails the production build.
  */
 .select-chevron {
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23003E48' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 12px center;
   background-size: 16px;
@@ -121,7 +246,7 @@ body {
 
 .select-chevron-sm {
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23003E48' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 6px center;
   background-size: 14px;

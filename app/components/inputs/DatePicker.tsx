@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import FormLabel from './FormLabel';
 
@@ -38,6 +39,8 @@ export interface DatePickerProps {
     /** When empty, calendar opens at today minus this many years. */
     defaultViewYearsAgo?: number;
     className?: string;
+    compact?: boolean;
+    placement?: 'bottom' | 'top';
 }
 
 function pad(value: number): string {
@@ -111,15 +114,19 @@ function clampViewDate(date: Date, min: Date, max: Date): Date {
     return monthStart;
 }
 
-function defaultViewDate(defaultViewYearsAgo: number, maxDate: Date): Date {
+function defaultViewDate(defaultViewYearsAgo: number, minDate: Date, maxDate: Date): Date {
     if (defaultViewYearsAgo <= 0) {
+        const today = startOfDay(new Date());
+        if (!isBeforeDay(today, minDate) && !isAfterDay(today, maxDate)) {
+            return startOfMonth(today);
+        }
         return startOfMonth(maxDate);
     }
     return new Date(maxDate.getFullYear() - defaultViewYearsAgo, maxDate.getMonth(), 1);
 }
 
 const headerSelectClass =
-    'rounded-lg border border-gray-200 bg-gray-50 py-1.5 pl-2 pr-7 text-sm font-semibold text-slate-700 focus:border-blue-600 focus:bg-white focus:outline-none select-chevron-sm';
+    'rounded-2xl border border-transparent bg-[#F6F3EE] py-1.5 pl-2 pr-7 text-sm font-semibold text-[#003E48] focus:border-[#003E48] focus:bg-white focus:outline-none select-chevron-sm';
 
 function DatePicker({
     label = 'Date',
@@ -133,9 +140,14 @@ function DatePicker({
     maxDate,
     defaultViewYearsAgo = 20,
     className = 'mt-5',
+    compact = false,
+    placement = 'bottom',
 }: DatePickerProps) {
     const containerRef = useRef<HTMLDivElement>(null);
+    const triggerRef = useRef<HTMLButtonElement>(null);
+    const panelRef = useRef<HTMLDivElement>(null);
     const [open, setOpen] = useState(false);
+    const [panelStyle, setPanelStyle] = useState<React.CSSProperties>({});
 
     const today = useMemo(() => startOfDay(new Date()), []);
 
@@ -154,7 +166,7 @@ function DatePicker({
 
     const [viewDate, setViewDate] = useState<Date>(() =>
         clampViewDate(
-            parseIsoDate(value) ?? defaultViewDate(defaultViewYearsAgo, resolvedMaxDate),
+            parseIsoDate(value) ?? defaultViewDate(defaultViewYearsAgo, resolvedMinDate, resolvedMaxDate),
             resolvedMinDate,
             resolvedMaxDate,
         ),
@@ -164,7 +176,7 @@ function DatePicker({
         if (open) {
             setViewDate(
                 clampViewDate(
-                    parseIsoDate(value) ?? defaultViewDate(defaultViewYearsAgo, resolvedMaxDate),
+                    parseIsoDate(value) ?? defaultViewDate(defaultViewYearsAgo, resolvedMinDate, resolvedMaxDate),
                     resolvedMinDate,
                     resolvedMaxDate,
                 ),
@@ -174,9 +186,9 @@ function DatePicker({
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
-            if (!containerRef.current?.contains(event.target as Node)) {
-                setOpen(false);
-            }
+            const target = event.target as Node;
+            if (containerRef.current?.contains(target) || panelRef.current?.contains(target)) return;
+            setOpen(false);
         };
 
         if (open) {
@@ -185,6 +197,41 @@ function DatePicker({
 
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, [open]);
+
+    useEffect(() => {
+        if (!open) return;
+
+        const positionPanel = () => {
+            const trigger = triggerRef.current;
+            if (!trigger) return;
+            const rect = trigger.getBoundingClientRect();
+            const width = Math.min(Math.max(rect.width, 308), window.innerWidth - 24);
+            const left = Math.min(Math.max(12, rect.left), window.innerWidth - width - 12);
+            const estimatedHeight = 360;
+            const spaceBelow = window.innerHeight - rect.bottom - 12;
+            const spaceAbove = rect.top - 12;
+            const placeTop = placement === 'top' || (spaceBelow < 280 && spaceAbove > spaceBelow);
+            const top = placeTop
+                ? Math.max(12, rect.top - Math.min(estimatedHeight, spaceAbove) - 8)
+                : rect.bottom + 8;
+
+            setPanelStyle({
+                position: 'fixed',
+                top,
+                left,
+                width,
+                zIndex: 220,
+            });
+        };
+
+        positionPanel();
+        window.addEventListener('resize', positionPanel);
+        window.addEventListener('scroll', positionPanel, true);
+        return () => {
+            window.removeEventListener('resize', positionPanel);
+            window.removeEventListener('scroll', positionPanel, true);
+        };
+    }, [open, placement]);
 
     const yearOptions = useMemo(() => {
         const years: number[] = [];
@@ -258,9 +305,13 @@ function DatePicker({
 
     return (
         <div className={className} ref={containerRef}>
-            <FormLabel required={required}>{label}</FormLabel>
+            {compact ? (
+                <span className="text-[11px] font-semibold text-[#003E48]">{label}</span>
+            ) : (
+                <FormLabel required={required}>{label}</FormLabel>
+            )}
 
-            <div className="mt-2 relative text-gray-400 focus-within:text-gray-600 transition-all duration-200">
+            <div className={`${compact ? 'mt-1' : 'mt-2'} relative text-[#003E48]/40 focus-within:text-[#003E48] transition-all duration-200`}>
                 {children && (
                     <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none z-10">
                         {children}
@@ -268,27 +319,45 @@ function DatePicker({
                 )}
 
                 <button
+                    ref={triggerRef}
                     type="button"
                     onClick={() => setOpen((current) => !current)}
-                    className={`block w-full py-3 ${children ? 'pl-12' : 'pl-4'} pr-4 text-left transition-all duration-200 border rounded-2xl focus:outline-none focus:border-blue-600 focus:bg-white ${
-                        errorMessage
-                            ? 'text-red-700 border-red-200 bg-red-50'
-                            : value
-                              ? 'text-black border-gray-200 bg-gray-50'
-                              : 'text-gray-500 border-gray-200 bg-gray-50'
-                    }`}
+                    className={
+                        compact
+                            ? `flex h-10 w-full items-center ${children ? 'pl-12' : 'pl-3'} pr-3 text-left text-sm rounded-lg border-0 bg-white shadow-sm outline-none ring-1 transition focus:ring-[#003E48]/30 ${
+                                  errorMessage
+                                      ? 'text-red-700 ring-red-200'
+                                      : value
+                                        ? 'text-[#003E48] ring-[#003E48]/10'
+                                        : 'text-[#003E48]/45 ring-[#003E48]/10'
+                              }`
+                            : `block w-full py-3 ${children ? 'pl-12' : 'pl-4'} pr-4 text-left font-normal transition duration-200 border rounded-2xl focus:outline-none focus:border-[#003E48] focus:bg-white ${
+                                  errorMessage
+                                      ? 'text-red-700 border-red-200 bg-red-50'
+                                      : value
+                                        ? 'text-[#003E48] border-transparent bg-[#F6F3EE]'
+                                        : 'text-[#003E48]/40 border-transparent bg-[#F6F3EE]'
+                              }`
+                    }
                 >
                     {value ? formatDisplayDate(value) : placeholder}
                 </button>
 
-                {open && (
-                    <div className="absolute left-0 right-0 z-20 mt-2 rounded-2xl border border-gray-200 bg-white p-4 shadow-xl">
+                {open &&
+                    typeof panelStyle.top === 'number' &&
+                    typeof document !== 'undefined' &&
+                    createPortal(
+                    <div
+                        ref={panelRef}
+                        style={panelStyle}
+                        className="rounded-[24px] border border-[#003E48]/10 bg-white p-4 shadow-[0_24px_60px_rgba(0,62,72,0.28)]"
+                    >
                         <div className="mb-3 flex items-center gap-1.5">
                             <button
                                 type="button"
                                 onClick={goToPreviousMonth}
                                 disabled={!canGoPrevious}
-                                className="rounded-lg p-1.5 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700 disabled:cursor-not-allowed disabled:opacity-30"
+                                className="rounded-lg p-1.5 text-[#003E48]/50 transition-colors hover:bg-[#F6F3EE] hover:text-[#003E48] disabled:cursor-not-allowed disabled:opacity-30"
                                 aria-label="Previous month"
                             >
                                 <ChevronLeft className="h-5 w-5" />
@@ -324,7 +393,7 @@ function DatePicker({
                                 type="button"
                                 onClick={goToNextMonth}
                                 disabled={!canGoNext}
-                                className="rounded-lg p-1.5 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700 disabled:cursor-not-allowed disabled:opacity-30"
+                                className="rounded-lg p-1.5 text-[#003E48]/50 transition-colors hover:bg-[#F6F3EE] hover:text-[#003E48] disabled:cursor-not-allowed disabled:opacity-30"
                                 aria-label="Next month"
                             >
                                 <ChevronRight className="h-5 w-5" />
@@ -335,7 +404,7 @@ function DatePicker({
                             {WEEKDAYS.map((day) => (
                                 <div
                                     key={day}
-                                    className="py-1 text-center text-[11px] font-semibold uppercase tracking-wide text-gray-400"
+                                    className="py-1 text-center text-[11px] font-semibold text-[#003E48]/40"
                                 >
                                     {day}
                                 </div>
@@ -365,7 +434,7 @@ function DatePicker({
                                                       : 'cursor-default text-gray-300'
                                                   : isToday
                                                     ? 'font-semibold text-[#E85A2E] ring-1 ring-[#E85A2E]/40 hover:bg-[#E85A2E]/10'
-                                                    : 'text-slate-700 hover:bg-gray-100'
+                                                    : 'text-[#003E48] hover:bg-[#F6F3EE]'
                                         }`}
                                     >
                                         {date.getDate()}
@@ -373,8 +442,9 @@ function DatePicker({
                                 );
                             })}
                         </div>
-                    </div>
-                )}
+                    </div>,
+                    document.body,
+                    )}
             </div>
 
             {errorMessage && (

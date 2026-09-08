@@ -22,6 +22,7 @@ interface PhoneInputProps {
     errorMessage?: string;
     onChange: (value: string) => void;
     children?: React.ReactNode;
+    compact?: boolean;
 }
 
 function PhoneInput({
@@ -31,6 +32,7 @@ function PhoneInput({
     errorMessage,
     onChange,
     children,
+    compact = false,
 }: PhoneInputProps) {
     const initial = useMemo(() => parseStoredPhone(value), [value]);
     const [countryIso2, setCountryIso2] = useState(initial.iso2);
@@ -50,10 +52,10 @@ function PhoneInput({
     const showInlineError =
         localPhone.length > 0 && !isValidLocalPhone(localPhone, selectedCountry);
 
-    const inputClass = `block w-full py-3 px-4 transition-all duration-200 border rounded-2xl focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600 ${
+    const inputClass = `block w-full py-3 px-4 font-normal transition duration-200 border rounded-2xl appearance-none focus:outline-none focus:border-[#003E48] focus:bg-white caret-[#003E48] ${
         errorMessage || showInlineError
             ? 'text-red-700 border-red-200 bg-red-50'
-            : 'text-black border-gray-200 bg-gray-50'
+            : 'text-[#003E48] placeholder:text-[#003E48]/40 border-transparent bg-[#F6F3EE]'
     }`;
 
     const selectClass = `${inputClass} select-chevron pr-10`;
@@ -80,7 +82,33 @@ function PhoneInput({
         <div className="mt-5">
             <FormLabel required={required}>{label}</FormLabel>
 
-            <div className="mt-2 flex flex-col gap-2 sm:flex-row">
+            <div className={`mt-2 ${compact ? 'flex h-12 overflow-hidden rounded-2xl bg-[#F6F3EE] focus-within:bg-white focus-within:ring-1 focus-within:ring-[#003E48]' : 'flex flex-col gap-2 sm:flex-row'}`}>
+                {compact ? (
+                    <>
+                        <select
+                            value={countryIso2}
+                            onChange={(e) => handleCountryChange(e.target.value)}
+                            className="w-[3.4rem] shrink-0 appearance-none bg-transparent py-0 pl-2.5 pr-0 text-[11px] font-semibold leading-none text-[#003E48]/65 outline-none"
+                            aria-label="Country code"
+                        >
+                            {COUNTRY_DIAL_CODE_OPTIONS.map((country) => (
+                                <option key={country.iso2} value={country.iso2}>
+                                    +{country.dialCode}
+                                </option>
+                            ))}
+                        </select>
+                        <input
+                            type="tel"
+                            inputMode="numeric"
+                            value={localPhone}
+                            onChange={(e) => handleLocalChange(e.target.value)}
+                            placeholder={phonePlaceholder(selectedCountry)}
+                            maxLength={selectedCountry.iso2 === 'RW' ? 9 : 15}
+                            className="min-w-0 flex-1 bg-transparent px-2 text-[#003E48] outline-none placeholder:text-[#003E48]/40"
+                        />
+                    </>
+                ) : (
+                    <>
                 <select
                     value={countryIso2}
                     onChange={(e) => handleCountryChange(e.target.value)}
@@ -94,7 +122,7 @@ function PhoneInput({
                     ))}
                 </select>
 
-                <div className="relative flex-1 text-gray-400 focus-within:text-gray-600">
+                <div className="relative flex-1 text-[#003E48]/40 focus-within:text-[#003E48]">
                     {children && (
                         <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                             {children}
@@ -110,6 +138,8 @@ function PhoneInput({
                         className={`${inputClass} ${children ? 'pl-12' : ''}`}
                     />
                 </div>
+                    </>
+                )}
             </div>
 
             {(errorMessage || showInlineError) && (

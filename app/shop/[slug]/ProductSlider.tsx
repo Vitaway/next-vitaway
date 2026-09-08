@@ -32,7 +32,9 @@ function ProductSlider({ relatedProducts, loading }: { relatedProducts: Products
 
     return (
         <div className="mt-10">
-            <h2 className="text-2xl font-bold text-slate-800 mb-5">You may also like</h2>
+            <h2 className="mb-5 text-2xl font-bold text-[#003E48]">
+                You may also <span className="font-accent">like</span>
+            </h2>
 
             <div className="relative">
                 {loading ? (
@@ -47,14 +49,13 @@ function ProductSlider({ relatedProducts, loading }: { relatedProducts: Products
                             ))}
                         </div>
 
-                        {/* Navigation Buttons */}
                         <button
                             onClick={() => instanceRef.current?.prev()}
-                            className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white border border-gray-300 rounded-full p-2 shadow-md hover:bg-gray-100"
+                            className="absolute left-0 top-1/2 -translate-y-1/2 rounded-full bg-white p-2 text-[#003E48] shadow-md hover:bg-[#F6F3EE]"
                         >
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
-                                className="w-6 h-6 text-gray-700"
+                                className="h-6 w-6"
                                 fill="none"
                                 viewBox="0 0 24 24"
                                 stroke="currentColor"
@@ -64,11 +65,11 @@ function ProductSlider({ relatedProducts, loading }: { relatedProducts: Products
                         </button>
                         <button
                             onClick={() => instanceRef.current?.next()}
-                            className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white border border-gray-300 rounded-full p-2 shadow-md hover:bg-gray-100"
+                            className="absolute right-0 top-1/2 -translate-y-1/2 rounded-full bg-white p-2 text-[#003E48] shadow-md hover:bg-[#F6F3EE]"
                         >
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
-                                className="w-6 h-6 text-gray-700"
+                                className="h-6 w-6"
                                 fill="none"
                                 viewBox="0 0 24 24"
                                 stroke="currentColor"
@@ -80,14 +81,13 @@ function ProductSlider({ relatedProducts, loading }: { relatedProducts: Products
                 )}
             </div>
 
-            {/* Dots Navigation */}
             {!loading && (
-                <div className="flex justify-center mt-4 space-x-2">
+                <div className="mt-4 flex justify-center space-x-2">
                     {Array.from({ length: instanceRef.current?.track.details.slides.length || 0 }).map((_, idx) => (
                         <button
                             key={idx}
                             onClick={() => goToSlide(idx)}
-                            className={`w-3 h-3 rounded-full ${currentSlide === idx ? 'bg-slate-800' : 'bg-gray-300'
+                            className={`h-3 w-3 rounded-full ${currentSlide === idx ? 'bg-[#003E48]' : 'bg-[#003E48]/20'
                                 }`}
                         ></button>
                     ))}

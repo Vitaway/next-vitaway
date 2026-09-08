@@ -8,6 +8,7 @@ interface Props {
     data: Partial<PreRegistrationPayload>;
     errors?: string[];
     onChange: (data: Partial<PreRegistrationPayload>) => void;
+    hideHeader?: boolean;
 }
 
 const ACTIVITY_LEVELS: { value: PreRegistrationPayload['activity_level']; label: string; desc: string }[] = [
@@ -45,23 +46,23 @@ function SelectGrid({ options, selected, onSelect }: SelectGridProps) {
                     key={value}
                     type="button"
                     onClick={() => onSelect(value)}
-                    className={`flex flex-col p-3 rounded-xl text-left transition-all duration-150 active:scale-[0.97] border ${
+                    className={`flex flex-col rounded-[24px] border p-3 text-left transition-all duration-150 active:scale-[0.97] ${
                         selected === value
-                            ? 'border-[#E85A2E] bg-[#E85A2E]/5'
-                            : 'border-gray-200 bg-white hover:border-gray-300'
+                            ? 'border-[#E85A2E] bg-[#F6F3EE]'
+                            : 'border-transparent bg-[#F6F3EE] hover:border-[#003E48]/20'
                     }`}
                 >
-                    <span className={`text-sm font-semibold ${selected === value ? 'text-[#E85A2E]' : 'text-slate-700'}`}>
+                    <span className={`text-sm font-semibold ${selected === value ? 'text-[#E85A2E]' : 'text-[#003E48]'}`}>
                         {label}
                     </span>
-                    {desc && <span className="text-xs text-gray-400 mt-0.5">{desc}</span>}
+                    {desc && <span className="mt-0.5 text-xs text-[#003E48]/45">{desc}</span>}
                 </button>
             ))}
         </div>
     );
 }
 
-function Step4HealthLifestyle({ data, onChange }: Props) {
+function Step4HealthLifestyle({ data, onChange, hideHeader = false }: Props) {
     const conditions = data.health_conditions || [];
 
     const toggleCondition = (value: string) => {
@@ -78,14 +79,16 @@ function Step4HealthLifestyle({ data, onChange }: Props) {
 
     return (
         <div className="space-y-6">
+            {hideHeader ? null : (
             <div>
-                <h2 className="text-xl font-bold text-slate-800">Health & lifestyle</h2>
-                <p className="text-gray-500 text-sm mt-1">Helps us personalise your programme safely</p>
+                <h2 className="text-xl font-bold text-[#003E48]">Health & <span className="font-accent">lifestyle</span></h2>
+                <p className="mt-1 text-sm text-[#003E48]/60">Helps us personalise your programme safely</p>
             </div>
+            )}
 
             {/* Health conditions */}
             <div>
-                <p className="font-semibold text-slate-700 text-sm mb-2">Existing health conditions</p>
+                <p className="mb-2 text-sm font-semibold text-[#003E48]">Existing health conditions</p>
                 <div className="grid grid-cols-2 gap-2">
                     {HEALTH_CONDITIONS.map((cond) => {
                         const selected = conditions.includes(cond);
@@ -94,18 +97,18 @@ function Step4HealthLifestyle({ data, onChange }: Props) {
                                 key={cond}
                                 type="button"
                                 onClick={() => toggleCondition(cond)}
-                                className={`flex items-center gap-2 px-3 py-2.5 rounded-xl border text-left transition-all duration-150 ${
+                                className={`flex items-center gap-2 rounded-[24px] border px-3 py-2.5 text-left transition-all duration-150 ${
                                     selected
-                                        ? 'border-[#E85A2E] bg-[#E85A2E]/5'
-                                        : 'border-gray-200 bg-white hover:border-gray-300'
+                                        ? 'border-[#E85A2E] bg-[#F6F3EE]'
+                                        : 'border-transparent bg-[#F6F3EE] hover:border-[#003E48]/20'
                                 }`}
                             >
-                                <div className={`w-4 h-4 rounded border flex-shrink-0 flex items-center justify-center transition-colors ${
-                                    selected ? 'border-[#E85A2E] bg-[#E85A2E]' : 'border-gray-300'
+                                <div className={`flex h-4 w-4 flex-shrink-0 items-center justify-center rounded border transition-colors ${
+                                    selected ? 'border-[#E85A2E] bg-[#E85A2E]' : 'border-[#003E48]/25'
                                 }`}>
-                                    {selected && <Check className="w-2.5 h-2.5 text-white" strokeWidth={3} />}
+                                    {selected && <Check className="h-2.5 w-2.5 text-white" strokeWidth={3} />}
                                 </div>
-                                <span className={`text-xs font-medium ${selected ? 'text-[#E85A2E]' : 'text-slate-600'}`}>
+                                <span className={`text-xs font-medium ${selected ? 'text-[#E85A2E]' : 'text-[#003E48]'}`}>
                                     {cond}
                                 </span>
                             </button>
@@ -116,7 +119,7 @@ function Step4HealthLifestyle({ data, onChange }: Props) {
 
             {/* Activity level */}
             <div>
-                <p className="font-semibold text-slate-700 text-sm mb-2">Activity level</p>
+                <p className="mb-2 text-sm font-semibold text-[#003E48]">Activity level</p>
                 <SelectGrid
                     options={ACTIVITY_LEVELS as { value: string; label: string; desc?: string }[]}
                     selected={data.activity_level}
@@ -126,7 +129,7 @@ function Step4HealthLifestyle({ data, onChange }: Props) {
 
             {/* Exercise frequency */}
             <div>
-                <p className="font-semibold text-slate-700 text-sm mb-2">Exercise frequency</p>
+                <p className="mb-2 text-sm font-semibold text-[#003E48]">Exercise frequency</p>
                 <SelectGrid
                     options={EXERCISE_FREQ as { value: string; label: string }[]}
                     selected={data.exercise_frequency}
@@ -136,17 +139,17 @@ function Step4HealthLifestyle({ data, onChange }: Props) {
 
             {/* Smoking */}
             <div>
-                <p className="font-semibold text-slate-700 text-sm mb-2">Smoking</p>
+                <p className="mb-2 text-sm font-semibold text-[#003E48]">Smoking</p>
                 <div className="grid grid-cols-4 gap-2">
                     {HABIT_OPTIONS.map((opt) => (
                         <button
                             key={opt}
                             type="button"
                             onClick={() => onChange({ smoking_status: opt })}
-                            className={`px-2 py-2.5 rounded-xl text-xs font-semibold transition-all border active:scale-[0.97] ${
+                            className={`rounded-[24px] border px-2 py-2.5 text-xs font-semibold transition-all active:scale-[0.97] ${
                                 data.smoking_status === opt
-                                    ? 'border-[#E85A2E] bg-[#E85A2E]/5 text-[#E85A2E]'
-                                    : 'border-gray-200 text-slate-600 hover:border-gray-300'
+                                    ? 'border-[#E85A2E] bg-[#F6F3EE] text-[#E85A2E]'
+                                    : 'border-transparent bg-[#F6F3EE] text-[#003E48] hover:border-[#003E48]/20'
                             }`}
                         >
                             {opt}
@@ -157,17 +160,17 @@ function Step4HealthLifestyle({ data, onChange }: Props) {
 
             {/* Alcohol */}
             <div>
-                <p className="font-semibold text-slate-700 text-sm mb-2">Alcohol</p>
+                <p className="mb-2 text-sm font-semibold text-[#003E48]">Alcohol</p>
                 <div className="grid grid-cols-4 gap-2">
                     {HABIT_OPTIONS.map((opt) => (
                         <button
                             key={opt}
                             type="button"
                             onClick={() => onChange({ alcohol_status: opt })}
-                            className={`px-2 py-2.5 rounded-xl text-xs font-semibold border transition-all active:scale-[0.97] ${
+                            className={`rounded-[24px] border px-2 py-2.5 text-xs font-semibold transition-all active:scale-[0.97] ${
                                 data.alcohol_status === opt
-                                    ? 'border-[#E85A2E] bg-[#E85A2E]/5 text-[#E85A2E]'
-                                    : 'border-gray-200 text-slate-600 hover:border-gray-300'
+                                    ? 'border-[#E85A2E] bg-[#F6F3EE] text-[#E85A2E]'
+                                    : 'border-transparent bg-[#F6F3EE] text-[#003E48] hover:border-[#003E48]/20'
                             }`}
                         >
                             {opt}
