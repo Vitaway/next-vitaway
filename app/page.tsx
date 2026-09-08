@@ -1,12 +1,18 @@
 import { Metadata } from "next";
-import Consultation from "./components/sections/consultation";
+import AboutFounder from "./components/sections/about-founder";
+import CloseCta from "./components/sections/close-cta";
+import ConditionsTreat from "./components/sections/conditions-treat";
 import DiabeteProgram from "./components/sections/diabete-program";
 import Hero from "./components/sections/hero";
+import HomeFaqs from "./components/sections/home-faqs";
 import Partenership from "./components/sections/partenership";
+import Platform from "./components/sections/platform";
 import Services from "./components/sections/services";
+import Steps from "./components/sections/steps";
+import Stories from "./components/sections/stories";
+import TeamCarousel from "./components/sections/team-carousel";
 import Video from "./components/sections/video";
 import GuestLayout from "./layouts/GuestLayout";
-// import Blogs from "./components/sections/blogs";
 
 export const metadata: Metadata = {
   title: "Digital Healthcare Solutions for Rwanda",
@@ -67,11 +73,17 @@ export default function Home() {
   return (<>
     <GuestLayout>
       <Hero />
-      <Consultation />
       <Services />
-      <Video />
+      <AboutFounder />
+      <Steps />
+      <ConditionsTreat />
+      <Platform />
       <DiabeteProgram />
-      {/* <Blogs /> */}
+      <TeamCarousel />
+      <Video />
+      <Stories />
+      <HomeFaqs />
+      <CloseCta />
       <Partenership />
     </GuestLayout>
   </>);

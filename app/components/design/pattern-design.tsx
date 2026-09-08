@@ -1,36 +1,53 @@
-import React from 'react'
+import React from 'react';
 
-function PatternDesign({ fill = '#3056D3' }) {
-    return (<>
-        <svg width="93" height="93" viewBox="0 0 93 93" fill="none"
-            xmlns="http://www.w3.org/2000/svg">
-            <circle cx="2.5" cy="2.5" r="2.5" fill={fill} />
-            <circle cx="2.5" cy="24.5" r="2.5" fill={fill} />
-            <circle cx="2.5" cy="46.5" r="2.5" fill={fill} />
-            <circle cx="2.5" cy="68.5" r="2.5" fill={fill} />
-            <circle cx="2.5" cy="90.5" r="2.5" fill={fill} />
-            <circle cx="24.5" cy="2.5" r="2.5" fill={fill} />
-            <circle cx="24.5" cy="24.5" r="2.5" fill={fill} />
-            <circle cx="24.5" cy="46.5" r="2.5" fill={fill} />
-            <circle cx="24.5" cy="68.5" r="2.5" fill={fill} />
-            <circle cx="24.5" cy="90.5" r="2.5" fill={fill} />
-            <circle cx="46.5" cy="2.5" r="2.5" fill={fill} />
-            <circle cx="46.5" cy="24.5" r="2.5" fill={fill} />
-            <circle cx="46.5" cy="46.5" r="2.5" fill={fill} />
-            <circle cx="46.5" cy="68.5" r="2.5" fill={fill} />
-            <circle cx="46.5" cy="90.5" r="2.5" fill={fill} />
-            <circle cx="68.5" cy="2.5" r="2.5" fill={fill} />
-            <circle cx="68.5" cy="24.5" r="2.5" fill={fill} />
-            <circle cx="68.5" cy="46.5" r="2.5" fill={fill} />
-            <circle cx="68.5" cy="68.5" r="2.5" fill={fill} />
-            <circle cx="68.5" cy="90.5" r="2.5" fill={fill} />
-            <circle cx="90.5" cy="2.5" r="2.5" fill={fill} />
-            <circle cx="90.5" cy="24.5" r="2.5" fill={fill} />
-            <circle cx="90.5" cy="46.5" r="2.5" fill={fill} />
-            <circle cx="90.5" cy="68.5" r="2.5" fill={fill} />
-            <circle cx="90.5" cy="90.5" r="2.5" fill={fill} />
+function DotGrid({
+    fill = '#ffffff',
+    className = '',
+    cols = 8,
+    rows = 4,
+}: {
+    fill?: string;
+    className?: string;
+    cols?: number;
+    rows?: number;
+}) {
+    const gap = 22;
+    const radius = 2.5;
+    const width = (cols - 1) * gap + radius * 2;
+    const height = (rows - 1) * gap + radius * 2;
+    const dots = [];
+
+    for (let row = 0; row < rows; row += 1) {
+        for (let col = 0; col < cols; col += 1) {
+            dots.push(
+                <circle
+                    key={`${col}-${row}`}
+                    cx={radius + col * gap}
+                    cy={radius + row * gap}
+                    r={radius}
+                    fill={fill}
+                />,
+            );
+        }
+    }
+
+    return (
+        <svg
+            className={className}
+            width={width}
+            height={height}
+            viewBox={`0 0 ${width} ${height}`}
+            fill="none"
+            aria-hidden="true"
+        >
+            {dots}
         </svg>
-    </>)
+    );
 }
 
-export default PatternDesign
+function PatternDesign({ fill = '#3056D3' }) {
+    return <DotGrid fill={fill} cols={5} rows={5} />;
+}
+
+export { DotGrid };
+export default PatternDesign;

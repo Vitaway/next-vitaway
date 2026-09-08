@@ -75,17 +75,16 @@ function Subscriber() {
     return (
         <div className="fixed transition-all ease-in-out delay-150 flex items-center top-0 right-0 left-0 bottom-0 bg-gray-900/25 h-screen w-screen z-[9999]">
             <div className="flex items-center justify-center w-full h-full px-4 sm:px-8">
-                <div className="relative isolate rounded-xl w-full max-w-3xl overflow-hidden bg-gray-900 py-8 sm:py-12 lg:py-16 flex items-center justify-between">
+                <div className="relative isolate w-full max-w-3xl overflow-hidden rounded-[28px] bg-[#003E48] py-8 sm:py-12 lg:py-16">
                     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                        <div className="max-w-xl lg:max-w-lg flex items-center justify-center text-center flex-col">
-                            <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight text-white">
-                                Subscribe to Our Newsletter.
+                        <div className="flex max-w-xl flex-col items-center justify-center text-center lg:max-w-lg">
+                            <h2 className="text-xl font-bold tracking-tight text-white sm:text-2xl lg:text-3xl">
+                                Stay in the <span className="font-accent">loop</span>
                             </h2>
-                            <p className="mt-4 text-sm sm:text-md lg:text-lg text-gray-300">
-                                Get exclusive wellness tips, expert insights, special offers & unlock a healthier you!
-                                Start your journey to vitality now by subscribing to Vitaway&apos;s newsletter.
+                            <p className="mt-4 text-sm text-white/80 sm:text-base">
+                                Wellness tips, clinic news, and offers — when we have something worth sending.
                             </p>
-                            <form onSubmit={handleSubmit} className="mt-6 flex flex-col sm:flex-row items-center justify-center max-w-md gap-y-4 sm:gap-x-4">
+                            <form onSubmit={handleSubmit} className="mt-6 flex w-full max-w-md flex-col items-center justify-center gap-y-3 sm:flex-row sm:gap-x-3">
                                 <label className="sr-only">Email address</label>
                                 <input
                                     value={email}
@@ -94,29 +93,32 @@ function Subscriber() {
                                     name="email"
                                     type="email"
                                     required
-                                    className="w-full sm:flex-auto rounded-md border-0 bg-white/5 px-3.5 py-2.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+                                    className="w-full rounded-full border-0 bg-white px-4 py-3 text-sm text-[#003E48] placeholder:text-[#003E48]/40 focus:outline-none sm:flex-auto"
                                     placeholder="Enter your email"
                                 />
                                 <button
                                     type="submit"
-                                    className="w-full sm:w-auto rounded-md bg-[#3268b9] px-4 py-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline-none"
-                                    disabled={isSubmitting}>
+                                    className="press-btn press-btn--sm w-full sm:w-auto"
+                                    disabled={isSubmitting}
+                                >
                                     {isSubmitting ? 'Submitting...' : 'Subscribe'}
                                 </button>
                             </form>
-                            {error && <p className="mt-4 text-sm text-red-500">{error}</p>}
-                            {success && <p className="mt-4 text-sm text-green-500">{success}</p>}
+                            {error && <p className="mt-4 text-sm text-red-300">{error}</p>}
+                            {success && <p className="mt-4 text-sm text-[#5CE0C6]">{success}</p>}
                         </div>
                     </div>
-                    <div className="absolute left-1/2 top-0 -z-10 -translate-x-1/2 blur-3xl xl:-top-6" aria-hidden="true">
-                        <div className="aspect-[1155/678] w-[72.1875rem] bg-gradient-to-tr from-[#07f394] to-[#9089fc] opacity-30" style={{ clipPath: 'polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)' }}></div>
-                    </div>
                 </div>
-                <div className="rounded-md absolute top-4 right-4 sm:top-10 sm:right-10 bg-white/50 cursor-pointer p-2 ring-1 ring-white/10" onClick={() => handleClose()}>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6 text-gray-400">
+                <button
+                    type="button"
+                    className="absolute right-4 top-4 cursor-pointer rounded-full bg-white/15 p-2 sm:right-10 sm:top-10"
+                    onClick={() => handleClose()}
+                    aria-label="Close"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="h-6 w-6 text-white">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
                     </svg>
-                </div>
+                </button>
             </div>
         </div>
     );

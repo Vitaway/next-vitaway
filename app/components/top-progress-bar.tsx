@@ -63,7 +63,7 @@ export default function TopProgressBar() {
     return (
         <style jsx global>{`
             #nprogress .bar {
-                background: white !important;
+                background: #e85a2e !important;
                 height: 3px;
             }
         `}</style>
