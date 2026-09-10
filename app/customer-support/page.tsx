@@ -1,5 +1,6 @@
 import GuestLayout from "../layouts/GuestLayout";
 import PageHeader from "../components/headers/page-header";
+import { SITE_EMAIL, SITE_MAILTO } from "@/content/contact";
 import SectionCard from "../components/sections/section-card";
 
 export default function CustomerSupport() {
@@ -42,7 +43,7 @@ export default function CustomerSupport() {
                     <h2>Contact Us</h2>
                     <p>
                         If you have any questions or concerns regarding our commitment to ethics and compliance, please get in touch with us at{' '}
-                        <a href="mailto:vitawayeclinic@gmail.com">vitawayeclinic@gmail.com</a>.
+                        <a href={SITE_MAILTO}>{SITE_EMAIL}</a>.
                     </p>
                 </div>
             </SectionCard>

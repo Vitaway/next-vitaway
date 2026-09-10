@@ -6,6 +6,9 @@ import { CartProvider } from '@/context/CartContext';
 import SiteShell from "./components/site-shell";
 import "./globals.css";
 import Script from 'next/script';
+import { SITE_EMAIL, SITE_PHONE_DISPLAY } from '@/content/contact';
+
+const SITE_PHONE_SCHEMA = SITE_PHONE_DISPLAY.replace(/\s+/g, '-');
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -134,9 +137,9 @@ export default function RootLayout({ children }: Readonly<{
     },
     "contactPoint": {
       "@type": "ContactPoint",
-      "telephone": "+250-795-767-405",
+      "telephone": SITE_PHONE_SCHEMA,
       "contactType": "customer service",
-      "email": "vitawayeclinic@gmail.com"
+      "email": SITE_EMAIL
     },
     "sameAs": [
       "https://www.facebook.com/VitawayHealth",

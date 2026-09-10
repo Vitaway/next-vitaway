@@ -3,6 +3,7 @@
 import React from 'react';
 import { CheckCircle } from 'lucide-react';
 import PressButton from '@/app/components/buttons/press-button';
+import { SITE_EMAIL, SITE_MAILTO } from '@/content/contact';
 
 interface Props {
     referenceNumber: string;
@@ -62,8 +63,8 @@ function ConfirmationStep({ referenceNumber, onDone, hideHeader = false }: Props
 
             <p className="mt-3 text-xs text-[#003E48]/45">
                 Questions? Contact us at{' '}
-                <a href="mailto:vitawayeclinic@gmail.com" className="font-semibold text-[#E85A2E] hover:underline">
-                    vitawayeclinic@gmail.com
+                <a href={SITE_MAILTO} className="font-semibold text-[#E85A2E] hover:underline">
+                    {SITE_EMAIL}
                 </a>
             </p>
         </div>
