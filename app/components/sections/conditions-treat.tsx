@@ -14,8 +14,8 @@ const conditions = [
         id: 'weight',
         label: 'Weight',
         headline: 'Losing it in a way that holds — on Rwandan food, not an imported diet sheet.',
-        href: '/programs/well-being',
-        image: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=1800&q=80',
+        href: '/for-individuals/weight',
+        image: '/images/clinic/body-composition-scale.jpg',
         clinician: {
             name: 'Joseph Karemera',
             role: 'Senior Nutritionist',
@@ -28,8 +28,8 @@ const conditions = [
         id: 'pressure',
         label: 'Blood pressure',
         headline: 'Salt, weight, alcohol, stress — named, measured, and worked on until the reading drops.',
-        href: '/appointments',
-        image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1800&q=80',
+        href: '/for-individuals/blood-pressure',
+        image: '/images/clinic/clinical-consultation.jpg',
         clinician: {
             name: 'Martine Umuhire',
             role: 'Nutritionist',
@@ -42,8 +42,8 @@ const conditions = [
         id: 'sugar',
         label: 'Blood sugar',
         headline: 'Newly told, or living with it. Type 1 and Type 2 counselling that stays with you.',
-        href: '/programs/well-being',
-        image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=1800&q=80',
+        href: '/for-individuals/blood-sugar',
+        image: '/images/clinic/glucose-meter-lifestyle.jpg',
         clinician: {
             name: 'Ally Niyonkuru',
             role: 'Nutritionist',
@@ -56,8 +56,8 @@ const conditions = [
         id: 'family',
         label: 'Family nutrition',
         headline: 'Feeding a household well — children, pregnancy, and the food you already cook.',
-        href: '/programs/life-stages',
-        image: 'https://images.unsplash.com/photo-1476703993599-0035a21b17a9?auto=format&fit=crop&w=1800&q=80',
+        href: '/for-individuals/family',
+        image: '/images/clinic/family-breakfast.jpg',
         clinician: {
             name: 'Ange Celeste',
             role: 'Nurse & Nutrition Associate',

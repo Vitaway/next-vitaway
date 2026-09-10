@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import React, { useState } from 'react';
 import SectionCard from './section-card';
+import { SITE_WHATSAPP_URL } from '@/content/contact';
 
 const faqs = [
     {
@@ -52,7 +53,7 @@ function HomeFaqs() {
                         Before you book, here is what people <span className="font-accent">ask</span>.
                     </h2>
                     <a
-                        href="https://wa.me/250787279560"
+                        href={SITE_WHATSAPP_URL}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[#E85A2E] hover:underline"
