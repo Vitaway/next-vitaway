@@ -5,6 +5,7 @@ import ContactForm from '../components/forms/contact-form';
 import { Metadata } from 'next';
 import PageHeader from '../components/headers/page-header';
 import SectionCard from '../components/sections/section-card';
+import { SITE_WHATSAPP_URL } from '@/content/contact';
 
 export const metadata: Metadata = {
   title: "Contact Vitaway Health | Schedule Your Health Consultation Today",
@@ -65,6 +66,7 @@ function Contact() {
           </>
         }
         description="The clinic is in Niboye, Kicukiro. WhatsApp, email, or the form — we answer."
+        backgroundImage="/images/clinic/clinic-exterior.jpg"
       />
 
       <SectionCard className="bg-[#F6F3EE] py-12 sm:py-16">
@@ -82,7 +84,7 @@ function Contact() {
             </ul>
             <div className="mt-8 flex flex-wrap gap-3">
               <a
-                href="https://wa.me/250787279560"
+                href={SITE_WHATSAPP_URL}
                 rel="noopener noreferrer"
                 target="_blank"
                 className="press-btn"

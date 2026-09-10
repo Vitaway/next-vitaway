@@ -20,7 +20,6 @@ module.exports = {
       { url: '/contacts', changefreq: 'monthly', priority: 0.9 },
       { url: '/blogs', changefreq: 'daily', priority: 0.8 },
       { url: '/shop', changefreq: 'weekly', priority: 0.8 },
-      { url: '/pricing', changefreq: 'monthly', priority: 0.7 },
       { url: '/our-team', changefreq: 'monthly', priority: 0.6 },
       { url: '/programs/food-groups', changefreq: 'monthly', priority: 0.6 },
       { url: '/programs/life-stages', changefreq: 'monthly', priority: 0.6 },

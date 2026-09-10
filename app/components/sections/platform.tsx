@@ -27,7 +27,7 @@ function Platform() {
                     ))}
                 </div>
                 <div className="mt-10 flex flex-wrap gap-3">
-                    <PressButton href="/serves">Build your programme</PressButton>
+                    <PressButton href="/for-organizations">Build your programme</PressButton>
                     <Link href="/contacts" className="inline-flex items-center rounded-full border border-white/70 px-6 py-3 text-sm font-semibold uppercase tracking-[1.5px] text-white hover:bg-white/10">
                         See a sample report
                     </Link>

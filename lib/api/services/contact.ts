@@ -1,17 +1,37 @@
-import { post } from '../client';
 import { ContactPayload, ContactResponse } from '../types';
+import { APIError } from '../client';
 
 /**
  * Contact Service
- * Handles all contact form related API calls
+ * Submits the support form to the Next.js API, which emails support@vitaway.org
  */
 export const contactService = {
     /**
      * Submit contact form
      */
     submit: async (payload: ContactPayload): Promise<ContactResponse> => {
-        const response = await post<ContactResponse>('/api/contact', payload);
-        return response;
+        const response = await fetch('/api/contact', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+            },
+            body: JSON.stringify(payload),
+        });
+
+        const data = (await response.json().catch(() => ({}))) as ContactResponse & {
+            message?: string;
+        };
+
+        if (!response.ok) {
+            throw new APIError(
+                data.message || 'Failed to send message. Please try again later.',
+                response.status,
+                data,
+            );
+        }
+
+        return data;
     },
 
     /**

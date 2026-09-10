@@ -1,5 +1,6 @@
 import React from 'react';
 import PageHeader from '../components/headers/page-header';
+import { SITE_EMAIL, SITE_MAILTO } from '@/content/contact';
 import GuestLayout from '../layouts/GuestLayout';
 import SectionCard from '../components/sections/section-card';
 
@@ -43,13 +44,13 @@ function PrivacyPolicy() {
           <h2>5. Your Rights and Choices</h2>
           <p>
             You have the right to access, correct, or delete the personal information that we have collected. You may also object to or restrict the processing of your personal information or request a copy of your data. If you have any questions or concerns about your rights or choices, please contact us at{' '}
-            <a href="mailto:vitawayeclinic@gmail.com">vitawayeclinic@gmail.com</a>.
+            <a href={SITE_MAILTO}>{SITE_EMAIL}</a>.
           </p>
 
           <h2>6. Children’s Privacy</h2>
           <p>
             We do not knowingly collect personal information from children under 18. If you are a parent or guardian and believe that your child has provided us with personal information, please contact us at{' '}
-            <a href="mailto:vitawayeclinic@gmail.com">vitawayeclinic@gmail.com</a>, and we will take steps to delete the data.
+            <a href={SITE_MAILTO}>{SITE_EMAIL}</a>, and we will take steps to delete the data.
           </p>
 
           <h2>7. Changes to Privacy Policy</h2>
@@ -60,7 +61,7 @@ function PrivacyPolicy() {
           <h2>8. Contact Us</h2>
           <p>
             If you have any questions or concerns regarding our privacy policy, please contact us at{' '}
-            <a href="mailto:vitawayeclinic@gmail.com">vitawayeclinic@gmail.com</a>.
+            <a href={SITE_MAILTO}>{SITE_EMAIL}</a>.
           </p>
         </div>
       </SectionCard>

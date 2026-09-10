@@ -35,7 +35,7 @@ export const useContact = (): UseContactReturn => {
 
             // Submit contact form
             await contactService.submit(payload);
-            setSuccess('Message sent successfully! We will get back to you soon.');
+            setSuccess('Message sent to support@vitaway.org. We will get back to you soon.');
             return true;
         } catch (err) {
             const errorMessage = err instanceof APIError 

@@ -7,7 +7,7 @@ const featured = {
     quote: 'The nutrition plan was simple enough to cook after work. My numbers actually moved.',
     name: 'Emmanuel',
     role: 'Diabetes programme · Kigali',
-    image: '/images/Gallery/image-8.jpg',
+    image: '/images/clinic/waist-measure-success.jpg',
 };
 
 const stories = [
@@ -36,7 +36,7 @@ function Stories() {
                             People who sat with a nutritionist, cooked the plan, and measured again at week twelve.
                         </p>
                     </div>
-                    <Link href="/blogs" className="text-sm font-semibold text-[#E85A2E] hover:underline">
+                    <Link href="/success-stories" className="text-sm font-semibold text-[#E85A2E] hover:underline">
                         Read more stories →
                     </Link>
                 </div>

@@ -1,6 +1,14 @@
 import type { NextConfig } from "next";
+import { siteRedirects } from "./content/redirect-map";
 
 const nextConfig: NextConfig = {
+  async redirects() {
+    return siteRedirects.map(({ source, destination, permanent }) => ({
+      source,
+      destination,
+      permanent,
+    }));
+  },
   images: {
     remotePatterns: [
       {

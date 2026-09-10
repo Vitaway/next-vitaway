@@ -11,6 +11,7 @@ import rwandaData from '@/data/rwanda_geo.json';
 import AlertModal from '../alerts/alert-modal';
 import { ButtonSpinner } from '../spinners/Spinner';
 import PressButton from '../buttons/press-button';
+import { SITE_EMAIL } from '@/content/contact';
 
 declare global {
     interface Window {
@@ -239,14 +240,14 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
         try {
             const payload = {
                 customer_name: customerName.trim(),
-                customer_email: customerEmail.trim() || 'vitawayeclinic@gmail.com',
+                customer_email: customerEmail.trim() || SITE_EMAIL,
                 customer_phone: customerPhone.trim(),
                 customer_address: customerAddress.trim(),
                 customer_city: customerCity.trim(),
                 customer_country: customerCountry.trim(),
 
                 recipient_name: customerDiffRecipient ? recipientName.trim() : customerName.trim(),
-                recipient_email: customerDiffRecipient ? (recipientEmail.trim() || 'vitawayeclinic@gmail.com') : (customerEmail.trim() || 'vitawayeclinic@gmail.com'),
+                recipient_email: customerDiffRecipient ? (recipientEmail.trim() || SITE_EMAIL) : (customerEmail.trim() || SITE_EMAIL),
                 recipient_phone: customerDiffRecipient ? recipientPhone.trim() : customerPhone.trim(),
                 recipient_address: customerDiffRecipient ? recipientAddress.trim() : customerAddress.trim(),
                 recipient_city: customerDiffRecipient ? recipientCity.trim() : customerCity.trim(),

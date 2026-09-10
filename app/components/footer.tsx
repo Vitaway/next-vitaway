@@ -4,11 +4,13 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import SocialMedias from './navbars/social-medias';
 import PressButton from './buttons/press-button';
-import { useBooking } from './booking/booking-context';
 import StoreButtons from './buttons/store-buttons';
+import { SITE_EMAIL, SITE_PHONE_DISPLAY } from '@/content/contact';
+
+const linkClass =
+    'flex text-base text-white/80 transition-all duration-200 hover:text-[#5CE0C6]';
 
 function Footer() {
-    const { openPrereg } = useBooking();
     const [email, setEmail] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState('');
@@ -50,123 +52,194 @@ function Footer() {
                         Most people find out too <span className="font-accent">late</span>.
                     </h2>
                     <div className="flex flex-wrap gap-3">
-                        <Link href="/contacts" className="inline-flex items-center rounded-full border border-white/40 px-5 py-3 text-sm font-semibold uppercase tracking-[1.5px] text-white hover:bg-white/10">
-                            WhatsApp us
-                        </Link>
-                        <PressButton href="/appointments" size="sm">
-                            Book a health check
+                        <PressButton href="/for-individuals/health-check" size="sm">
+                            Book
                         </PressButton>
+                        <PressButton href="/for-organizations" size="sm" variant="secondary" surface="dark">
+                            Request programme
+                        </PressButton>
+                        <Link
+                            href="/contacts"
+                            className="inline-flex items-center rounded-full border border-white/40 px-5 py-3 text-sm font-semibold text-white hover:bg-white/10"
+                        >
+                            Start partnership conversation
+                        </Link>
                     </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-x-12 gap-y-16 md:col-span-3 lg:grid-cols-6">
-                    <div className="col-span-2 md:col-span-3 lg:col-span-2 lg:pr-8">
-                        <Link href="/" className="text-white font-serif font-semibold text-3xl">
-                            Vitaway
-                        </Link>
-                        
-                        <p className="mt-5 text-sm leading-relaxed text-white/70">Digital healthcare for Rwanda. Nutrition, NCD prevention, virtual consults.</p>
-                        
-                        <div className="mt-8">
-                            <SocialMedias />
-                        </div>
-                        <StoreButtons className="mt-6" />
-                    </div>
-
+                <div className="grid grid-cols-2 gap-x-10 gap-y-14 md:grid-cols-4 lg:gap-x-12">
                     <div>
-                        <p className="text-sm font-semibold tracking-widest text-white uppercase">Company</p>
-
+                        <p className="text-sm font-semibold tracking-widest text-white uppercase">Vitaway</p>
                         <ul className="mt-6 space-y-4">
                             <li>
-                                <Link href="/about-us" title="" className="flex text-base text-white/80 transition-all duration-200 hover:text-[#5CE0C6]"> About </Link>
+                                <Link href="/about-us" className={linkClass}>
+                                    About
+                                </Link>
                             </li>
                             <li>
-                                <Link href="/our-team" title="" className="flex text-base text-white/80 transition-all duration-200 hover:text-[#5CE0C6]"> Our Team </Link>
+                                <Link href="/our-team" className={linkClass}>
+                                    Team
+                                </Link>
                             </li>
                             <li>
-                                <Link href="/pricing" title="" className="flex text-base text-white/80 transition-all duration-200 hover:text-[#5CE0C6]"> Our Pricings </Link>
-                            </li>
-
-                            <li>
-                                <Link href="/blogs" title="" className="flex text-base text-white/80 transition-all duration-200 hover:text-[#5CE0C6]"> All Blogs </Link>
-                            </li>
-                            
-                            <li>
-                                <Link href="/contacts" title="" className="flex text-base text-white/80 transition-all duration-200 hover:text-[#5CE0C6]"> Contact us </Link>
-                            </li>
-
-                            <li>
-                                <Link href="/appointments" title="" className="flex text-base text-white/80 transition-all duration-200 hover:text-[#5CE0C6]"> Book Appointment </Link>
+                                <Link href="/contacts" className={linkClass}>
+                                    Clinic
+                                </Link>
                             </li>
                             <li>
-                                <Link
-                                    href="/pre-registration"
-                                    title=""
-                                    className="flex text-base text-white/80 transition-all duration-200 hover:text-[#5CE0C6]"
-                                    onClick={(event) => {
-                                        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-                                        event.preventDefault();
-                                        openPrereg();
-                                    }}
-                                >
-                                    Pre-register
+                                <Link href="/customer-support" className={linkClass}>
+                                    Licence &amp; Standards
                                 </Link>
                             </li>
                         </ul>
                     </div>
 
                     <div>
-                        <p className="text-sm font-semibold tracking-widest text-white uppercase">Help</p>
-
+                        <p className="text-sm font-semibold tracking-widest text-white uppercase">Services</p>
                         <ul className="mt-6 space-y-4">
                             <li>
-                                <Link href="/customer-support" title="" className="flex text-base text-white/80 transition-all duration-200 hover:text-[#5CE0C6]"> Ethics & Compliance </Link>
+                                <Link href="/for-individuals/health-check" className={linkClass}>
+                                    Consultation
+                                </Link>
                             </li>
-
                             <li>
-                                <Link href="/assessments" title="" className="flex text-base text-white/80 transition-all duration-200 hover:text-[#5CE0C6]"> Assessments </Link>
+                                <Link href="/for-individuals/12-week-programme" className={linkClass}>
+                                    12-Week Programme
+                                </Link>
                             </li>
-
                             <li>
-                                <Link href="/terms-and-conditions" title="" className="flex text-base text-white/80 transition-all duration-200 hover:text-[#5CE0C6]"> Terms & Conditions </Link>
+                                <Link href="/for-individuals/weight" className={linkClass}>
+                                    Weight
+                                </Link>
                             </li>
-
                             <li>
-                                <Link href="/privacy-policy" title="" className="flex text-base text-white/80 transition-all duration-200 hover:text-[#5CE0C6]"> Privacy Policy </Link>
+                                <Link href="/for-individuals/blood-pressure" className={linkClass}>
+                                    Blood Pressure
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href="/for-individuals/blood-sugar" className={linkClass}>
+                                    Blood Sugar
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href="/for-individuals/family" className={linkClass}>
+                                    Family Nutrition
+                                </Link>
                             </li>
                         </ul>
                     </div>
 
-                    <div className="col-span-2 md:col-span-1 lg:col-span-2 lg:pl-8">
-                        <p className="text-sm font-semibold tracking-widest text-white uppercase">Subscribe to newsletter</p>
+                    <div>
+                        <p className="text-sm font-semibold tracking-widest text-white uppercase">Organizations</p>
+                        <ul className="mt-6 space-y-4">
+                            <li>
+                                <Link href="/for-organizations/companies" className={linkClass}>
+                                    Companies
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href="/for-organizations/ngos" className={linkClass}>
+                                    NGOs
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href="/for-organizations/schools" className={linkClass}>
+                                    Schools
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href="/for-organizations/embassies" className={linkClass}>
+                                    Embassies
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href="/contacts" className={linkClass}>
+                                    Insurers
+                                </Link>
+                            </li>
+                        </ul>
+                    </div>
 
-                        <form onSubmit={handleSubmit} method="POST" className="mt-6 flex items-center bg-white rounded-full pr-1.5">
-                            <div className="flex-1">
-                                <label className="sr-only">Email</label>
-                                <input type="email" name="email" value={email}
-                                    onChange={(e) => setEmail(e.target.value)} id="email" placeholder="Enter your email" className="block w-full p-4 text-slate-700 placeholder-gray-500 border-none outline-none bg-transparent rounded-full" />
-                            </div>
-
-                            <button
-                                type="submit"
-                                className="flex-none rounded-full bg-[#E85A2E] px-4 py-3 text-sm font-semibold text-white shadow-sm hover:bg-[#d14e26] focus-visible:outline-none"
-                                disabled={isSubmitting}>
-                                {isSubmitting ? 'Submitting...' : 'Subscribe Now'}
-                            </button>                        
-                        </form>
-
-                        {error && <p className="mt-4 text-sm text-red-300">{error}</p>}
-                        {success && <p className="mt-4 text-sm text-green-300">{success}</p>}
-
-                        <ul className="mt-6 space-y-2 text-white/80 text-sm border-t pt-5 border-white/15">
-                            <li><span><span className='font-bold text-white'>Contact:</span> +250 795 767 405 /+250 787 279 560 </span></li>
-                            <li><span><span className='font-bold text-white'>Email:</span> vitawayeclinic@gmail.com</span></li>
-                            <li><span><span className='font-bold text-white'>Location:</span> CPR-Unit House, 1 Floor,  KK21 Ave Niboye, Kicukiro, Kigali</span></li>
+                    <div>
+                        <p className="text-sm font-semibold tracking-widest text-white uppercase">Legal</p>
+                        <ul className="mt-6 space-y-4">
+                            <li>
+                                <Link href="/terms-and-conditions" className={linkClass}>
+                                    Legal
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href="/privacy-policy" className={linkClass}>
+                                    Privacy
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href="/privacy-policy" className={linkClass}>
+                                    Data Protection
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href="/terms-and-conditions" className={linkClass}>
+                                    Terms
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href="/customer-support" className={linkClass}>
+                                    Complaints
+                                </Link>
+                            </li>
                         </ul>
                     </div>
                 </div>
 
-                <hr className="mt-12 mb-6 border-white/15" />
+                <div className="mt-14 grid gap-10 border-t border-white/10 pt-10 lg:grid-cols-[1.2fr_1fr] lg:items-start">
+                    <div>
+                        <p className="text-sm font-semibold tracking-widest text-white uppercase">Stay in touch</p>
+                        <form onSubmit={handleSubmit} method="POST" className="mt-6 flex max-w-md items-center rounded-full bg-white pr-1.5">
+                            <div className="flex-1">
+                                <label className="sr-only">Email</label>
+                                <input
+                                    type="email"
+                                    name="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    id="email"
+                                    placeholder="Enter your email"
+                                    className="block w-full rounded-full border-none bg-transparent p-4 text-slate-700 outline-none placeholder-gray-500"
+                                />
+                            </div>
+                            <button
+                                type="submit"
+                                className="flex-none rounded-full bg-[#E85A2E] px-4 py-3 text-sm font-semibold text-white shadow-sm hover:bg-[#d14e26] focus-visible:outline-none"
+                                disabled={isSubmitting}
+                            >
+                                {isSubmitting ? 'Submitting...' : 'Subscribe'}
+                            </button>
+                        </form>
+                        {error && <p className="mt-4 text-sm text-red-300">{error}</p>}
+                        {success && <p className="mt-4 text-sm text-green-300">{success}</p>}
+                        <ul className="mt-6 space-y-2 text-sm text-white/80">
+                            <li>
+                                <span className="font-bold text-white">Contact:</span> {SITE_PHONE_DISPLAY}
+                            </li>
+                            <li>
+                                <span className="font-bold text-white">Email:</span> {SITE_EMAIL}
+                            </li>
+                            <li>
+                                <span className="font-bold text-white">Location:</span> CPR-Unit House, 1 Floor, KK21 Ave
+                                Niboye, Kicukiro, Kigali
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div className="lg:justify-self-end">
+                        <SocialMedias />
+                        <StoreButtons className="mt-6" />
+                    </div>
+                </div>
+
+                <hr className="mb-6 mt-12 border-white/15" />
 
                 <div className="flex flex-col items-center justify-between gap-3 text-sm text-white/70 sm:flex-row">
                     <p>All Rights Reserved - Vitaway Health Ltd © {new Date().getFullYear()}</p>
@@ -176,12 +249,12 @@ function Footer() {
                         rel="noopener noreferrer"
                         className="transition hover:text-[#5CE0C6]"
                     >
-                        Built by KEYYPRESS
+                        Built by Keyypress
                     </a>
                 </div>
             </div>
         </section>
-    )
+    );
 }
 
-export default Footer
+export default Footer;
