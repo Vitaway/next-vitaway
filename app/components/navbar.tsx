@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import Logo from './logo';
 import ShoppingCart from '@/app/shop/shopping-cart';
@@ -9,55 +9,68 @@ import PressButton from './buttons/press-button';
 import PreRegisterButton from './booking/pre-register-button';
 import { GroupIcon, PersonIcon, ShopIcon } from './icons/omada-icons';
 import { useBooking } from './booking/booking-context';
-import { CalendarDays } from 'lucide-react';
+import {
+    Activity,
+    Building2,
+    CalendarDays,
+    CalendarRange,
+    CircleHelp,
+    Droplets,
+    GraduationCap,
+    Handshake,
+    HeartHandshake,
+    HeartPulse,
+    HelpingHand,
+    Landmark,
+    LayoutGrid,
+    MessageCircleQuestion,
+    MoreHorizontal,
+    Scale,
+    Sparkles,
+    Users,
+    UsersRound,
+    type LucideIcon,
+} from 'lucide-react';
+import {
+    defaultTealLinks,
+    individualLinks,
+    individualTealLinks,
+    organizationLinks,
+    organizationTealLinks,
+    type NavLink,
+} from '@/content/site-nav';
 
-const bottomLinks = [
-    {
-        href: '/pricing',
-        label: 'How We Can Help',
-        icon: (
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5z" />
-            </svg>
-        ),
-    },
-    {
-        href: '/blogs',
-        label: 'Success Stories',
-        icon: (
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <path d="M4 4h16v12H7l-3 3V4z" />
-            </svg>
-        ),
-    },
-    {
-        href: '/about-us',
-        label: 'Who We Are',
-        icon: (
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4zm0 2c-4 0-8 2-8 6v2h16v-2c0-4-4-6-8-6z" />
-            </svg>
-        ),
-    },
-    {
-        href: '/faqs',
-        label: 'FAQs',
-        icon: (
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 17h-2v-2h2zm1.07-7.75-.9.92A1.8 1.8 0 0 0 12.5 14h-1v-.5a2.7 2.7 0 0 1 .79-1.92l1.24-1.26A1.5 1.5 0 1 0 11 9H9.5A3 3 0 1 1 14.07 11.25z" />
-            </svg>
-        ),
-    },
-    {
-        href: '/contacts',
-        label: 'Support',
-        icon: (
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <path d="M12 3a9 9 0 0 0-9 9v4a3 3 0 0 0 3 3h1v-6H5v-1a7 7 0 0 1 14 0v1h-2v6h1a3 3 0 0 0 3-3v-4a9 9 0 0 0-9-9z" />
-            </svg>
-        ),
-    },
-];
+const tealLinkIcons: Record<string, LucideIcon> = {
+    '/for-individuals': LayoutGrid,
+    '/for-individuals/health-check': Activity,
+    '/for-individuals/12-week-programme': CalendarRange,
+    '/for-individuals/continued-care': HeartHandshake,
+    '/for-individuals/weight': Scale,
+    '/for-individuals/blood-pressure': HeartPulse,
+    '/for-individuals/blood-sugar': Droplets,
+    '/for-individuals/family': UsersRound,
+    '/for-organizations': LayoutGrid,
+    '/for-organizations/companies': Building2,
+    '/for-organizations/embassies': Landmark,
+    '/for-organizations/ngos': Handshake,
+    '/for-organizations/schools': GraduationCap,
+    '/success-stories': Sparkles,
+    '/about-us': Users,
+    '/faqs': CircleHelp,
+    '/contacts': MessageCircleQuestion,
+};
+
+function iconForTealLink(link: NavLink): LucideIcon | undefined {
+    if (link.label === 'How We Can Help') return HelpingHand;
+    return tealLinkIcons[link.href];
+}
+
+function isTealLinkActive(link: NavLink, pathname: string) {
+    if (link.href === '/for-individuals' || link.href === '/for-organizations') {
+        return pathname === link.href;
+    }
+    return pathname === link.href || pathname.startsWith(`${link.href}/`);
+}
 
 function NavCaret() {
     return (
@@ -73,14 +86,260 @@ function NavCaret() {
     );
 }
 
+function TealNavItem({
+    link,
+    pathname,
+    onNavigate,
+    className = '',
+}: {
+    link: NavLink;
+    pathname: string;
+    onNavigate?: () => void;
+    className?: string;
+}) {
+    const active = isTealLinkActive(link, pathname);
+    const Icon = iconForTealLink(link);
+
+    return (
+        <Link
+            href={link.href}
+            onClick={onNavigate}
+            className={`inline-flex shrink-0 items-center gap-1.5 text-[13px] font-semibold tracking-wide transition-colors xl:text-[14px] ${
+                active ? 'text-[#E85A2E]' : 'text-white hover:text-white'
+            } ${className}`}
+        >
+            {Icon ? (
+                <Icon
+                    className={`h-4 w-4 shrink-0 stroke-[2] ${active ? 'text-[#E85A2E]' : 'text-white'}`}
+                    aria-hidden
+                />
+            ) : null}
+            {link.label}
+        </Link>
+    );
+}
+
+function TealOverflowNav({ links, pathname }: { links: NavLink[]; pathname: string }) {
+    const containerRef = useRef<HTMLElement>(null);
+    const measureRef = useRef<HTMLDivElement>(null);
+    const moreBtnRef = useRef<HTMLButtonElement>(null);
+    const menuRef = useRef<HTMLDivElement>(null);
+    const [visibleCount, setVisibleCount] = useState(links.length);
+    const [moreOpen, setMoreOpen] = useState(false);
+    const [menuPos, setMenuPos] = useState<{ top: number; left: number } | null>(null);
+
+    useLayoutEffect(() => {
+        const container = containerRef.current;
+        const measureEl = measureRef.current;
+        if (!container || !measureEl) return;
+
+        const gap = 16;
+
+        const measure = () => {
+            const itemEls = Array.from(measureEl.querySelectorAll<HTMLElement>('[data-measure-item]'));
+            const moreEl = measureEl.querySelector<HTMLElement>('[data-measure-more]');
+            if (!itemEls.length || !moreEl) return;
+
+            const available = container.clientWidth;
+            const moreWidth = moreEl.offsetWidth;
+
+            let allWidth = 0;
+            itemEls.forEach((el, i) => {
+                allWidth += el.offsetWidth + (i > 0 ? gap : 0);
+            });
+
+            if (allWidth <= available) {
+                setVisibleCount(links.length);
+                return;
+            }
+
+            let used = 0;
+            let count = 0;
+            for (let i = 0; i < itemEls.length; i++) {
+                const next = used + (count > 0 ? gap : 0) + itemEls[i].offsetWidth;
+                if (next + gap + moreWidth > available) break;
+                used = next;
+                count += 1;
+            }
+
+            setVisibleCount(Math.max(0, count));
+        };
+
+        measure();
+        const ro = new ResizeObserver(measure);
+        ro.observe(container);
+        window.addEventListener('resize', measure);
+        return () => {
+            ro.disconnect();
+            window.removeEventListener('resize', measure);
+        };
+    }, [links]);
+
+    useEffect(() => {
+        setMoreOpen(false);
+    }, [pathname, links]);
+
+    useEffect(() => {
+        if (!moreOpen) return;
+
+        const updatePos = () => {
+            const btn = moreBtnRef.current;
+            if (!btn) return;
+            const rect = btn.getBoundingClientRect();
+            setMenuPos({ top: rect.bottom + 8, left: rect.left });
+        };
+
+        updatePos();
+
+        const onPointerDown = (event: MouseEvent) => {
+            const target = event.target as Node;
+            if (moreBtnRef.current?.contains(target) || menuRef.current?.contains(target)) return;
+            setMoreOpen(false);
+        };
+
+        const onKey = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') setMoreOpen(false);
+        };
+
+        window.addEventListener('resize', updatePos);
+        window.addEventListener('scroll', updatePos, true);
+        document.addEventListener('mousedown', onPointerDown);
+        document.addEventListener('keydown', onKey);
+        return () => {
+            window.removeEventListener('resize', updatePos);
+            window.removeEventListener('scroll', updatePos, true);
+            document.removeEventListener('mousedown', onPointerDown);
+            document.removeEventListener('keydown', onKey);
+        };
+    }, [moreOpen]);
+
+    const visible = links.slice(0, visibleCount);
+    const overflow = links.slice(visibleCount);
+    const overflowActive = overflow.some((link) => isTealLinkActive(link, pathname));
+
+    return (
+        <nav ref={containerRef} className="relative flex min-w-0 flex-1 items-center gap-4 overflow-hidden">
+            <div
+                ref={measureRef}
+                className="pointer-events-none absolute left-0 top-0 -z-10 flex items-center gap-4 opacity-0"
+                aria-hidden
+            >
+                {links.map((link) => (
+                    <span
+                        key={link.href}
+                        data-measure-item
+                        className="inline-flex shrink-0 items-center gap-1.5 text-[13px] font-semibold tracking-wide xl:text-[14px]"
+                    >
+                        {iconForTealLink(link) ? <span className="inline-block h-4 w-4" /> : null}
+                        {link.label}
+                    </span>
+                ))}
+                <span
+                    data-measure-more
+                    className="inline-flex shrink-0 items-center gap-1.5 text-[13px] font-semibold tracking-wide xl:text-[14px]"
+                >
+                    <span className="inline-block h-4 w-4" />
+                    More
+                </span>
+            </div>
+
+            {visible.map((link) => (
+                <TealNavItem key={link.href} link={link} pathname={pathname} />
+            ))}
+
+            {overflow.length > 0 ? (
+                <div className="relative shrink-0">
+                    <button
+                        ref={moreBtnRef}
+                        type="button"
+                        aria-expanded={moreOpen}
+                        aria-haspopup="menu"
+                        onClick={() => setMoreOpen((open) => !open)}
+                        className={`inline-flex items-center gap-1.5 text-[13px] font-semibold tracking-wide transition-colors xl:text-[14px] ${
+                            overflowActive || moreOpen ? 'text-[#E85A2E]' : 'text-white hover:text-white'
+                        }`}
+                    >
+                        <MoreHorizontal
+                            className={`h-4 w-4 stroke-[2] ${
+                                overflowActive || moreOpen ? 'text-[#E85A2E]' : 'text-white'
+                            }`}
+                            aria-hidden
+                        />
+                        More
+                    </button>
+
+                    {moreOpen && menuPos ? (
+                        <div
+                            ref={menuRef}
+                            role="menu"
+                            style={{ top: menuPos.top, left: menuPos.left }}
+                            className="fixed z-[120] min-w-[220px] rounded-2xl border border-[#003E48]/10 bg-white py-2 shadow-[0_18px_40px_rgba(0,62,72,0.18)]"
+                        >
+                            {overflow.map((link) => {
+                                const active = isTealLinkActive(link, pathname);
+                                const Icon = iconForTealLink(link);
+                                return (
+                                    <Link
+                                        key={link.href}
+                                        href={link.href}
+                                        role="menuitem"
+                                        onClick={() => setMoreOpen(false)}
+                                        className={`flex items-center gap-2 px-4 py-2.5 text-sm font-semibold transition-colors ${
+                                            active
+                                                ? 'bg-[#FFF4F0] text-[#E85A2E]'
+                                                : 'text-[#003E48] hover:bg-[#F6F3EE]'
+                                        }`}
+                                    >
+                                        {Icon ? (
+                                            <Icon
+                                                className={`h-4 w-4 shrink-0 stroke-[2] ${
+                                                    active ? 'text-[#E85A2E]' : 'text-[#003E48]'
+                                                }`}
+                                                aria-hidden
+                                            />
+                                        ) : null}
+                                        {link.label}
+                                    </Link>
+                                );
+                            })}
+                        </div>
+                    ) : null}
+                </div>
+            ) : null}
+        </nav>
+    );
+}
+
+type Audience = 'default' | 'individuals' | 'organizations';
+
+function audienceFromPath(pathname: string): Audience {
+    if (pathname.startsWith('/for-organizations') || pathname.startsWith('/serves')) {
+        return 'organizations';
+    }
+    if (pathname.startsWith('/for-individuals') || pathname.startsWith('/indivituals')) {
+        return 'individuals';
+    }
+    return 'default';
+}
+
 function Navbar() {
     const pathname = usePathname();
     const { openBooking } = useBooking();
     const [isOpen, setIsOpen] = useState(false);
     const [isPinned, setIsPinned] = useState(false);
-    const isOrganizations = pathname.startsWith('/serves');
+
+    const audience = audienceFromPath(pathname);
+    const isOrganizations = audience === 'organizations';
     const isShop = pathname.startsWith('/shop');
-    const isIndividuals = !isOrganizations && !isShop;
+    const showIndividualsCaret = !isOrganizations && !isShop;
+    const showOrganizationsCaret = isOrganizations;
+
+    const tealLinks =
+        audience === 'organizations'
+            ? organizationTealLinks
+            : audience === 'individuals'
+              ? individualTealLinks
+              : defaultTealLinks;
 
     useEffect(() => {
         const bar = document.getElementById('site-contact-bar');
@@ -96,11 +355,7 @@ function Navbar() {
     }, []);
 
     return (
-        <header
-            className={`sticky top-2 z-[80] w-full sm:top-3 ${
-                isPinned ? 'bg-[#003E48]' : ''
-            }`}
-        >
+        <header className={`sticky top-2 z-[80] w-full sm:top-3 ${isPinned ? 'bg-[#003E48]' : ''}`}>
             <div
                 className={`bg-white shadow-[0_14px_40px_rgba(0,62,72,0.14)] ${
                     isPinned ? 'overflow-hidden rounded-t-[22px] sm:rounded-t-[28px]' : ''
@@ -114,20 +369,20 @@ function Navbar() {
 
                     <div className="ml-auto hidden h-full items-center gap-8 lg:flex">
                         <Link
-                            href="/indivituals"
+                            href="/for-individuals"
                             className="relative flex h-full items-center gap-2 text-[16px] font-bold text-[#282E33] hover:text-[#003E48]"
                         >
                             <PersonIcon className="h-[22px] w-[22px] text-[#282E33]" />
                             For Individuals
-                            {isIndividuals && <NavCaret />}
+                            {showIndividualsCaret && <NavCaret />}
                         </Link>
                         <Link
-                            href="/serves"
+                            href="/for-organizations"
                             className="relative flex h-full items-center gap-2 text-[16px] font-bold text-[#282E33] hover:text-[#003E48]"
                         >
                             <GroupIcon className="h-[22px] w-[22px] text-[#282E33]" />
                             For Organizations
-                            {isOrganizations && <NavCaret />}
+                            {showOrganizationsCaret && <NavCaret />}
                         </Link>
                         <Link
                             href="/shop"
@@ -161,58 +416,121 @@ function Navbar() {
                     </div>
                 </div>
 
-            <div className="hidden bg-[#003E48] lg:block">
-                <div className="mx-auto flex h-[52px] max-w-[1440px] items-center justify-between px-5 lg:px-10">
-                    <nav className="flex items-center gap-7">
-                        {bottomLinks.map((link) => {
-                            const active = pathname === link.href || pathname.startsWith(`${link.href}/`);
-                            return (
-                                <Link
-                                    key={link.href}
-                                    href={link.href}
-                                    className={`inline-flex items-center gap-2 text-[14px] transition-colors ${
-                                        active ? 'text-white' : 'text-white/85 hover:text-white'
-                                    }`}
-                                >
-                                    {link.icon}
-                                    {link.label}
-                                </Link>
-                            );
-                        })}
-                    </nav>
+                <div className="hidden bg-[#003E48] lg:block">
+                    <div className="mx-auto flex h-[52px] max-w-[1440px] items-center justify-between gap-4 px-5 lg:px-10">
+                        <TealOverflowNav links={tealLinks} pathname={pathname} />
 
-                    <div className="flex items-center gap-3">
-                        <PressButton size="sm" onClick={() => openBooking()}>
-                            <CalendarDays />
-                            Book appointment
-                        </PressButton>
-                        <PreRegisterButton size="sm" className="!px-3" />
+                        <div className="flex shrink-0 items-center gap-3">
+                            <PressButton size="sm" onClick={() => openBooking()}>
+                                <CalendarDays />
+                                Book appointment
+                            </PressButton>
+                            <PreRegisterButton size="sm" className="!px-3" />
+                        </div>
                     </div>
                 </div>
-            </div>
             </div>
 
             {isOpen && (
                 <div className="bg-white lg:hidden">
                     <nav className="flex flex-col gap-1 px-5 py-4 text-[15px] text-[#1a1a1a]">
-                        <Link href="/indivituals" onClick={() => setIsOpen(false)} className="flex items-center gap-3 py-2.5 font-bold">
+                        <Link
+                            href="/for-individuals"
+                            onClick={() => setIsOpen(false)}
+                            className="flex items-center gap-3 py-2.5 font-bold"
+                        >
                             <PersonIcon className="h-5 w-5 text-[#282E33]" />
                             For Individuals
                         </Link>
-                        <Link href="/serves" onClick={() => setIsOpen(false)} className="flex items-center gap-3 py-2.5 font-bold">
+                        {individualLinks.map((link) => {
+                            const Icon = iconForTealLink(link);
+                            const active = isTealLinkActive(link, pathname);
+                            return (
+                                <Link
+                                    key={link.href}
+                                    href={link.href}
+                                    onClick={() => setIsOpen(false)}
+                                    className={`inline-flex items-center gap-2 py-2 pl-10 text-sm font-semibold ${
+                                        active ? 'text-[#E85A2E]' : 'text-[#003E48]'
+                                    }`}
+                                >
+                                    {Icon ? (
+                                        <Icon
+                                            className={`h-4 w-4 shrink-0 stroke-[2] ${
+                                                active ? 'text-[#E85A2E]' : 'text-[#003E48]'
+                                            }`}
+                                            aria-hidden
+                                        />
+                                    ) : null}
+                                    {link.label}
+                                </Link>
+                            );
+                        })}
+
+                        <Link
+                            href="/for-organizations"
+                            onClick={() => setIsOpen(false)}
+                            className="mt-2 flex items-center gap-3 py-2.5 font-bold"
+                        >
                             <GroupIcon className="h-5 w-5 text-[#282E33]" />
                             For Organizations
                         </Link>
-                        <Link href="/shop" onClick={() => setIsOpen(false)} className="flex items-center gap-3 py-2.5 font-bold">
+                        {organizationLinks.map((link) => {
+                            const Icon = iconForTealLink(link);
+                            const active = isTealLinkActive(link, pathname);
+                            return (
+                                <Link
+                                    key={link.href}
+                                    href={link.href}
+                                    onClick={() => setIsOpen(false)}
+                                    className={`inline-flex items-center gap-2 py-2 pl-10 text-sm font-semibold ${
+                                        active ? 'text-[#E85A2E]' : 'text-[#003E48]'
+                                    }`}
+                                >
+                                    {Icon ? (
+                                        <Icon
+                                            className={`h-4 w-4 shrink-0 stroke-[2] ${
+                                                active ? 'text-[#E85A2E]' : 'text-[#003E48]'
+                                            }`}
+                                            aria-hidden
+                                        />
+                                    ) : null}
+                                    {link.label}
+                                </Link>
+                            );
+                        })}
+
+                        <Link href="/shop" onClick={() => setIsOpen(false)} className="mt-2 flex items-center gap-3 py-2.5 font-bold">
                             <ShopIcon className="h-5 w-5 text-[#282E33]" />
                             Shop
                         </Link>
-                        {bottomLinks.map((link) => (
-                            <Link key={link.href} href={link.href} onClick={() => setIsOpen(false)} className="flex items-center gap-3 py-2.5">
-                                {link.icon}
-                                {link.label}
-                            </Link>
-                        ))}
+
+                        <div className="my-2 border-t border-[#003E48]/10" />
+
+                        {defaultTealLinks.map((link) => {
+                            const Icon = iconForTealLink(link);
+                            const active = isTealLinkActive(link, pathname);
+                            return (
+                                <Link
+                                    key={link.href}
+                                    href={link.href}
+                                    onClick={() => setIsOpen(false)}
+                                    className={`inline-flex items-center gap-2 py-2.5 font-semibold ${
+                                        active ? 'text-[#E85A2E]' : 'text-[#1a1a1a]'
+                                    }`}
+                                >
+                                    {Icon ? (
+                                        <Icon
+                                            className={`h-4 w-4 shrink-0 stroke-[2] ${
+                                                active ? 'text-[#E85A2E]' : 'text-[#003E48]'
+                                            }`}
+                                            aria-hidden
+                                        />
+                                    ) : null}
+                                    {link.label}
+                                </Link>
+                            );
+                        })}
                         <Link href="/download" onClick={() => setIsOpen(false)} className="py-2.5">
                             Get the app
                         </Link>
