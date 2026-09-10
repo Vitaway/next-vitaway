@@ -7,6 +7,8 @@ import { useBooking } from '../booking/booking-context';
 import { buildTimeSlots, earliestBookableDate, isSlotBookable } from '@/lib/appointment-slots';
 
 const STORAGE_KEY = 'vitaway-booking-bar-hidden';
+const SCROLL_HIDE_AT = 280;
+const SCROLL_SHOW_AT = 100;
 
 const fieldClass =
     'mt-1 h-10 w-full appearance-none rounded-lg border-0 bg-white px-3 pr-8 text-sm text-[#003E48] shadow-sm outline-none ring-1 ring-[#003E48]/10 transition focus:ring-[#003E48]/30';
@@ -144,18 +146,57 @@ function startOfToday() {
 export function StickyBooking() {
     const pathname = usePathname();
     const { isOpen: modalOpen } = useBooking();
-    const [open, setOpen] = useState(true);
+    const [manualClosed, setManualClosed] = useState(false);
+    const [scrollCollapsed, setScrollCollapsed] = useState(false);
+    const [forceOpen, setForceOpen] = useState(false);
+    const [ready, setReady] = useState(false);
 
     useEffect(() => {
         try {
-            setOpen(sessionStorage.getItem(STORAGE_KEY) !== '1');
+            setManualClosed(sessionStorage.getItem(STORAGE_KEY) === '1');
         } catch {
-            setOpen(true);
+            setManualClosed(false);
         }
+        setReady(true);
     }, []);
 
+    useEffect(() => {
+        if (manualClosed) return;
+
+        let frame = 0;
+        const update = () => {
+            frame = 0;
+            const y = window.scrollY || document.documentElement.scrollTop || 0;
+
+            if (forceOpen) {
+                if (y <= SCROLL_SHOW_AT) setForceOpen(false);
+                return;
+            }
+
+            setScrollCollapsed((prev) => {
+                if (y >= SCROLL_HIDE_AT) return true;
+                if (y <= SCROLL_SHOW_AT) return false;
+                return prev;
+            });
+        };
+
+        const onScroll = () => {
+            if (frame) return;
+            frame = window.requestAnimationFrame(update);
+        };
+
+        update();
+        window.addEventListener('scroll', onScroll, { passive: true });
+        return () => {
+            window.removeEventListener('scroll', onScroll);
+            if (frame) window.cancelAnimationFrame(frame);
+        };
+    }, [manualClosed, forceOpen]);
+
     const close = () => {
-        setOpen(false);
+        setManualClosed(true);
+        setScrollCollapsed(false);
+        setForceOpen(false);
         try {
             sessionStorage.setItem(STORAGE_KEY, '1');
         } catch {
@@ -164,7 +205,9 @@ export function StickyBooking() {
     };
 
     const reopen = () => {
-        setOpen(true);
+        setManualClosed(false);
+        setScrollCollapsed(false);
+        setForceOpen(true);
         try {
             sessionStorage.removeItem(STORAGE_KEY);
         } catch {
@@ -172,30 +215,51 @@ export function StickyBooking() {
         }
     };
 
-    if (pathname?.startsWith('/appointments') || modalOpen) return null;
+    if (!ready || pathname?.startsWith('/appointments') || modalOpen) return null;
 
-    if (!open) {
-        return (
-            <div className="fixed bottom-0 left-1/2 z-[75] -translate-x-1/2">
-                <button
-                    type="button"
-                    onClick={reopen}
-                    className="flex items-center gap-2 rounded-t-xl bg-[#E8F7F4] px-4 py-2 text-[13px] font-semibold text-[#003E48] shadow-[0_-8px_24px_rgba(0,62,72,0.12)]"
-                >
-                    <span className="h-1.5 w-1.5 rounded-full bg-[#E85A2E]" />
-                    Book appointment
-                    <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4" aria-hidden>
-                        <path d="M6 14l6-6 6 6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                </button>
-            </div>
-        );
-    }
+    const showForm = !manualClosed && (!scrollCollapsed || forceOpen);
+    const showTab = !showForm;
 
     return (
         <div className="pointer-events-none fixed inset-x-0 bottom-0 z-[75]">
             <div className="pointer-events-auto mx-auto w-full max-w-[720px]">
-                <BookingForm onClose={close} />
+                <div
+                    className={`origin-bottom transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                        showForm
+                            ? 'translate-y-0 opacity-100'
+                            : 'pointer-events-none translate-y-[110%] opacity-0'
+                    }`}
+                    aria-hidden={!showForm}
+                >
+                    <BookingForm onClose={close} />
+                </div>
+
+                <div
+                    className={`absolute bottom-0 left-1/2 -translate-x-1/2 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                        showTab
+                            ? 'translate-y-0 opacity-100'
+                            : 'pointer-events-none translate-y-8 opacity-0'
+                    }`}
+                    aria-hidden={!showTab}
+                >
+                    <button
+                        type="button"
+                        onClick={reopen}
+                        className="flex items-center gap-2 rounded-t-xl bg-[#E8F7F4] px-4 py-2 text-[13px] font-semibold text-[#003E48] shadow-[0_-8px_24px_rgba(0,62,72,0.12)]"
+                    >
+                        <span className="h-1.5 w-1.5 rounded-full bg-[#E85A2E]" />
+                        Book appointment
+                        <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4" aria-hidden>
+                            <path
+                                d="M6 14l6-6 6 6"
+                                stroke="currentColor"
+                                strokeWidth="1.8"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            />
+                        </svg>
+                    </button>
+                </div>
             </div>
         </div>
     );

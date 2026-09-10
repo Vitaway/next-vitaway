@@ -8,25 +8,25 @@ const cares = [
         title: 'Weight',
         line: 'Losing it in a way that holds.',
         href: '/programs/well-being',
-        image: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=1200&q=80',
+        image: '/images/clinic/body-composition-scale.jpg',
     },
     {
         title: 'Blood pressure',
         line: 'Salt, weight, alcohol, stress.',
         href: '/appointments',
-        image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1200&q=80',
+        image: '/images/clinic/clinical-consultation.jpg',
     },
     {
         title: 'Blood sugar',
         line: 'Newly told, or living with it.',
         href: '/programs/well-being',
-        image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=1200&q=80',
+        image: '/images/clinic/glucose-meter-lifestyle.jpg',
     },
     {
         title: 'Family nutrition',
         line: 'Feeding a household well.',
         href: '/programs/life-stages',
-        image: 'https://images.unsplash.com/photo-1476703993599-0035a21b17a9?auto=format&fit=crop&w=1200&q=80',
+        image: '/images/clinic/family-breakfast.jpg',
     },
 ];
 

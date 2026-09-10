@@ -67,11 +67,11 @@ function AboutFounder() {
 
                     <div className="relative min-h-[280px] overflow-hidden rounded-[24px] sm:min-h-[340px] sm:rounded-[28px] lg:min-h-[380px]">
                         <Image
-                            src="/images/members/member-7.jpg"
+                            src="/images/members/emmanuel-hakuzimana-founder.jpg"
                             alt="Emmanuel Hakuzimana, Founder and CEO of Vitaway Health"
                             fill
                             sizes="(min-width: 1024px) 28vw, 50vw"
-                            className="object-cover object-[center_12%]"
+                            className="object-cover object-[center_20%]"
                         />
                     </div>
 

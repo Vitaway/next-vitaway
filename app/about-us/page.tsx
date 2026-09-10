@@ -55,19 +55,19 @@ export const viewport = {
 function AboutUs() {
     const gallery = [
         {
-            image: "/images/Gallery/image-2.jpg",
+            image: "/images/members/emmanuel-hakuzimana-founder.jpg",
             caption: "Founder & CEO of Vitaway Health",
             description: "Emmanuel Hakuzimana, Founder & CEO of Vitaway Health, leading with purpose, passion, and a vision for a healthier Africa. We created this company to inspire and engage people in lifelong health, one step at a time.",
         },
         {
-            image: "/images/Gallery/image-8.jpg",
-            caption: "Photo of Nutritionist and Patient in consultation room",
-            description: "Personalised nutrition counselling in action—empowering patients to take charge of their health.",
+            image: "/images/clinic/finger-prick-glucometer.jpg",
+            caption: "Health check in the cabinet",
+            description: "Blood sugar and clinical measurements — the numbers that start every plan.",
         },
         {
-            image: "/images/Gallery/image-1.jpg",
-            caption: "Vitaway Gallery",
-            description: "A snapshot of the Vitaway gallery, dedicated to transforming healthcare through innovation and compassion.",
+            image: "/images/clinic/body-composition-scale.jpg",
+            caption: "Body composition measurement",
+            description: "Weight and metabolic markers, measured properly in clinic.",
         },
         {
             image: "/images/Gallery/image-5.jpg",
@@ -75,18 +75,18 @@ function AboutUs() {
             description: "A powerhouse team of qualified nutritionists dedicated to transforming lives through evidence-based nutritional care.",
         },
         {
-            image: "/images/Gallery/image-3.jpg",
-            caption: "Dedicated Nutritionist at Vitaway Health",
-            description: "Personalised nutrition counselling in action—empowering patients to take charge of their health.",
+            image: "/images/clinic/clinical-consultation.jpg",
+            caption: "Consultation in progress",
+            description: "Personalised nutrition counselling — explaining the numbers until they make sense.",
         },
         {
-            image: "/images/Gallery/image-13.jpg",
-            caption: "Photo of Nutritionist and Patient in consultation room",
-            description: "Personalised nutrition counselling in action—empowering patients to take charge of their health.",
+            image: "/images/clinic/clinic-storefront-banner.jpg",
+            caption: "Vitaway Nutrition Clinic",
+            description: "Our branded clinic front — personalized and preventive nutrition care in Kigali.",
         },
         {
-            image: "/images/Gallery/image-15.jpg",
-            caption: "Photo of the location",
+            image: "/images/clinic/clinic-exterior.jpg",
+            caption: "Clinic location",
             description: "Welcome to Vitaway Nutritional Cabinet in Niboye, Kicukiro — a modern, accessible space where health and care meet.",
         },
     ];

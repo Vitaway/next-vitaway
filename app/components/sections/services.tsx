@@ -7,20 +7,20 @@ const audiences = [
     {
         title: 'You and your family',
         line: 'Get checked. Then get a plan around the food you already eat.',
-        href: '/indivituals',
-        image: 'https://images.unsplash.com/photo-1609220136736-443140cffec6?auto=format&fit=crop&w=1400&q=80',
+        href: '/for-individuals',
+        image: '/images/clinic/family-breakfast.jpg',
     },
     {
         title: 'Your organisation',
         line: 'Screen staff or pupils. Get a report a board can read.',
-        href: '/serves',
-        image: 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1400&q=80',
+        href: '/for-organizations',
+        image: '/images/clinic/clinical-consultation.jpg',
     },
     {
         title: 'Insurance partners',
         line: 'A prevention benefit you can put in a tender.',
         href: '/contacts',
-        image: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=1400&q=80',
+        image: '/images/clinic/clinic-storefront-banner.jpg',
     },
 ];
 
