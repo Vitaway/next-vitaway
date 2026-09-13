@@ -21,7 +21,7 @@ function AlertModal({ title, message, status, actionUrl, onOk, onClose }: AlertM
     };
 
     return (
-        <div className='fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center z-50 bg-black/15'>
+        <div className='fixed top-0 left-0 right-0 bottom-0 z-[110] flex items-center justify-center bg-black/15'>
             <div className="notifications-container max-w-2xl">
                 <div className={status}>
                     <div className="flex">
