@@ -75,7 +75,6 @@ function TopNavbar() {
                             <Link href="/indivituals" onClick={() => setIsOpen(false)}>For Individuals</Link>
                             <Link href="/serves" onClick={() => setIsOpen(false)}>For Organizations</Link>
                             <Link href="/for-individuals" onClick={() => setIsOpen(false)}>How We Can Help</Link>
-                            <Link href="/success-stories" onClick={() => setIsOpen(false)}>Success Stories</Link>
                             <Link href="/about-us" onClick={() => setIsOpen(false)}>Who We Are</Link>
                             <Link href="/faqs" onClick={() => setIsOpen(false)}>FAQs</Link>
                             <Link href="/contacts" onClick={() => setIsOpen(false)}>Support</Link>

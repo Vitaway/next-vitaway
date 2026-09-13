@@ -16,7 +16,6 @@ function BottomNavbar() {
             <div className="flex items-center justify-between h-[52px] px-6 mx-auto max-w-[1440px] lg:px-10">
                 <nav className="flex items-center gap-8">
                     <Link href="/for-individuals" className={linkClass('/for-individuals')}>How We Can Help</Link>
-                    <Link href="/success-stories" className={linkClass('/success-stories')}>Success Stories</Link>
                     <Link href="/about-us" className={linkClass('/about-us')}>Who We Are</Link>
                     <Link href="/faqs" className={linkClass('/faqs')}>FAQs</Link>
                     <Link href="/contacts" className={linkClass('/contacts')}>Support</Link>
