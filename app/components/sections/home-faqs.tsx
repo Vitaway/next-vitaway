@@ -7,24 +7,29 @@ import { SITE_WHATSAPP_URL } from '@/content/contact';
 
 const faqs = [
     {
-        question: 'What happens at a first visit?',
-        answer: 'About an hour. We measure weight, waist, blood pressure, sugar, and what you eat. A nutritionist explains the numbers, then you leave with a plan built on food you already cook.',
+        question: 'What actually happens at a first visit?',
+        answer:
+            'About an hour. We measure weight, waist, BMI, blood pressure and blood sugar, and talk through what you eat in a normal week. A nutritionist explains every reading. You leave with your numbers written down and a clear recommendation including, honestly, whether you need a programme at all.',
     },
     {
         question: 'Do I have to come to the clinic in Kigali?',
-        answer: 'The cabinet is in Niboye, Kicukiro. Vitaway Plus carries your plan, appointments, and measurements between visits, and remote coaching is available if you cannot come in.',
+        answer:
+            'The first visit is in the clinic in Kicukiro — Niboye, same building as Chancen International, because the measurements have to be taken properly. Follow-up reviews can be done by phone or video if travelling is hard, and the app carries your plan between visits.',
     },
     {
-        question: 'Is the app free?',
-        answer: 'Basic access is free. Premium coaching and personalised meal planning are paid. You can book a clinic visit without downloading anything.',
+        question: 'Is this covered by my insurance?',
+        answer:
+            'Not automatically. We are talking to insurers about preventive benefits, and if your employer has a Vitaway programme, your health check may already be paid for. Ask us and we will tell you straight.',
     },
     {
-        question: 'Who is this for?',
-        answer: 'Families, organisations, and people living with — or at risk of — diabetes, hypertension, and weight-related conditions. If the numbers matter, you can start here.',
+        question: 'Will you just tell me to stop eating the food I like?',
+        answer:
+            'No. A plan that removes everything you enjoy lasts about nine days. We build on what you already buy at the market and already cook, and change the things that move the numbers most.',
     },
     {
-        question: 'How do I book?',
-        answer: 'Use the bar at the bottom of this page, or WhatsApp us. A health check takes about an hour.',
+        question: 'Do I need to be ill to come?',
+        answer:
+            'No — and most people who benefit most are not ill yet. Nearly nine in ten Rwandan adults have never had their blood sugar measured. Coming before something is wrong is the entire point.',
     },
 ];
 

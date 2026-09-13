@@ -14,7 +14,7 @@ function CloseCta() {
                     Most people find out too <span className="font-accent">late</span>.
                 </h2>
                 <p className="mt-4 text-base text-white/80">
-                    A health check takes about an hour.
+                    A Nutrition Consultation takes about an hour. You will leave knowing exactly where you stand.
                 </p>
                 <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
                     <BookAppointmentButton>Book a health check</BookAppointmentButton>
