@@ -28,7 +28,7 @@ const AlertMessage: React.FC<AlertMessageProps> = ({
 
     return (
         <div
-            className={`fixed bottom-4 left-1/2 z-50 w-auto max-w-md transform -translate-x-1/2 rounded-lg border px-4 py-3 shadow-md transition-all duration-300 ${type === 'success'
+            className={`fixed bottom-4 left-1/2 z-[110] w-auto max-w-md transform -translate-x-1/2 rounded-lg border px-4 py-3 shadow-md transition-all duration-300 ${type === 'success'
                     ? 'bg-green-600 border-green-700 text-white'
                     : 'bg-red-600 border-red-700 text-white'
                 }`}

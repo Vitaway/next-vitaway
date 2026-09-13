@@ -533,13 +533,22 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
         };
     }, []);
 
-    return (<>
-        <FormModal width='max-w-[80vw]' height='max-h-[90vh]' isOpen={isOpen} onClose={onClose}>
-            <div>
-                <h1 className='text-xl font-semibold text-[#003E48]'>Checkout Form</h1>
+    const selectClass =
+        'block w-full rounded-2xl border border-transparent bg-[#F6F3EE] px-4 py-3 text-[#003E48] transition-all duration-200 focus:border-[#003E48] focus:bg-white focus:outline-none disabled:opacity-50';
 
-                <div className='flex w-full flex-col md:flex-row'>
-                    <div className="flex flex-col gap-2 p-0 w-full mt-5 md:mt-0 md:p-4 md:max-w-1/2">
+    return (<>
+        <FormModal width='max-w-[1080px]' height='max-h-[90vh]' isOpen={isOpen} onClose={onClose}>
+            <div className="pr-2 sm:pr-8">
+                <h1 className="text-3xl font-bold tracking-tight text-[#003E48] sm:text-4xl">
+                    Complete your <span className="font-accent">order</span>
+                </h1>
+                <p className="mt-2 max-w-xl text-sm leading-relaxed text-[#003E48]/65">
+                    Delivery in Kigali, or pickup at the clinic.
+                </p>
+
+                <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(280px,0.95fr)] lg:items-start">
+                    <div className="flex min-w-0 flex-col">
+                        <h2 className="text-lg font-bold text-[#003E48]">Your details</h2>
                         <TextInput
                             label="Full name"
                             placeholder="Eg: John Doe"
@@ -581,17 +590,12 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
                             </TextInput>
                         </div>
 
-                        <div className="flex gap-4">
-                            {/* Province (customerCountry) */}
-                            <div className="w-full sm:w-1/2">
-                                <label className="text-md font-semibold capitalize text-[#003E48]">Province</label>
-
-                                <div className="mt-2 relative text-gray-400 focus-within:text-gray-600 transition-all duration-200">
-                                    <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M21 7v10c0 3-1.5 5-5 5H8c-3.5 0-5-2-5-5V7c0-3 1.5-5 5-5h8c3.5 0 5 2 5 5Z" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path><path opacity=".4" d="M14.5 4.5v2c0 1.1.9 2 2 2h2M8 13h4M8 17h8" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path></svg>
-                                    </div>
+                        <div className="mt-5 grid gap-4 sm:grid-cols-2">
+                            <div>
+                                <label className="text-sm font-semibold text-[#003E48]">Province</label>
+                                <div className="mt-2">
                                     <select
-                                        className="block w-full rounded-2xl border border-transparent bg-[#F6F3EE] py-3 pl-12 pr-4 text-[#003E48] caret-[#003E48] transition-all duration-200 focus:border-[#003E48] focus:bg-white focus:outline-none"
+                                        className={selectClass}
                                         value={selectedCustomerProvince}
                                         onChange={handleCustomerProvinceChange}
                                     >
@@ -603,19 +607,14 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
                                         ))}
                                     </select>
                                 </div>
-                                <span className="mt-2 text-[#003E48]">{selectedCustomerProvince}</span>
-                                {customerCountryError && <p className="text-red-500 text-sm">{customerCountryError}</p>}
+                                {customerCountryError && <p className="mt-1 text-sm text-red-500">{customerCountryError}</p>}
                             </div>
 
-                            {/* District (customerCity) */}
-                            <div className="w-full sm:w-1/2">
-                                <label className="text-md font-semibold capitalize text-[#003E48]">District</label>
-                                <div className="mt-2 relative text-gray-400 focus-within:text-gray-600 transition-all duration-200">
-                                    <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M21 7v10c0 3-1.5 5-5 5H8c-3.5 0-5-2-5-5V7c0-3 1.5-5 5-5h8c3.5 0 5 2 5 5Z" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path><path opacity=".4" d="M14.5 4.5v2c0 1.1.9 2 2 2h2M8 13h4M8 17h8" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path></svg>
-                                    </div>
+                            <div>
+                                <label className="text-sm font-semibold text-[#003E48]">District</label>
+                                <div className="mt-2">
                                     <select
-                                        className="block w-full rounded-2xl border border-transparent bg-[#F6F3EE] py-3 pl-12 pr-4 text-[#003E48] caret-[#003E48] transition-all duration-200 focus:border-[#003E48] focus:bg-white focus:outline-none"
+                                        className={selectClass}
                                         value={customerCity}
                                         onChange={handleCustomerDistrictChange}
                                         disabled={!selectedCustomerProvince}
@@ -629,16 +628,15 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
                                             ))}
                                     </select>
                                 </div>
-                                <span className="mt-2 text-[#003E48]">{customerCity}</span>
-                                {customerCityError && <p className="text-red-500 text-sm">{customerCityError}</p>}
+                                {customerCityError && <p className="mt-1 text-sm text-red-500">{customerCityError}</p>}
                             </div>
                         </div>
 
-                        <div className="my-4 flex items-center gap-2 border-t border-b border-[#003E48]/10 py-3">
+                        <label htmlFor="differentRecipient" className="mt-6 flex cursor-pointer items-start gap-3 rounded-[20px] bg-[#F6F3EE] px-4 py-3">
                             <input
                                 type="checkbox"
                                 id="differentRecipient"
-                                className="h-4 w-4 accent-[#003E48]"
+                                className="mt-1 h-4 w-4 accent-[#003E48]"
                                 onChange={(e) => {
                                     if (!e.target.checked) {
                                         setCustomerDiffRecipient(false)
@@ -647,13 +645,14 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
                                     }
                                 }}
                             />
-                            <label htmlFor="differentRecipient" className="text-md font-bold text-[#003E48]">
-                                Recipient is different from customer (Want someone to recieve an items)
-                            </label>
-                        </div>
+                            <span className="text-sm font-semibold text-[#003E48]">
+                                Someone else should receive this order
+                            </span>
+                        </label>
 
                         {customerDiffRecipient && (
-                            <div>
+                            <div className="mt-2 rounded-[24px] border border-[#003E48]/10 p-4 sm:p-5">
+                                <h3 className="text-base font-bold text-[#003E48]">Recipient</h3>
                                 <div className='flex gap-2'>
                                     <TextInput
                                         label="Recipient Name"
@@ -694,22 +693,16 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M21 7v10c0 3-1.5 5-5 5H8c-3.5 0-5-2-5-5V7c0-3 1.5-5 5-5h8c3.5 0 5 2 5 5Z" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path><path opacity=".4" d="M14.5 4.5v2c0 1.1.9 2 2 2h2M8 13h4M8 17h8" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path></svg>
                                     </TextInput>
                                 </div>
-                                <div className="flex gap-4">
-                                    {/* Province (customerCountry) */}
-                                    <div className="w-full sm:w-1/2">
-                                        <label className="text-md font-semibold capitalize text-[#003E48]">Province</label>
-
-                                        <div className="mt-2 relative text-gray-400 focus-within:text-gray-600 transition-all duration-200">
-                                            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M21 7v10c0 3-1.5 5-5 5H8c-3.5 0-5-2-5-5V7c0-3 1.5-5 5-5h8c3.5 0 5 2 5 5Z" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path><path opacity=".4" d="M14.5 4.5v2c0 1.1.9 2 2 2h2M8 13h4M8 17h8" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path></svg>
-                                            </div>
+                                <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                                    <div>
+                                        <label className="text-sm font-semibold text-[#003E48]">Province</label>
+                                        <div className="mt-2">
                                             <select
-                                                className="block w-full rounded-2xl border border-transparent bg-[#F6F3EE] py-3 pl-12 pr-4 text-[#003E48] caret-[#003E48] transition-all duration-200 focus:border-[#003E48] focus:bg-white focus:outline-none"
+                                                className={selectClass}
                                                 value={selectedRecipientProvince}
                                                 onChange={handleRecipientProvinceChange}
                                             >
                                                 <option value="">Select Province</option>
-
                                                 {provinces.map((province) => (
                                                     <option key={province} value={province}>
                                                         {province}
@@ -717,25 +710,19 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
                                                 ))}
                                             </select>
                                         </div>
-
-                                        {recipientCountryError && <p className="text-red-500 text-sm">{recipientCountryError}</p>}
+                                        {recipientCountryError && <p className="mt-1 text-sm text-red-500">{recipientCountryError}</p>}
                                     </div>
 
-                                    {/* District (customerCity) */}
-                                    <div className="w-full sm:w-1/2">
-                                        <label className="text-md font-semibold capitalize text-[#003E48]">District</label>
-                                        <div className="mt-2 relative text-gray-400 focus-within:text-gray-600 transition-all duration-200">
-                                            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M21 7v10c0 3-1.5 5-5 5H8c-3.5 0-5-2-5-5V7c0-3 1.5-5 5-5h8c3.5 0 5 2 5 5Z" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path><path opacity=".4" d="M14.5 4.5v2c0 1.1.9 2 2 2h2M8 13h4M8 17h8" stroke="#697689" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path></svg>
-                                            </div>
+                                    <div>
+                                        <label className="text-sm font-semibold text-[#003E48]">District</label>
+                                        <div className="mt-2">
                                             <select
-                                                className="block w-full rounded-2xl border border-transparent bg-[#F6F3EE] py-3 pl-12 pr-4 text-[#003E48] caret-[#003E48] transition-all duration-200 focus:border-[#003E48] focus:bg-white focus:outline-none"
+                                                className={selectClass}
                                                 value={recipientCity}
                                                 onChange={handleRecipientDistrictChange}
                                                 disabled={!selectedRecipientProvince}
                                             >
                                                 <option value="">Select District</option>
-
                                                 {selectedRecipientProvince &&
                                                     Object.keys(rwandaData[selectedRecipientProvince as keyof typeof rwandaData] || {}).map((district: string) => (
                                                         <option key={district} value={district}>
@@ -744,25 +731,25 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
                                                     ))}
                                             </select>
                                         </div>
-                                        {recipientCityError && <p className="text-red-500 text-sm">{recipientCityError}</p>}
+                                        {recipientCityError && <p className="mt-1 text-sm text-red-500">{recipientCityError}</p>}
                                     </div>
                                 </div>
                             </div>
                         )}
                     </div>
-                    <div className='w-full border-none border-[#003E48]/10 pl-0 md:max-w-1/2 md:border-l md:pl-5'>
-                        <ul className="list-none overflow-auto max-h-[70vh]">
+                    <aside className="rounded-[28px] bg-[#F6F3EE] p-5 sm:p-6 lg:sticky lg:top-4">
+                        <h2 className="text-lg font-bold text-[#003E48]">Your order</h2>
+                        <ul className="mt-3 list-none max-h-[32vh] overflow-auto">
                             {cart && cart.map((product: Products) => (<ShopCartItem key={product.id} product={product} onRemoveFromCart={removeFromCart} />))}
                         </ul>
 
-                        <div className="mx-auto my-5 max-w-md">
-                            <h2 className="mb-4 font-semibold text-[#003E48]">Delivery</h2>
-                            <div className="overflow-hidden divide-y divide-[#003E48]/10 rounded-[20px] border border-[#003E48]/10">
-                                {/* Ship Option */}
+                        <div className="mt-5">
+                            <h3 className="mb-3 text-sm font-semibold text-[#003E48]">Delivery</h3>
+                            <div className="overflow-hidden divide-y divide-[#003E48]/10 rounded-[20px] bg-white">
                                 <label
                                     className={`flex cursor-pointer items-center justify-between p-4 ${selected === 'ship'
-                                        ? 'border-l-4 border-[#003E48] bg-[#F6F3EE]'
-                                        : 'bg-white'
+                                        ? 'ring-1 ring-inset ring-[#003E48]'
+                                        : ''
                                         }`}
                                 >
                                     <div className="flex items-center space-x-3">
@@ -782,11 +769,10 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
                                     />
                                 </label>
 
-                                {/* Pickup Option */}
                                 <label
                                     className={`flex cursor-pointer items-center justify-between p-4 ${selected === 'pickup'
-                                        ? 'border-l-4 border-[#003E48] bg-[#F6F3EE]'
-                                        : 'bg-white'
+                                        ? 'ring-1 ring-inset ring-[#003E48]'
+                                        : ''
                                         }`}
                                 >
                                     <div className="flex items-center space-x-3">
@@ -808,25 +794,34 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
                             </div>
                         </div>
 
-                        <div className='w-full border-t border-[#003E48]/10 pt-5 text-[#003E48]'>
-                            <div className='mt-1 flex items-center justify-between w-full'><div className='font-bold'>Customer Name:</div> <div className='max-w-42 line-clamp-1'>{customerDiffRecipient ? recipientName : customerName}</div></div>
-                            <div className='mt-1 flex items-center justify-between w-full'>
-                                <div className='font-bold'>Shipping Address:</div>
-                                <div className='max-w-42 line-clamp-1'>
+                        <div className="mt-5 space-y-2 text-sm text-[#003E48]">
+                            <div className="flex items-start justify-between gap-3">
+                                <span className="text-[#003E48]/60">Name</span>
+                                <span className="max-w-[60%] text-right font-semibold line-clamp-1">{customerDiffRecipient ? recipientName : customerName}</span>
+                            </div>
+                            <div className="flex items-start justify-between gap-3">
+                                <span className="text-[#003E48]/60">Address</span>
+                                <span className="max-w-[60%] text-right font-semibold line-clamp-2">
                                     {customerDiffRecipient
                                         ? [recipientAddress, recipientCity, recipientCountry].filter(Boolean).join(', ')
                                         : [customerAddress, customerCity, customerCountry].filter(Boolean).join(', ')}
-                                </div>
+                                </span>
                             </div>
-                            <div className='mt-1 flex items-center justify-between w-full'><div className='font-bold'>Shipping Amount:</div> <div className='max-w-42 line-clamp-1'>RWF {Number(shippingAmount).toLocaleString()}</div></div>
-                            <div className='mt-1 flex items-center justify-between w-full'><div className='font-bold'>Total Amount:</div> <div className='max-w-42 line-clamp-1'>RWF {Number(total + shippingAmount).toLocaleString()}</div></div>
+                            <div className="flex items-center justify-between gap-3">
+                                <span className="text-[#003E48]/60">Shipping</span>
+                                <span className="font-semibold">RWF {Number(shippingAmount).toLocaleString()}</span>
+                            </div>
+                            <div className="flex items-center justify-between gap-3 border-t border-[#003E48]/10 pt-3 text-base">
+                                <span className="font-bold">Total</span>
+                                <span className="font-bold">RWF {Number(total + shippingAmount).toLocaleString()}</span>
+                            </div>
                         </div>
 
-                        <div className="mt-5 flex justify-between border-t border-[#003E48]/10 pt-5">
-                            <div></div>
+                        <div className="mt-5">
                             <PressButton
                                 onClick={processPayment}
                                 disabled={loading || paymentProcessing || cart.length === 0 || scriptError}
+                                className="w-full"
                             >
                                 {loading || paymentProcessing ? (
                                     <ButtonSpinner loadingText={paymentProcessing ? "Processing" : "Initializing"} />
@@ -837,7 +832,7 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
                                 )}
                             </PressButton>
                         </div>
-                    </div>
+                    </aside>
                 </div>
 
                 <AlertMessage message={message} type={messageType} />

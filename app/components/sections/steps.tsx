@@ -2,10 +2,26 @@ import React from 'react';
 import SectionCard from './section-card';
 
 const steps = [
-    { n: '01', title: 'Measure', line: 'Weight, waist, BP, sugar — and what you eat.' },
-    { n: '02', title: 'Understand', line: 'A nutritionist explains the numbers.' },
-    { n: '03', title: 'Plan', line: 'Built on Rwandan food and your budget.' },
-    { n: '04', title: 'Measure again', line: 'Week twelve, compared to week one.' },
+    {
+        n: '01',
+        title: 'Measure',
+        line: 'Blood pressure, blood sugar, weight, waist, waist to height ratio, BMI and what you actually eat in a normal week.',
+    },
+    {
+        n: '02',
+        title: 'Understand',
+        line: 'A registered nutritionist explains every number, out loud, until it makes sense.',
+    },
+    {
+        n: '03',
+        title: 'Plan',
+        line: 'A plan built on Rwandan food, your budget, and the kitchen you already cook in.',
+    },
+    {
+        n: '04',
+        title: 'Measure again',
+        line: 'Week twelve, against week one. Written down, side by side. This is the part that matters.',
+    },
 ];
 
 function Steps() {
@@ -15,12 +31,17 @@ function Steps() {
                 <h2 className="max-w-xl text-3xl font-bold tracking-tight text-[#003E48] sm:text-4xl">
                     Four steps. The last one is the <span className="font-accent">point</span>.
                 </h2>
+                <p className="mt-4 max-w-2xl text-base leading-relaxed text-[#003E48]/70 sm:text-lg">
+                    Good nutrition care is more than advice. We assess your needs, create a personalized plan,
+                    support you along the way, and measure your progress after 12 weeks. Because what matters is
+                    not just what you were told to do — it&apos;s what actually changed.
+                </p>
                 <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                     {steps.map((step) => (
                         <div key={step.n} className="rounded-[24px] bg-[#F6F3EE] p-6">
                             <p className="text-xs font-semibold tracking-[0.16em] text-[#E85A2E]">{step.n}</p>
                             <h3 className="mt-3 text-xl font-bold text-[#003E48]">{step.title}</h3>
-                            <p className="mt-2 text-sm text-[#003E48]/65">{step.line}</p>
+                            <p className="mt-2 text-sm leading-relaxed text-[#003E48]/65">{step.line}</p>
                         </div>
                     ))}
                 </div>

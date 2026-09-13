@@ -3,19 +3,18 @@ import Image from 'next/image';
 import BookAppointmentButton from '../booking/book-appointment-button';
 import DownloadAppButton from '../buttons/download-app-button';
 
-const HERO_IMAGE =
-    'https://images.unsplash.com/photo-1609220136736-443140cffec6?auto=format&fit=crop&w=2400&q=80';
+const HERO_IMAGE = '/images/hero/african-family-home.jpg';
 
 function Hero() {
     return (
         <section className="relative min-h-[540px] overflow-hidden rounded-b-[22px] bg-[#003E48] sm:min-h-[620px] sm:rounded-b-[28px] lg:min-h-[730px]">
             <Image
                 src={HERO_IMAGE}
-                alt="Family together"
+                alt="African family sharing a healthy meal at home"
                 fill
                 priority
                 sizes="100vw"
-                className="object-cover object-[center_20%]"
+                className="object-cover object-[center_35%]"
             />
             <div className="absolute inset-0 bg-[#003E48]/50" />
 
@@ -24,7 +23,8 @@ function Hero() {
                     Know your numbers. Then <span className="font-accent">change them</span>.
                 </h1>
                 <p className="mt-5 max-w-xl text-base text-white/90 sm:text-lg">
-                    A licensed nutrition clinic in Kigali. We measure, explain, and stay until the numbers move.
+                    A Licensed Nutrition and Dietetics Clinic in Kigali. We measure, we explain what the
+                    numbers mean, and we stay with you until they move.
                 </p>
                 <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
                     <BookAppointmentButton>Book a health check</BookAppointmentButton>

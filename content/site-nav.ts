@@ -45,7 +45,6 @@ export const organizationTealLinks: NavLink[] = [
 
 export const defaultTealLinks: NavLink[] = [
     { href: '/for-individuals', label: 'How We Can Help' },
-    { href: '/success-stories', label: 'Success Stories' },
     { href: '/about-us', label: 'Who We Are' },
     { href: '/faqs', label: 'FAQs' },
     { href: '/contacts', label: 'Support' },

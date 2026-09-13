@@ -9,7 +9,6 @@ import Partenership from "./components/sections/partenership";
 import Platform from "./components/sections/platform";
 import Services from "./components/sections/services";
 import Steps from "./components/sections/steps";
-import Stories from "./components/sections/stories";
 import TeamCarousel from "./components/sections/team-carousel";
 import Video from "./components/sections/video";
 import GuestLayout from "./layouts/GuestLayout";
@@ -81,7 +80,6 @@ export default function Home() {
       <DiabeteProgram />
       <TeamCarousel />
       <Video />
-      <Stories />
       <HomeFaqs />
       <CloseCta />
       <Partenership />

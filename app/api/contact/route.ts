@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import transporter from '@/config/email-config';
-import { SITE_EMAIL } from '@/content/contact';
+import { SITE_SUPPORT_EMAIL } from '@/content/contact';
 
 type ContactBody = {
     fullname?: string;
@@ -42,7 +42,7 @@ async function sendViaNodemailer(fullname: string, email: string, message: strin
 
     await transporter.sendMail({
         from: `"Vitaway Website" <${user}>`,
-        to: SITE_EMAIL,
+        to: SITE_SUPPORT_EMAIL,
         replyTo: email,
         subject: `Website contact from ${fullname}`,
         text: `New contact message\n\nName: ${fullname}\nEmail: ${email}\n\nMessage:\n${message}`,
@@ -59,7 +59,7 @@ async function sendViaNodemailer(fullname: string, email: string, message: strin
 }
 
 async function sendViaFormSubmit(fullname: string, email: string, message: string) {
-    const response = await fetch(`https://formsubmit.co/ajax/${SITE_EMAIL}`, {
+    const response = await fetch(`https://formsubmit.co/ajax/${SITE_SUPPORT_EMAIL}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -107,7 +107,7 @@ export async function POST(request: Request) {
         console.error('Contact form error:', error);
         return NextResponse.json(
             {
-                message: `Could not send your message right now. Please email ${SITE_EMAIL} or try WhatsApp.`,
+                message: `Could not send your message right now. Please email ${SITE_SUPPORT_EMAIL} or try WhatsApp.`,
             },
             { status: 500 },
         );

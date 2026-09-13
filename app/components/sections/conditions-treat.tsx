@@ -29,7 +29,7 @@ const conditions = [
         label: 'Blood pressure',
         headline: 'Salt, weight, alcohol, stress — named, measured, and worked on until the reading drops.',
         href: '/for-individuals/blood-pressure',
-        image: '/images/clinic/clinical-consultation.jpg',
+        image: '/images/clinic/bp-machine.jpg',
         clinician: {
             name: 'Martine Umuhire',
             role: 'Nutritionist',
@@ -57,7 +57,7 @@ const conditions = [
         label: 'Family nutrition',
         headline: 'Feeding a household well — children, pregnancy, and the food you already cook.',
         href: '/for-individuals/family',
-        image: '/images/clinic/family-breakfast.jpg',
+        image: '/images/hero/african-family-home.jpg',
         clinician: {
             name: 'Ange Celeste',
             role: 'Nurse & Nutrition Associate',
