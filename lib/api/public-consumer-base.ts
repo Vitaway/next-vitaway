@@ -1,16 +1,11 @@
+/** Staging clinic API. Swap NEXT_PUBLIC_BOOKING_API_URL when the desk moves to production. */
+const STAGING_BOOKING_API = 'https://vitaway.keyypress.com';
+
 /**
- * Bookings, organizations, and referral coaches live on core-backend.
- * The rest of the marketing site can still talk to the URL in
- * NEXT_PUBLIC_ENVENTORY_API_URL. Locally that URL is often the old
- * Laravel app, which stores a visit and does not send the confirmation.
+ * Bookings, organizations, and referral coaches go to the clinic API.
+ * The rest of the marketing site still uses NEXT_PUBLIC_ENVENTORY_API_URL.
  */
 export function publicConsumerBase(): string {
     const booking = process.env.NEXT_PUBLIC_BOOKING_API_URL?.replace(/\/$/, '');
-    if (booking) return booking;
-
-    const configured = (process.env.NEXT_PUBLIC_ENVENTORY_API_URL || '').replace(/\/$/, '');
-    if (/^https?:\/\/(127\.0\.0\.1|localhost):8001$/i.test(configured)) {
-        return 'http://127.0.0.1:3020';
-    }
-    return configured;
+    return booking || STAGING_BOOKING_API;
 }
