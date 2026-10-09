@@ -1,4 +1,5 @@
-import { get } from '../client';
+import axios from 'axios';
+import { publicConsumerBase } from '../public-consumer-base';
 import { ReferralCoachListResponse } from '../types';
 
 export const referralCoachService = {
@@ -8,6 +9,10 @@ export const referralCoachService = {
                 ? { organization_id: organizationId }
                 : undefined;
 
-        return get<ReferralCoachListResponse>('/api/referral-coaches', { params });
+        const response = await axios.get<ReferralCoachListResponse>(
+            `${publicConsumerBase()}/api/referral-coaches`,
+            { params },
+        );
+        return response.data;
     },
 };
