@@ -120,8 +120,9 @@ function AppointmentFormBody({
     const [showCustomOrganization, setShowCustomOrganization] = useState(false);
     const [selectedCoachCode, setSelectedCoachCode] = useState('');
     const [formError, setFormError] = useState('');
+    const [booked, setBooked] = useState<{ name: string; when: string; mode: BookingMode } | null>(null);
 
-    const { submitting, success, error, createAppointment, reset } = useAppointment();
+    const { submitting, error, createAppointment, reset } = useAppointment();
 
     useEffect(() => {
         const nextDate = defaults?.date || '';
@@ -316,16 +317,21 @@ function AppointmentFormBody({
 
         const isSuccess = await createAppointment(payload);
         if (isSuccess) {
+            setBooked({
+                name: name.trim(),
+                when: formatWhen(appointmentDate, appointmentTime),
+                mode,
+            });
             resetForm();
-            onSuccess?.();
         }
     };
 
-    useEffect(() => {
-        if (!success) return;
-        const timer = setTimeout(() => reset(), 5000);
-        return () => clearTimeout(timer);
-    }, [success, reset]);
+    function finishConfirmation() {
+        setBooked(null);
+        reset();
+        if (isModal) onClose?.();
+        else onSuccess?.();
+    }
 
     const timeSlots = useMemo(() => buildTimeSlots(appointmentDate), [appointmentDate]);
     const minDate = useMemo(() => earliestBookableDate(), []);
@@ -693,9 +699,35 @@ function AppointmentFormBody({
         <>
             {formError && <p className="mt-3 text-sm text-red-600">{formError}</p>}
             {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
-            {success && <p className="mt-3 text-sm text-[#003E48]">{success}</p>}
         </>
     );
+
+    if (booked) {
+        const place = booked.mode === 'call' ? 'a call' : 'a clinic visit';
+        const greeting = booked.name ? `${booked.name}, we'll see you` : "We'll see you";
+        return (
+            <div
+                className={
+                    isModal
+                        ? 'flex min-h-[460px] flex-col items-start justify-center bg-white px-8 py-14 sm:px-16 md:min-h-[500px]'
+                        : 'relative mx-auto w-full max-w-2xl rounded-[28px] bg-white px-6 py-12 text-[#003E48] sm:px-10 sm:text-center'
+                }
+            >
+                <h3 id="booking-modal-title" className="text-3xl font-bold text-[#003E48] sm:text-4xl">
+                    You&apos;re <span className="font-accent">booked</span>
+                </h3>
+                <p className="mt-4 max-w-md text-lg leading-relaxed text-[#003E48]/80">
+                    {greeting} {booked.when} for {place}.
+                </p>
+                <p className="mt-2 max-w-md text-sm leading-relaxed text-[#003E48]/60">
+                    Keep your phone nearby. The clinic will confirm on the number you gave.
+                </p>
+                <PressButton type="button" className="mt-8" onClick={finishConfirmation}>
+                    {isModal ? 'Done' : 'Book another visit'}
+                </PressButton>
+            </div>
+        );
+    }
 
     if (isModal) {
         return (
