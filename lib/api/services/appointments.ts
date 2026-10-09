@@ -1,5 +1,7 @@
+import axios from 'axios';
 import { isSlotBookable } from '@/lib/appointment-slots';
-import { post } from '../client';
+import { APIError } from '../client';
+import { publicConsumerBase } from '../public-consumer-base';
 import { AppointmentPayload, AppointmentResponse } from '../types';
 
 /**
@@ -11,11 +13,29 @@ export const appointmentService = {
      * Create a new business appointment
      */
     create: async (payload: AppointmentPayload): Promise<AppointmentResponse> => {
-        const response = await post<AppointmentResponse>(
-            '/api/appointments/business',
-            payload
-        );
-        return response;
+        try {
+            const response = await axios.post<AppointmentResponse>(
+                `${publicConsumerBase()}/api/appointments/business`,
+                payload,
+                { headers: { 'Content-Type': 'application/json', Accept: 'application/json' } },
+            );
+            const body = response.data as AppointmentResponse & { success?: boolean; message?: string };
+            if (body && body.success === false) {
+                throw new APIError(body.message || 'Could not book that visit', response.status, body);
+            }
+            return body;
+        } catch (error) {
+            if (error instanceof APIError) throw error;
+            if (axios.isAxiosError(error)) {
+                const data = error.response?.data as { message?: string } | undefined;
+                throw new APIError(
+                    data?.message || 'Could not book that visit. Please try again.',
+                    error.response?.status,
+                    error.response?.data,
+                );
+            }
+            throw error;
+        }
     },
 
     /**

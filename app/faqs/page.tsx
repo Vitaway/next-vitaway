@@ -2,7 +2,7 @@ import React from 'react';
 import faqs from '../../content/faqs.json';
 import GuestLayout from '../layouts/GuestLayout';
 import { Metadata } from 'next';
-import FaqsCollapsable from '../components/sections/faqs-collapsable';
+import FaqsBrowser from '../components/sections/faqs-browser';
 import PageHeader from '../components/headers/page-header';
 import SectionCard from '../components/sections/section-card';
 
@@ -22,17 +22,12 @@ function FAQs() {
             Before you book, here is what people <span className="font-accent">ask</span>
           </>
         }
-        description="Clinic visits, the app, packages, and the shop — answered without the runaround."
+        description="Clinic visits, programmes, the app, packages, and the shop — pick a category and get the answers."
       />
 
       <SectionCard className="bg-[#F6F3EE] py-12 sm:py-16">
         <div className="mx-auto max-w-[900px] px-5 lg:px-12">
-          {faqs.map((faq) => (
-            <div key={faq.name} className="mb-10 last:mb-0">
-              <h2 className="mb-3 px-1 text-xl font-bold text-[#003E48] sm:text-2xl">{faq.name}</h2>
-              <FaqsCollapsable faqs={faq.questions} />
-            </div>
-          ))}
+          <FaqsBrowser categories={faqs} />
         </div>
       </SectionCard>
     </GuestLayout>

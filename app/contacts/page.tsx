@@ -5,7 +5,13 @@ import ContactForm from '../components/forms/contact-form';
 import { Metadata } from 'next';
 import PageHeader from '../components/headers/page-header';
 import SectionCard from '../components/sections/section-card';
-import { SITE_WHATSAPP_URL } from '@/content/contact';
+import {
+  SITE_PHONE_DISPLAY,
+  SITE_PHONE_TEL,
+  SITE_SUPPORT_EMAIL,
+  SITE_SUPPORT_MAILTO,
+  SITE_WHATSAPP_URL,
+} from '@/content/contact';
 
 export const metadata: Metadata = {
   title: "Contact Vitaway Health | Schedule Your Health Consultation Today",
@@ -67,6 +73,7 @@ function Contact() {
         }
         description="The clinic is in Niboye, Kicukiro. WhatsApp, email, or the form — we answer."
         backgroundImage="/images/clinic/clinic-exterior.jpg"
+        imageClassName="object-cover object-[center_28%]"
       />
 
       <SectionCard className="bg-[#F6F3EE] py-12 sm:py-16">
@@ -82,6 +89,21 @@ function Contact() {
                 </li>
               ))}
             </ul>
+
+            <div className="mt-8 rounded-[24px] bg-white p-5 sm:p-6">
+              <p className="text-sm font-semibold text-[#003E48]">Support email</p>
+              <a
+                href={SITE_SUPPORT_MAILTO}
+                className="mt-1 inline-block text-lg font-bold text-[#E85A2E] hover:underline"
+              >
+                {SITE_SUPPORT_EMAIL}
+              </a>
+              <p className="mt-4 text-sm font-semibold text-[#003E48]">Phone</p>
+              <a href={SITE_PHONE_TEL} className="mt-1 inline-block text-base font-medium text-[#003E48] hover:underline">
+                {SITE_PHONE_DISPLAY}
+              </a>
+            </div>
+
             <div className="mt-8 flex flex-wrap gap-3">
               <a
                 href={SITE_WHATSAPP_URL}

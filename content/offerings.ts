@@ -8,6 +8,20 @@ export type OfferingSection = {
     body?: string;
     items?: { title: string; body: string }[];
     image?: string;
+    /** Tailwind classes for section photo framing */
+    imageClassName?: string;
+    /** Short line under the steps / items */
+    footer?: string;
+    /** Dark checklist block (e.g. Type 1 / Type 2 care list) */
+    layout?: 'checklist';
+};
+
+export type OfferingHighlight = {
+    value: string;
+    label: string;
+    source?: string;
+    /** Default: after the first section. Use `before` to place under the hero. */
+    position?: 'before' | 'after-first';
 };
 
 export type OfferingCta = {
@@ -22,7 +36,9 @@ export type OfferingCard = {
     title: string;
     description: string;
     cta?: string;
-        image: string;
+    /** Short step label on hub photo cards, e.g. Step two */
+    label?: string;
+    image: string;
 };
 
 export type OfferingPageContent = {
@@ -31,7 +47,10 @@ export type OfferingPageContent = {
     accentWord?: string;
     description: string;
     heroImage?: string;
+    heroImageClassName?: string;
     sections: OfferingSection[];
+    /** Stat callout shown after the first section */
+    highlight?: OfferingHighlight;
     faqs?: OfferingFaq[];
     ctas: OfferingCta[];
     related?: { href: string; label: string; description: string; image?: string }[];
@@ -42,31 +61,43 @@ export type OfferingHubContent = {
     accentWord?: string;
     description: string;
     heroImage?: string;
+    /** Tailwind classes for hero photo framing */
+    heroImageClassName?: string;
     cards: OfferingCard[];
     secondaryCards?: OfferingCard[];
     sections?: OfferingSection[];
     faqs?: OfferingFaq[];
+    prevention?: {
+        title: string;
+        accentWord?: string;
+        body: string;
+        stats: { value: string; label: string }[];
+        source?: string;
+    };
     ctas: OfferingCta[];
 };
 
 export const individualsHub: OfferingHubContent = {
-    title: 'Find out what is actually going on. Then fix it properly.',
-    accentWord: 'properly',
+    title: 'Start here',
+    accentWord: 'here',
     description:
-        'Most people in Rwanda have never had their blood sugar or cholesterol measured. A Vitaway health check takes about an hour, and you leave knowing exactly where you stand and what to do about it.',
+        'Step one is a Nutrition Consultation — about an hour. We measure blood pressure, blood sugar, weight, waist, BMI, and body composition, then have a real conversation about your diet with a registered nutritionist.',
     heroImage: '/images/clinic/clinical-consultation.jpg',
+    heroImageClassName: 'object-cover object-[center_12%]',
     cards: [
         {
             href: '/for-individuals/health-check',
-            title: 'Health Check',
+            title: 'Nutrition Consultation',
+            label: 'Step one',
             description:
-                'Blood pressure, blood sugar, weight, waist, BMI — and a real conversation about your diet with a registered nutritionist.',
+                'Blood pressure, blood sugar, weight, waist, BMI, and body composition analysis — plus a real conversation about your diet with a registered nutritionist. About an hour.',
             cta: 'See what is measured',
             image: '/images/clinic/finger-prick-glucometer.jpg',
         },
         {
             href: '/for-individuals/12-week-programme',
             title: '12-Week Programme',
+            label: 'Step two, if you need it',
             description:
                 'A structured plan built on Rwandan food, with someone checking on you the whole way — and a re-measurement at the end.',
             cta: 'How the twelve weeks run',
@@ -74,12 +105,6 @@ export const individualsHub: OfferingHubContent = {
         },
     ],
     secondaryCards: [
-        {
-            href: '/for-individuals/continued-care',
-            title: 'Continued Care',
-            description: 'Keep the gains after twelve weeks with regular reviews and quarterly re-measurement.',
-            image: '/images/clinic/clinical-consultation.jpg',
-        },
         {
             href: '/for-individuals/weight',
             title: 'Weight and metabolic health',
@@ -90,7 +115,7 @@ export const individualsHub: OfferingHubContent = {
             href: '/for-individuals/blood-pressure',
             title: 'Blood pressure',
             description: 'High readings that feel like nothing — and what actually helps.',
-            image: '/images/clinic/clinical-consultation.jpg',
+            image: '/images/clinic/bp-machine.jpg',
         },
         {
             href: '/for-individuals/blood-sugar',
@@ -108,32 +133,44 @@ export const individualsHub: OfferingHubContent = {
     sections: [
         {
             title: 'What a first visit is actually like',
+            body: 'Simple, personal, and focused on you.',
             image: '/images/clinic/clinic-exterior.jpg',
-                body: 'You book online, on WhatsApp, or by phone. You come in for about an hour. You leave with your numbers written down and a clear recommendation — including whether the twelve-week programme makes sense for you.',
+            items: [
+                {
+                    title: 'Book your visit',
+                    body: 'Book online, on WhatsApp, or by phone. Your name and phone number are enough to get started.',
+                },
+                {
+                    title: 'Come to the clinic',
+                    body: 'Visit us in CPR-Unit House, 1st Floor, KK21 Ave, Niboye, Kicukiro, Kigali. Bring any recent test results and a list of the medicines or supplements you take.',
+                },
+                {
+                    title: 'Get your health measurements',
+                    body: 'We check your key measurements, including body composition, blood pressure, and blood sugar. This usually takes about 15 minutes. A finger-prick is used for blood sugar.',
+                },
+                {
+                    title: 'Talk with a nutritionist',
+                    body: 'Your nutritionist reviews your results with you, explains what they mean, and connects them to your health, lifestyle, and goals.',
+                },
+                {
+                    title: 'Leave with a clear plan',
+                    body: 'You receive your results, a simple summary, and a clear recommendation for your next step.',
+                },
+            ],
+            footer: 'No one-size-fits-all advice. Just a clear starting point for better health.',
         },
     ],
-    faqs: [
-        {
-            question: 'Do I need a referral from a doctor?',
-            answer:
-                'No. You can book directly. If we find something that needs a doctor, we tell you and refer you.',
-        },
-        {
-            question: 'Should I eat before I come?',
-            answer:
-                'For a blood sugar reading it helps to come fasted, so book a morning slot if you can. If that is not possible, come anyway — we will tell you what the number means either way.',
-        },
-        {
-            question: 'How do I pay?',
-            answer:
-                'Ask us when you book — we will confirm payment methods and whether your insurance can be used.',
-        },
-        {
-            question: 'Can you help if I am already on medication?',
-            answer:
-                "Yes. We work alongside your treatment. We do not change or stop anyone's medication — that is your doctor's decision.",
-        },
-    ],
+    prevention: {
+        title: 'Why prevention, and why now',
+        accentWord: 'now',
+        body: 'Most Rwandan adults have never had these numbers taken.',
+        stats: [
+            { value: '52.1%', label: 'have never had their blood pressure measured' },
+            { value: '88.7%', label: 'have never had their blood sugar checked' },
+            { value: '97.6%', label: 'have never been tested for cholesterol' },
+        ],
+        source: 'Rwanda STEPS NCD Risk Factor Survey 2021–22.',
+    },
     ctas: [
         { label: 'Book a health check', action: 'book' },
         { label: 'Message us on WhatsApp', action: 'whatsapp', variant: 'secondary' },
@@ -145,35 +182,36 @@ export const organizationsHub: OfferingHubContent = {
     accentWord: 'report',
     description:
         'Vitaway screens your staff, tells you what we found without naming anyone, and runs a twelve-week clinical nutrition programme for the people who need one. Licensed by the Ministry of Health, delivered by registered nutritionists and nurses.',
-    heroImage: 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1600&q=80',
+    heroImage: '/images/org/org-hub-report.jpg',
+    heroImageClassName: 'object-cover object-[center_30%]',
     cards: [
         {
             href: '/for-organizations/companies',
             title: 'Companies',
             description: 'Screening, a programme, and a report you can put in front of your board.',
             cta: 'See company programmes',
-        image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1200&q=80',
+            image: '/images/org/org-companies-office.jpg',
         },
         {
             href: '/for-organizations/embassies',
             title: 'Embassies and missions',
             description: 'A licensed local partner your duty-of-care review will accept.',
             cta: 'See mission programmes',
-        image: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=1200&q=80',
+            image: '/images/org/org-embassies-meeting.jpg',
         },
         {
             href: '/for-organizations/ngos',
             title: 'NGOs',
             description: 'Staff wellbeing you can evidence, not just fund.',
             cta: 'See NGO programmes',
-        image: 'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?auto=format&fit=crop&w=1200&q=80',
+            image: '/images/org/org-ngos-team.jpg',
         },
         {
             href: '/for-organizations/schools',
             title: 'Schools',
             description: 'Two health programmes in one school: pupils and the adults who look after them.',
             cta: 'See school programmes',
-        image: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1200&q=80',
+            image: '/images/org/org-schools-classroom.jpg',
         },
     ],
     sections: [
@@ -196,13 +234,15 @@ export const organizationsHub: OfferingHubContent = {
         },
         {
             title: 'You will never see an individual’s results',
-                image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&q=80',
-                body: 'We never share an individual’s results with an employer, school, or insurer. Reports are aggregated with a minimum group size so no one can be identified.',
+            image: '/images/org/org-privacy-report.jpg',
+            imageClassName: 'object-cover object-[center_40%]',
+            body: 'We never share an individual’s results with an employer, school, or insurer. Reports are aggregated with a minimum group size so no one can be identified.',
         },
         {
             title: 'How a programme starts',
-                image: 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1200&q=80',
-                body: 'We scope headcount, sites, and who joins the programme. After a twenty-minute call you get a written proposal.',
+            image: '/images/org/org-programme-start.jpg',
+            imageClassName: 'object-cover object-[center_28%]',
+            body: 'We scope headcount, sites, and who joins the programme. After a twenty-minute call you get a written proposal.',
         },
     ],
     ctas: [
@@ -217,7 +257,7 @@ export const individualPages: Record<string, OfferingPageContent> = {
         title: 'A proper health check, in about an hour',
         accentWord: 'hour',
         description:
-            'Blood pressure, blood sugar, weight, waist, BMI — and a real conversation about your diet with a registered nutritionist. You leave with the numbers written down and a clear recommendation.',
+            'Blood pressure, blood sugar, weight, waist, BMI, and body composition — and a real conversation about your diet with a registered nutritionist. You leave with the numbers written down and a clear recommendation.',
         heroImage: '/images/clinic/finger-prick-glucometer.jpg',
         sections: [
             {
@@ -227,6 +267,10 @@ export const individualPages: Record<string, OfferingPageContent> = {
                     { title: 'Blood sugar', body: 'Context for fasting vs non-fasting readings.' },
                     { title: 'Weight, waist, BMI', body: 'Numbers that matter for metabolic risk — not vanity metrics.' },
                     {
+                        title: 'Body composition analysis',
+                        body: 'Fat mass, muscle mass, and hydration — where the scale supports it.',
+                    },
+                    {
                         title: 'Diet conversation',
                         body: 'What you actually eat in a Rwandan week, and what to change first.',
                     },
@@ -235,28 +279,33 @@ export const individualPages: Record<string, OfferingPageContent> = {
             {
                 title: 'What you leave with',
                 image: '/images/clinic/finger-prick-swab.jpg',
-                body: 'Your numbers written down, a clear recommendation, and a next step — including whether the twelve-week programme makes sense.',
+                body: 'A written results card you take home, plus the same record in Vitaway Plus — and a clear next step, including whether the twelve-week programme makes sense.',
             },
             {
                 title: 'What this is not',
                 image: '/images/clinic/clinical-consultation.jpg',
-                body: 'It is not a full medical workup, not a lab panel for everything, and not a lecture. If something needs a doctor, we say so and refer you.',
+                body: 'This is a nutrition and lifestyle risk check, not a full medical work-up. We do not diagnose disease. If a reading needs a doctor, we say so, we write it down, and we tell you where to go. Cholesterol and HbA1c can be arranged through our partner laboratory where clinically indicated.',
             },
         ],
         faqs: [
             {
-                question: 'Should I eat before I come?',
+                question: 'Does the finger-prick hurt?',
                 answer:
-                    'For a blood sugar reading it helps to come fasted, so book a morning slot if you can. If that is not possible, come anyway — we will tell you what the number means either way.',
+                    'A quick sting, over in a second. Children who need a check are prepared first and always have a parent in the room.',
             },
             {
-                question: 'Do I need a referral?',
-                answer: 'No. You can book directly.',
+                question: 'What if my numbers are bad?',
+                answer:
+                    'Then you have found out, which is the whole point. We explain what the reading means, what is within your control, and what needs a doctor. Nobody is lectured and nobody is frightened.',
             },
             {
-                question: 'Can insurance cover this?',
+                question: 'Can I bring my husband, wife or parent?',
                 answer:
-                    'Ask us when you book. Coverage depends on your scheme; we will tell you what we can invoice and what is paid at the clinic.',
+                    'Yes, and there is a family rate for two or more people on the same day. Each person is seen individually and their results stay their own.',
+            },
+            {
+                question: 'How soon do I get the results?',
+                answer: 'The same hour. Everything is measured, explained and written down before you leave.',
             },
         ],
         ctas: [
@@ -330,17 +379,24 @@ export const individualPages: Record<string, OfferingPageContent> = {
         title: 'The hard part is keeping it',
         accentWord: 'keeping it',
         description:
-            'For people who have completed the twelve weeks. Regular reviews with your nutritionist, adjustments when life changes, and a full re-measurement every three months.',
-        heroImage: '/images/clinic/waist-measure-success.jpg',
+            'For people who have completed the twelve weeks. Regular reviews with your nutritionist and coach, and a full re-measurement every three months.',
+        heroImage: '/images/clinic/bp-machine.jpg',
+        heroImageClassName: 'object-cover object-[center_18%]',
         sections: [
             {
                 title: 'What continued care includes',
                 items: [
-                    { title: 'Regular reviews', body: 'Scheduled time with your nutritionist, not a silent app feed.' },
-                    { title: 'Life adjustments', body: 'Travel, work stress, family meals — we adjust the plan when reality shifts.' },
                     {
-                        title: 'Quarterly re-measurement',
-                        body: 'Full numbers again every three months so you can see what is holding and what is slipping.',
+                        title: 'A review every month',
+                        body: 'Twenty minutes with your own nutritionist, in clinic or by phone. Adjustments when life changes — a new job, a pregnancy, a move, Ramadan, a hard season.',
+                    },
+                    {
+                        title: 'Full re-measurement every quarter',
+                        body: 'The same panel as your health check, charted against every previous reading, so drift shows up early and not two years late.',
+                    },
+                    {
+                        title: 'Vitaway Plus, kept live',
+                        body: 'Your plan, your history and your appointments stay in one place, and your nutritionist can see what actually happened between visits.',
                     },
                 ],
             },
@@ -367,10 +423,17 @@ export const individualPages: Record<string, OfferingPageContent> = {
         description:
             'Almost one adult in five in Rwanda now carries excess weight. Most have tried something already, and most of what is available is a diet rather than a plan.',
         heroImage: '/images/clinic/body-composition-scale.jpg',
+        heroImageClassName: 'object-cover object-[center_30%]',
+        highlight: {
+            value: '1 in 5',
+            label: 'Rwandan adults now carry excess weight',
+            source: 'Source: Rwanda STEPS Noncommunicable Disease Risk Factor Survey, 2021-22.',
+        },
         sections: [
             {
                 title: 'The weight is usually not the first problem',
                 image: '/images/clinic/waist-measure-success.jpg',
+                imageClassName: 'object-cover object-[center_15%]',
                 body: 'We measure sugar, pressure, waist, and diet patterns first. The plan targets what is driving the weight — not a one-week purge.',
             },
             {
@@ -383,23 +446,26 @@ export const individualPages: Record<string, OfferingPageContent> = {
             },
             {
                 title: 'What nutrition can and cannot do',
-                image: '/images/clinic/body-composition-scale.jpg',
+                image: '/images/clinic/diabetes-control-food.jpg',
+                imageClassName: 'object-cover object-center',
                 body: 'Nutrition can change trajectory. It cannot replace medical care for conditions that need a doctor. We say clearly where our lane ends.',
             },
         ],
         faqs: [
             {
-                question: 'Will you put me on a diet?',
-                answer: 'No. We build a plan around Rwandan food and your week — not a temporary restriction list.',
-            },
-            {
-                question: 'Do I need to join a gym?',
-                answer: 'Not required. Movement helps; we will be honest about what is enough for your goals.',
-            },
-            {
-                question: 'What if I do not lose weight?',
+                question: 'Will you put me on a very low calorie diet?',
                 answer:
-                    'We re-measure and look at metabolic markers, not only the scale. If the plan is not working, we change it.',
+                    'No. Rapid loss on an extreme plan comes back, usually with interest. We aim for change you can still be doing in a year.',
+            },
+            {
+                question: 'I have tried and failed several times. Is this different?',
+                answer:
+                    'The difference is measurement and follow-up. You will know within twelve weeks, from numbers rather than feelings, whether the plan is working — and if it is not, we change it rather than blaming you.',
+            },
+            {
+                question: 'Do you use injections or weight-loss medication?',
+                answer:
+                    'No. We are a nutrition clinic and we do not prescribe. If medication is something you want to explore, that is a conversation for a doctor, and we will happily work alongside one.',
             },
         ],
         ctas: [{ label: 'Book a health check', action: 'book' }],
@@ -410,11 +476,19 @@ export const individualPages: Record<string, OfferingPageContent> = {
         accentWord: 'actually helps',
         description:
             'One adult in six in Rwanda has raised blood pressure, and nine in ten of them are not being treated for it. Most feel completely fine.',
-        heroImage: '/images/clinic/clinical-consultation.jpg',
+        heroImage: '/images/clinic/bp-machine.jpg',
+        heroImageClassName: 'object-cover object-[center_18%]',
+        highlight: {
+            value: '9 in 10',
+            label: 'of Rwandan adults with raised blood pressure are not being treated for it',
+            source: 'Source: Rwanda STEPS Noncommunicable Disease Risk Factor Survey, 2021-22.',
+            position: 'before',
+        },
         sections: [
             {
                 title: 'The dangerous part is that it does not feel like anything',
                 image: '/images/clinic/finger-prick-swab.jpg',
+                imageClassName: 'object-cover object-[center_25%]',
                 body: 'We measure carefully, explain the reading, and build a nutrition plan that supports blood pressure — alongside whatever your doctor has prescribed.',
             },
             {
@@ -450,10 +524,17 @@ export const individualPages: Record<string, OfferingPageContent> = {
         description:
             'Almost nine in ten Rwandan adults have never had their blood sugar measured — so for most people this news arrives suddenly, with no explanation of what to do next.',
         heroImage: '/images/clinic/glucose-meter-lifestyle.jpg',
+        heroImageClassName: 'object-cover object-[center_25%]',
+        highlight: {
+            value: '88.7%',
+            label: 'of Rwandan adults have never had their blood sugar measured',
+            source: 'Source: Rwanda STEPS Noncommunicable Disease Risk Factor Survey, 2021-22.',
+        },
         sections: [
             {
                 title: 'Two things are usually true at once',
                 image: '/images/clinic/diabetes-control-food.jpg',
+                imageClassName: 'object-cover object-[center_35%]',
                 body: 'You need clear numbers and a practical food plan — and you may also need a doctor. We handle the nutrition lane and refer when medical care is required.',
             },
             {
@@ -464,19 +545,49 @@ export const individualPages: Record<string, OfferingPageContent> = {
                     { title: 'Structured follow-up', body: 'Twelve weeks when advice alone will not move the needle.' },
                 ],
             },
+            {
+                title: 'What we do, for both Type 1 and Type 2',
+                layout: 'checklist',
+                body: 'The nutrition side of diabetes is not one leaflet. It is carbohydrate quantity and timing, what to eat around your medication, what to do on a sick day, and what to eat at a wedding without giving up.',
+                items: [
+                    {
+                        title: 'Carbohydrate portioning built around ubugali, rice, potatoes and bananas — the food actually on your table',
+                        body: '',
+                    },
+                    {
+                        title: 'Meal timing around your medication, agreed with your prescriber where relevant',
+                        body: '',
+                    },
+                    {
+                        title: 'What to do when you are ill, fasting, travelling or at a celebration',
+                        body: '',
+                    },
+                    {
+                        title: 'Recognising and treating a low, written down for you and for your family',
+                        body: '',
+                    },
+                    {
+                        title: 'Glucose tracked in Vitaway Plus so patterns show up instead of single scary numbers',
+                        body: '',
+                    },
+                ],
+            },
         ],
         faqs: [
             {
-                question: 'Can I still eat ubugali?',
-                answer: 'Usually yes, with portion and pairing guidance. We do not start by deleting your plate.',
+                question: 'I have Type 1. Is this relevant to me?',
+                answer:
+                    'Yes. Carbohydrate counting, timing around insulin, sick-day rules and exercise planning are core nutrition work. We work alongside your diabetes team, never in place of them.',
             },
             {
-                question: 'Will you tell me to stop my medicine?',
-                answer: 'Never. Medication stays with your doctor.',
+                question: 'Will I have to give up ubugali and rice?',
+                answer:
+                    'No. Removing staple foods from a Rwandan household is neither realistic nor necessary. The work is portioning, pairing and timing.',
             },
             {
-                question: 'How quickly would I see a change?',
-                answer: 'Some markers move in weeks; others take longer. We re-measure so you are not guessing.',
+                question: 'Can you change my insulin or my metformin?',
+                answer:
+                    'No. We do not prescribe or adjust any medication. We write to your prescriber with what we are doing so the two sides line up.',
             },
         ],
         ctas: [{ label: 'Book a health check', action: 'book' }],
@@ -488,10 +599,12 @@ export const individualPages: Record<string, OfferingPageContent> = {
         description:
             'Nearly nine in ten Rwandan adults eat fewer than five servings of fruit and vegetables a day. Feeding a household well is a planning and money problem before it is a knowledge problem.',
         heroImage: '/images/clinic/family-breakfast.jpg',
+        heroImageClassName: 'object-cover object-[center_28%]',
         sections: [
             {
                 title: 'Children are seen with a parent, always',
-                image: '/images/clinic/family-breakfast.jpg',
+                image: '/images/hero/african-family-home.jpg',
+                imageClassName: 'object-cover object-[center_32%]',
                 body: 'Safeguarding comes first. Children are seen with a parent or guardian. Results are handled carefully and explained to the adult responsible.',
             },
             {
@@ -539,13 +652,15 @@ const orgSharedSections: OfferingSection[] = [
     },
     {
         title: 'You will never see an individual’s results',
-                image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&q=80',
-                body: 'Reports are aggregated. We do not share named individual results with an employer, school, or insurer.',
+        image: '/images/org/org-privacy-report.jpg',
+        imageClassName: 'object-cover object-[center_40%]',
+        body: 'Reports are aggregated. We do not share named individual results with an employer, school, or insurer.',
     },
     {
         title: 'How a programme starts',
-                image: 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1200&q=80',
-                body: 'We scope headcount, sites, and programme uptake. After a twenty-minute call you get a written proposal.',
+        image: '/images/org/org-programme-start.jpg',
+        imageClassName: 'object-cover object-[center_28%]',
+        body: 'We scope headcount, sites, and programme uptake. After a twenty-minute call you get a written proposal.',
     },
 ];
 
@@ -556,17 +671,20 @@ export const organizationPages: Record<string, OfferingPageContent> = {
         accentWord: 'board',
         description:
             'Most workplace wellness in Rwanda is a talk and a fruit basket. This is a licensed clinical service that measures your staff, treats the nutrition side of what it finds, and writes down what changed.',
-        heroImage: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1600&q=80',
+        heroImage: '/images/org/org-hub-report.jpg',
+        heroImageClassName: 'object-cover object-[center_30%]',
         sections: [
             {
                 title: 'On any given morning, in any office in Kigali',
-                image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1200&q=80',
+                image: '/images/org/org-companies-office.jpg',
+                imageClassName: 'object-cover object-[center_35%]',
                 body: 'People are working with undiagnosed raised sugar and pressure. Screening finds it. The programme does something about it. The report proves what happened.',
             },
             ...orgSharedSections,
             {
                 title: 'How it runs in a company',
-                image: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&w=1200&q=80',
+                image: '/images/clinic/bp-machine.jpg',
+                imageClassName: 'object-cover object-[center_22%]',
                 body: 'Screening on site or at the clinic, leadership communication that protects privacy, and a programme that mostly runs outside core working hours.',
             },
         ],
@@ -606,17 +724,20 @@ export const organizationPages: Record<string, OfferingPageContent> = {
         accentWord: 'licensed',
         description:
             'Health screening and clinical nutrition programmes for locally engaged and posted staff, delivered by a Ministry of Health–licensed Rwandan clinic, documented to a standard your procurement and health-and-safety processes can review.',
-        heroImage: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=1600&q=80',
+        heroImage: '/images/org/org-embassies-meeting.jpg',
+        heroImageClassName: 'object-cover object-[center_40%]',
         sections: [
             {
                 title: 'Two staff populations, one standard',
-                image: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=1200&q=80',
+                image: '/images/clinic/finger-prick-glucometer.jpg',
+                imageClassName: 'object-cover object-[center_40%]',
                 body: 'Locally engaged and posted staff can be served on the same clinical terms, with documentation your mission can file.',
             },
             ...orgSharedSections,
             {
                 title: 'Procurement pack',
-                image: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=1200&q=80',
+                image: '/images/org/org-privacy-report.jpg',
+                imageClassName: 'object-cover object-[center_35%]',
                 body: 'Licence details, clinical scope, confidentiality rules, and escalation pathways — ready for review.',
             },
         ],
@@ -650,11 +771,13 @@ export const organizationPages: Record<string, OfferingPageContent> = {
         accentWord: 'evidence',
         description:
             'Screening and clinical nutrition programmes for Kigali-based and field staff, with a written report designed to be quotable in your board pack or donor reporting — and no individual ever named.',
-        heroImage: 'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?auto=format&fit=crop&w=1600&q=80',
+        heroImage: '/images/org/org-ngos-team.jpg',
+        heroImageClassName: 'object-cover object-[center_30%]',
         sections: [
             {
                 title: 'The organisations that work on health are often the last to check their own staff',
-                image: 'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?auto=format&fit=crop&w=1200&q=80',
+                image: '/images/clinic/finger-prick-glucometer.jpg',
+                imageClassName: 'object-cover object-[center_40%]',
                 body: 'We run the same FIND / FOCUS / PROVE method for NGO teams, with reporting language that fits board and donor packs.',
             },
             ...orgSharedSections,
@@ -687,16 +810,19 @@ export const organizationPages: Record<string, OfferingPageContent> = {
         accentWord: 'two',
         description:
             'Nutrition screening and education for pupils, with parental consent and safeguarding in place — and the same licensed health check every other organisation buys, for your teaching and support staff.',
-        heroImage: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1600&q=80',
+        heroImage: '/images/org/org-schools-classroom.jpg',
+        heroImageClassName: 'object-cover object-[center_35%]',
         sections: [
             {
                 title: 'Safeguarding, before anything commercial',
-                image: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1200&q=80',
+                image: '/images/hero/african-family-home.jpg',
+                imageClassName: 'object-cover object-[center_32%]',
                 body: 'Children are seen with a parent or guardian framework in place. Results are handled carefully. Staff programmes follow the same privacy rules as any employer.',
             },
             {
                 title: 'Why schools ask us in',
-                image: 'https://images.unsplash.com/photo-1580582932707-520aed937b7b?auto=format&fit=crop&w=1200&q=80',
+                image: '/images/clinic/bp-machine.jpg',
+                imageClassName: 'object-cover object-[center_22%]',
                 body: 'Pupil nutrition concerns and staff chronic-disease risk often arrive together. We can run one, the other, or both.',
             },
             ...orgSharedSections,

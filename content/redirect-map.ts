@@ -35,6 +35,7 @@ export const siteRedirects: SiteRedirect[] = [
     // Legacy spelling / aliases
     { source: '/for-organisation', destination: '/for-organizations', permanent: true },
     { source: '/for-organisations', destination: '/for-organizations', permanent: true },
-    { source: '/success-story', destination: '/success-stories', permanent: true },
-    { source: '/stories', destination: '/success-stories', permanent: true },
+    { source: '/success-stories', destination: '/', permanent: true },
+    { source: '/success-story', destination: '/', permanent: true },
+    { source: '/stories', destination: '/', permanent: true },
 ];

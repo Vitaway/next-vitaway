@@ -80,11 +80,11 @@ function ShoppingCart({ className = 'text-[#003E48]' }: { className?: string }) 
                     type="button"
                     aria-label="Close cart overlay"
                     onClick={closeCart}
-                    className="fixed inset-0 z-40 bg-[#003E48]/30"
+                    className="fixed inset-0 z-[90] bg-[#003E48]/30"
                 />
             )}
 
-            <div className={`fixed top-0 right-0 bottom-0 z-50 max-w-xl overflow-hidden rounded-tl-[22px] rounded-bl-[22px] bg-white text-[#003E48] shadow-xl transform transition-transform duration-300 sm:rounded-tl-[28px] sm:rounded-bl-[28px] ${isCartOpen ? 'translate-x-0' : 'invisible pointer-events-none translate-x-full'}`} id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+            <div className={`fixed top-0 right-0 bottom-0 z-[95] max-w-xl overflow-hidden rounded-tl-[22px] rounded-bl-[22px] bg-white text-[#003E48] shadow-xl transform transition-transform duration-300 sm:rounded-tl-[28px] sm:rounded-bl-[28px] ${isCartOpen ? 'translate-x-0' : 'invisible pointer-events-none translate-x-full'}`} id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
                 <div className="relative border-b border-[#003E48]/10 bg-[#F6F3EE] px-5 py-5">
                     <div className="mb-5 mt-5 w-full rounded-full bg-[#5CE0C6]/40 px-5 py-2 text-center text-sm text-[#003E48]">
                         <p>Free delivery anywhere for order above 50K in kigali</p>

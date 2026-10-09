@@ -48,6 +48,20 @@ function Download() {
             <p className="mt-4 max-w-md text-[#003E48]/70">
               Virtual consultations, health tracking, and a plan built around the food you already cook.
             </p>
+            <ul className="mt-6 max-w-md space-y-2.5">
+              {[
+                'Your plan and your meal guidance.',
+                'Your measurements, charted against week one.',
+                'Appointment reminders by SMS and in-app.',
+                'Chat and Call your Coach.',
+                'Messages to your own named nutritionist, not a chatbot.',
+              ].map((feature) => (
+                <li key={feature} className="flex gap-3 text-sm leading-relaxed text-[#003E48]/80">
+                  <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#E85A2E]" aria-hidden="true" />
+                  <span>{feature}</span>
+                </li>
+              ))}
+            </ul>
             <StoreButtons className="mt-8" />
             <p className="mt-4 max-w-xs text-sm text-[#003E48]/50">
               Take charge of your well-being with care that stays on your phone.

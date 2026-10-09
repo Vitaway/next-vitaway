@@ -1,8 +1,16 @@
 import React from 'react';
-import Link from 'next/link';
 import MobileFrame from '../design/mobile-frame';
 import SectionCard from './section-card';
 import StoreButtons from '../buttons/store-buttons';
+import PressButton from '../buttons/press-button';
+
+const plusFeatures = [
+    'Your plan and your meal guidance.',
+    'Your measurements, charted against week one.',
+    'Appointment reminders by SMS and in-app.',
+    'Chat and Call your Coach.',
+    'Messages to your own named nutritionist, not a chatbot.',
+];
 
 function DiabeteProgram() {
     return (
@@ -16,13 +24,28 @@ function DiabeteProgram() {
                         <h2 className="text-3xl font-bold tracking-tight text-[#003E48] sm:text-4xl">
                             Your care does not end when you leave the <span className="font-accent">clinic</span>.
                         </h2>
-                        <p className="mt-4 max-w-lg text-[#003E48]/70">
-                            The app carries your plan, appointments and measurements between visits.
+                        <p className="mt-4 max-w-xl text-base leading-relaxed text-[#003E48]/70 sm:text-lg">
+                            Vitaway Plus carries your plan, your appointments and your measurements between
+                            visits so week seven is not a guess, and your nutritionist can see what actually
+                            happened.
                         </p>
-                        <StoreButtons className="mt-6" />
-                        <Link href="/download" className="mt-4 inline-flex text-sm font-semibold text-[#E85A2E] hover:underline">
-                            What Vitaway Plus does →
-                        </Link>
+                        <ul className="mt-6 max-w-xl space-y-2.5">
+                            {plusFeatures.map((feature) => (
+                                <li key={feature} className="flex gap-3 text-sm leading-relaxed text-[#003E48]/80 sm:text-base">
+                                    <span
+                                        className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#E85A2E]"
+                                        aria-hidden="true"
+                                    />
+                                    <span>{feature}</span>
+                                </li>
+                            ))}
+                        </ul>
+                        <StoreButtons className="mt-8" />
+                        <div className="mt-5">
+                            <PressButton href="/download" variant="secondary" surface="light">
+                                What Vitaway Plus does
+                            </PressButton>
+                        </div>
                     </div>
                 </div>
             </div>
