@@ -24,6 +24,9 @@ import { buildTimeSlots, earliestBookableDate, isSlotBookable } from '@/lib/appo
 const inputClass =
     'w-full h-12 px-4 font-normal transition duration-200 bg-[#F6F3EE] border border-transparent rounded-2xl appearance-none text-[#003E48] placeholder:text-[#003E48]/40 focus:border-[#003E48] focus:bg-white focus:outline-none';
 
+const selectClass =
+    'select-chevron w-full h-12 pl-4 pr-10 font-normal transition duration-200 bg-[#F6F3EE] border border-transparent rounded-2xl appearance-none text-[#003E48] focus:border-[#003E48] focus:bg-white focus:outline-none';
+
 function FormLabel({
     children,
     required = false,
@@ -116,6 +119,7 @@ function AppointmentFormBody({
     const [organizationOther, setOrganizationOther] = useState('');
     const [showCustomOrganization, setShowCustomOrganization] = useState(false);
     const [selectedCoachCode, setSelectedCoachCode] = useState('');
+    const [formError, setFormError] = useState('');
 
     const { submitting, success, error, createAppointment, reset } = useAppointment();
 
@@ -167,7 +171,8 @@ function AppointmentFormBody({
         organizationService
             .list()
             .then((response) => {
-                if (!cancelled) setOrganizations(response.data || []);
+                const rows = response.data;
+                if (!cancelled) setOrganizations(Array.isArray(rows) ? rows : []);
             })
             .catch(() => {
                 if (!cancelled) setOrganizations([]);
@@ -187,7 +192,8 @@ function AppointmentFormBody({
         referralCoachService
             .list(orgId)
             .then((response) => {
-                if (!cancelled) setCoaches(response.data || []);
+                const rows = response.data;
+                if (!cancelled) setCoaches(Array.isArray(rows) ? rows : []);
             })
             .catch(() => {
                 if (!cancelled) setCoaches([]);
@@ -238,7 +244,20 @@ function AppointmentFormBody({
         setShowCustomOrganization(false);
         setSelectedCoachCode('');
         setShowReferral(false);
+        setFormError('');
         setStep(1);
+    };
+
+    const detailsProblem = () => {
+        if (name.trim().length <= 1) return 'Add your name to continue.';
+        if (!isValidLocalPhone(phoneLocal, selectedCountry)) {
+            return selectedCountry.iso2 === 'RW'
+                ? 'Use a Rwandan mobile number, like 78XXXXXXX.'
+                : 'Add a phone number we can reach.';
+        }
+        if (!isValidEmail(email)) return 'That email address does not look right.';
+        if (!whenReady) return 'Pick a day and a time at least one hour from now.';
+        return '';
     };
 
     const setReferred = (next: boolean) => {
@@ -262,10 +281,20 @@ function AppointmentFormBody({
             return;
         }
         if (step === 3) {
-            if (whoReady && whenReady) setStep(4);
+            const problem = detailsProblem();
+            if (problem) {
+                setFormError(problem);
+                return;
+            }
+            setFormError('');
+            setStep(4);
             return;
         }
-        if (!whoReady || !whenReady) return;
+        if (!whoReady || !whenReady) {
+            setFormError(detailsProblem() || 'Check the visit details and try again.');
+            return;
+        }
+        setFormError('');
         if (!isSlotBookable(appointmentDate, appointmentTime)) return;
 
         const payload = {
@@ -307,11 +336,8 @@ function AppointmentFormBody({
     }, []);
 
     useEffect(() => {
-        if (!appointmentTime) return;
-        if (!timeSlots.includes(appointmentTime)) {
-            setAppointmentTime('');
-            setStep(1);
-        }
+        if (!appointmentTime || timeSlots.includes(appointmentTime)) return;
+        setAppointmentTime('');
     }, [appointmentTime, timeSlots]);
 
     const whenFields = (
@@ -361,7 +387,7 @@ function AppointmentFormBody({
                 <select
                     value={appointmentTime}
                     onChange={(e) => setAppointmentTime(e.target.value)}
-                    className={inputClass}
+                    className={selectClass}
                     required
                     disabled={!appointmentDate}
                 >
@@ -490,7 +516,7 @@ function AppointmentFormBody({
                                 <select
                                     value={showCustomOrganization ? 'other' : orgSelect}
                                     onChange={(e) => handleOrganizationChange(e.target.value)}
-                                    className={inputClass}
+                                    className={selectClass}
                                     disabled={orgsLoading}
                                 >
                                     <option value="">{orgsLoading ? 'Loading…' : 'Optional'}</option>
@@ -507,7 +533,7 @@ function AppointmentFormBody({
                                 <select
                                     value={selectedCoachCode}
                                     onChange={(e) => handleCoachChange(e.target.value)}
-                                    className={inputClass}
+                                    className={selectClass}
                                     disabled={coachesLoading}
                                 >
                                     <option value="">{coachesLoading ? 'Loading…' : 'Optional'}</option>
@@ -629,8 +655,15 @@ function AppointmentFormBody({
                     <PressButton
                         type="button"
                         className="ml-auto"
-                        disabled={!whoReady || !whenReady}
-                        onClick={() => setStep(4)}
+                        onClick={() => {
+                            const problem = detailsProblem();
+                            if (problem) {
+                                setFormError(problem);
+                                return;
+                            }
+                            setFormError('');
+                            setStep(4);
+                        }}
                     >
                         Review
                     </PressButton>
@@ -658,6 +691,7 @@ function AppointmentFormBody({
 
     const status = (
         <>
+            {formError && <p className="mt-3 text-sm text-red-600">{formError}</p>}
             {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
             {success && <p className="mt-3 text-sm text-[#003E48]">{success}</p>}
         </>
