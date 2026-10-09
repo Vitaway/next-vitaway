@@ -51,7 +51,6 @@ function BookingModal() {
                         <AppointmentForm
                             variant="modal"
                             defaults={draft ?? undefined}
-                            onSuccess={closeBooking}
                             onClose={closeBooking}
                         />
                     </motion.div>
