@@ -46,7 +46,7 @@ function Subscriber() {
                 email,
             });
 
-            if (response.status === 200) {
+            if (response.status >= 200 && response.status < 300) {
                 setSuccess('Thank you for subscribing!');
                 setEmail('');
                 localStorage.setItem('subscribed', 'true');
