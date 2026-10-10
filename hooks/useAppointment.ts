@@ -35,7 +35,7 @@ export const useAppointment = (): UseAppointmentReturn => {
 
             // Submit appointment
             await appointmentService.create(payload);
-            setSuccess('Appointment booked successfully! We will contact you soon.');
+            setSuccess('Request received. The clinic will confirm your time by email and WhatsApp.');
             return true;
         } catch (err) {
             let errorMessage =

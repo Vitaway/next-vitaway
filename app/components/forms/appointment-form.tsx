@@ -714,13 +714,13 @@ function AppointmentFormBody({
                 }
             >
                 <h3 id="booking-modal-title" className="text-3xl font-bold text-[#003E48] sm:text-4xl">
-                    You&apos;re <span className="font-accent">booked</span>
+                    Request <span className="font-accent">received</span>
                 </h3>
                 <p className="mt-4 max-w-md text-lg leading-relaxed text-[#003E48]/80">
-                    {greeting} {booked.when} for {place}.
+                    {greeting} {place} on {booked.when}.
                 </p>
                 <p className="mt-2 max-w-md text-sm leading-relaxed text-[#003E48]/60">
-                    Keep your phone nearby. The clinic will confirm on the number you gave.
+                    The clinic will confirm your time by email and WhatsApp. Keep your phone nearby.
                 </p>
                 <PressButton type="button" className="mt-8" onClick={finishConfirmation}>
                     {isModal ? 'Done' : 'Book another visit'}
