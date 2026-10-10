@@ -1,4 +1,5 @@
 import { get } from '../client';
+import { publicConsumerBase } from '../public-consumer-base';
 import { ProductsResponse, SingleProductResponse, CategoriesResponse } from '../types';
 import { Products } from '@/types/products';
 import { Category } from '../types';
@@ -13,6 +14,7 @@ export const productService = {
      */
     getAll: async (params?: { category?: string }): Promise<Products[]> => {
         const response = await get<ProductsResponse>('/api/products', {
+            baseURL: publicConsumerBase(),
             params,
         });
         return response.data;
@@ -22,7 +24,9 @@ export const productService = {
      * Fetch a single product by slug
      */
     getBySlug: async (slug: string): Promise<{ product: Products; related_products: Products[] }> => {
-        const response = await get<SingleProductResponse>(`/api/products/${slug}`);
+        const response = await get<SingleProductResponse>(`/api/products/${slug}`, {
+            baseURL: publicConsumerBase(),
+        });
         return response.data;
     },
 
@@ -31,6 +35,7 @@ export const productService = {
      */
     getByCategory: async (category: string): Promise<Products[]> => {
         const response = await get<ProductsResponse>('/api/products', {
+            baseURL: publicConsumerBase(),
             params: { category },
         });
         return response.data;
@@ -40,7 +45,9 @@ export const productService = {
      * Fetch all product categories
      */
     getCategories: async (): Promise<Category[]> => {
-        const response = await get<CategoriesResponse>('/api/products/categories/list');
+        const response = await get<CategoriesResponse>('/api/products/categories/list', {
+            baseURL: publicConsumerBase(),
+        });
         return response.data;
     },
 
@@ -49,6 +56,7 @@ export const productService = {
      */
     search: async (query: string): Promise<Products[]> => {
         const response = await get<ProductsResponse>('/api/products', {
+            baseURL: publicConsumerBase(),
             params: { search: query },
         });
         return response.data;

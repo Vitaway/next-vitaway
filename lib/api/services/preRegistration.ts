@@ -1,14 +1,34 @@
-import { post } from '../client';
+import axios from 'axios';
+import { APIError } from '../client';
+import { publicConsumerBase } from '../public-consumer-base';
 import { PreRegistrationPayload, PreRegistrationResponse } from '../types';
 import { isValidFullPhone } from '@/lib/phone';
 
 export const preRegistrationService = {
     submit: async (payload: PreRegistrationPayload): Promise<PreRegistrationResponse> => {
-        const response = await post<PreRegistrationResponse>(
-            '/api/pre-registrations',
-            payload
-        );
-        return response;
+        try {
+            const response = await axios.post<PreRegistrationResponse>(
+                `${publicConsumerBase()}/api/pre-registrations`,
+                payload,
+                { headers: { 'Content-Type': 'application/json', Accept: 'application/json' } },
+            );
+            const body = response.data as PreRegistrationResponse & { success?: boolean; message?: string };
+            if (body && body.success === false) {
+                throw new APIError(body.message || 'Submission failed. Please try again.', response.status, body);
+            }
+            return body;
+        } catch (error) {
+            if (error instanceof APIError) throw error;
+            if (axios.isAxiosError(error)) {
+                const data = error.response?.data as { message?: string } | undefined;
+                throw new APIError(
+                    data?.message || 'Submission failed. Please check your connection and try again.',
+                    error.response?.status,
+                    error.response?.data,
+                );
+            }
+            throw error;
+        }
     },
 
     validate: {

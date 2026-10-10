@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import transporter from '@/config/email-config';
 import { SITE_SUPPORT_EMAIL } from '@/content/contact';
+import { publicConsumerBase } from '@/lib/api/public-consumer-base';
 
 type ContactBody = {
     fullname?: string;
@@ -58,6 +59,20 @@ async function sendViaNodemailer(fullname: string, email: string, message: strin
     return true;
 }
 
+/** Keeps a copy in the clinic desk's website inbox. The email still goes out if this fails. */
+async function saveToDesk(fullname: string, email: string, message: string) {
+    try {
+        await fetch(`${publicConsumerBase()}/api/contact`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+            body: JSON.stringify({ fullname, email, message }),
+            signal: AbortSignal.timeout(5000),
+        });
+    } catch (error) {
+        console.error('Contact copy for the desk failed:', error);
+    }
+}
+
 async function sendViaFormSubmit(fullname: string, email: string, message: string) {
     const response = await fetch(`https://formsubmit.co/ajax/${SITE_SUPPORT_EMAIL}`, {
         method: 'POST',
@@ -93,10 +108,12 @@ export async function POST(request: Request) {
         const email = body.email!.trim();
         const message = body.message!.trim();
 
+        const saved = saveToDesk(fullname, email, message);
         const sentWithSmtp = await sendViaNodemailer(fullname, email, message);
         if (!sentWithSmtp) {
             await sendViaFormSubmit(fullname, email, message);
         }
+        await saved;
 
         return NextResponse.json({
             message: 'Your message has been sent successfully. Thank you for contacting us!',

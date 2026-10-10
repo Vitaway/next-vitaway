@@ -12,6 +12,7 @@ import AlertModal from '../alerts/alert-modal';
 import { ButtonSpinner } from '../spinners/Spinner';
 import PressButton from '../buttons/press-button';
 import { SITE_EMAIL } from '@/content/contact';
+import { publicConsumerBase } from '@/lib/api/public-consumer-base';
 
 declare global {
     interface Window {
@@ -125,11 +126,26 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
         setPaymentProcessing(true);
 
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_ENVENTORY_API_URL}/api/products/payments/complete`, {
+            const response = await fetch(`${publicConsumerBase()}/api/products/payments/complete`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
                 body: JSON.stringify({ transaction_id: invoiceNumber }),
             });
+
+            if (response.status === 409) {
+                clearCart();
+                onClose();
+                clearForm();
+                callback();
+                setShowAlert(true);
+                setAlert({
+                    title: 'Payment Being Confirmed',
+                    message: 'Your order is placed. We are waiting for IremboPay to confirm the payment and will email your receipt as soon as it does.',
+                    status: 'info',
+                    actionUrl: ''
+                });
+                return;
+            }
 
             if (!response.ok) {
                 throw new Error(`Payment callback failed with status ${response.status}`);
@@ -265,7 +281,7 @@ function CheckoutForm({ isOpen, onClose, callback }: { isOpen: boolean, onClose:
             const axios = (await import('axios')).default;
 
             const response = await axios.post(
-                `${process.env.NEXT_PUBLIC_ENVENTORY_API_URL}/api/products/payments/init`,
+                `${publicConsumerBase()}/api/products/payments/init`,
                 payload,
                 {
                     headers: {
