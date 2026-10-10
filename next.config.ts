@@ -82,6 +82,16 @@ const nextConfig: NextConfig = {
         pathname: "/**",
       },
       {
+        protocol: "http",
+        hostname: "localhost",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "vitaway.keyypress.com",
+        pathname: "/**",
+      },
+      {
         protocol: "https",
         hostname: "ehr.vitaway.org",
         pathname: "/**",

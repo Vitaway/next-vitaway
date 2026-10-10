@@ -4,6 +4,7 @@ import { Products } from "@/types/products";
 import ProductDetails from "./ProductDetails";
 import { Metadata } from "next";
 import SectionCard from "@/app/components/sections/section-card";
+import { publicConsumerBase } from "@/lib/api/public-consumer-base";
 
 interface ProductResponse {
     data: {
@@ -15,8 +16,8 @@ interface ProductResponse {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
     const { slug } = await params;
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_ENVENTORY_API_URL}/api/products/${slug}`, {
-        cache: "force-cache",
+    const res = await fetch(`${publicConsumerBase()}/api/products/${slug}`, {
+        next: { revalidate: 300 },
     });
 
     if (!res.ok) {
@@ -55,7 +56,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 export default async function ProductDetailsPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_ENVENTORY_API_URL}/api/products/${slug}`, {
+    const res = await fetch(`${publicConsumerBase()}/api/products/${slug}`, {
         cache: "no-store",
     });
 
