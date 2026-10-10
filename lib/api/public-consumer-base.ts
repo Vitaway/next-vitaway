@@ -2,7 +2,7 @@
 const STAGING_BOOKING_API = 'https://vitaway.keyypress.com';
 
 /**
- * Bookings, organizations, and referral coaches go to the clinic API.
+ * Bookings, pre-registrations, organizations, and referral coaches go to the clinic API.
  * The rest of the marketing site still uses NEXT_PUBLIC_ENVENTORY_API_URL.
  */
 export function publicConsumerBase(): string {
