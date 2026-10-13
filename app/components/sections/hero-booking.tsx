@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import DatePicker from '../inputs/DatePicker';
 import { useBooking } from '../booking/booking-context';
 import { buildTimeSlots, earliestBookableDate, isSlotBookable } from '@/lib/appointment-slots';
+import { fetchDayAvailability } from '@/lib/api/services/appointment-availability';
 
 const STORAGE_KEY = 'vitaway-booking-bar-hidden';
 const SCROLL_HIDE_AT = 280;
@@ -31,6 +32,8 @@ function BookingForm({ onClose }: { onClose: () => void }) {
     const [tab, setTab] = useState<'clinic' | 'call'>('clinic');
     const [date, setDate] = useState('');
     const [time, setTime] = useState('');
+    const [freeTimes, setFreeTimes] = useState<string[]>([]);
+    const [slotsLoading, setSlotsLoading] = useState(false);
 
     const minDate = useMemo(() => earliestBookableDate(), []);
     const maxDate = useMemo(() => {
@@ -39,7 +42,33 @@ function BookingForm({ onClose }: { onClose: () => void }) {
         return d;
     }, []);
 
-    const timeSlots = useMemo(() => buildTimeSlots(date), [date]);
+    const timeSlots = useMemo(
+        () => (slotsLoading ? [] : buildTimeSlots(date, freeTimes)),
+        [date, freeTimes, slotsLoading],
+    );
+
+    useEffect(() => {
+        if (!date) {
+            setFreeTimes([]);
+            return;
+        }
+        let cancelled = false;
+        setSlotsLoading(true);
+        setFreeTimes([]);
+        fetchDayAvailability(date)
+            .then((times) => {
+                if (!cancelled) setFreeTimes(times);
+            })
+            .catch(() => {
+                if (!cancelled) setFreeTimes([]);
+            })
+            .finally(() => {
+                if (!cancelled) setSlotsLoading(false);
+            });
+        return () => {
+            cancelled = true;
+        };
+    }, [date]);
 
     useEffect(() => {
         if (time && !timeSlots.includes(time)) setTime('');

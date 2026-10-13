@@ -9,3 +9,5 @@ export { contactService } from './contact';
 export { organizationService } from './organizations';
 export { referralCodeService } from './referralCodes';
 export { referralCoachService } from './referralCoaches';
+export { doctorReferralService } from './doctorReferrals';
+
