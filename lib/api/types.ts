@@ -95,6 +95,8 @@ export interface AppointmentPayload {
     organization_id?: number | null;
     organization_other?: string | null;
     referral_code?: string | null;
+    /** Patient confirmed booking despite another visit in the same week. */
+    confirm_near?: boolean;
 }
 
 export type AppointmentResponse = APIResponse<{

@@ -41,6 +41,8 @@ export interface DatePickerProps {
     className?: string;
     compact?: boolean;
     placement?: 'bottom' | 'top';
+    /** `line` = EHR-style bottom border (appointment booking). */
+    fieldStyle?: 'filled' | 'line';
 }
 
 function pad(value: number): string {
@@ -142,6 +144,7 @@ function DatePicker({
     className = 'mt-5',
     compact = false,
     placement = 'bottom',
+    fieldStyle = 'filled',
 }: DatePickerProps) {
     const containerRef = useRef<HTMLDivElement>(null);
     const triggerRef = useRef<HTMLButtonElement>(null);
@@ -305,15 +308,26 @@ function DatePicker({
 
     return (
         <div className={className} ref={containerRef}>
-            {compact ? (
+            {fieldStyle === 'line' ? (
+                <label className="mb-1.5 inline-block text-sm text-[#003E48]/70">
+                    {label}
+                    {required ? <span className="text-[#c23b2e]"> *</span> : null}
+                </label>
+            ) : compact ? (
                 <span className="text-[11px] font-semibold text-[#003E48]">{label}</span>
             ) : (
                 <FormLabel required={required}>{label}</FormLabel>
             )}
 
-            <div className={`${compact ? 'mt-1' : 'mt-2'} relative text-[#003E48]/40 focus-within:text-[#003E48] transition-all duration-200`}>
+            <div
+                className={`${compact || fieldStyle === 'line' ? 'mt-1' : 'mt-2'} relative text-[#003E48]/40 focus-within:text-[#003E48] transition-all duration-200`}
+            >
                 {children && (
-                    <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none z-10">
+                    <div
+                        className={`absolute inset-y-0 left-0 flex items-center pointer-events-none z-10 ${
+                            fieldStyle === 'line' ? 'pl-0' : 'pl-3'
+                        }`}
+                    >
                         {children}
                     </div>
                 )}
@@ -323,21 +337,29 @@ function DatePicker({
                     type="button"
                     onClick={() => setOpen((current) => !current)}
                     className={
-                        compact
-                            ? `flex h-10 w-full items-center ${children ? 'pl-12' : 'pl-3'} pr-3 text-left text-sm rounded-lg border-0 bg-white shadow-sm outline-none ring-1 transition focus:ring-[#003E48]/30 ${
+                        fieldStyle === 'line'
+                            ? `flex h-11 w-full items-center ${children ? 'pl-8' : 'pl-0'} pr-0 text-left text-sm rounded-none border-0 border-b bg-transparent outline-none transition focus:border-[#003E48] ${
                                   errorMessage
-                                      ? 'text-red-700 ring-red-200'
+                                      ? 'text-red-700 border-[#c23b2e]'
                                       : value
-                                        ? 'text-[#003E48] ring-[#003E48]/10'
-                                        : 'text-[#003E48]/45 ring-[#003E48]/10'
+                                        ? 'text-[#003E48] border-[#d5d1c8]'
+                                        : 'text-[#003E48]/40 border-[#d5d1c8]'
                               }`
-                            : `block w-full py-3 ${children ? 'pl-12' : 'pl-4'} pr-4 text-left font-normal transition duration-200 border rounded-2xl focus:outline-none focus:border-[#003E48] focus:bg-white ${
-                                  errorMessage
-                                      ? 'text-red-700 border-red-200 bg-red-50'
-                                      : value
-                                        ? 'text-[#003E48] border-transparent bg-[#F6F3EE]'
-                                        : 'text-[#003E48]/40 border-transparent bg-[#F6F3EE]'
-                              }`
+                            : compact
+                              ? `flex h-10 w-full items-center ${children ? 'pl-12' : 'pl-3'} pr-3 text-left text-sm rounded-lg border-0 bg-white shadow-sm outline-none ring-1 transition focus:ring-[#003E48]/30 ${
+                                    errorMessage
+                                        ? 'text-red-700 ring-red-200'
+                                        : value
+                                          ? 'text-[#003E48] ring-[#003E48]/10'
+                                          : 'text-[#003E48]/45 ring-[#003E48]/10'
+                                }`
+                              : `block w-full py-3 ${children ? 'pl-12' : 'pl-4'} pr-4 text-left font-normal transition duration-200 border rounded-2xl focus:outline-none focus:border-[#003E48] focus:bg-white ${
+                                    errorMessage
+                                        ? 'text-red-700 border-red-200 bg-red-50'
+                                        : value
+                                          ? 'text-[#003E48] border-transparent bg-[#F6F3EE]'
+                                          : 'text-[#003E48]/40 border-transparent bg-[#F6F3EE]'
+                                }`
                     }
                 >
                     {value ? formatDisplayDate(value) : placeholder}

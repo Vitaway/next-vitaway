@@ -3,7 +3,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useAppointment } from '@/hooks';
-import { ButtonSpinner } from '@/app/components/spinners';
 import { organizationService, referralCoachService } from '@/lib/api';
 import { Organization, ReferralCoach } from '@/lib/api/types';
 import {
@@ -14,18 +13,23 @@ import {
 } from '@/lib/country-codes';
 import { formatFullPhone, isValidLocalPhone, phonePlaceholder } from '@/lib/phone';
 import DatePicker from '@/app/components/inputs/DatePicker';
-import PressButton from '@/app/components/buttons/press-button';
+import LineSelect from '@/app/components/inputs/LineSelect';
+import BookingActionButton from '@/app/components/buttons/booking-action-button';
 import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import type { BookingDraft, BookingMode } from '@/app/components/booking/booking-context';
 import Logo from '@/app/components/logo';
 import { buildTimeSlots, earliestBookableDate, isSlotBookable } from '@/lib/appointment-slots';
+import { fetchDayAvailability } from '@/lib/api/services/appointment-availability';
+import DoctorReferralForm from '@/app/components/forms/doctor-referral-form';
+import {
+    bookingInputClass,
+    bookingPhoneShellClass,
+    bookingTextareaClass,
+} from '@/app/components/forms/booking-field-styles';
+import type { NearAppointmentNotice } from '@/hooks/useAppointment';
 
-const inputClass =
-    'w-full h-12 px-4 font-normal transition duration-200 bg-[#F6F3EE] border border-transparent rounded-2xl appearance-none text-[#003E48] placeholder:text-[#003E48]/40 focus:border-[#003E48] focus:bg-white focus:outline-none';
-
-const selectClass =
-    'select-chevron w-full h-12 pl-4 pr-10 font-normal transition duration-200 bg-[#F6F3EE] border border-transparent rounded-2xl appearance-none text-[#003E48] focus:border-[#003E48] focus:bg-white focus:outline-none';
+const inputClass = bookingInputClass;
 
 function FormLabel({
     children,
@@ -35,9 +39,9 @@ function FormLabel({
     required?: boolean;
 }) {
     return (
-        <label className="mb-1.5 inline-block text-sm font-medium text-[#003E48]">
-            {required ? <span className="mr-0.5 text-[#E85A2E]">*</span> : null}
+        <label className="mb-1.5 inline-block text-sm text-[#003E48]/70">
             {children}
+            {required ? <span className="text-[#c23b2e]"> *</span> : null}
         </label>
     );
 }
@@ -99,8 +103,10 @@ function AppointmentFormBody({
     onClose,
 }: AppointmentFormProps) {
     const isModal = variant === 'modal';
+    const startedWithSlot = Boolean(defaults?.date && defaults?.time);
+    const [path, setPath] = useState<'choose' | 'book' | 'doctor'>(startedWithSlot ? 'book' : 'choose');
 
-    const [step, setStep] = useState(defaults?.date && defaults?.time ? 2 : 1);
+    const [step, setStep] = useState(startedWithSlot ? 2 : 1);
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [phoneCountryIso2, setPhoneCountryIso2] = useState(DEFAULT_COUNTRY_ISO2);
@@ -121,6 +127,10 @@ function AppointmentFormBody({
     const [selectedCoachCode, setSelectedCoachCode] = useState('');
     const [formError, setFormError] = useState('');
     const [booked, setBooked] = useState<{ name: string; when: string; mode: BookingMode } | null>(null);
+    const [freeTimes, setFreeTimes] = useState<string[]>([]);
+    const [slotsLoading, setSlotsLoading] = useState(false);
+    const [slotsError, setSlotsError] = useState('');
+    const [nearNotice, setNearNotice] = useState<NearAppointmentNotice | null>(null);
 
     const { submitting, error, createAppointment, reset } = useAppointment();
 
@@ -133,8 +143,9 @@ function AppointmentFormBody({
         setAppointmentTime(nextTime);
         setMode(nextMode);
         if (nextDate && nextTime) {
+            setPath('book');
             setStep((current) => (current < 2 ? 2 : current));
-        } else {
+        } else if (!isModal) {
             setStep(1);
         }
     }, [defaults?.date, defaults?.mode, defaults?.time, isModal]);
@@ -296,6 +307,7 @@ function AppointmentFormBody({
             return;
         }
         setFormError('');
+        setNearNotice(null);
         if (!isSlotBookable(appointmentDate, appointmentTime)) return;
 
         const payload = {
@@ -313,10 +325,44 @@ function AppointmentFormBody({
                 !selectedCoachCode && orgSelect && orgSelect !== 'other' ? Number(orgSelect) : null,
             organization_other:
                 !selectedCoachCode && showCustomOrganization ? organizationOther.trim() || null : null,
+            confirm_near: false,
         };
 
-        const isSuccess = await createAppointment(payload);
-        if (isSuccess) {
+        const result = await createAppointment(payload);
+        if (result.ok) {
+            setBooked({
+                name: name.trim(),
+                when: formatWhen(appointmentDate, appointmentTime),
+                mode,
+            });
+            resetForm();
+            return;
+        }
+        if (result.near) setNearNotice(result.near);
+    };
+
+    async function confirmNearBooking() {
+        if (!nearNotice) return;
+        setNearNotice(null);
+        setFormError('');
+        const result = await createAppointment({
+            name: name.trim(),
+            email: email.trim() || undefined,
+            phone: formatFullPhone(phoneLocal, selectedCountry),
+            subject: mode === 'call' ? 'Call' : 'Clinic visit',
+            reasons: 'Appointment',
+            message: message.trim() || 'Booked from the website.',
+            type: 'CONSULTATION',
+            appointment_date: appointmentDate,
+            appointment_time: appointmentTime,
+            referral_code: selectedCoachCode || null,
+            organization_id:
+                !selectedCoachCode && orgSelect && orgSelect !== 'other' ? Number(orgSelect) : null,
+            organization_other:
+                !selectedCoachCode && showCustomOrganization ? organizationOther.trim() || null : null,
+            confirm_near: true,
+        });
+        if (result.ok) {
             setBooked({
                 name: name.trim(),
                 when: formatWhen(appointmentDate, appointmentTime),
@@ -324,7 +370,7 @@ function AppointmentFormBody({
             });
             resetForm();
         }
-    };
+    }
 
     function finishConfirmation() {
         setBooked(null);
@@ -333,13 +379,44 @@ function AppointmentFormBody({
         else onSuccess?.();
     }
 
-    const timeSlots = useMemo(() => buildTimeSlots(appointmentDate), [appointmentDate]);
+    const timeSlots = useMemo(
+        () => (slotsLoading ? [] : buildTimeSlots(appointmentDate, freeTimes)),
+        [appointmentDate, freeTimes, slotsLoading],
+    );
     const minDate = useMemo(() => earliestBookableDate(), []);
     const maxDate = useMemo(() => {
         const d = new Date();
         d.setFullYear(d.getFullYear() + 1);
         return d;
     }, []);
+
+    useEffect(() => {
+        if (!appointmentDate) {
+            setFreeTimes([]);
+            setSlotsError('');
+            return;
+        }
+        let cancelled = false;
+        setSlotsLoading(true);
+        setSlotsError('');
+        setFreeTimes([]);
+        fetchDayAvailability(appointmentDate)
+            .then((times) => {
+                if (!cancelled) setFreeTimes(times);
+            })
+            .catch(() => {
+                if (!cancelled) {
+                    setFreeTimes([]);
+                    setSlotsError('Could not load free times. Check your connection and try another day.');
+                }
+            })
+            .finally(() => {
+                if (!cancelled) setSlotsLoading(false);
+            });
+        return () => {
+            cancelled = true;
+        };
+    }, [appointmentDate]);
 
     useEffect(() => {
         if (!appointmentTime || timeSlots.includes(appointmentTime)) return;
@@ -353,7 +430,7 @@ function AppointmentFormBody({
                     <button
                         type="button"
                         onClick={() => setMode('clinic')}
-                        className={`rounded-2xl px-4 py-3 text-sm font-semibold transition ${
+                        className={`rounded-[6px] px-4 py-3 text-sm font-semibold transition ${
                             mode === 'clinic' ? 'bg-[#003E48] text-white' : 'bg-[#F6F3EE] text-[#003E48]'
                         }`}
                     >
@@ -362,7 +439,7 @@ function AppointmentFormBody({
                     <button
                         type="button"
                         onClick={() => setMode('call')}
-                        className={`rounded-2xl px-4 py-3 text-sm font-semibold transition ${
+                        className={`rounded-[6px] px-4 py-3 text-sm font-semibold transition ${
                             mode === 'call' ? 'bg-[#003E48] text-white' : 'bg-[#F6F3EE] text-[#003E48]'
                         }`}
                     >
@@ -380,7 +457,7 @@ function AppointmentFormBody({
                     defaultViewYearsAgo={0}
                     minDate={minDate}
                     maxDate={maxDate}
-                    compact={isModal}
+                    fieldStyle="line"
                     placement={isModal ? 'bottom' : 'bottom'}
                     onChange={(v) => {
                         setAppointmentDate(v);
@@ -389,29 +466,29 @@ function AppointmentFormBody({
                 />
             </div>
             <div>
-                <FormLabel required>Time</FormLabel>
-                <select
-                    value={appointmentTime}
-                    onChange={(e) => setAppointmentTime(e.target.value)}
-                    className={selectClass}
+                <LineSelect
+                    label="Time"
                     required
-                    disabled={!appointmentDate}
-                >
-                    <option value="" disabled>
-                        {appointmentDate
-                            ? timeSlots.length
+                    value={appointmentTime}
+                    onChange={setAppointmentTime}
+                    disabled={!appointmentDate || slotsLoading}
+                    placeholder={
+                        !appointmentDate
+                            ? 'Pick a day first'
+                            : slotsLoading
+                              ? 'Loading free times…'
+                              : timeSlots.length
                                 ? 'Select a time'
-                                : 'No times left today'
-                            : 'Pick a day first'}
-                    </option>
-                    {timeSlots.map((value) => (
-                        <option key={value} value={value}>
-                            {value}
-                        </option>
-                    ))}
-                </select>
-                {appointmentDate && timeSlots.length === 0 ? (
-                    <p className="mt-1.5 text-xs text-[#003E48]/55">Times need to be at least one hour from now.</p>
+                                : 'No free times left'
+                    }
+                    options={timeSlots.map((value) => ({ value, label: value }))}
+                />
+                {slotsError ? (
+                    <p className="mt-1.5 text-xs font-medium text-[#E85A2E]">{slotsError}</p>
+                ) : appointmentDate && !slotsLoading && timeSlots.length === 0 ? (
+                    <p className="mt-1.5 text-xs text-[#003E48]/55">
+                        No free times left this day. Pick another day.
+                    </p>
                 ) : null}
             </div>
         </div>
@@ -433,19 +510,24 @@ function AppointmentFormBody({
             </div>
             <div className="sm:col-span-2">
                 <FormLabel required>Phone</FormLabel>
-                <div className="flex h-12 overflow-hidden rounded-2xl bg-[#F6F3EE] focus-within:bg-white focus-within:ring-1 focus-within:ring-[#003E48]">
-                    <select
-                        value={phoneCountryIso2}
-                        onChange={(e) => setPhoneCountryIso2(e.target.value)}
-                        className="w-[3.4rem] shrink-0 appearance-none bg-transparent py-0 pl-2.5 pr-0 text-[11px] font-semibold leading-none text-[#003E48]/65 outline-none"
-                        aria-label="Country code"
-                    >
-                        {COUNTRY_DIAL_CODE_OPTIONS.map((country) => (
-                            <option key={country.iso2} value={country.iso2}>
-                                +{country.dialCode}
-                            </option>
-                        ))}
-                    </select>
+                <div className={bookingPhoneShellClass}>
+                    <div className="w-[5.5rem] shrink-0">
+                        <LineSelect
+                            bare
+                            label="Country code"
+                            value={phoneCountryIso2}
+                            onChange={setPhoneCountryIso2}
+                            searchable
+                            placeholder="+250"
+                            triggerClassName="h-11 border-b-0 pr-1 text-[12px] font-semibold text-[#003E48]/70"
+                            options={COUNTRY_DIAL_CODE_OPTIONS.map((country) => ({
+                                value: country.iso2,
+                                label: `+${country.dialCode}`,
+                                hint: country.name,
+                            }))}
+                        />
+                    </div>
+                    <span aria-hidden className="my-2.5 w-px bg-[#e4ddd2]" />
                     <input
                         value={phoneLocal}
                         onChange={(e) => {
@@ -458,7 +540,7 @@ function AppointmentFormBody({
                         placeholder={phonePlaceholder(selectedCountry)}
                         type="tel"
                         inputMode="numeric"
-                        className="min-w-0 flex-1 bg-transparent px-2 text-[#003E48] outline-none placeholder:text-[#003E48]/40"
+                        className="min-w-0 flex-1 bg-transparent pl-3 text-sm text-[#003E48] outline-none placeholder:text-[#003E48]/35"
                         required
                         maxLength={selectedCountry.iso2 === 'RW' ? 9 : 15}
                     />
@@ -481,7 +563,7 @@ function AppointmentFormBody({
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     placeholder="Anything we should know?"
-                    className="w-full min-h-[7rem] resize-y px-4 py-3 font-normal transition duration-200 bg-[#F6F3EE] border border-transparent rounded-2xl appearance-none text-[#003E48] placeholder:text-[#003E48]/40 focus:border-[#003E48] focus:bg-white focus:outline-none"
+                    className={bookingTextareaClass}
                     maxLength={1000}
                     rows={4}
                 />
@@ -517,39 +599,37 @@ function AppointmentFormBody({
                         className="overflow-hidden"
                     >
                         <div className="grid gap-3 sm:grid-cols-2">
-                            <div>
-                                <FormLabel>Organization</FormLabel>
-                                <select
-                                    value={showCustomOrganization ? 'other' : orgSelect}
-                                    onChange={(e) => handleOrganizationChange(e.target.value)}
-                                    className={selectClass}
-                                    disabled={orgsLoading}
-                                >
-                                    <option value="">{orgsLoading ? 'Loading…' : 'Optional'}</option>
-                                    {organizations.map((org) => (
-                                        <option key={org.id} value={String(org.id)}>
-                                            {org.name}
-                                        </option>
-                                    ))}
-                                    <option value="other">Other</option>
-                                </select>
-                            </div>
-                            <div>
-                                <FormLabel>Coach</FormLabel>
-                                <select
-                                    value={selectedCoachCode}
-                                    onChange={(e) => handleCoachChange(e.target.value)}
-                                    className={selectClass}
-                                    disabled={coachesLoading}
-                                >
-                                    <option value="">{coachesLoading ? 'Loading…' : 'Optional'}</option>
-                                    {filteredCoaches.map((coach) => (
-                                        <option key={coach.id} value={coach.referral_code}>
-                                            {coach.first_name} · {coach.referral_code}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
+                            <LineSelect
+                                label="Organization"
+                                value={showCustomOrganization ? 'other' : orgSelect}
+                                onChange={handleOrganizationChange}
+                                disabled={orgsLoading}
+                                searchable
+                                placeholder={orgsLoading ? 'Loading…' : 'Optional'}
+                                options={[
+                                    { value: '', label: orgsLoading ? 'Loading…' : 'Optional' },
+                                    ...organizations.map((org) => ({
+                                        value: String(org.id),
+                                        label: org.name,
+                                    })),
+                                    { value: 'other', label: 'Other' },
+                                ]}
+                            />
+                            <LineSelect
+                                label="Coach"
+                                value={selectedCoachCode}
+                                onChange={handleCoachChange}
+                                disabled={coachesLoading}
+                                searchable
+                                placeholder={coachesLoading ? 'Loading…' : 'Optional'}
+                                options={[
+                                    { value: '', label: coachesLoading ? 'Loading…' : 'Optional' },
+                                    ...filteredCoaches.map((coach) => ({
+                                        value: coach.referral_code,
+                                        label: `${coach.first_name} · ${coach.referral_code}`,
+                                    })),
+                                ]}
+                            />
                             {showCustomOrganization && (
                                 <div className="sm:col-span-2">
                                     <FormLabel>Institution name</FormLabel>
@@ -610,57 +690,40 @@ function AppointmentFormBody({
     );
 
     const actions = (
-        <div className="mt-6 flex flex-wrap items-center gap-3">
+        <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
             {step === 1 ? (
                 <>
-                    {isModal ? (
-                        <button
-                            type="button"
-                            onClick={onClose}
-                            className="rounded-full px-5 py-3 text-sm font-semibold text-[#003E48] hover:bg-[#F6F3EE]"
-                        >
-                            Cancel
-                        </button>
-                    ) : null}
-                    <PressButton
+                    <BookingActionButton
                         type="button"
-                        className="ml-auto"
-                        disabled={!whenReady}
-                        onClick={() => setStep(2)}
+                        tone="white"
+                        icon={startedWithSlot && isModal ? 'close' : 'back'}
+                        onClick={() => {
+                            if (!startedWithSlot) setPath('choose');
+                            else if (isModal) onClose?.();
+                        }}
                     >
+                        {startedWithSlot && isModal ? 'Cancel' : 'Back'}
+                    </BookingActionButton>
+                    <BookingActionButton type="button" disabled={!whenReady} onClick={() => setStep(2)}>
                         Continue
-                    </PressButton>
+                    </BookingActionButton>
                 </>
             ) : step === 2 ? (
                 <>
-                    <button
-                        type="button"
-                        onClick={() => setStep(1)}
-                        className="rounded-full px-5 py-3 text-sm font-semibold text-[#003E48] hover:bg-[#F6F3EE]"
-                    >
+                    <BookingActionButton type="button" tone="white" icon="back" onClick={() => setStep(1)}>
                         Back
-                    </button>
-                    <PressButton
-                        type="button"
-                        className="ml-auto"
-                        disabled={!whenReady}
-                        onClick={() => setStep(3)}
-                    >
+                    </BookingActionButton>
+                    <BookingActionButton type="button" disabled={!whenReady} onClick={() => setStep(3)}>
                         Continue
-                    </PressButton>
+                    </BookingActionButton>
                 </>
             ) : step === 3 ? (
                 <>
-                    <button
-                        type="button"
-                        onClick={() => setStep(2)}
-                        className="rounded-full px-5 py-3 text-sm font-semibold text-[#003E48] hover:bg-[#F6F3EE]"
-                    >
+                    <BookingActionButton type="button" tone="white" icon="back" onClick={() => setStep(2)}>
                         Back
-                    </button>
-                    <PressButton
+                    </BookingActionButton>
+                    <BookingActionButton
                         type="button"
-                        className="ml-auto"
                         onClick={() => {
                             const problem = detailsProblem();
                             if (problem) {
@@ -672,24 +735,21 @@ function AppointmentFormBody({
                         }}
                     >
                         Review
-                    </PressButton>
+                    </BookingActionButton>
                 </>
             ) : (
                 <>
-                    <button
-                        type="button"
-                        onClick={() => setStep(3)}
-                        className="rounded-full px-5 py-3 text-sm font-semibold text-[#003E48] hover:bg-[#F6F3EE]"
-                    >
+                    <BookingActionButton type="button" tone="white" icon="back" onClick={() => setStep(3)}>
                         Back
-                    </button>
-                    <PressButton
+                    </BookingActionButton>
+                    <BookingActionButton
                         type="submit"
-                        className="ml-auto"
+                        icon="check"
+                        loading={submitting}
                         disabled={submitting || !whoReady || !whenReady}
                     >
-                        {submitting ? <ButtonSpinner loadingText="Booking" /> : 'Confirm booking'}
-                    </PressButton>
+                        {submitting ? 'Booking…' : 'Confirm booking'}
+                    </BookingActionButton>
                 </>
             )}
         </div>
@@ -699,8 +759,96 @@ function AppointmentFormBody({
         <>
             {formError && <p className="mt-3 text-sm text-red-600">{formError}</p>}
             {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
+            {nearNotice ? (
+                <div className="mt-4 space-y-3 border border-[#E85A2E]/25 bg-[#FFF7F3] px-4 py-3 text-sm text-[#003E48]">
+                    <p>{nearNotice.message}</p>
+                    {nearNotice.when_label ? (
+                        <p className="font-semibold">Existing visit: {nearNotice.when_label}</p>
+                    ) : null}
+                    <div className="flex flex-wrap gap-2">
+                        <BookingActionButton
+                            type="button"
+                            size="sm"
+                            loading={submitting}
+                            onClick={() => void confirmNearBooking()}
+                        >
+                            Book anyway
+                        </BookingActionButton>
+                        <BookingActionButton
+                            type="button"
+                            size="sm"
+                            tone="white"
+                            icon="close"
+                            disabled={submitting}
+                            onClick={() => setNearNotice(null)}
+                        >
+                            Choose another time
+                        </BookingActionButton>
+                    </div>
+                </div>
+            ) : null}
         </>
     );
+
+    if (path === 'choose') {
+        const shell = isModal
+            ? 'flex min-h-[460px] flex-col justify-center bg-white px-8 py-12 sm:px-12 md:min-h-[500px]'
+            : 'relative mx-auto w-full max-w-2xl rounded-[28px] bg-white px-6 py-10 text-[#003E48] sm:px-10';
+        return (
+            <div className={shell}>
+                <h3 id="booking-modal-title" className="text-2xl font-bold text-[#003E48] sm:text-3xl">
+                    How can we <span className="font-accent">help</span>?
+                </h3>
+                <p className="mt-2 max-w-md text-sm text-[#003E48]/65">
+                    Book a visit for yourself, or refer a patient if you are a doctor with a Vitaway code.
+                </p>
+                <div className="mt-8 grid gap-3 sm:grid-cols-2">
+                    <button
+                        type="button"
+                        onClick={() => {
+                            setPath('book');
+                            setStep(1);
+                        }}
+                        className="rounded-[22px] border border-[#003E48]/12 bg-[#F6F3EE] px-5 py-5 text-left transition hover:border-[#003E48]/35"
+                    >
+                        <span className="block text-base font-semibold text-[#003E48]">Book an appointment</span>
+                        <span className="mt-1 block text-sm text-[#003E48]/60">Pick a day and time for a clinic visit or call.</span>
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => setPath('doctor')}
+                        className="rounded-[22px] border border-[#003E48]/12 bg-[#F6F3EE] px-5 py-5 text-left transition hover:border-[#003E48]/35"
+                    >
+                        <span className="block text-base font-semibold text-[#003E48]">I am a doctor referring a patient</span>
+                        <span className="mt-1 block text-sm text-[#003E48]/60">Enter your code and send the client’s details.</span>
+                    </button>
+                </div>
+                {isModal ? (
+                    <div className="mt-8">
+                        <BookingActionButton type="button" tone="white" icon="close" onClick={onClose}>
+                            Cancel
+                        </BookingActionButton>
+                    </div>
+                ) : null}
+            </div>
+        );
+    }
+
+    if (path === 'doctor') {
+        const shell = isModal
+            ? 'bg-white px-8 py-10 sm:px-12 md:min-h-[500px]'
+            : 'relative mx-auto w-full max-w-2xl rounded-[28px] bg-white px-6 py-10 text-[#003E48] sm:px-10';
+        return (
+            <div className={shell}>
+                <DoctorReferralForm
+                    isModal={isModal}
+                    onBack={() => setPath('choose')}
+                    onClose={onClose}
+                    onDone={onSuccess}
+                />
+            </div>
+        );
+    }
 
     if (booked) {
         const place = booked.mode === 'call' ? 'a call' : 'a clinic visit';
@@ -722,9 +870,11 @@ function AppointmentFormBody({
                 <p className="mt-2 max-w-md text-sm leading-relaxed text-[#003E48]/60">
                     The clinic will confirm your time by email and WhatsApp. Keep your phone nearby.
                 </p>
-                <PressButton type="button" className="mt-8" onClick={finishConfirmation}>
-                    {isModal ? 'Done' : 'Book another visit'}
-                </PressButton>
+                <div className="mt-8">
+                    <BookingActionButton type="button" icon="check" onClick={finishConfirmation}>
+                        {isModal ? 'Done' : 'Book another visit'}
+                    </BookingActionButton>
+                </div>
             </div>
         );
     }

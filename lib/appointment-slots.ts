@@ -24,15 +24,25 @@ export function isSlotBookable(date: string, time: string) {
     return slot.getTime() >= Date.now() + MIN_NOTICE_MS;
 }
 
-export function buildTimeSlots(appointmentDate: string) {
+/**
+ * Build bookable clocks for a day.
+ * Pass `freeTimes` from the availability API to hide taken slots.
+ * Omit `freeTimes` only for local lookahead (e.g. earliest bookable day).
+ * An empty array means “no free times” — never falls back to taken slots.
+ */
+export function buildTimeSlots(appointmentDate: string, freeTimes?: string[]) {
     const slots: string[] = [];
     if (!appointmentDate) return slots;
+
+    const free = freeTimes !== undefined ? new Set(freeTimes) : null;
 
     for (let hour = START_HOUR; hour <= END_HOUR; hour++) {
         for (const min of [0, 30]) {
             if (hour === END_HOUR && min > 0) continue;
             const value = `${String(hour).padStart(2, '0')}:${min === 0 ? '00' : '30'}`;
-            if (isSlotBookable(appointmentDate, value)) slots.push(value);
+            if (!isSlotBookable(appointmentDate, value)) continue;
+            if (free && !free.has(value)) continue;
+            slots.push(value);
         }
     }
     return slots;
