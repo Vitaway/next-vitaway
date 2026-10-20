@@ -2,7 +2,7 @@ import axios from 'axios';
 import { isSlotBookable } from '@/lib/appointment-slots';
 import { APIError } from '../client';
 import { publicConsumerBase } from '../public-consumer-base';
-import { AppointmentPayload, AppointmentResponse, VisitPaymentStatus, VisitQuote } from '../types';
+import { AppointmentPayload, AppointmentResponse, VisitOffer, VisitPaymentStatus, VisitQuote } from '../types';
 
 /**
  * Appointment Service
@@ -38,7 +38,15 @@ export const appointmentService = {
         }
     },
 
-    quote: async (phone: string, email?: string, organizationId?: number | null): Promise<VisitQuote> => {
+    offers: async (): Promise<VisitOffer[]> => {
+        const response = await axios.get<{ success?: boolean; data?: { services?: VisitOffer[] } }>(
+            `${publicConsumerBase()}/api/appointments/offers`,
+            { headers: { Accept: 'application/json' }, timeout: 15_000 },
+        );
+        return response.data?.data?.services ?? [];
+    },
+
+    quote: async (phone: string, email?: string, organizationId?: number | null, productCode?: string): Promise<VisitQuote> => {
         try {
             const response = await axios.get<{ success?: boolean; message?: string; data?: VisitQuote }>(
                 `${publicConsumerBase()}/api/appointments/quote`,
@@ -47,6 +55,7 @@ export const appointmentService = {
                         phone,
                         email: email || undefined,
                         organization_id: organizationId && organizationId > 0 ? organizationId : undefined,
+                        product_code: productCode || undefined,
                     },
                     headers: { Accept: 'application/json' },
                     timeout: 15_000,

@@ -50,6 +50,14 @@ function rwf(amount: number) {
     return `${Math.round(amount).toLocaleString('en-RW')} RWF`;
 }
 
+const VISIT_OFFERS = [
+    { code: 'PC-f28fe1758f', name: 'Comprehensive Assessment', amount: 16000 },
+    { code: 'PC-5e4e7ad91d', name: 'Comprehensive Assessment plus Meal Plan', amount: 28000 },
+    { code: 'PC-4bec93f306', name: 'Exclusive 8-Week Program', amount: 48000 },
+    { code: 'PC-021bd4f92d', name: 'Exclusive 12-Week Program', amount: 64000 },
+    { code: 'PC-f08d83743d', name: 'Exclusive 12-Week Program plus Continued Care', amount: 96000 },
+];
+
 function formatWhen(date: string, time: string) {
     if (!date) return 'Pick a day';
     const parsed = new Date(`${date}T00:00:00`);
@@ -138,18 +146,11 @@ function AppointmentFormBody({
         receipt?: { amount: number; billNumber: string | null };
     } | null>(null);
     const [quote, setQuote] = useState<VisitQuote | null>(null);
+    const [productCode, setProductCode] = useState('');
+    const [offers, setOffers] = useState(VISIT_OFFERS);
     const filledForPhone = useRef('');
     const [quoteError, setQuoteError] = useState('');
     const [quoteLoading, setQuoteLoading] = useState(false);
-    const [hold, setHold] = useState<{
-        id: string;
-        link: string | null;
-        amount: number;
-        bill: string;
-        when: string;
-        name: string;
-        mode: BookingMode;
-    } | null>(null);
     const [freeTimes, setFreeTimes] = useState<string[]>([]);
     const [offeredTimes, setOfferedTimes] = useState<string[]>([]);
     const [slotsLoading, setSlotsLoading] = useState(false);
@@ -157,38 +158,20 @@ function AppointmentFormBody({
     const [nearNotice, setNearNotice] = useState<NearAppointmentNotice | null>(null);
 
     const { submitting, error, createAppointment, reset } = useAppointment();
+    const selectedOffer = offers.find((row) => row.code === productCode) ?? null;
 
     useEffect(() => {
-        if (!hold) return;
         let stop = false;
-        async function tick() {
-            try {
-                const status = await appointmentService.payment(hold!.id);
-                if (stop) return;
-                if (status.status === 'paid') {
-                    setBooked({
-                        name: hold!.name,
-                        when: hold!.when,
-                        mode: hold!.mode,
-                        receipt: { amount: status.amount, billNumber: status.bill_number },
-                    });
-                    setHold(null);
-                    resetForm();
-                } else if (status.status === 'expired') {
-                    setHold(null);
-                    setFormError('The hold ended before payment. Pick the time again.');
-                    setStep(3);
-                }
-            } catch {
-                /* keep polling while Irembo is slow */
-            }
-        }
-        const timer = window.setInterval(() => void tick(), 4000);
+        appointmentService
+            .offers()
+            .then((rows) => {
+                if (!stop && rows.length) setOffers(rows);
+            })
+            .catch(() => undefined);
         return () => {
             stop = true;
-            window.clearInterval(timer);
         };
-    }, [hold]);
+    }, []);
 
     useEffect(() => {
         const nextDate = defaults?.date || '';
@@ -219,7 +202,7 @@ function AppointmentFormBody({
         setQuoteError('');
         const organizationId = orgSelect && orgSelect !== 'other' ? Number(orgSelect) : null;
         appointmentService
-            .quote(phone, email.trim() || undefined, organizationId)
+            .quote(phone, email.trim() || undefined, organizationId, productCode || undefined)
             .then((next) => {
                 if (!stop) setQuote(next);
             })
@@ -234,7 +217,7 @@ function AppointmentFormBody({
         return () => {
             stop = true;
         };
-    }, [step, phoneLocal, selectedCountry, email, orgSelect]);
+    }, [step, phoneLocal, selectedCountry, email, orgSelect, productCode]);
 
     useEffect(() => {
         const rawName = quote?.member_name?.trim() ?? '';
@@ -406,12 +389,21 @@ function AppointmentFormBody({
             return;
         }
         if (step === 3) {
+            if (!productCode) {
+                setFormError('Choose a service.');
+                return;
+            }
+            setFormError('');
+            setStep(4);
+            return;
+        }
+        if (step === 4) {
             if (!whenReady) {
                 setFormError('Pick a day and a time at least one hour from now.');
                 return;
             }
             setFormError('');
-            setStep(4);
+            setStep(5);
             return;
         }
         if (!whoReady || !whenReady) {
@@ -426,7 +418,7 @@ function AppointmentFormBody({
             name: name.trim(),
             email: email.trim() || undefined,
             phone: formatFullPhone(phoneLocal, selectedCountry),
-            subject: mode === 'call' ? 'Call' : 'Clinic visit',
+            subject: selectedOffer?.name || 'Clinic visit',
             reasons: 'Appointment',
             message: message.trim() || 'Booked from the website.',
             type: 'CONSULTATION',
@@ -438,6 +430,7 @@ function AppointmentFormBody({
             organization_other:
                 !selectedCoachCode && showCustomOrganization ? organizationOther.trim() || null : null,
             confirm_near: false,
+            product_code: productCode,
         };
 
         const result = await createAppointment(payload);
@@ -453,18 +446,11 @@ function AppointmentFormBody({
             return;
         }
         if (result.payment) {
-            setHold({
-                id: result.payment.appointment_id,
-                link: result.payment.payment_link,
-                amount: result.payment.amount,
-                bill: result.payment.bill_number,
-                when,
-                name: name.trim(),
-                mode,
-            });
             if (result.payment.payment_link) {
-                window.open(result.payment.payment_link, '_blank', 'noopener,noreferrer');
+                window.location.assign(result.payment.payment_link);
+                return;
             }
+            setFormError('Payment could not be opened. Call the clinic to finish this booking.');
             return;
         }
         setBooked({ name: name.trim(), when, mode });
@@ -479,7 +465,7 @@ function AppointmentFormBody({
             name: name.trim(),
             email: email.trim() || undefined,
             phone: formatFullPhone(phoneLocal, selectedCountry),
-            subject: mode === 'call' ? 'Call' : 'Clinic visit',
+            subject: selectedOffer?.name || 'Clinic visit',
             reasons: 'Appointment',
             message: message.trim() || 'Booked from the website.',
             type: 'CONSULTATION',
@@ -491,6 +477,7 @@ function AppointmentFormBody({
             organization_other:
                 !selectedCoachCode && showCustomOrganization ? organizationOther.trim() || null : null,
             confirm_near: true,
+            product_code: productCode,
         });
         acceptBooking(result, formatWhen(appointmentDate, appointmentTime));
     }
@@ -638,7 +625,6 @@ function AppointmentFormBody({
             {quote?.organization_name ? (
                 <div className="sm:col-span-2 rounded-[8px] bg-[#F6F3EE] px-4 py-3 text-sm text-[#003E48]">
                     <p className="font-semibold">{quote.organization_name} member found</p>
-                    <p className="mt-1 text-[#003E48]/70">Your gym benefit applies. You&apos;ll see the price before you pay.</p>
                 </div>
             ) : null}
             <div className="sm:col-span-2">
@@ -863,6 +849,28 @@ function AppointmentFormBody({
     );
     void referralStep;
 
+    const serviceStep = (
+        <div className="space-y-3">
+            {offers.map((offer) => {
+                const selected = offer.code === productCode;
+                return (
+                    <button
+                        key={offer.code}
+                        type="button"
+                        aria-pressed={selected}
+                        onClick={() => setProductCode(offer.code)}
+                        className={`flex min-h-11 w-full items-center justify-between gap-4 rounded-[8px] border px-4 py-3 text-left ${
+                            selected ? 'border-[#003E48] bg-[#F6F3EE]' : 'border-[#003E48]/15'
+                        }`}
+                    >
+                        <span className="text-sm font-semibold text-[#003E48]">{offer.name}</span>
+                        <span className="shrink-0 text-sm font-semibold text-[#003E48]">{rwf(offer.amount)}</span>
+                    </button>
+                );
+            })}
+        </div>
+    );
+
     const reviewFields = (
         <div className="space-y-3 rounded-[22px] bg-[#F6F3EE] p-4 sm:p-5">
             {[
@@ -961,20 +969,29 @@ function AppointmentFormBody({
                     <BookingActionButton type="button" tone="white" icon="back" onClick={() => setStep(2)}>
                         Back
                     </BookingActionButton>
-                    <BookingActionButton type="button" disabled={!whenReady} onClick={() => setStep(4)}>
+                    <BookingActionButton type="button" disabled={!productCode} onClick={() => setStep(4)}>
+                        Continue
+                    </BookingActionButton>
+                </>
+            ) : step === 4 ? (
+                <>
+                    <BookingActionButton type="button" tone="white" icon="back" onClick={() => setStep(3)}>
+                        Back
+                    </BookingActionButton>
+                    <BookingActionButton type="button" disabled={!whenReady} onClick={() => setStep(5)}>
                         Continue
                     </BookingActionButton>
                 </>
             ) : (
                 <>
-                    <BookingActionButton type="button" tone="white" icon="back" onClick={() => setStep(3)}>
+                    <BookingActionButton type="button" tone="white" icon="back" onClick={() => setStep(4)}>
                         Back
                     </BookingActionButton>
                     <BookingActionButton
                         type="submit"
                         icon="check"
                         loading={submitting}
-                        disabled={submitting || !whoReady || !whenReady || quoteLoading || !quote}
+                        disabled={submitting || !whoReady || !whenReady || !productCode || quoteLoading || quote?.product_code !== productCode}
                     >
                         {submitting
                             ? 'Opening payment…'
@@ -1089,36 +1106,6 @@ function AppointmentFormBody({
         );
     }
 
-    if (hold) {
-        return (
-            <div
-                className={
-                    isModal
-                        ? 'flex min-h-[460px] flex-col items-start justify-center bg-white px-8 py-14 sm:px-16 md:min-h-[500px]'
-                        : 'relative mx-auto w-full max-w-2xl rounded-[28px] bg-white px-6 py-12 text-[#003E48] sm:px-10'
-                }
-            >
-                <h3 id="booking-modal-title" className="text-3xl font-bold text-[#003E48] sm:text-4xl">
-                    Finish <span className="font-accent">payment</span>
-                </h3>
-                <p className="mt-4 max-w-md text-lg leading-relaxed text-[#003E48]/80">
-                    {hold.name ? `${hold.name}, ` : ''}
-                    {hold.when} is held. Pay {rwf(hold.amount)} to confirm it.
-                </p>
-                <p className="mt-2 max-w-md text-sm leading-relaxed text-[#003E48]/60">
-                    Receipt {hold.bill}. This page updates when IremboPay marks the payment complete.
-                </p>
-                <div className="mt-8 flex flex-wrap gap-3">
-                    {hold.link ? (
-                        <BookingActionButton type="button" icon="check" onClick={() => window.open(hold.link!, '_blank', 'noopener,noreferrer')}>
-                            Open payment
-                        </BookingActionButton>
-                    ) : null}
-                </div>
-            </div>
-        );
-    }
-
     if (booked) {
         const place = booked.mode === 'call' ? 'a call' : 'a clinic visit';
         const greeting = booked.name ? `${booked.name}, we'll see you` : "We'll see you";
@@ -1215,6 +1202,19 @@ function AppointmentFormBody({
                             </motion.div>
                         ) : step === 3 ? (
                             <motion.div
+                                key="service"
+                                initial={{ opacity: 0, x: 20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: -20 }}
+                                transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+                            >
+                                <h3 id="booking-modal-title" className="text-xl font-bold text-[#003E48]">
+                                    Choose a <span className="font-accent">service</span>
+                                </h3>
+                                <div className="mt-5">{serviceStep}</div>
+                            </motion.div>
+                        ) : step === 4 ? (
+                            <motion.div
                                 key="when"
                                 initial={{ opacity: 0, x: 20 }}
                                 animate={{ opacity: 1, x: 0 }}
@@ -1266,6 +1266,7 @@ function AppointmentFormBody({
                 <span className={`h-1.5 flex-1 rounded-full ${step >= 2 ? 'bg-[#E85A2E]' : 'bg-[#F6F3EE]'}`} />
                 <span className={`h-1.5 flex-1 rounded-full ${step >= 3 ? 'bg-[#E85A2E]' : 'bg-[#F6F3EE]'}`} />
                 <span className={`h-1.5 flex-1 rounded-full ${step >= 4 ? 'bg-[#E85A2E]' : 'bg-[#F6F3EE]'}`} />
+                <span className={`h-1.5 flex-1 rounded-full ${step >= 5 ? 'bg-[#E85A2E]' : 'bg-[#F6F3EE]'}`} />
             </div>
 
             <form onSubmit={handleSubmit} className="mt-8">
@@ -1293,6 +1294,17 @@ function AppointmentFormBody({
                             {whoFields}
                         </motion.div>
                     ) : step === 3 ? (
+                        <motion.div
+                            key="service"
+                            initial={{ opacity: 0, x: 24 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -24 }}
+                            transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+                        >
+                            <h4 className="mb-4 text-lg font-bold">Choose a service</h4>
+                            {serviceStep}
+                        </motion.div>
+                    ) : step === 4 ? (
                         <motion.div
                             key="when"
                             initial={{ opacity: 0, x: 24 }}
