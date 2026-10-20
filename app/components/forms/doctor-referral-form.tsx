@@ -613,7 +613,7 @@ export default function DoctorReferralForm({ isModal, onBack, onClose, onDone }:
                             disabled={submitting}
                             onClick={() => setNearNotice(null)}
                         >
-                            Choose another time
+                            Reschedule
                         </BookingActionButton>
                     </div>
                 </div>

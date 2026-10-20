@@ -46,7 +46,7 @@ const FormModal: React.FC<ModalProps> = ({ width = 'max-w-xl', height = 'max-h-[
             <button
               type="button"
               onClick={onClose}
-              className="absolute right-4 top-4 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-[#F6F3EE] text-[#003E48] hover:bg-[#E8F7F4]"
+              className="absolute right-3 top-3 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-[#F6F3EE] text-[#003E48] hover:bg-[#E8F7F4]"
               aria-label="Close modal"
             >
               <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4" aria-hidden>

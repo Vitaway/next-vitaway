@@ -46,7 +46,7 @@ function ShopCartItem({ product, onRemoveFromCart }: Props) {
                 <div className="flex w-full items-center justify-between rounded-full bg-[#F6F3EE] px-2 py-1 sm:w-auto sm:justify-center">
                     <button
                         onClick={() => decreaseQuantity(product.id)}
-                        className="px-2 text-[#003E48] hover:text-[#003E48]/70"
+                        className="flex h-11 w-11 items-center justify-center text-[#003E48] hover:text-[#003E48]/70"
                         aria-label="Decrease quantity"
                     >
                         −
@@ -61,7 +61,7 @@ function ShopCartItem({ product, onRemoveFromCart }: Props) {
                     />
                     <button
                         onClick={() => increaseQuantity(product.id)}
-                        className="px-2 text-[#003E48] hover:text-[#003E48]/70"
+                        className="flex h-11 w-11 items-center justify-center text-[#003E48] hover:text-[#003E48]/70"
                         aria-label="Increase quantity"
                     >
                         +

@@ -45,7 +45,7 @@ function Footer() {
     };
 
     return (
-        <section className="bg-[#003E48] pb-28 pt-14 sm:pt-16 lg:pt-20">
+        <footer className="bg-[#003E48] pb-[max(7rem,calc(6.5rem+env(safe-area-inset-bottom)))] pt-14 sm:pt-16 lg:pt-20">
             <div className="mx-auto max-w-[1440px] px-5 lg:px-10">
                 <div className="mb-14 flex flex-col items-start justify-between gap-6 border-b border-white/10 pb-12 lg:flex-row lg:items-end">
                     <h2 className="max-w-xl text-3xl font-bold tracking-tight text-white sm:text-4xl">
@@ -253,7 +253,7 @@ function Footer() {
                     </a>
                 </div>
             </div>
-        </section>
+        </footer>
     );
 }
 

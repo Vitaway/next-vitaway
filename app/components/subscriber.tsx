@@ -73,7 +73,7 @@ function Subscriber() {
     if (!showSubscriber) return null;
 
     return (
-        <div className="fixed transition-all ease-in-out delay-150 flex items-center top-0 right-0 left-0 bottom-0 bg-gray-900/25 h-screen w-screen z-[9999]">
+        <div className="fixed inset-0 z-[9999] flex items-end overflow-y-auto bg-gray-900/25 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-[max(0.75rem,env(safe-area-inset-top))] transition-all ease-in-out delay-150 sm:items-center">
             <div className="flex items-center justify-center w-full h-full px-4 sm:px-8">
                 <div className="relative isolate w-full max-w-3xl overflow-hidden rounded-[28px] bg-[#003E48] py-8 sm:py-12 lg:py-16">
                     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

@@ -360,7 +360,7 @@ function Navbar() {
                 }`}
             >
                 <div className="mx-auto flex h-16 max-w-[1440px] items-center justify-between px-5 lg:px-10">
-                    <Link href="/" title="Vitaway Home" className="flex shrink-0 items-center gap-2">
+                    <Link href="/" title="Vitaway Home" className="flex h-11 shrink-0 items-center gap-2">
                         <Logo className="h-10 w-10 object-contain" />
                         <span className="text-[15px] font-semibold tracking-[0.12em] text-[#1a1a1a]">VITAWAY</span>
                     </Link>
@@ -398,7 +398,7 @@ function Navbar() {
                         <button
                             type="button"
                             onClick={() => setIsOpen((open) => !open)}
-                            className="p-1 text-[#1a1a1a]"
+                            className="flex h-11 w-11 items-center justify-center text-[#1a1a1a]"
                             aria-label={isOpen ? 'Close menu' : 'Open menu'}
                         >
                             {isOpen ? (

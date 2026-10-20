@@ -15,12 +15,18 @@
   --foreground: #003e48;
 }
 
+html {
+  max-width: 100%;
+  overflow-x: clip;
+}
+
 body {
   color: var(--foreground);
   font-family: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
   font-optical-sizing: auto;
   font-style: normal;
-  overflow-x: hidden !important;
+  max-width: 100%;
+  overflow-x: clip;
 }
 
 .font-accent {
@@ -250,4 +256,50 @@ a.press-btn--secondary-light:hover {
   background-repeat: no-repeat;
   background-position: right 6px center;
   background-size: 14px;
+}
+
+@media (max-width: 639px) {
+  table {
+    width: 100%;
+    table-layout: fixed;
+  }
+
+  th,
+  td {
+    overflow-wrap: anywhere;
+  }
+
+  .overflow-x-auto,
+  .blog-content pre {
+    overflow-x: visible;
+  }
+
+  .blog-content pre {
+    white-space: pre-wrap;
+  }
+
+  button:not([role="switch"]),
+  .press-btn,
+  a.press-btn,
+  select,
+  textarea,
+  input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]):not([type="range"]) {
+    min-height: 44px;
+  }
+
+  .press-btn,
+  a.press-btn,
+  .press-btn--sm,
+  a.press-btn--sm {
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+
+  nav a,
+  footer a,
+  #site-contact-bar a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
 }

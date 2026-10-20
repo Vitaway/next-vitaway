@@ -150,7 +150,7 @@ function SecondaryCardsSlideshow({ cards }: { cards: OfferingCard[] }) {
                         type="button"
                         aria-label="Previous"
                         onClick={() => instanceRef.current?.prev()}
-                        className="flex h-9 w-9 items-center justify-center rounded-full bg-[#F6F3EE] text-[#003E48] transition hover:bg-[#E8F7F4]"
+                        className="flex h-11 w-11 items-center justify-center rounded-full bg-[#F6F3EE] text-[#003E48] transition hover:bg-[#E8F7F4]"
                     >
                         <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4" aria-hidden>
                             <path d="M15 6l-6 6 6 6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
@@ -173,7 +173,7 @@ function SecondaryCardsSlideshow({ cards }: { cards: OfferingCard[] }) {
                         type="button"
                         aria-label="Next"
                         onClick={() => instanceRef.current?.next()}
-                        className="flex h-9 w-9 items-center justify-center rounded-full bg-[#F6F3EE] text-[#003E48] transition hover:bg-[#E8F7F4]"
+                        className="flex h-11 w-11 items-center justify-center rounded-full bg-[#F6F3EE] text-[#003E48] transition hover:bg-[#E8F7F4]"
                     >
                         <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4" aria-hidden>
                             <path d="M9 6l6 6-6 6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
