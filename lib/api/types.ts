@@ -97,6 +97,7 @@ export interface AppointmentPayload {
     referral_code?: string | null;
     /** Patient confirmed booking despite another visit in the same week. */
     confirm_near?: boolean;
+    product_code?: string;
 }
 
 export type VisitBenefit = {
@@ -110,7 +111,14 @@ export type VisitBenefit = {
     remaining: number | null;
 };
 
+export type VisitOffer = {
+    code: string;
+    name: string;
+    amount: number;
+};
+
 export type VisitQuote = {
+    product_code?: string | null;
     service_name: string;
     list_amount: number;
     discount_pct: number;
