@@ -7,11 +7,13 @@ import { SITE_EMAIL, SITE_MAILTO } from '@/content/contact';
 
 interface Props {
     referenceNumber: string;
+    when?: string;
+    amount?: string;
     onDone?: () => void;
     hideHeader?: boolean;
 }
 
-function ConfirmationStep({ referenceNumber, onDone, hideHeader = false }: Props) {
+function ConfirmationStep({ referenceNumber, when, amount, onDone, hideHeader = false }: Props) {
     return (
         <div className={hideHeader ? 'text-left' : 'flex flex-col items-center px-2 text-center'}>
             {hideHeader ? null : (
@@ -19,9 +21,9 @@ function ConfirmationStep({ referenceNumber, onDone, hideHeader = false }: Props
                     <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-[#5CE0C6]/30">
                         <CheckCircle className="h-10 w-10 text-[#003E48]" strokeWidth={1.5} />
                     </div>
-                    <h1 className="text-2xl font-bold text-[#003E48]">You&apos;re <span className="font-accent">registered</span></h1>
+                    <h1 className="text-2xl font-bold text-[#003E48]">You&apos;re <span className="font-accent">booked</span></h1>
                     <p className="mt-2 max-w-xs text-sm leading-relaxed text-[#003E48]/60">
-                        Your pre-registration has been submitted successfully. Our team will review it and reach out to you.
+                        {when ? `${when}${amount ? ` · ${amount}` : ''}` : 'Your visit is confirmed.'}
                     </p>
                 </>
             )}
@@ -34,22 +36,9 @@ function ConfirmationStep({ referenceNumber, onDone, hideHeader = false }: Props
                 </div>
             )}
 
-            {/* What happens next */}
-            <div className="mt-6 w-full space-y-3 text-left">
-                <p className="text-sm font-semibold text-[#003E48]">What happens next?</p>
-                {[
-                    { step: '1', text: 'Our team reviews your registration (within 24–48 hours)' },
-                    { step: '2', text: 'A nutrition specialist contacts you to confirm your appointment' },
-                    { step: '3', text: 'You receive your personalised wellness plan' },
-                ].map(({ step, text }) => (
-                    <div key={step} className="flex items-start gap-3">
-                        <div className="mt-0.5 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-[#003E48]">
-                            <span className="text-xs font-bold text-white">{step}</span>
-                        </div>
-                        <p className="text-sm leading-relaxed text-[#003E48]/65">{text}</p>
-                    </div>
-                ))}
-            </div>
+            {when ? (
+                <p className="mt-6 text-sm text-[#003E48]/70">{when}{amount ? ` · ${amount}` : ''}</p>
+            ) : null}
 
             {hideHeader ? null : onDone ? (
                 <PressButton onClick={onDone} className="mt-8 w-full">

@@ -99,9 +99,53 @@ export interface AppointmentPayload {
     confirm_near?: boolean;
 }
 
+export type VisitBenefit = {
+    id: string;
+    name: string;
+    list_amount: number;
+    discount_pct: number;
+    covered_amount: number;
+    amount: number;
+    used: number;
+    remaining: number | null;
+};
+
+export type VisitQuote = {
+    service_name: string;
+    list_amount: number;
+    discount_pct: number;
+    discount_amount: number;
+    amount: number;
+    organization_name: string | null;
+    phone?: string | null;
+    member_name?: string | null;
+    member_email?: string | null;
+    hold_minutes: number;
+    benefits?: VisitBenefit[];
+};
+
+export type VisitPayment = VisitQuote & {
+    bill_id: string;
+    bill_number: string;
+    payment_link: string | null;
+    appointment_id: string;
+    hold_until: string;
+};
+
+export type VisitPaymentStatus = {
+    status: 'pending' | 'paid' | 'expired';
+    payment_link: string | null;
+    amount: number;
+    bill_number: string | null;
+    payment_method: string | null;
+    notes: string | null;
+    hold_until: string | null;
+};
+
 export type AppointmentResponse = APIResponse<{
     id: string;
     status: string;
+    payment?: VisitPayment;
 }>;
 
 /**

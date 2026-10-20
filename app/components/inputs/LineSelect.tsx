@@ -3,7 +3,7 @@
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
-export type LineSelectOption = { value: string; label: string; hint?: string };
+export type LineSelectOption = { value: string; label: string; hint?: string; disabled?: boolean };
 
 type LineSelectProps = {
     label: string;
@@ -167,12 +167,15 @@ export default function LineSelect({
                                           type="button"
                                           role="option"
                                           aria-selected={selected}
+                                          aria-disabled={option.disabled || undefined}
+                                          disabled={option.disabled}
                                           onClick={() => {
+                                              if (option.disabled) return;
                                               onChange(option.value);
                                               setQuery('');
                                               setOpen(false);
                                           }}
-                                          className={`flex w-full items-center justify-between gap-3 px-3 py-2.5 text-left text-sm text-[#003E48] hover:bg-[#F6F3EE] ${
+                                          className={`flex w-full items-center justify-between gap-3 px-3 py-2.5 text-left text-sm text-[#003E48] hover:bg-[#F6F3EE] disabled:cursor-default disabled:text-[#003E48]/35 disabled:line-through disabled:hover:bg-transparent ${
                                               selected ? 'bg-[#F6F3EE] font-semibold' : ''
                                           }`}
                                       >

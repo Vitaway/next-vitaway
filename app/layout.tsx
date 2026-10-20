@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+import { Metadata, Viewport } from "next";
 import { Suspense } from "react";
 import { DM_Sans, Schoolbell } from "next/font/google";
 import TopProgressBar from "./components/top-progress-bar";
@@ -23,6 +23,12 @@ const schoolbell = Schoolbell({
   variable: "--font-schoolbell",
   weight: "400",
 });
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.vitaway.org"),

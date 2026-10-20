@@ -93,7 +93,7 @@ const Pagination: React.FC<PaginationProps> = ({
                 <button
                     onClick={handlePrevious}
                     disabled={currentPage === 1 || loading}
-                    className={`flex items-center justify-center px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 ${
+                    className={`flex h-11 min-w-11 items-center justify-center px-4 text-sm font-medium rounded-full transition-all duration-200 ${
                         currentPage === 1 || loading
                             ? 'bg-[#F6F3EE] text-[#003E48]/35 cursor-not-allowed'
                             : 'bg-white text-[#003E48] hover:bg-[#F6F3EE]'
@@ -151,7 +151,7 @@ const Pagination: React.FC<PaginationProps> = ({
                 <button
                     onClick={handleNext}
                     disabled={currentPage === lastPage || loading}
-                    className={`flex items-center justify-center px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 ${
+                    className={`flex h-11 min-w-11 items-center justify-center px-4 text-sm font-medium rounded-full transition-all duration-200 ${
                         currentPage === lastPage || loading
                             ? 'bg-[#F6F3EE] text-[#003E48]/35 cursor-not-allowed'
                             : 'bg-white text-[#003E48] hover:bg-[#F6F3EE]'

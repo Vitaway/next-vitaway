@@ -68,7 +68,7 @@ function ArrowButton({
             type="button"
             onClick={onClick}
             aria-label={direction === 'prev' ? 'Previous team members' : 'Next team members'}
-            className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-[#003E48] transition hover:bg-[#E8F7F4]"
+            className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-[#003E48] transition hover:bg-[#E8F7F4]"
         >
             <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4" aria-hidden>
                 {direction === 'prev' ? (

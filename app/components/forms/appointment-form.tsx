@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useAppointment } from '@/hooks';
-import { organizationService, referralCoachService } from '@/lib/api';
-import { Organization, ReferralCoach } from '@/lib/api/types';
+import { appointmentService, organizationService, referralCoachService } from '@/lib/api';
+import { Organization, ReferralCoach, VisitQuote } from '@/lib/api/types';
 import {
     COUNTRY_DIAL_CODE_OPTIONS,
     DEFAULT_COUNTRY_ISO2,
@@ -20,7 +20,7 @@ import { useSearchParams } from 'next/navigation';
 import type { BookingDraft, BookingMode } from '@/app/components/booking/booking-context';
 import Logo from '@/app/components/logo';
 import { buildTimeSlots, earliestBookableDate, isSlotBookable } from '@/lib/appointment-slots';
-import { fetchDayAvailability } from '@/lib/api/services/appointment-availability';
+import { fetchDayOffer } from '@/lib/api/services/appointment-availability';
 import DoctorReferralForm from '@/app/components/forms/doctor-referral-form';
 import {
     bookingInputClass,
@@ -44,6 +44,10 @@ function FormLabel({
             {required ? <span className="text-[#c23b2e]"> *</span> : null}
         </label>
     );
+}
+
+function rwf(amount: number) {
+    return `${Math.round(amount).toLocaleString('en-RW')} RWF`;
 }
 
 function formatWhen(date: string, time: string) {
@@ -76,13 +80,13 @@ function IosSwitch({
             aria-checked={checked}
             aria-label={label}
             onClick={() => onChange(!checked)}
-            className={`relative h-[31px] w-[51px] shrink-0 rounded-full transition-colors duration-200 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E85A2E]/40 focus-visible:ring-offset-2 ${
+            className={`relative h-11 w-[64px] shrink-0 rounded-full transition-colors duration-200 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E85A2E]/40 focus-visible:ring-offset-2 ${
                 checked ? 'bg-[#34C759]' : 'bg-[#E5E5EA]'
             }`}
         >
             <span
-                className={`absolute top-[2px] left-[2px] h-[27px] w-[27px] rounded-full bg-white shadow-[0_1px_3px_rgba(0,0,0,0.28),0_1px_1px_rgba(0,0,0,0.12)] transition-transform duration-200 ease-out ${
-                    checked ? 'translate-x-[20px]' : 'translate-x-0'
+                className={`absolute top-[2px] left-[2px] h-10 w-10 rounded-full bg-white shadow-[0_1px_3px_rgba(0,0,0,0.28),0_1px_1px_rgba(0,0,0,0.12)] transition-transform duration-200 ease-out ${
+                    checked ? 'translate-x-[22px]' : 'translate-x-0'
                 }`}
             />
         </button>
@@ -106,7 +110,8 @@ function AppointmentFormBody({
     const startedWithSlot = Boolean(defaults?.date && defaults?.time);
     const [path, setPath] = useState<'choose' | 'book' | 'doctor'>(startedWithSlot ? 'book' : 'choose');
 
-    const [step, setStep] = useState(startedWithSlot ? 2 : 1);
+    const [step, setStep] = useState(1);
+    const [joinAs, setJoinAs] = useState<'self' | 'gym' | 'employer'>('self');
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [phoneCountryIso2, setPhoneCountryIso2] = useState(DEFAULT_COUNTRY_ISO2);
@@ -126,13 +131,64 @@ function AppointmentFormBody({
     const [showCustomOrganization, setShowCustomOrganization] = useState(false);
     const [selectedCoachCode, setSelectedCoachCode] = useState('');
     const [formError, setFormError] = useState('');
-    const [booked, setBooked] = useState<{ name: string; when: string; mode: BookingMode } | null>(null);
+    const [booked, setBooked] = useState<{
+        name: string;
+        when: string;
+        mode: BookingMode;
+        receipt?: { amount: number; billNumber: string | null };
+    } | null>(null);
+    const [quote, setQuote] = useState<VisitQuote | null>(null);
+    const filledForPhone = useRef('');
+    const [quoteError, setQuoteError] = useState('');
+    const [quoteLoading, setQuoteLoading] = useState(false);
+    const [hold, setHold] = useState<{
+        id: string;
+        link: string | null;
+        amount: number;
+        bill: string;
+        when: string;
+        name: string;
+        mode: BookingMode;
+    } | null>(null);
     const [freeTimes, setFreeTimes] = useState<string[]>([]);
+    const [offeredTimes, setOfferedTimes] = useState<string[]>([]);
     const [slotsLoading, setSlotsLoading] = useState(false);
     const [slotsError, setSlotsError] = useState('');
     const [nearNotice, setNearNotice] = useState<NearAppointmentNotice | null>(null);
 
     const { submitting, error, createAppointment, reset } = useAppointment();
+
+    useEffect(() => {
+        if (!hold) return;
+        let stop = false;
+        async function tick() {
+            try {
+                const status = await appointmentService.payment(hold!.id);
+                if (stop) return;
+                if (status.status === 'paid') {
+                    setBooked({
+                        name: hold!.name,
+                        when: hold!.when,
+                        mode: hold!.mode,
+                        receipt: { amount: status.amount, billNumber: status.bill_number },
+                    });
+                    setHold(null);
+                    resetForm();
+                } else if (status.status === 'expired') {
+                    setHold(null);
+                    setFormError('The hold ended before payment. Pick the time again.');
+                    setStep(3);
+                }
+            } catch {
+                /* keep polling while Irembo is slow */
+            }
+        }
+        const timer = window.setInterval(() => void tick(), 4000);
+        return () => {
+            stop = true;
+            window.clearInterval(timer);
+        };
+    }, [hold]);
 
     useEffect(() => {
         const nextDate = defaults?.date || '';
@@ -144,7 +200,6 @@ function AppointmentFormBody({
         setMode(nextMode);
         if (nextDate && nextTime) {
             setPath('book');
-            setStep((current) => (current < 2 ? 2 : current));
         } else if (!isModal) {
             setStep(1);
         }
@@ -154,6 +209,47 @@ function AppointmentFormBody({
         () => getCountryByIso2(phoneCountryIso2) ?? getDefaultCountry(),
         [phoneCountryIso2],
     );
+
+    useEffect(() => {
+        if (step < 2) return;
+        const phone = formatFullPhone(phoneLocal, selectedCountry);
+        if (phone.replace(/\D/g, '').length < 10) return;
+        let stop = false;
+        setQuoteLoading(true);
+        setQuoteError('');
+        const organizationId = orgSelect && orgSelect !== 'other' ? Number(orgSelect) : null;
+        appointmentService
+            .quote(phone, email.trim() || undefined, organizationId)
+            .then((next) => {
+                if (!stop) setQuote(next);
+            })
+            .catch((err: unknown) => {
+                if (stop) return;
+                setQuote(null);
+                setQuoteError(err instanceof Error ? err.message : 'The visit price is not available.');
+            })
+            .finally(() => {
+                if (!stop) setQuoteLoading(false);
+            });
+        return () => {
+            stop = true;
+        };
+    }, [step, phoneLocal, selectedCountry, email, orgSelect]);
+
+    useEffect(() => {
+        const rawName = quote?.member_name?.trim() ?? '';
+        const foundName = /^vitaway(\s+member)?$/i.test(rawName) ? '' : rawName;
+        const rawEmail = quote?.member_email?.trim() ?? '';
+        const foundEmail = /phone\.vitaway/i.test(rawEmail) ? '' : rawEmail;
+        const typed = formatFullPhone(phoneLocal, selectedCountry).replace(/\D/g, '').slice(-9);
+        const quoted = (quote?.phone ?? '').replace(/\D/g, '').slice(-9);
+        if (!typed || typed !== quoted) return;
+        if (filledForPhone.current === typed) return;
+        if (!foundName && !foundEmail) return;
+        filledForPhone.current = typed;
+        if (foundName) setName(foundName);
+        if (foundEmail) setEmail(foundEmail);
+    }, [quote, phoneLocal, selectedCountry]);
 
     const isValidEmail = (value: string) =>
         !value.trim() || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
@@ -285,17 +381,33 @@ function AppointmentFormBody({
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (step === 1) {
-            if (whenReady && isSlotBookable(appointmentDate, appointmentTime)) setStep(2);
+            if (joinAs === 'self' || orgSelect || showCustomOrganization) setStep(2);
             return;
         }
         if (step === 2) {
-            if (whenReady) setStep(3);
+            if (name.trim().length <= 1) {
+                setFormError('Add your name to continue.');
+                return;
+            }
+            if (!isValidLocalPhone(phoneLocal, selectedCountry)) {
+                setFormError(
+                    selectedCountry.iso2 === 'RW'
+                        ? 'Use a Rwandan mobile number, like 78XXXXXXX.'
+                        : 'Add a phone number we can reach.',
+                );
+                return;
+            }
+            if (!isValidEmail(email)) {
+                setFormError('That email address does not look right.');
+                return;
+            }
+            setFormError('');
+            setStep(3);
             return;
         }
         if (step === 3) {
-            const problem = detailsProblem();
-            if (problem) {
-                setFormError(problem);
+            if (!whenReady) {
+                setFormError('Pick a day and a time at least one hour from now.');
                 return;
             }
             setFormError('');
@@ -329,17 +441,35 @@ function AppointmentFormBody({
         };
 
         const result = await createAppointment(payload);
-        if (result.ok) {
-            setBooked({
-                name: name.trim(),
-                when: formatWhen(appointmentDate, appointmentTime),
-                mode,
-            });
-            resetForm();
+        acceptBooking(result, formatWhen(appointmentDate, appointmentTime));
+    };
+
+    function acceptBooking(
+        result: Awaited<ReturnType<typeof createAppointment>>,
+        when: string,
+    ) {
+        if (!result.ok) {
+            if (result.near) setNearNotice(result.near);
             return;
         }
-        if (result.near) setNearNotice(result.near);
-    };
+        if (result.payment) {
+            setHold({
+                id: result.payment.appointment_id,
+                link: result.payment.payment_link,
+                amount: result.payment.amount,
+                bill: result.payment.bill_number,
+                when,
+                name: name.trim(),
+                mode,
+            });
+            if (result.payment.payment_link) {
+                window.open(result.payment.payment_link, '_blank', 'noopener,noreferrer');
+            }
+            return;
+        }
+        setBooked({ name: name.trim(), when, mode });
+        resetForm();
+    }
 
     async function confirmNearBooking() {
         if (!nearNotice) return;
@@ -362,14 +492,7 @@ function AppointmentFormBody({
                 !selectedCoachCode && showCustomOrganization ? organizationOther.trim() || null : null,
             confirm_near: true,
         });
-        if (result.ok) {
-            setBooked({
-                name: name.trim(),
-                when: formatWhen(appointmentDate, appointmentTime),
-                mode,
-            });
-            resetForm();
-        }
+        acceptBooking(result, formatWhen(appointmentDate, appointmentTime));
     }
 
     function finishConfirmation() {
@@ -400,9 +523,13 @@ function AppointmentFormBody({
         setSlotsLoading(true);
         setSlotsError('');
         setFreeTimes([]);
-        fetchDayAvailability(appointmentDate)
-            .then((times) => {
-                if (!cancelled) setFreeTimes(times);
+        setOfferedTimes([]);
+        fetchDayOffer(appointmentDate)
+            .then((day) => {
+                if (!cancelled) {
+                    setFreeTimes(day.times);
+                    setOfferedTimes(day.offered);
+                }
             })
             .catch(() => {
                 if (!cancelled) {
@@ -481,8 +608,20 @@ function AppointmentFormBody({
                                 ? 'Select a time'
                                 : 'No free times left'
                     }
-                    options={timeSlots.map((value) => ({ value, label: value }))}
+                    options={(offeredTimes.length ? offeredTimes : timeSlots)
+                        .filter((value) => isSlotBookable(appointmentDate, value))
+                        .map((value) => {
+                            const taken = offeredTimes.includes(value) && !freeTimes.includes(value);
+                            return {
+                                value,
+                                label: taken ? `${value} · booked` : value,
+                                disabled: taken,
+                            };
+                        })}
                 />
+                <p className="mt-1.5 text-xs text-[#003E48]/55">
+                    Crossed-out times are already booked. These are the same clinic hours as the app and the desk, in Kigali time.
+                </p>
                 {slotsError ? (
                     <p className="mt-1.5 text-xs font-medium text-[#E85A2E]">{slotsError}</p>
                 ) : appointmentDate && !slotsLoading && timeSlots.length === 0 ? (
@@ -496,18 +635,12 @@ function AppointmentFormBody({
 
     const whoFields = (
         <div className={`grid gap-3 ${isModal ? 'sm:grid-cols-2' : 'sm:grid-cols-2'}`}>
-            <div>
-                <FormLabel required>Name</FormLabel>
-                <input
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="Your name"
-                    type="text"
-                    className={inputClass}
-                    required
-                    maxLength={255}
-                />
-            </div>
+            {quote?.organization_name ? (
+                <div className="sm:col-span-2 rounded-[8px] bg-[#F6F3EE] px-4 py-3 text-sm text-[#003E48]">
+                    <p className="font-semibold">{quote.organization_name} member found</p>
+                    <p className="mt-1 text-[#003E48]/70">Your gym benefit applies. You&apos;ll see the price before you pay.</p>
+                </div>
+            ) : null}
             <div className="sm:col-span-2">
                 <FormLabel required>Phone</FormLabel>
                 <div className={bookingPhoneShellClass}>
@@ -547,12 +680,26 @@ function AppointmentFormBody({
                 </div>
             </div>
             <div>
+                <FormLabel required>Name</FormLabel>
+                <input
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="Your name"
+                    type="text"
+                    autoComplete="name"
+                    className={inputClass}
+                    required
+                    maxLength={255}
+                />
+            </div>
+            <div>
                 <FormLabel>Email</FormLabel>
                 <input
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Optional"
                     type="email"
+                    autoComplete="email"
                     className={inputClass}
                     maxLength={255}
                 />
@@ -571,13 +718,69 @@ function AppointmentFormBody({
         </div>
     );
 
+    const chooseJoin = (kind: 'self' | 'gym' | 'employer') => {
+        setJoinAs(kind);
+        setReferred(kind !== 'self');
+    };
+
+    const joiningStep = (
+        <div className="space-y-3">
+            {(
+                [
+                    ['self', 'Individual', 'For your own wellness goals'],
+                    ['gym', 'Gym member', 'Through your gym or fitness centre'],
+                    ['employer', 'Employer or workplace', 'Through your company wellness programme'],
+                ] as const
+            ).map(([id, label, hint]) => (
+                <button
+                    key={id}
+                    type="button"
+                    onClick={() => chooseJoin(id)}
+                    className={`block min-h-11 w-full rounded-[8px] border px-4 py-3 text-left ${
+                        joinAs === id ? 'border-[#003E48] bg-[#F6F3EE]' : 'border-[#003E48]/15'
+                    }`}
+                >
+                    <span className="block text-sm font-semibold text-[#003E48]">{label}</span>
+                    <span className="mt-0.5 block text-sm text-[#003E48]/60">{hint}</span>
+                </button>
+            ))}
+            {joinAs !== 'self' ? (
+                <div className="space-y-3 pt-2">
+                    <LineSelect
+                        label={joinAs === 'gym' ? 'Which gym?' : 'Which workplace?'}
+                        value={showCustomOrganization ? 'other' : orgSelect}
+                        onChange={handleOrganizationChange}
+                        disabled={orgsLoading}
+                        searchable
+                        placeholder={orgsLoading ? 'Loading…' : 'Choose'}
+                        options={[
+                            { value: '', label: 'Choose' },
+                            ...organizations.map((org) => ({ value: String(org.id), label: org.name })),
+                            { value: 'other', label: joinAs === 'gym' ? 'My gym is not listed' : 'My workplace is not listed' },
+                        ]}
+                    />
+                    {showCustomOrganization ? (
+                        <input
+                            value={organizationOther}
+                            onChange={(e) => setOrganizationOther(e.target.value)}
+                            placeholder={joinAs === 'gym' ? 'Gym name' : 'Workplace name'}
+                            className={inputClass}
+                            maxLength={255}
+                        />
+                    ) : null}
+                    <p className="text-sm text-[#003E48]/60">We&apos;ll check your membership in the next step.</p>
+                </div>
+            ) : null}
+        </div>
+    );
+
     const referralStep = (
         <div className="space-y-5">
             <div className="flex items-center justify-between gap-4 rounded-[22px] bg-[#F6F3EE] px-4 py-4 sm:px-5">
                 <div className="min-w-0">
-                    <p className="text-base font-semibold text-[#003E48]">I was referred</p>
+                    <p className="text-base font-semibold text-[#003E48]">Joining through a gym or workplace</p>
                     <p className="mt-0.5 text-sm text-[#003E48]/55">
-                        Turn on if a coach or organization sent you.
+                        Turn this on to name the organisation. The clinic confirms any member benefit before you pay. Leave it off if you are booking for yourself.
                     </p>
                 </div>
                 <IosSwitch
@@ -658,6 +861,7 @@ function AppointmentFormBody({
             </AnimatePresence>
         </div>
     );
+    void referralStep;
 
     const reviewFields = (
         <div className="space-y-3 rounded-[22px] bg-[#F6F3EE] p-4 sm:p-5">
@@ -686,6 +890,37 @@ function AppointmentFormBody({
                         <span className="max-w-[70%] text-right font-semibold text-[#003E48]">{row.value}</span>
                     </div>
                 ))}
+            <div className="border-t border-[#003E48]/10 pt-3">
+                {quoteLoading ? <p className="text-sm text-[#003E48]/60">Working out the amount due…</p> : null}
+                {quoteError ? <p className="text-sm text-red-600">{quoteError}</p> : null}
+                {quote && !quoteLoading ? (
+                    <div className="space-y-2 text-sm">
+                        <div className="flex items-start justify-between gap-4">
+                            <span className="text-[#003E48]/50">{quote.service_name}</span>
+                            <span className="font-semibold text-[#003E48]">{rwf(quote.list_amount)}</span>
+                        </div>
+                        {quote.discount_pct > 0 ? (
+                            <div className="flex items-start justify-between gap-4">
+                                <span className="text-[#003E48]/50">
+                                    {quote.organization_name || 'Partner'} benefit · {quote.discount_pct}%
+                                </span>
+                                <span className="font-semibold text-[#003E48]">−{rwf(quote.discount_amount)}</span>
+                            </div>
+                        ) : null}
+                        <div className="flex items-start justify-between gap-4 text-base">
+                            <span className="font-semibold text-[#003E48]">You pay</span>
+                            <span className="font-bold text-[#003E48]">
+                                {showReferral && !quote.organization_name ? 'Confirmed at the desk' : rwf(quote.amount)}
+                            </span>
+                        </div>
+                        <p className="text-xs leading-relaxed text-[#003E48]/55">
+                            {showReferral && !quote.organization_name
+                                ? 'The clinic will confirm this partner benefit before you pay. The full price is not charged.'
+                                : "We're holding this time for you while you pay."}
+                        </p>
+                    </div>
+                ) : null}
+            </div>
         </div>
     );
 
@@ -704,7 +939,11 @@ function AppointmentFormBody({
                     >
                         {startedWithSlot && isModal ? 'Cancel' : 'Back'}
                     </BookingActionButton>
-                    <BookingActionButton type="button" disabled={!whenReady} onClick={() => setStep(2)}>
+                    <BookingActionButton
+                        type="button"
+                        disabled={joinAs !== 'self' && !orgSelect && !showCustomOrganization}
+                        onClick={() => setStep(2)}
+                    >
                         Continue
                     </BookingActionButton>
                 </>
@@ -713,7 +952,7 @@ function AppointmentFormBody({
                     <BookingActionButton type="button" tone="white" icon="back" onClick={() => setStep(1)}>
                         Back
                     </BookingActionButton>
-                    <BookingActionButton type="button" disabled={!whenReady} onClick={() => setStep(3)}>
+                    <BookingActionButton type="button" disabled={!whoReady} onClick={() => setStep(3)}>
                         Continue
                     </BookingActionButton>
                 </>
@@ -722,19 +961,8 @@ function AppointmentFormBody({
                     <BookingActionButton type="button" tone="white" icon="back" onClick={() => setStep(2)}>
                         Back
                     </BookingActionButton>
-                    <BookingActionButton
-                        type="button"
-                        onClick={() => {
-                            const problem = detailsProblem();
-                            if (problem) {
-                                setFormError(problem);
-                                return;
-                            }
-                            setFormError('');
-                            setStep(4);
-                        }}
-                    >
-                        Review
+                    <BookingActionButton type="button" disabled={!whenReady} onClick={() => setStep(4)}>
+                        Continue
                     </BookingActionButton>
                 </>
             ) : (
@@ -746,9 +974,17 @@ function AppointmentFormBody({
                         type="submit"
                         icon="check"
                         loading={submitting}
-                        disabled={submitting || !whoReady || !whenReady}
+                        disabled={submitting || !whoReady || !whenReady || quoteLoading || !quote}
                     >
-                        {submitting ? 'Booking…' : 'Confirm booking'}
+                        {submitting
+                            ? 'Opening payment…'
+                            : showReferral && quote && !quote.organization_name
+                              ? 'Request booking'
+                              : quote && quote.amount <= 0
+                                ? 'Book'
+                                : quote
+                                ? `Pay ${rwf(quote.amount)} and book`
+                                : 'Pay and book'}
                     </BookingActionButton>
                 </>
             )}
@@ -780,9 +1016,12 @@ function AppointmentFormBody({
                             tone="white"
                             icon="close"
                             disabled={submitting}
-                            onClick={() => setNearNotice(null)}
+                            onClick={() => {
+                                setNearNotice(null);
+                                setStep(1);
+                            }}
                         >
-                            Choose another time
+                            Reschedule
                         </BookingActionButton>
                     </div>
                 </div>
@@ -850,6 +1089,36 @@ function AppointmentFormBody({
         );
     }
 
+    if (hold) {
+        return (
+            <div
+                className={
+                    isModal
+                        ? 'flex min-h-[460px] flex-col items-start justify-center bg-white px-8 py-14 sm:px-16 md:min-h-[500px]'
+                        : 'relative mx-auto w-full max-w-2xl rounded-[28px] bg-white px-6 py-12 text-[#003E48] sm:px-10'
+                }
+            >
+                <h3 id="booking-modal-title" className="text-3xl font-bold text-[#003E48] sm:text-4xl">
+                    Finish <span className="font-accent">payment</span>
+                </h3>
+                <p className="mt-4 max-w-md text-lg leading-relaxed text-[#003E48]/80">
+                    {hold.name ? `${hold.name}, ` : ''}
+                    {hold.when} is held. Pay {rwf(hold.amount)} to confirm it.
+                </p>
+                <p className="mt-2 max-w-md text-sm leading-relaxed text-[#003E48]/60">
+                    Receipt {hold.bill}. This page updates when IremboPay marks the payment complete.
+                </p>
+                <div className="mt-8 flex flex-wrap gap-3">
+                    {hold.link ? (
+                        <BookingActionButton type="button" icon="check" onClick={() => window.open(hold.link!, '_blank', 'noopener,noreferrer')}>
+                            Open payment
+                        </BookingActionButton>
+                    ) : null}
+                </div>
+            </div>
+        );
+    }
+
     if (booked) {
         const place = booked.mode === 'call' ? 'a call' : 'a clinic visit';
         const greeting = booked.name ? `${booked.name}, we'll see you` : "We'll see you";
@@ -862,14 +1131,21 @@ function AppointmentFormBody({
                 }
             >
                 <h3 id="booking-modal-title" className="text-3xl font-bold text-[#003E48] sm:text-4xl">
-                    Request <span className="font-accent">received</span>
+                    Visit <span className="font-accent">confirmed</span>
                 </h3>
                 <p className="mt-4 max-w-md text-lg leading-relaxed text-[#003E48]/80">
                     {greeting} {place} on {booked.when}.
                 </p>
-                <p className="mt-2 max-w-md text-sm leading-relaxed text-[#003E48]/60">
-                    The clinic will confirm your time by email and WhatsApp. Keep your phone nearby.
-                </p>
+                {booked.receipt ? (
+                    <p className="mt-2 max-w-md text-sm leading-relaxed text-[#003E48]/60">
+                        Receipt {booked.receipt.billNumber || 'on file'} · {rwf(booked.receipt.amount)} paid with IremboPay.
+                        The same receipt is on your clinic record.
+                    </p>
+                ) : (
+                    <p className="mt-2 max-w-md text-sm leading-relaxed text-[#003E48]/60">
+                        The clinic will confirm your time by email and WhatsApp. Keep your phone nearby.
+                    </p>
+                )}
                 <div className="mt-8">
                     <BookingActionButton type="button" icon="check" onClick={finishConfirmation}>
                         {isModal ? 'Done' : 'Book another visit'}
@@ -916,34 +1192,12 @@ function AppointmentFormBody({
                                 transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
                             >
                                 <h3 id="booking-modal-title" className="text-xl font-bold text-[#003E48]">
-                                    When should we <span className="font-accent">see you</span>?
+                                    How are you <span className="font-accent">joining</span>?
                                 </h3>
-                                <p className="mt-1 text-sm text-[#003E48]/55">
-                                    Pick a day and a time at least one hour from now.
-                                </p>
-                                <div className="mt-5">{whenFields}</div>
+                                <p className="mt-1 text-sm text-[#003E48]/55">About three minutes. No account needed.</p>
+                                <div className="mt-5">{joiningStep}</div>
                             </motion.div>
                         ) : step === 2 ? (
-                            <motion.div
-                                key="referral"
-                                initial={{ opacity: 0, x: 20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: -20 }}
-                                transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-                            >
-                                <h3 id="booking-modal-title" className="text-xl font-bold text-[#003E48]">
-                                    Were you <span className="font-accent">referred</span>?
-                                </h3>
-                                <button
-                                    type="button"
-                                    onClick={() => setStep(1)}
-                                    className="mt-2 text-sm font-semibold text-[#E85A2E] hover:underline"
-                                >
-                                    Change day or time
-                                </button>
-                                <div className="mt-5">{referralStep}</div>
-                            </motion.div>
-                        ) : step === 3 ? (
                             <motion.div
                                 key="who"
                                 initial={{ opacity: 0, x: 20 }}
@@ -952,10 +1206,28 @@ function AppointmentFormBody({
                                 transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
                             >
                                 <h3 id="booking-modal-title" className="text-xl font-bold text-[#003E48]">
-                                    A few details, then you are <span className="font-accent">in</span>
+                                    Your <span className="font-accent">details</span>
                                 </h3>
-                                <p className="mt-1 text-sm text-[#003E48]/55">Name and phone are enough.</p>
+                                <p className="mt-1 text-sm text-[#003E48]/55">
+                                    We&apos;ll send your booking confirmation by SMS or WhatsApp to this number.
+                                </p>
                                 <div className="mt-5">{whoFields}</div>
+                            </motion.div>
+                        ) : step === 3 ? (
+                            <motion.div
+                                key="when"
+                                initial={{ opacity: 0, x: 20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: -20 }}
+                                transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+                            >
+                                <h3 id="booking-modal-title" className="text-xl font-bold text-[#003E48]">
+                                    Choose a <span className="font-accent">time</span>
+                                </h3>
+                                <p className="mt-1 text-sm text-[#003E48]/55">
+                                    Pick a day and a time at least one hour from now.
+                                </p>
+                                <div className="mt-5">{whenFields}</div>
                             </motion.div>
                         ) : (
                             <motion.div
@@ -966,9 +1238,9 @@ function AppointmentFormBody({
                                 transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
                             >
                                 <h3 id="booking-modal-title" className="text-xl font-bold text-[#003E48]">
-                                    Check this is <span className="font-accent">right</span>
+                                    Pay to <span className="font-accent">confirm</span>
                                 </h3>
-                                <p className="mt-1 text-sm text-[#003E48]/55">We’ll only confirm after you review.</p>
+                                <p className="mt-1 text-sm text-[#003E48]/55">The visit is confirmed after payment.</p>
                                 <div className="mt-5">{reviewFields}</div>
                             </motion.div>
                         )}
@@ -1006,21 +1278,10 @@ function AppointmentFormBody({
                             exit={{ opacity: 0, x: -24 }}
                             transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
                         >
-                            <h4 className="mb-4 text-lg font-bold">When should we see you?</h4>
-                            {whenFields}
+                            <h4 className="mb-4 text-lg font-bold">How are you joining?</h4>
+                            {joiningStep}
                         </motion.div>
                     ) : step === 2 ? (
-                        <motion.div
-                            key="referral"
-                            initial={{ opacity: 0, x: 24 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            exit={{ opacity: 0, x: -24 }}
-                            transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-                        >
-                            <h4 className="mb-4 text-lg font-bold">Were you referred?</h4>
-                            {referralStep}
-                        </motion.div>
-                    ) : step === 3 ? (
                         <motion.div
                             key="who"
                             initial={{ opacity: 0, x: 24 }}
@@ -1028,8 +1289,19 @@ function AppointmentFormBody({
                             exit={{ opacity: 0, x: -24 }}
                             transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
                         >
-                            <h4 className="mb-4 text-lg font-bold">Who should we book for?</h4>
+                            <h4 className="mb-4 text-lg font-bold">Your details</h4>
                             {whoFields}
+                        </motion.div>
+                    ) : step === 3 ? (
+                        <motion.div
+                            key="when"
+                            initial={{ opacity: 0, x: 24 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -24 }}
+                            transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+                        >
+                            <h4 className="mb-4 text-lg font-bold">Choose a time</h4>
+                            {whenFields}
                         </motion.div>
                     ) : (
                         <motion.div
@@ -1039,7 +1311,7 @@ function AppointmentFormBody({
                             exit={{ opacity: 0, x: -24 }}
                             transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
                         >
-                            <h4 className="mb-4 text-lg font-bold">Check this is right</h4>
+                            <h4 className="mb-4 text-lg font-bold">Pay to confirm</h4>
                             {reviewFields}
                         </motion.div>
                     )}

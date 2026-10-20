@@ -84,7 +84,7 @@ function ShoppingCart({ className = 'text-[#003E48]' }: { className?: string }) 
                 />
             )}
 
-            <div className={`fixed top-0 right-0 bottom-0 z-[95] max-w-xl overflow-hidden rounded-tl-[22px] rounded-bl-[22px] bg-white text-[#003E48] shadow-xl transform transition-transform duration-300 sm:rounded-tl-[28px] sm:rounded-bl-[28px] ${isCartOpen ? 'translate-x-0' : 'invisible pointer-events-none translate-x-full'}`} id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+            <div className={`fixed top-0 right-0 bottom-0 z-[95] w-full max-w-xl overflow-hidden rounded-tl-[22px] rounded-bl-[22px] bg-white pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] text-[#003E48] shadow-xl transform transition-transform duration-300 sm:rounded-tl-[28px] sm:rounded-bl-[28px] ${isCartOpen ? 'translate-x-0' : 'invisible pointer-events-none translate-x-full'}`} id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
                 <div className="relative border-b border-[#003E48]/10 bg-[#F6F3EE] px-5 py-5">
                     <div className="mb-5 mt-5 w-full rounded-full bg-[#5CE0C6]/40 px-5 py-2 text-center text-sm text-[#003E48]">
                         <p>Free delivery anywhere for order above 50K in kigali</p>
@@ -94,7 +94,7 @@ function ShoppingCart({ className = 'text-[#003E48]' }: { className?: string }) 
                         <span className="mt-1 text-[#003E48]/70">Total: {Number(total).toLocaleString()}</span>
                     </div>
 
-                    <button onClick={closeCart} type="button" className="absolute right-3 top-3 cursor-pointer rounded-full p-1 text-[#003E48] hover:bg-white" data-bs-dismiss="offcanvas" aria-label="Close">
+                    <button onClick={closeCart} type="button" className="absolute right-2 top-[max(0.5rem,env(safe-area-inset-top))] flex h-11 w-11 cursor-pointer items-center justify-center rounded-full text-[#003E48] hover:bg-white" data-bs-dismiss="offcanvas" aria-label="Close">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             className="icon icon-tabler icon-tabler-x"

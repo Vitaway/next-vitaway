@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { appointmentService } from '@/lib/api';
-import { AppointmentPayload } from '@/lib/api/types';
+import { AppointmentPayload, VisitPayment } from '@/lib/api/types';
 import { APIError } from '@/lib/api/client';
 import { isOnline, offlineBookingMessage } from '@/lib/online';
 
@@ -9,7 +9,7 @@ export type NearAppointmentNotice = {
     message: string;
 };
 
-type CreateResult = { ok: true } | { ok: false; near?: NearAppointmentNotice };
+type CreateResult = { ok: true; payment?: VisitPayment } | { ok: false; near?: NearAppointmentNotice };
 
 interface UseAppointmentReturn {
     submitting: boolean;
@@ -59,8 +59,9 @@ export const useAppointment = (): UseAppointmentReturn => {
                 return { ok: false };
             }
 
-            await appointmentService.create(payload);
-            setSuccess('Request received. The clinic will confirm your time by email and SMS.');
+            const created = await appointmentService.create(payload);
+            if (created.data?.payment) return { ok: true, payment: created.data.payment };
+            setSuccess('Your visit is booked.');
             return { ok: true };
         } catch (err) {
             if (err instanceof APIError) {

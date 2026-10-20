@@ -85,7 +85,7 @@ function ProductDetails({ product, relatedProducts, loading }: { product: Produc
                             <button
                                 type="button"
                                 onClick={() => setQuantity(quantity > 1 ? quantity - 1 : 1)}
-                                className="px-4 py-2 text-[#003E48] hover:text-[#003E48]/70 focus:outline-none"
+                                className="flex h-11 w-11 items-center justify-center text-[#003E48] hover:text-[#003E48]/70 focus:outline-none"
                             >
                                 -
                             </button>
@@ -102,7 +102,7 @@ function ProductDetails({ product, relatedProducts, loading }: { product: Produc
                             <button
                                 type="button"
                                 onClick={() => setQuantity(quantity < 10 ? quantity + 1 : 10)}
-                                className="px-4 py-2 text-[#003E48] hover:text-[#003E48]/70 focus:outline-none">
+                                className="flex h-11 w-11 items-center justify-center text-[#003E48] hover:text-[#003E48]/70 focus:outline-none">
                                 +
                             </button>
                         </div>
