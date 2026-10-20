@@ -346,7 +346,7 @@ function DatePicker({
                                         : 'text-[#003E48]/40 border-[#d5d1c8]'
                               }`
                             : compact
-                              ? `flex h-10 w-full items-center ${children ? 'pl-12' : 'pl-3'} pr-3 text-left text-sm rounded-lg border-0 bg-white shadow-sm outline-none ring-1 transition focus:ring-[#003E48]/30 ${
+                              ? `flex h-11 w-full items-center ${children ? 'pl-12' : 'pl-3'} pr-3 text-left text-sm rounded-lg border-0 bg-white shadow-sm outline-none ring-1 transition focus:ring-[#003E48]/30 ${
                                     errorMessage
                                         ? 'text-red-700 ring-red-200'
                                         : value
@@ -379,7 +379,7 @@ function DatePicker({
                                 type="button"
                                 onClick={goToPreviousMonth}
                                 disabled={!canGoPrevious}
-                                className="rounded-lg p-1.5 text-[#003E48]/50 transition-colors hover:bg-[#F6F3EE] hover:text-[#003E48] disabled:cursor-not-allowed disabled:opacity-30"
+                                className="flex h-11 w-11 items-center justify-center rounded-lg text-[#003E48]/50 transition-colors hover:bg-[#F6F3EE] hover:text-[#003E48] disabled:cursor-not-allowed disabled:opacity-30"
                                 aria-label="Previous month"
                             >
                                 <ChevronLeft className="h-5 w-5" />
@@ -415,7 +415,7 @@ function DatePicker({
                                 type="button"
                                 onClick={goToNextMonth}
                                 disabled={!canGoNext}
-                                className="rounded-lg p-1.5 text-[#003E48]/50 transition-colors hover:bg-[#F6F3EE] hover:text-[#003E48] disabled:cursor-not-allowed disabled:opacity-30"
+                                className="flex h-11 w-11 items-center justify-center rounded-lg text-[#003E48]/50 transition-colors hover:bg-[#F6F3EE] hover:text-[#003E48] disabled:cursor-not-allowed disabled:opacity-30"
                                 aria-label="Next month"
                             >
                                 <ChevronRight className="h-5 w-5" />
@@ -447,7 +447,7 @@ function DatePicker({
                                         type="button"
                                         disabled={isDisabled}
                                         onClick={() => handleSelect(date)}
-                                        className={`h-9 rounded-xl text-sm transition-colors ${
+                                        className={`h-11 rounded-xl text-sm transition-colors ${
                                             isSelected
                                                 ? 'bg-[#E85A2E] font-semibold text-white'
                                                 : isDisabled

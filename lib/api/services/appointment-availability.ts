@@ -12,6 +12,7 @@ type LaravelBody<T> = {
 export type DayAvailability = {
     date: string;
     times: string[];
+    offered?: string[];
 };
 
 /** Free clinic clocks for a day (server removes taken slots). */
@@ -31,6 +32,39 @@ export async function fetchDayAvailability(date: string): Promise<string[]> {
             throw new APIError(body.message || body.error || 'Could not load times', response.status, body);
         }
         return Array.isArray(body.data?.times) ? body.data.times : [];
+    } catch (error) {
+        if (error instanceof APIError) throw error;
+        if (axios.isAxiosError(error)) {
+            throw new APIError(
+                (error.response?.data as { message?: string } | undefined)?.message ||
+                    'Could not load available times.',
+                error.response?.status,
+                error.response?.data,
+            );
+        }
+        throw error;
+    }
+}
+
+/** Free clocks plus every clinic clock that day, so taken times can be shown. */
+export async function fetchDayOffer(date: string): Promise<{ times: string[]; offered: string[] }> {
+    if (!date) return { times: [], offered: [] };
+    try {
+        const response = await axios.get<LaravelBody<DayAvailability>>(
+            `${publicConsumerBase()}/api/appointments/availability`,
+            {
+                params: { date },
+                headers: { Accept: 'application/json' },
+                timeout: 15_000,
+            },
+        );
+        const body = response.data;
+        if (body && body.success === false) {
+            throw new APIError(body.message || body.error || 'Could not load times', response.status, body);
+        }
+        const times = Array.isArray(body.data?.times) ? body.data.times : [];
+        const offered = Array.isArray(body.data?.offered) ? body.data.offered : times;
+        return { times, offered };
     } catch (error) {
         if (error instanceof APIError) throw error;
         if (axios.isAxiosError(error)) {

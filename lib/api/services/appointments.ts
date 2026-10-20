@@ -2,7 +2,7 @@ import axios from 'axios';
 import { isSlotBookable } from '@/lib/appointment-slots';
 import { APIError } from '../client';
 import { publicConsumerBase } from '../public-consumer-base';
-import { AppointmentPayload, AppointmentResponse } from '../types';
+import { AppointmentPayload, AppointmentResponse, VisitPaymentStatus, VisitQuote } from '../types';
 
 /**
  * Appointment Service
@@ -36,6 +36,47 @@ export const appointmentService = {
             }
             throw error;
         }
+    },
+
+    quote: async (phone: string, email?: string, organizationId?: number | null): Promise<VisitQuote> => {
+        try {
+            const response = await axios.get<{ success?: boolean; message?: string; data?: VisitQuote }>(
+                `${publicConsumerBase()}/api/appointments/quote`,
+                {
+                    params: {
+                        phone,
+                        email: email || undefined,
+                        organization_id: organizationId && organizationId > 0 ? organizationId : undefined,
+                    },
+                    headers: { Accept: 'application/json' },
+                    timeout: 15_000,
+                },
+            );
+            const body = response.data;
+            if (!body?.success || !body.data) {
+                throw new APIError(body?.message || 'The visit price is not available.', response.status, body);
+            }
+            return body.data;
+        } catch (error) {
+            if (error instanceof APIError) throw error;
+            if (axios.isAxiosError(error)) {
+                const data = error.response?.data as { message?: string } | undefined;
+                throw new APIError(data?.message || 'The visit price is not available.', error.response?.status, error.response?.data);
+            }
+            throw error;
+        }
+    },
+
+    payment: async (id: string): Promise<VisitPaymentStatus> => {
+        const response = await axios.get<{ success?: boolean; message?: string; data?: VisitPaymentStatus }>(
+            `${publicConsumerBase()}/api/appointments/${encodeURIComponent(id)}/payment`,
+            { headers: { Accept: 'application/json' }, timeout: 20_000 },
+        );
+        const body = response.data;
+        if (!body?.success || !body.data) {
+            throw new APIError(body?.message || 'Could not check the payment.', response.status, body);
+        }
+        return body.data;
     },
 
     /**
