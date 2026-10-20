@@ -21,7 +21,7 @@ function PreRegistrationModal() {
         <AnimatePresence>
             {isPreregOpen && (
                 <motion.div
-                    className="fixed inset-0 z-[90] flex items-center justify-center bg-[#003E48]/40 p-3 backdrop-blur-sm sm:p-6"
+                    className="fixed inset-0 z-[90] flex items-start justify-center overflow-y-auto bg-[#003E48]/40 px-3 pb-3 pt-[max(0.75rem,env(safe-area-inset-top))] backdrop-blur-sm sm:items-center sm:p-6"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
@@ -31,7 +31,7 @@ function PreRegistrationModal() {
                         role="dialog"
                         aria-modal="true"
                         aria-labelledby="prereg-modal-title"
-                        className="relative w-full max-w-[1120px] overflow-hidden rounded-[28px] bg-white shadow-[0_24px_80px_rgba(0,62,72,0.28)]"
+                        className="relative my-2 w-full max-w-[1120px] overflow-hidden rounded-[28px] bg-white shadow-[0_24px_80px_rgba(0,62,72,0.28)] sm:my-0"
                         initial={{ opacity: 0, y: 20, scale: 0.98 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 12, scale: 0.98 }}

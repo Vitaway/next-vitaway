@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Building2 } from 'lucide-react';
-import { PreRegistrationPayload, Organization } from '@/lib/api/types';
+import { PreRegistrationPayload, Organization, VisitQuote } from '@/lib/api/types';
 import { organizationService } from '@/lib/api/services/organizations';
 import TextInput from '@/app/components/inputs/TextInput';
 import DateOfBirthPicker from '@/app/components/inputs/DateOfBirthPicker';
@@ -14,9 +14,26 @@ interface Props {
     errors: string[];
     onChange: (data: Partial<PreRegistrationPayload>) => void;
     hideHeader?: boolean;
+    partner?: 'gym' | 'company' | null;
+    quote?: VisitQuote | null;
+    quoteLoading?: boolean;
+    quoteError?: string;
 }
 
-function Step2AboutYou({ data, errors, onChange, hideHeader = false }: Props) {
+function rwf(amount: number) {
+    return `${Math.round(amount).toLocaleString('en-RW')} RWF`;
+}
+
+function Step2AboutYou({
+    data,
+    errors,
+    onChange,
+    hideHeader = false,
+    partner = null,
+    quote = null,
+    quoteLoading = false,
+    quoteError = '',
+}: Props) {
     const [organizations, setOrganizations] = useState<Organization[]>([]);
     const [orgsLoading, setOrgsLoading] = useState(true);
     const [orgsError, setOrgsError] = useState('');
@@ -165,8 +182,9 @@ function Step2AboutYou({ data, errors, onChange, hideHeader = false }: Props) {
                     </svg>
                 </TextInput>
 
+                {partner ? (
                 <div className={`mt-5 ${hideHeader ? 'sm:col-span-2' : ''}`}>
-                    <FormLabel required>Organization</FormLabel>
+                    <FormLabel required>{partner === 'gym' ? 'Gym' : 'Company'}</FormLabel>
                     <div className="relative mt-2 text-[#003E48]/40 transition-all duration-200 focus-within:text-[#003E48]">
                         <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                             <Building2 className="h-[18px] w-[18px]" />
@@ -182,15 +200,24 @@ function Step2AboutYou({ data, errors, onChange, hideHeader = false }: Props) {
                             }`}
                         >
                             <option value="">
-                                {orgsLoading ? 'Loading organizations...' : 'Select your organization'}
+                                {orgsLoading
+                                    ? 'Loading…'
+                                    : partner === 'gym'
+                                      ? 'Select your gym'
+                                      : 'Select your company'}
                             </option>
-                            {organizations.map((org) => (
+                            {organizations
+                                .filter((org) =>
+                                    partner === 'gym'
+                                        ? org.type === 'gym'
+                                        : org.type === 'company' || org.type === 'employer',
+                                )
+                                .map((org) => (
                                 <option key={org.id} value={org.id}>
                                     {org.name}
                                     {org.city ? ` (${org.city})` : ''}
                                 </option>
                             ))}
-                            <option value="other">Other (type custom name)</option>
                         </select>
                     </div>
                     {organizationError && (
@@ -201,22 +228,23 @@ function Step2AboutYou({ data, errors, onChange, hideHeader = false }: Props) {
                     {orgsError && !organizationError && (
                         <p className="text-amber-600 text-xs mt-2">{orgsError}</p>
                     )}
+                    {quoteLoading ? <p className="mt-3 text-sm text-[#003E48]/60">Working out the price…</p> : null}
+                    {quoteError ? <p className="mt-3 text-sm text-red-600">{quoteError}</p> : null}
+                    {quote && !quoteLoading ? (
+                        <div className="mt-3 rounded-2xl bg-white px-4 py-3 text-sm text-[#003E48]">
+                            <div className="flex items-center justify-between gap-3">
+                                <span>{quote.organization_name || (partner === 'gym' ? 'Gym' : 'Company')} price</span>
+                                <span className="font-semibold">{rwf(quote.amount)}</span>
+                            </div>
+                            {quote.discount_pct > 0 ? (
+                                <p className="mt-1 text-xs text-[#003E48]/55">
+                                    {quote.discount_pct}% off {rwf(quote.list_amount)}
+                                </p>
+                            ) : null}
+                        </div>
+                    ) : null}
                 </div>
-
-                {showCustomOrganization && (
-                    <div className={hideHeader ? 'sm:col-span-2' : undefined}>
-                    <TextInput
-                        label="Organization Name"
-                        required
-                        placeholder="Enter your organization name"
-                        value={data.organization_other || ''}
-                        errorMessage={organizationError}
-                        onChange={(v) => onChange({ organization_other: v, organization_id: null })}
-                    >
-                        <Building2 className="w-[18px] h-[18px]" />
-                    </TextInput>
-                    </div>
-                )}
+                ) : null}
 
             </div>
 
