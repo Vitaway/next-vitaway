@@ -16,7 +16,9 @@ import Step2AboutYou from './steps/Step2AboutYou';
 import StepSlot from './steps/StepSlot';
 import ConfirmationStep from './steps/ConfirmationStep';
 
-const TOTAL_FORM_STEPS = 4;
+const TOTAL_FORM_STEPS = 5;
+
+const VISIT_OFFERS: { code: string; name: string; amount: number }[] = [];
 
 function rwf(amount: number) {
     return `${Math.round(amount).toLocaleString('en-RW')} RWF`;
@@ -36,7 +38,7 @@ const MODAL_ASIDE: { title: React.ReactNode; status: string }[] = [
                 How you are <span className="font-accent">joining</span>
             </>
         ),
-        status: 'Step 1 of 4',
+        status: 'Step 1 of 5',
     },
     {
         title: (
@@ -44,7 +46,15 @@ const MODAL_ASIDE: { title: React.ReactNode; status: string }[] = [
                 About <span className="font-accent">you</span>
             </>
         ),
-        status: 'Step 2 of 4',
+        status: 'Step 2 of 5',
+    },
+    {
+        title: (
+            <>
+                Choose a <span className="font-accent">service</span>
+            </>
+        ),
+        status: 'Step 3 of 5',
     },
     {
         title: (
@@ -52,7 +62,7 @@ const MODAL_ASIDE: { title: React.ReactNode; status: string }[] = [
                 An open <span className="font-accent">time</span>
             </>
         ),
-        status: 'Step 3 of 4',
+        status: 'Step 4 of 5',
     },
     {
         title: (
@@ -60,7 +70,7 @@ const MODAL_ASIDE: { title: React.ReactNode; status: string }[] = [
                 <span className="font-accent">Pay</span> for the visit
             </>
         ),
-        status: 'Step 4 of 4',
+        status: 'Step 5 of 5',
     },
     {
         title: (
@@ -119,7 +129,8 @@ function PreRegistrationWizard({ variant = 'page', onClose }: WizardProps) {
     const [quoteLoading, setQuoteLoading] = useState(false);
     const [paid, setPaid] = useState<{ when: string; amount: number; bill: string | null } | null>(null);
     const [holdId, setHoldId] = useState<string | null>(null);
-    const [paymentLink, setPaymentLink] = useState<string | null>(null);
+    const [productCode, setProductCode] = useState('');
+    const [offers, setOffers] = useState(VISIT_OFFERS);
     const { submitting, error, createAppointment } = useAppointment();
 
     const partner = partnerKind(data.joining_as);
@@ -135,13 +146,26 @@ function PreRegistrationWizard({ variant = 'page', onClose }: WizardProps) {
     };
 
     useEffect(() => {
-        if (!isValidFullPhone(phone)) return;
-        if (partner && !data.organization_id) return;
+        let stop = false;
+        appointmentService
+            .offers()
+            .then((rows) => {
+                if (!stop && rows.length) setOffers(rows);
+            })
+            .catch(() => undefined);
+        return () => {
+            stop = true;
+        };
+    }, []);
+
+    useEffect(() => {
+        if (!productCode || !isValidFullPhone(phone)) return;
+        if (partner && !data.organization_id && !data.organization_other) return;
         let stop = false;
         setQuoteLoading(true);
         setQuoteError('');
         appointmentService
-            .quote(phone, data.email, data.organization_id)
+            .quote(phone, data.email, data.organization_id, productCode)
             .then((next) => {
                 if (!stop) setQuote(next);
             })
@@ -156,7 +180,7 @@ function PreRegistrationWizard({ variant = 'page', onClose }: WizardProps) {
         return () => {
             stop = true;
         };
-    }, [phone, data.email, data.organization_id, partner]);
+    }, [phone, data.email, data.organization_id, data.organization_other, partner, productCode]);
 
     useEffect(() => {
         if (!holdId) return;
@@ -172,7 +196,7 @@ function PreRegistrationWizard({ variant = 'page', onClose }: WizardProps) {
                         bill: status.bill_number,
                     });
                     setHoldId(null);
-                    setStep(5);
+                    setStep(6);
                 }
             } catch {
                 /* keep asking until Irembo answers */
@@ -204,7 +228,8 @@ function PreRegistrationWizard({ variant = 'page', onClose }: WizardProps) {
             if (partner && !data.organization_id) next.push(partner === 'gym' ? 'Choose your gym.' : 'Choose your company.');
             return next;
         }
-        if (step === 3 && (!date || !time || !isSlotBookable(date, time))) return ['Pick an open time.'];
+        if (step === 3 && !productCode) return ['Choose a service.'];
+        if (step === 4 && (!date || !time || !isSlotBookable(date, time))) return ['Pick an open time.'];
         return [];
     };
 
@@ -213,25 +238,23 @@ function PreRegistrationWizard({ variant = 'page', onClose }: WizardProps) {
             name: (data.full_name || '').trim(),
             email: data.email?.trim() || undefined,
             phone,
-            subject: 'Clinic visit',
+            subject: offers.find((row) => row.code === productCode)?.name || 'Clinic visit',
             reasons: partner === 'gym' ? 'Gym member' : partner === 'company' ? 'Employer programme' : 'Individual',
             message: 'Booked from the website.',
             type: 'CONSULTATION',
             appointment_date: date,
             appointment_time: time,
             organization_id: data.organization_id ?? null,
+            organization_other: data.organization_other ?? null,
+            product_code: productCode,
         });
         if (!result.ok) return;
-        if (result.payment) {
-            setHoldId(result.payment.appointment_id);
-            setPaymentLink(result.payment.payment_link);
-            if (result.payment.payment_link) {
-                window.open(result.payment.payment_link, '_blank', 'noopener,noreferrer');
-            }
+        if (result.payment?.payment_link) {
+            window.location.assign(result.payment.payment_link);
             return;
         }
         setPaid({ when: formatWhen(date, time), amount: quote?.amount ?? 0, bill: null });
-        setStep(5);
+        setStep(6);
     };
 
     const handleNext = async () => {
@@ -240,7 +263,7 @@ function PreRegistrationWizard({ variant = 'page', onClose }: WizardProps) {
             setErrors(errs);
             return;
         }
-        if (step === 4) {
+        if (step === 5) {
             await pay();
             return;
         }
@@ -258,7 +281,7 @@ function PreRegistrationWizard({ variant = 'page', onClose }: WizardProps) {
         scrollTop();
     };
 
-    const aside = MODAL_ASIDE[Math.min(step, 5) - 1];
+    const aside = MODAL_ASIDE[Math.min(step, 6) - 1];
     const stepBody = (
         <>
             {step === 1 ? <Step1JoiningAs data={data} errors={errors} onChange={updateData} hideHeader={isModal} /> : null}
@@ -275,6 +298,36 @@ function PreRegistrationWizard({ variant = 'page', onClose }: WizardProps) {
                 />
             ) : null}
             {step === 3 ? (
+                <div className="space-y-3">
+                    {isModal ? null : (
+                        <h2 className="text-xl font-bold text-[#003E48]">
+                            Choose a <span className="font-accent">service</span>
+                        </h2>
+                    )}
+                    {offers.map((offer) => {
+                        const selected = offer.code === productCode;
+                        return (
+                            <button
+                                key={offer.code}
+                                type="button"
+                                aria-pressed={selected}
+                                onClick={() => {
+                                    setProductCode(offer.code);
+                                    setErrors([]);
+                                }}
+                                className={`flex min-h-11 w-full items-center justify-between gap-4 rounded-[8px] border px-4 py-3 text-left ${
+                                    selected ? 'border-[#003E48] bg-white' : 'border-[#003E48]/15 bg-white'
+                                }`}
+                            >
+                                <span className="text-sm font-semibold text-[#003E48]">{offer.name}</span>
+                                <span className="shrink-0 text-sm font-semibold text-[#003E48]">{rwf(offer.amount)}</span>
+                            </button>
+                        );
+                    })}
+                    {errors[0] ? <p className="text-sm text-red-600">{errors[0]}</p> : null}
+                </div>
+            ) : null}
+            {step === 4 ? (
                 <StepSlot
                     date={date}
                     time={time}
@@ -286,7 +339,7 @@ function PreRegistrationWizard({ variant = 'page', onClose }: WizardProps) {
                     }}
                 />
             ) : null}
-            {step === 4 ? (
+            {step === 5 ? (
                 <div>
                     <h2 className="text-xl font-bold text-[#003E48]">
                         Pay <span className="font-accent">{quote ? rwf(quote.amount) : ''}</span>
@@ -301,20 +354,10 @@ function PreRegistrationWizard({ variant = 'page', onClose }: WizardProps) {
                         </p>
                     ) : null}
                     {holdId ? <p className="mt-4 text-sm text-[#003E48]/70">Waiting for payment.</p> : null}
-                    {paymentLink ? (
-                        <a
-                            href={paymentLink}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="mt-4 inline-flex rounded-full bg-[#E85A2E] px-5 py-3 text-sm font-semibold text-white"
-                        >
-                            Open payment
-                        </a>
-                    ) : null}
                     {error ? <p className="mt-3 text-sm text-red-600">{error}</p> : null}
                 </div>
             ) : null}
-            {step === 5 && paid ? (
+            {step === 6 && paid ? (
                 <ConfirmationStep
                     referenceNumber={paid.bill || ''}
                     when={paid.when}
@@ -326,7 +369,7 @@ function PreRegistrationWizard({ variant = 'page', onClose }: WizardProps) {
         </>
     );
 
-    const footer = step < 5 ? (
+    const footer = step < 6 ? (
         <>
             <button
                 type="button"
@@ -338,10 +381,10 @@ function PreRegistrationWizard({ variant = 'page', onClose }: WizardProps) {
             <PressButton
                 type="button"
                 className="ml-auto"
-                disabled={submitting || Boolean(holdId) || (step === 4 && (quoteLoading || !quote))}
+                disabled={submitting || Boolean(holdId) || (step === 3 && !productCode) || (step === 5 && (quoteLoading || !quote))}
                 onClick={() => void handleNext()}
             >
-                {submitting ? 'Opening payment…' : step === 4 ? `Pay ${quote ? rwf(quote.amount) : ''}` : 'Continue'}
+                {submitting ? 'Opening payment…' : step === 5 ? `Pay ${quote ? rwf(quote.amount) : ''}` : 'Continue'}
             </PressButton>
         </>
     ) : (
@@ -388,7 +431,7 @@ function PreRegistrationWizard({ variant = 'page', onClose }: WizardProps) {
     return (
         <Shell>
             <div className="relative min-h-[calc(100dvh-16px)] overflow-hidden rounded-[22px] bg-[#F6F3EE] sm:min-h-[calc(100dvh-24px)] sm:rounded-[28px]">
-                {step === 5 ? (
+                {step === 6 ? (
                     <div className="mx-auto max-w-md px-5 py-10">{stepBody}</div>
                 ) : (
                     <>

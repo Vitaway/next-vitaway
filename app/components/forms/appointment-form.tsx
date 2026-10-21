@@ -50,13 +50,8 @@ function rwf(amount: number) {
     return `${Math.round(amount).toLocaleString('en-RW')} RWF`;
 }
 
-const VISIT_OFFERS = [
-    { code: 'PC-f28fe1758f', name: 'Comprehensive Assessment', amount: 16000 },
-    { code: 'PC-5e4e7ad91d', name: 'Comprehensive Assessment plus Meal Plan', amount: 28000 },
-    { code: 'PC-4bec93f306', name: 'Exclusive 8-Week Program', amount: 48000 },
-    { code: 'PC-021bd4f92d', name: 'Exclusive 12-Week Program', amount: 64000 },
-    { code: 'PC-f08d83743d', name: 'Exclusive 12-Week Program plus Continued Care', amount: 96000 },
-];
+/** Filled from GET /api/appointments/offers (desk pricing). */
+const VISIT_OFFERS: { code: string; name: string; amount: number }[] = [];
 
 function formatWhen(date: string, time: string) {
     if (!date) return 'Pick a day';
@@ -194,7 +189,12 @@ function AppointmentFormBody({
     );
 
     useEffect(() => {
-        if (step < 2) return;
+        if (!productCode) {
+            setQuote(null);
+            setQuoteError('');
+            setQuoteLoading(false);
+            return;
+        }
         const phone = formatFullPhone(phoneLocal, selectedCountry);
         if (phone.replace(/\D/g, '').length < 10) return;
         let stop = false;
@@ -217,7 +217,7 @@ function AppointmentFormBody({
         return () => {
             stop = true;
         };
-    }, [step, phoneLocal, selectedCountry, email, orgSelect, productCode]);
+    }, [phoneLocal, selectedCountry, email, orgSelect, productCode]);
 
     useEffect(() => {
         const rawName = quote?.member_name?.trim() ?? '';
@@ -368,6 +368,15 @@ function AppointmentFormBody({
             return;
         }
         if (step === 2) {
+            if (!productCode) {
+                setFormError('Choose a service.');
+                return;
+            }
+            setFormError('');
+            setStep(3);
+            return;
+        }
+        if (step === 3) {
             if (name.trim().length <= 1) {
                 setFormError('Add your name to continue.');
                 return;
@@ -382,15 +391,6 @@ function AppointmentFormBody({
             }
             if (!isValidEmail(email)) {
                 setFormError('That email address does not look right.');
-                return;
-            }
-            setFormError('');
-            setStep(3);
-            return;
-        }
-        if (step === 3) {
-            if (!productCode) {
-                setFormError('Choose a service.');
                 return;
             }
             setFormError('');
@@ -960,7 +960,7 @@ function AppointmentFormBody({
                     <BookingActionButton type="button" tone="white" icon="back" onClick={() => setStep(1)}>
                         Back
                     </BookingActionButton>
-                    <BookingActionButton type="button" disabled={!whoReady} onClick={() => setStep(3)}>
+                    <BookingActionButton type="button" disabled={!productCode} onClick={() => setStep(3)}>
                         Continue
                     </BookingActionButton>
                 </>
@@ -969,7 +969,7 @@ function AppointmentFormBody({
                     <BookingActionButton type="button" tone="white" icon="back" onClick={() => setStep(2)}>
                         Back
                     </BookingActionButton>
-                    <BookingActionButton type="button" disabled={!productCode} onClick={() => setStep(4)}>
+                    <BookingActionButton type="button" disabled={!whoReady} onClick={() => setStep(4)}>
                         Continue
                     </BookingActionButton>
                 </>
@@ -1186,6 +1186,19 @@ function AppointmentFormBody({
                             </motion.div>
                         ) : step === 2 ? (
                             <motion.div
+                                key="service"
+                                initial={{ opacity: 0, x: 20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: -20 }}
+                                transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+                            >
+                                <h3 id="booking-modal-title" className="text-xl font-bold text-[#003E48]">
+                                    Choose a <span className="font-accent">service</span>
+                                </h3>
+                                <div className="mt-5">{serviceStep}</div>
+                            </motion.div>
+                        ) : step === 3 ? (
+                            <motion.div
                                 key="who"
                                 initial={{ opacity: 0, x: 20 }}
                                 animate={{ opacity: 1, x: 0 }}
@@ -1199,19 +1212,6 @@ function AppointmentFormBody({
                                     We&apos;ll send your booking confirmation by SMS or WhatsApp to this number.
                                 </p>
                                 <div className="mt-5">{whoFields}</div>
-                            </motion.div>
-                        ) : step === 3 ? (
-                            <motion.div
-                                key="service"
-                                initial={{ opacity: 0, x: 20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: -20 }}
-                                transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-                            >
-                                <h3 id="booking-modal-title" className="text-xl font-bold text-[#003E48]">
-                                    Choose a <span className="font-accent">service</span>
-                                </h3>
-                                <div className="mt-5">{serviceStep}</div>
                             </motion.div>
                         ) : step === 4 ? (
                             <motion.div
@@ -1284,17 +1284,6 @@ function AppointmentFormBody({
                         </motion.div>
                     ) : step === 2 ? (
                         <motion.div
-                            key="who"
-                            initial={{ opacity: 0, x: 24 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            exit={{ opacity: 0, x: -24 }}
-                            transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-                        >
-                            <h4 className="mb-4 text-lg font-bold">Your details</h4>
-                            {whoFields}
-                        </motion.div>
-                    ) : step === 3 ? (
-                        <motion.div
                             key="service"
                             initial={{ opacity: 0, x: 24 }}
                             animate={{ opacity: 1, x: 0 }}
@@ -1303,6 +1292,17 @@ function AppointmentFormBody({
                         >
                             <h4 className="mb-4 text-lg font-bold">Choose a service</h4>
                             {serviceStep}
+                        </motion.div>
+                    ) : step === 3 ? (
+                        <motion.div
+                            key="who"
+                            initial={{ opacity: 0, x: 24 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -24 }}
+                            transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+                        >
+                            <h4 className="mb-4 text-lg font-bold">Your details</h4>
+                            {whoFields}
                         </motion.div>
                     ) : step === 4 ? (
                         <motion.div
