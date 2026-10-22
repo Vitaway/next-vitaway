@@ -38,12 +38,25 @@ export const appointmentService = {
         }
     },
 
-    offers: async (): Promise<VisitOffer[]> => {
-        const response = await axios.get<{ success?: boolean; data?: { services?: VisitOffer[] } }>(
+    offers: async (
+        phone?: string,
+        organizationId?: number | null,
+    ): Promise<{ services: VisitOffer[]; note: string | null }> => {
+        const response = await axios.get<{ success?: boolean; data?: { services?: VisitOffer[]; note?: string | null } }>(
             `${publicConsumerBase()}/api/appointments/offers`,
-            { headers: { Accept: 'application/json' }, timeout: 15_000 },
+            {
+                params: {
+                    phone: phone || undefined,
+                    organization_id: organizationId && organizationId > 0 ? organizationId : undefined,
+                },
+                headers: { Accept: 'application/json' },
+                timeout: 15_000,
+            },
         );
-        return response.data?.data?.services ?? [];
+        return {
+            services: response.data?.data?.services ?? [],
+            note: response.data?.data?.note ?? null,
+        };
     },
 
     quote: async (phone: string, email?: string, organizationId?: number | null, productCode?: string): Promise<VisitQuote> => {

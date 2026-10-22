@@ -143,6 +143,7 @@ function AppointmentFormBody({
     const [quote, setQuote] = useState<VisitQuote | null>(null);
     const [productCode, setProductCode] = useState('');
     const [offers, setOffers] = useState(VISIT_OFFERS);
+    const [offersNote, setOffersNote] = useState('');
     const filledForPhone = useRef('');
     const [quoteError, setQuoteError] = useState('');
     const [quoteLoading, setQuoteLoading] = useState(false);
@@ -154,19 +155,6 @@ function AppointmentFormBody({
 
     const { submitting, error, createAppointment, reset } = useAppointment();
     const selectedOffer = offers.find((row) => row.code === productCode) ?? null;
-
-    useEffect(() => {
-        let stop = false;
-        appointmentService
-            .offers()
-            .then((rows) => {
-                if (!stop && rows.length) setOffers(rows);
-            })
-            .catch(() => undefined);
-        return () => {
-            stop = true;
-        };
-    }, []);
 
     useEffect(() => {
         const nextDate = defaults?.date || '';
@@ -187,6 +175,27 @@ function AppointmentFormBody({
         () => getCountryByIso2(phoneCountryIso2) ?? getDefaultCountry(),
         [phoneCountryIso2],
     );
+
+    const reloadOffers = () => {
+        const phone =
+            isValidLocalPhone(phoneLocal, selectedCountry) ? formatFullPhone(phoneLocal, selectedCountry) : undefined;
+        const organizationId = orgSelect && orgSelect !== 'other' ? Number(orgSelect) : null;
+        return appointmentService
+            .offers(phone, organizationId)
+            .then((result) => {
+                setOffers(result.services);
+                setOffersNote(result.note ?? '');
+                if (productCode && !result.services.some((row) => row.code === productCode)) setProductCode('');
+            })
+            .catch(() => {
+                setOffersNote('Could not load services. Check your connection and try again.');
+            });
+    };
+
+    useEffect(() => {
+        void reloadOffers();
+        // eslint-disable-next-line react-hooks/exhaustive-deps -- refresh when identity or org context changes
+    }, [phoneLocal, selectedCountry, orgSelect]);
 
     useEffect(() => {
         if (!productCode) {
@@ -245,6 +254,7 @@ function AppointmentFormBody({
         name.trim().length > 1 &&
         isValidLocalPhone(phoneLocal, selectedCountry) &&
         isValidEmail(email);
+    const paysOnline = Boolean(quote?.organization_name);
 
     const selectedCoach = useMemo(
         () => coaches.find((c) => c.referral_code === selectedCoachCode) ?? null,
@@ -364,19 +374,6 @@ function AppointmentFormBody({
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (step === 1) {
-            if (joinAs === 'self' || orgSelect || showCustomOrganization) setStep(2);
-            return;
-        }
-        if (step === 2) {
-            if (!productCode) {
-                setFormError('Choose a service.');
-                return;
-            }
-            setFormError('');
-            setStep(3);
-            return;
-        }
-        if (step === 3) {
             if (name.trim().length <= 1) {
                 setFormError('Add your name to continue.');
                 return;
@@ -391,6 +388,24 @@ function AppointmentFormBody({
             }
             if (!isValidEmail(email)) {
                 setFormError('That email address does not look right.');
+                return;
+            }
+            setFormError('');
+            void reloadOffers().then(() => setStep(2));
+            return;
+        }
+        if (step === 2) {
+            if (joinAs !== 'self' && !orgSelect && !showCustomOrganization) {
+                setFormError('Choose your gym or workplace, or book as an individual.');
+                return;
+            }
+            setFormError('');
+            void reloadOffers().then(() => setStep(3));
+            return;
+        }
+        if (step === 3) {
+            if (!productCode) {
+                setFormError('Choose a service.');
                 return;
             }
             setFormError('');
@@ -754,7 +769,7 @@ function AppointmentFormBody({
                             maxLength={255}
                         />
                     ) : null}
-                    <p className="text-sm text-[#003E48]/60">We&apos;ll check your membership in the next step.</p>
+                    <p className="text-sm text-[#003E48]/60">We match your phone to partner lists when you choose a service.</p>
                 </div>
             ) : null}
         </div>
@@ -851,6 +866,10 @@ function AppointmentFormBody({
 
     const serviceStep = (
         <div className="space-y-3">
+            {offersNote ? <p className="text-sm text-[#003E48]/70">{offersNote}</p> : null}
+            {!offers.length && !offersNote ? (
+                <p className="text-sm text-[#003E48]/70">Loading services…</p>
+            ) : null}
             {offers.map((offer) => {
                 const selected = offer.code === productCode;
                 return (
@@ -947,11 +966,7 @@ function AppointmentFormBody({
                     >
                         {startedWithSlot && isModal ? 'Cancel' : 'Back'}
                     </BookingActionButton>
-                    <BookingActionButton
-                        type="button"
-                        disabled={joinAs !== 'self' && !orgSelect && !showCustomOrganization}
-                        onClick={() => setStep(2)}
-                    >
+                    <BookingActionButton type="submit" disabled={!whoReady}>
                         Continue
                     </BookingActionButton>
                 </>
@@ -960,7 +975,10 @@ function AppointmentFormBody({
                     <BookingActionButton type="button" tone="white" icon="back" onClick={() => setStep(1)}>
                         Back
                     </BookingActionButton>
-                    <BookingActionButton type="button" disabled={!productCode} onClick={() => setStep(3)}>
+                    <BookingActionButton
+                        type="submit"
+                        disabled={joinAs !== 'self' && !orgSelect && !showCustomOrganization}
+                    >
                         Continue
                     </BookingActionButton>
                 </>
@@ -969,7 +987,7 @@ function AppointmentFormBody({
                     <BookingActionButton type="button" tone="white" icon="back" onClick={() => setStep(2)}>
                         Back
                     </BookingActionButton>
-                    <BookingActionButton type="button" disabled={!whoReady} onClick={() => setStep(4)}>
+                    <BookingActionButton type="submit" disabled={!productCode}>
                         Continue
                     </BookingActionButton>
                 </>
@@ -978,7 +996,7 @@ function AppointmentFormBody({
                     <BookingActionButton type="button" tone="white" icon="back" onClick={() => setStep(3)}>
                         Back
                     </BookingActionButton>
-                    <BookingActionButton type="button" disabled={!whenReady} onClick={() => setStep(5)}>
+                    <BookingActionButton type="submit" disabled={!whenReady}>
                         Continue
                     </BookingActionButton>
                 </>
@@ -991,17 +1009,27 @@ function AppointmentFormBody({
                         type="submit"
                         icon="check"
                         loading={submitting}
-                        disabled={submitting || !whoReady || !whenReady || !productCode || quoteLoading || quote?.product_code !== productCode}
+                        disabled={
+                            submitting ||
+                            !whoReady ||
+                            !whenReady ||
+                            !productCode ||
+                            (paysOnline && (quoteLoading || quote?.product_code !== productCode))
+                        }
                     >
                         {submitting
-                            ? 'Opening payment…'
-                            : showReferral && quote && !quote.organization_name
+                            ? paysOnline
+                                ? 'Opening payment…'
+                                : 'Sending request…'
+                            : showReferral && !quote?.organization_name
                               ? 'Request booking'
-                              : quote && quote.amount <= 0
-                                ? 'Book'
-                                : quote
-                                ? `Pay ${rwf(quote.amount)} and book`
-                                : 'Pay and book'}
+                              : !paysOnline
+                                ? 'Request booking'
+                                : quote && quote.amount <= 0
+                                  ? 'Book'
+                                  : quote
+                                    ? `Pay ${rwf(quote.amount)} and book`
+                                    : 'Pay and book'}
                     </BookingActionButton>
                 </>
             )}
@@ -1172,33 +1200,6 @@ function AppointmentFormBody({
                     <AnimatePresence mode="wait">
                         {step === 1 ? (
                             <motion.div
-                                key="when"
-                                initial={{ opacity: 0, x: 20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: -20 }}
-                                transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-                            >
-                                <h3 id="booking-modal-title" className="text-xl font-bold text-[#003E48]">
-                                    How are you <span className="font-accent">joining</span>?
-                                </h3>
-                                <p className="mt-1 text-sm text-[#003E48]/55">About three minutes. No account needed.</p>
-                                <div className="mt-5">{joiningStep}</div>
-                            </motion.div>
-                        ) : step === 2 ? (
-                            <motion.div
-                                key="service"
-                                initial={{ opacity: 0, x: 20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: -20 }}
-                                transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-                            >
-                                <h3 id="booking-modal-title" className="text-xl font-bold text-[#003E48]">
-                                    Choose a <span className="font-accent">service</span>
-                                </h3>
-                                <div className="mt-5">{serviceStep}</div>
-                            </motion.div>
-                        ) : step === 3 ? (
-                            <motion.div
                                 key="who"
                                 initial={{ opacity: 0, x: 20 }}
                                 animate={{ opacity: 1, x: 0 }}
@@ -1212,6 +1213,33 @@ function AppointmentFormBody({
                                     We&apos;ll send your booking confirmation by SMS or WhatsApp to this number.
                                 </p>
                                 <div className="mt-5">{whoFields}</div>
+                            </motion.div>
+                        ) : step === 2 ? (
+                            <motion.div
+                                key="join"
+                                initial={{ opacity: 0, x: 20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: -20 }}
+                                transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+                            >
+                                <h3 id="booking-modal-title" className="text-xl font-bold text-[#003E48]">
+                                    How are you <span className="font-accent">joining</span>?
+                                </h3>
+                                <p className="mt-1 text-sm text-[#003E48]/55">Partner members pay online when a benefit applies.</p>
+                                <div className="mt-5">{joiningStep}</div>
+                            </motion.div>
+                        ) : step === 3 ? (
+                            <motion.div
+                                key="service"
+                                initial={{ opacity: 0, x: 20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: -20 }}
+                                transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+                            >
+                                <h3 id="booking-modal-title" className="text-xl font-bold text-[#003E48]">
+                                    Choose a <span className="font-accent">service</span>
+                                </h3>
+                                <div className="mt-5">{serviceStep}</div>
                             </motion.div>
                         ) : step === 4 ? (
                             <motion.div
@@ -1238,9 +1266,21 @@ function AppointmentFormBody({
                                 transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
                             >
                                 <h3 id="booking-modal-title" className="text-xl font-bold text-[#003E48]">
-                                    Pay to <span className="font-accent">confirm</span>
+                                    {paysOnline ? (
+                                        <>
+                                            Pay to <span className="font-accent">confirm</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            Confirm your <span className="font-accent">visit</span>
+                                        </>
+                                    )}
                                 </h3>
-                                <p className="mt-1 text-sm text-[#003E48]/55">The visit is confirmed after payment.</p>
+                                <p className="mt-1 text-sm text-[#003E48]/55">
+                                    {paysOnline
+                                        ? 'The visit is confirmed after payment.'
+                                        : 'The clinic will confirm your time by SMS or WhatsApp. No payment now.'}
+                                </p>
                                 <div className="mt-5">{reviewFields}</div>
                             </motion.div>
                         )}
@@ -1273,7 +1313,18 @@ function AppointmentFormBody({
                 <AnimatePresence mode="wait">
                     {step === 1 ? (
                         <motion.div
-                            key="when"
+                            key="who"
+                            initial={{ opacity: 0, x: 24 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -24 }}
+                            transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+                        >
+                            <h4 className="mb-4 text-lg font-bold">Your details</h4>
+                            {whoFields}
+                        </motion.div>
+                    ) : step === 2 ? (
+                        <motion.div
+                            key="join"
                             initial={{ opacity: 0, x: 24 }}
                             animate={{ opacity: 1, x: 0 }}
                             exit={{ opacity: 0, x: -24 }}
@@ -1282,7 +1333,7 @@ function AppointmentFormBody({
                             <h4 className="mb-4 text-lg font-bold">How are you joining?</h4>
                             {joiningStep}
                         </motion.div>
-                    ) : step === 2 ? (
+                    ) : step === 3 ? (
                         <motion.div
                             key="service"
                             initial={{ opacity: 0, x: 24 }}
@@ -1292,17 +1343,6 @@ function AppointmentFormBody({
                         >
                             <h4 className="mb-4 text-lg font-bold">Choose a service</h4>
                             {serviceStep}
-                        </motion.div>
-                    ) : step === 3 ? (
-                        <motion.div
-                            key="who"
-                            initial={{ opacity: 0, x: 24 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            exit={{ opacity: 0, x: -24 }}
-                            transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-                        >
-                            <h4 className="mb-4 text-lg font-bold">Your details</h4>
-                            {whoFields}
                         </motion.div>
                     ) : step === 4 ? (
                         <motion.div
@@ -1323,7 +1363,7 @@ function AppointmentFormBody({
                             exit={{ opacity: 0, x: -24 }}
                             transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
                         >
-                            <h4 className="mb-4 text-lg font-bold">Pay to confirm</h4>
+                            <h4 className="mb-4 text-lg font-bold">{paysOnline ? 'Pay to confirm' : 'Confirm your visit'}</h4>
                             {reviewFields}
                         </motion.div>
                     )}

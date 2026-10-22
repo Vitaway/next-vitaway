@@ -149,8 +149,8 @@ function PreRegistrationWizard({ variant = 'page', onClose }: WizardProps) {
         let stop = false;
         appointmentService
             .offers()
-            .then((rows) => {
-                if (!stop && rows.length) setOffers(rows);
+            .then((result) => {
+                if (!stop && result.services.length) setOffers(result.services);
             })
             .catch(() => undefined);
         return () => {
