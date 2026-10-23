@@ -2,7 +2,7 @@ import axios from 'axios';
 import { isSlotBookable } from '@/lib/appointment-slots';
 import { APIError } from '../client';
 import { publicConsumerBase } from '../public-consumer-base';
-import { AppointmentPayload, AppointmentResponse, VisitOffer, VisitPaymentStatus, VisitQuote } from '../types';
+import { AppointmentPayload, AppointmentResponse, BookingMember, VisitOffer, VisitPaymentStatus, VisitQuote } from '../types';
 
 /**
  * Appointment Service
@@ -41,8 +41,11 @@ export const appointmentService = {
     offers: async (
         phone?: string,
         organizationId?: number | null,
-    ): Promise<{ services: VisitOffer[]; note: string | null }> => {
-        const response = await axios.get<{ success?: boolean; data?: { services?: VisitOffer[]; note?: string | null } }>(
+    ): Promise<{ services: VisitOffer[]; note: string | null; member: BookingMember | null }> => {
+        const response = await axios.get<{
+            success?: boolean;
+            data?: { services?: VisitOffer[]; note?: string | null; member?: BookingMember | null };
+        }>(
             `${publicConsumerBase()}/api/appointments/offers`,
             {
                 params: {
@@ -56,6 +59,7 @@ export const appointmentService = {
         return {
             services: response.data?.data?.services ?? [],
             note: response.data?.data?.note ?? null,
+            member: response.data?.data?.member ?? null,
         };
     },
 

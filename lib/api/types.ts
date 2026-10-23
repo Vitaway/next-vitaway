@@ -115,6 +115,14 @@ export type VisitOffer = {
     code: string;
     name: string;
     amount: number;
+    kind?: 'plan' | 'service' | 'package';
+};
+
+export type BookingMember = {
+    name: string | null;
+    email: string | null;
+    organization_name: string | null;
+    organization_id: number;
 };
 
 export type VisitQuote = {

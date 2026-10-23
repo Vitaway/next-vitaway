@@ -141,6 +141,7 @@ function AppointmentFormBody({
         receipt?: { amount: number; billNumber: string | null };
     } | null>(null);
     const [quote, setQuote] = useState<VisitQuote | null>(null);
+    const [memberOrgName, setMemberOrgName] = useState('');
     const [productCode, setProductCode] = useState('');
     const [offers, setOffers] = useState(VISIT_OFFERS);
     const [offersNote, setOffersNote] = useState('');
@@ -186,6 +187,19 @@ function AppointmentFormBody({
                 setOffers(result.services);
                 setOffersNote(result.note ?? '');
                 if (productCode && !result.services.some((row) => row.code === productCode)) setProductCode('');
+                const member = result.member;
+                setMemberOrgName(member?.organization_name ?? '');
+                if (member?.organization_id) setOrgSelect(String(member.organization_id));
+                const typed = isValidLocalPhone(phoneLocal, selectedCountry)
+                    ? formatFullPhone(phoneLocal, selectedCountry).replace(/\D/g, '').slice(-9)
+                    : '';
+                if (!member || !typed || filledForPhone.current === typed) return;
+                const foundName = member.name && !/^vitaway(\s+member)?$/i.test(member.name.trim()) ? member.name.trim() : '';
+                const foundEmail = member.email && !/phone\.vitaway/i.test(member.email) ? member.email.trim() : '';
+                if (!foundName && !foundEmail) return;
+                filledForPhone.current = typed;
+                if (foundName) setName(foundName);
+                if (foundEmail) setEmail(foundEmail);
             })
             .catch(() => {
                 setOffersNote('Could not load services. Check your connection and try again.');
@@ -254,7 +268,7 @@ function AppointmentFormBody({
         name.trim().length > 1 &&
         isValidLocalPhone(phoneLocal, selectedCountry) &&
         isValidEmail(email);
-    const paysOnline = Boolean(quote?.organization_name);
+    const paysOnline = Boolean(memberOrgName || quote?.organization_name);
 
     const selectedCoach = useMemo(
         () => coaches.find((c) => c.referral_code === selectedCoachCode) ?? null,
@@ -637,9 +651,9 @@ function AppointmentFormBody({
 
     const whoFields = (
         <div className={`grid gap-3 ${isModal ? 'sm:grid-cols-2' : 'sm:grid-cols-2'}`}>
-            {quote?.organization_name ? (
+            {memberOrgName || quote?.organization_name ? (
                 <div className="sm:col-span-2 rounded-[8px] bg-[#F6F3EE] px-4 py-3 text-sm text-[#003E48]">
-                    <p className="font-semibold">{quote.organization_name} member found</p>
+                    <p className="font-semibold">{memberOrgName || quote?.organization_name} member found</p>
                 </div>
             ) : null}
             <div className="sm:col-span-2">
@@ -865,26 +879,36 @@ function AppointmentFormBody({
     void referralStep;
 
     const serviceStep = (
-        <div className="space-y-3">
+        <div className="space-y-4">
             {offersNote ? <p className="text-sm text-[#003E48]/70">{offersNote}</p> : null}
             {!offers.length && !offersNote ? (
                 <p className="text-sm text-[#003E48]/70">Loading services…</p>
             ) : null}
-            {offers.map((offer) => {
-                const selected = offer.code === productCode;
+            {(['plan', 'service', 'package'] as const).map((kind) => {
+                const rows = offers.filter((offer) => (offer.kind ?? 'service') === kind);
+                if (!rows.length) return null;
+                const title = kind === 'plan' ? 'Plans' : kind === 'package' ? 'Packages' : 'Services';
                 return (
-                    <button
-                        key={offer.code}
-                        type="button"
-                        aria-pressed={selected}
-                        onClick={() => setProductCode(offer.code)}
-                        className={`flex min-h-11 w-full items-center justify-between gap-4 rounded-[8px] border px-4 py-3 text-left ${
-                            selected ? 'border-[#003E48] bg-[#F6F3EE]' : 'border-[#003E48]/15'
-                        }`}
-                    >
-                        <span className="text-sm font-semibold text-[#003E48]">{offer.name}</span>
-                        <span className="shrink-0 text-sm font-semibold text-[#003E48]">{rwf(offer.amount)}</span>
-                    </button>
+                    <div key={kind} className="space-y-2">
+                        <p className="text-sm font-semibold text-[#003E48]">{title}</p>
+                        {rows.map((offer) => {
+                            const selected = offer.code === productCode;
+                            return (
+                                <button
+                                    key={offer.code}
+                                    type="button"
+                                    aria-pressed={selected}
+                                    onClick={() => setProductCode(offer.code)}
+                                    className={`flex min-h-11 w-full items-center justify-between gap-3 rounded-[8px] border px-4 py-3 text-left ${
+                                        selected ? 'border-[#003E48] bg-[#F6F3EE]' : 'border-[#003E48]/15'
+                                    }`}
+                                >
+                                    <span className="min-w-0 text-sm font-semibold text-[#003E48]">{offer.name}</span>
+                                    <span className="shrink-0 text-sm font-semibold text-[#003E48]">{rwf(offer.amount)}</span>
+                                </button>
+                            );
+                        })}
+                    </div>
                 );
             })}
         </div>
