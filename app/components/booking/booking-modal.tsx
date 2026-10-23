@@ -31,7 +31,7 @@ function BookingModal() {
                         role="dialog"
                         aria-modal="true"
                         aria-labelledby="booking-modal-title"
-                        className="relative w-full max-w-[960px] overflow-hidden rounded-[28px] bg-white shadow-[0_24px_80px_rgba(0,62,72,0.28)]"
+                        className="relative flex max-h-[calc(100dvh-1.5rem)] w-full max-w-[960px] flex-col overflow-hidden rounded-[28px] bg-white shadow-[0_24px_80px_rgba(0,62,72,0.28)] sm:max-h-[calc(100dvh-3rem)]"
                         initial={{ opacity: 0, y: 20, scale: 0.98 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 12, scale: 0.98 }}

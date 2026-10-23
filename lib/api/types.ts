@@ -122,7 +122,7 @@ export type BookingMember = {
     name: string | null;
     email: string | null;
     organization_name: string | null;
-    organization_id: number;
+    organization_id: number | null;
 };
 
 export type VisitQuote = {

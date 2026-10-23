@@ -145,7 +145,12 @@ function AppointmentFormBody({
     const [productCode, setProductCode] = useState('');
     const [offers, setOffers] = useState(VISIT_OFFERS);
     const [offersNote, setOffersNote] = useState('');
-    const filledForPhone = useRef('');
+    const filledForPhone = useRef<{ phone: string; name: string; email: string } | null>(null);
+    const offerSeq = useRef(0);
+    const nameRef = useRef(name);
+    const emailRef = useRef(email);
+    nameRef.current = name;
+    emailRef.current = email;
     const [quoteError, setQuoteError] = useState('');
     const [quoteLoading, setQuoteLoading] = useState(false);
     const [freeTimes, setFreeTimes] = useState<string[]>([]);
@@ -177,13 +182,47 @@ function AppointmentFormBody({
         [phoneCountryIso2],
     );
 
+    const personName = (value: string | null | undefined) => {
+        const name = value?.trim().replace(/\s+/g, ' ') ?? '';
+        if (name.length < 2 || /^vitaway(\s+member)?$/i.test(name)) return '';
+        return name;
+    };
+    const personEmail = (value: string | null | undefined) => {
+        const email = value?.trim() ?? '';
+        if (!email || /phone\.vitaway|vitaway\.invalid/i.test(email)) return '';
+        return email;
+    };
+    /** A known phone replaces whatever was typed with the name and email on file. */
+    const applyFoundPerson = (typed: string, foundName: string, foundEmail: string, recognized: boolean) => {
+        if (!typed) return;
+        const previous = filledForPhone.current;
+        if (!recognized) {
+            if (previous && previous.phone !== typed) {
+                if (nameRef.current === previous.name) setName('');
+                if (emailRef.current === previous.email) setEmail('');
+                filledForPhone.current = null;
+            }
+            return;
+        }
+        const stillOurs =
+            !previous ||
+            previous.phone !== typed ||
+            (nameRef.current === previous.name && emailRef.current === previous.email);
+        if (!stillOurs) return;
+        filledForPhone.current = { phone: typed, name: foundName, email: foundEmail };
+        setName(foundName);
+        setEmail(foundEmail);
+    };
+
     const reloadOffers = () => {
+        const seq = ++offerSeq.current;
         const phone =
             isValidLocalPhone(phoneLocal, selectedCountry) ? formatFullPhone(phoneLocal, selectedCountry) : undefined;
         const organizationId = orgSelect && orgSelect !== 'other' ? Number(orgSelect) : null;
         return appointmentService
             .offers(phone, organizationId)
             .then((result) => {
+                if (seq !== offerSeq.current) return;
                 setOffers(result.services);
                 setOffersNote(result.note ?? '');
                 if (productCode && !result.services.some((row) => row.code === productCode)) setProductCode('');
@@ -193,15 +232,10 @@ function AppointmentFormBody({
                 const typed = isValidLocalPhone(phoneLocal, selectedCountry)
                     ? formatFullPhone(phoneLocal, selectedCountry).replace(/\D/g, '').slice(-9)
                     : '';
-                if (!member || !typed || filledForPhone.current === typed) return;
-                const foundName = member.name && !/^vitaway(\s+member)?$/i.test(member.name.trim()) ? member.name.trim() : '';
-                const foundEmail = member.email && !/phone\.vitaway/i.test(member.email) ? member.email.trim() : '';
-                if (!foundName && !foundEmail) return;
-                filledForPhone.current = typed;
-                if (foundName) setName(foundName);
-                if (foundEmail) setEmail(foundEmail);
+                applyFoundPerson(typed, personName(member?.name), personEmail(member?.email), Boolean(member));
             })
             .catch(() => {
+                if (seq !== offerSeq.current) return;
                 setOffersNote('Could not load services. Check your connection and try again.');
             });
     };
@@ -243,18 +277,13 @@ function AppointmentFormBody({
     }, [phoneLocal, selectedCountry, email, orgSelect, productCode]);
 
     useEffect(() => {
-        const rawName = quote?.member_name?.trim() ?? '';
-        const foundName = /^vitaway(\s+member)?$/i.test(rawName) ? '' : rawName;
-        const rawEmail = quote?.member_email?.trim() ?? '';
-        const foundEmail = /phone\.vitaway/i.test(rawEmail) ? '' : rawEmail;
         const typed = formatFullPhone(phoneLocal, selectedCountry).replace(/\D/g, '').slice(-9);
         const quoted = (quote?.phone ?? '').replace(/\D/g, '').slice(-9);
         if (!typed || typed !== quoted) return;
-        if (filledForPhone.current === typed) return;
-        if (!foundName && !foundEmail) return;
-        filledForPhone.current = typed;
-        if (foundName) setName(foundName);
-        if (foundEmail) setEmail(foundEmail);
+        const recognized = Boolean(quote?.member_name || quote?.member_email || quote?.organization_name);
+        applyFoundPerson(typed, personName(quote?.member_name), personEmail(quote?.member_email), recognized);
+        // applyFoundPerson reads the latest field values through refs.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [quote, phoneLocal, selectedCountry]);
 
     const isValidEmail = (value: string) =>
@@ -1198,7 +1227,7 @@ function AppointmentFormBody({
         return (
             <form
                 onSubmit={handleSubmit}
-                className="grid min-h-[460px] md:grid-cols-[minmax(240px,32%)_1fr] md:min-h-[500px]"
+                className="grid max-h-[calc(100dvh-1.5rem)] grid-rows-[auto_minmax(0,1fr)] md:min-h-[500px] md:grid-cols-[minmax(240px,32%)_1fr] md:grid-rows-1 sm:max-h-[calc(100dvh-3rem)]"
             >
                 <aside className="flex flex-col justify-between bg-[#003E48] p-6 text-white sm:p-8 md:rounded-l-[28px]">
                     <div>
@@ -1218,9 +1247,9 @@ function AppointmentFormBody({
                         </h3>
                         <p className="mt-3 text-lg text-white/85">{formatWhen(appointmentDate, appointmentTime)}</p>
                     </div>
-                    <p className="mt-10 text-sm text-white/55">About an hour. Name and phone are enough.</p>
+                    <p className="mt-4 text-sm text-white/55 md:mt-10">About an hour. Name and phone are enough.</p>
                 </aside>
-                <div className="flex max-h-[min(80vh,560px)] flex-col overflow-y-auto p-6 sm:p-8">
+                <div className="flex min-h-0 flex-col overflow-y-auto p-6 sm:p-8">
                     <AnimatePresence mode="wait">
                         {step === 1 ? (
                             <motion.div
