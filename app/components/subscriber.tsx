@@ -42,7 +42,7 @@ function Subscriber() {
         setSuccess('');
 
         try {
-            const response = await axios.post(`${process.env.NEXT_PUBLIC_ENVENTORY_API_URL}/api/subscribers`, {
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_ENVENTORY_API_URL || 'https://care-api.vitaway.org'}/api/subscribers`, {
                 email,
             });
 

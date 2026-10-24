@@ -25,7 +25,7 @@ const BlogPost: React.FC = () => {
     if (slug) {
       const fetchBlog = async () => {
         try {
-          const res = await fetch(`${process.env.NEXT_PUBLIC_ENVENTORY_API_URL}/api/blogs/${slug}`);
+          const res = await fetch(`${process.env.NEXT_PUBLIC_ENVENTORY_API_URL || 'https://care-api.vitaway.org'}/api/blogs/${slug}`);
 
           if (!res.ok) {
             throw new Error('Blog not found');

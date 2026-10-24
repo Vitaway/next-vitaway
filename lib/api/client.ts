@@ -18,11 +18,9 @@ export class APIError extends Error {
  * Create a configured axios instance with interceptors
  */
 const createAPIClient = (): AxiosInstance => {
-  const baseURL = process.env.NEXT_PUBLIC_ENVENTORY_API_URL;
-
-  if (!baseURL) {
-    throw new Error("BASE_API_URL is not defined.");
-  }
+  const baseURL = (
+    process.env.NEXT_PUBLIC_ENVENTORY_API_URL || "https://care-api.vitaway.org"
+  ).replace(/\/$/, "");
 
   const client = axios.create({
     baseURL,
