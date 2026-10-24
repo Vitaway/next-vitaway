@@ -88,12 +88,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "vitaway.keyypress.com",
-        pathname: "/**",
-      },
-      {
-        protocol: "https",
-        hostname: "ehr.vitaway.org",
+        hostname: "care-api.vitaway.org",
         pathname: "/**",
       },
       {

@@ -1,13 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Quiz, QuizAttempt, QuizSubmission, QuizResponse, AnswerCheckRequest, AnswerCheckResponse } from '@/types/quizzes';
 
-const API_BASE_URL = `${process.env.NEXT_PUBLIC_ENVENTORY_API_URL}/api`;
-
-// Check if API URL is configured
-if (!process.env.NEXT_PUBLIC_ENVENTORY_API_URL && typeof window !== 'undefined') {
-    console.error('⚠️ NEXT_PUBLIC_ENVENTORY_API_URL is not configured!');
-    console.error('Please create a .env.local file with: NEXT_PUBLIC_ENVENTORY_API_URL=your_api_url');
-}
+const API_BASE_URL = `${(process.env.NEXT_PUBLIC_ENVENTORY_API_URL || 'https://care-api.vitaway.org').replace(/\/$/, '')}/api`;
 
 // Helper function to get auth headers
 const getAuthHeaders = () => {
@@ -64,10 +58,6 @@ export const quizApi = {
 
     // GET /api/quizzes/{quiz} - Get specific quiz details (with questions)
     async getQuizById(quizId: string | number): Promise<Quiz> {
-        if (!process.env.NEXT_PUBLIC_ENVENTORY_API_URL) {
-            throw new Error('API URL is not configured. Please set NEXT_PUBLIC_ENVENTORY_API_URL in your .env.local file');
-        }
-        
         try {
             const response = await fetch(`${API_BASE_URL}/quizzes/${quizId}`, {
                 method: 'GET',
@@ -141,10 +131,6 @@ export const quizApi = {
         quizId: string | number,
         answerData: AnswerCheckRequest
     ): Promise<AnswerCheckResponse> {
-        if (!process.env.NEXT_PUBLIC_ENVENTORY_API_URL) {
-            throw new Error('API URL is not configured. Please set NEXT_PUBLIC_ENVENTORY_API_URL in your .env.local file');
-        }
-
         try {
             const response = await fetch(`${API_BASE_URL}/quizzes/${quizId}/check-answer`, {
                 method: 'POST',

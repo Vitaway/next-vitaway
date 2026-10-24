@@ -4,7 +4,7 @@ The Vitaway marketing website is the public-facing digital presence at `vitaway.
 
 **Stack:** Next.js (App Router), TypeScript, Tailwind CSS
 
-**Backend integration:** Vitaway EHR API (`NEXT_PUBLIC_INVENTORY_API_URL`)
+**Backend integration:** Vitaway EHR API (`https://care-api.vitaway.org`, `NEXT_PUBLIC_ENVENTORY_API_URL`)
 
 ---
 

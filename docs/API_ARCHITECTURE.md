@@ -336,7 +336,7 @@ return <ProductList products={data} />;
 Ensure the following environment variables are set:
 
 ```env
-NEXT_PUBLIC_ENVENTORY_API_URL=https://api.vitaway.org
+NEXT_PUBLIC_ENVENTORY_API_URL=https://care-api.vitaway.org
 ```
 
 ## Migration Guide

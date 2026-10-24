@@ -235,7 +235,7 @@ npm run build && npm run analyze
 Ensure all required environment variables are set in `.env`:
 
 ```env
-NEXT_PUBLIC_ENVENTORY_API_URL=https://api.vitaway.org
+NEXT_PUBLIC_ENVENTORY_API_URL=https://care-api.vitaway.org
 ```
 
 ## 🎯 Best Practices Checklist

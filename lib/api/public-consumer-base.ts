@@ -1,5 +1,5 @@
-/** Staging clinic API. Swap NEXT_PUBLIC_BOOKING_API_URL when the desk moves to production. */
-const STAGING_BOOKING_API = 'https://vitaway.keyypress.com';
+/** Vitaway EHR API. Override with NEXT_PUBLIC_BOOKING_API_URL. */
+const STAGING_BOOKING_API = 'https://care-api.vitaway.org';
 
 /**
  * Bookings, pre-registrations, organizations, and referral coaches go to the clinic API.
