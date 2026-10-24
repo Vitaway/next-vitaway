@@ -4,7 +4,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useAppointment } from '@/hooks';
 import { appointmentService, organizationService, referralCoachService } from '@/lib/api';
-import { Organization, ReferralCoach, VisitQuote } from '@/lib/api/types';
+import { Organization, ReferralCoach, VisitOffer, VisitQuote } from '@/lib/api/types';
 import {
     COUNTRY_DIAL_CODE_OPTIONS,
     DEFAULT_COUNTRY_ISO2,
@@ -51,7 +51,7 @@ function rwf(amount: number) {
 }
 
 /** Filled from GET /api/appointments/offers (desk pricing). */
-const VISIT_OFFERS: { code: string; name: string; amount: number }[] = [];
+const VISIT_OFFERS: VisitOffer[] = [];
 
 function formatWhen(date: string, time: string) {
     if (!date) return 'Pick a day';
