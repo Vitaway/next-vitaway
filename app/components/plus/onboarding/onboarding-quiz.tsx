@@ -10,6 +10,7 @@ import { useT } from "@/lib/plus/i18n";
 import { mobileRequest, MobileApiError } from "@/lib/plus/client/api";
 import { saveReading } from "@/lib/plus/client/readings";
 import { invalidate } from "@/lib/plus/client/use-resource";
+import { AuthBrandPanel } from "../auth/auth-ui";
 import PlusLoading from "../plus-loading";
 import { ActionButton, BubbleBackdrop, CircleButton, FieldLabel, useFeedback } from "../ui/vita";
 import { DatePickerModal, formatSlashDate, parseIsoDate, todayLocal, yearsAgoFromToday } from "../ui/date-picker";
@@ -75,7 +76,7 @@ function ageFrom(birth: Date): number {
 
 function Art({ image, height = 188 }: { image: string; height?: number }) {
   return (
-    <div style={{ height, width: "100%", display: "flex", justifyContent: "center" }}>
+    <div className="vita-quiz-art-inline" style={{ height, width: "100%", display: "flex", justifyContent: "center" }}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={`${ART}/${image}`} alt="" style={{ height: "100%", width: "100%", objectFit: "contain" }} />
     </div>
@@ -223,11 +224,13 @@ export default function OnboardingQuiz() {
     else setIndex((i) => i - 1);
   };
 
-  const shell = (body: React.ReactNode, footer: React.ReactNode) => (
-    <div className="vita-page" style={{ position: "relative", height: "100dvh", minHeight: "100dvh" }}>
+  // Phones: unchanged. From 768px the column becomes a card; from 1024px the step's art moves to a brand panel.
+  const shell = (body: React.ReactNode, footer: React.ReactNode, art = "intro.png") => (
+    <div className="vita-page vita-wide vita-fullbleed" style={{ position: "relative", height: "100dvh", minHeight: "100dvh" }}>
       <BubbleBackdrop />
-      <div style={{ position: "relative", zIndex: 1, flex: 1, minHeight: 0, display: "flex", flexDirection: "column", padding: "calc(env(safe-area-inset-top) + 8px) 24px calc(16px + env(safe-area-inset-bottom))" }}>
-        <div style={{ width: "100%", maxWidth: 440, margin: "0 auto", flex: 1, minHeight: 0, display: "flex", flexDirection: "column" }}>
+      <AuthBrandPanel image={art} title={t("onboarding_intro_title")} body={t("onboarding_intro_body")} />
+      <div className="vita-quiz-body">
+        <div className="vita-quiz-card">
           {body}
           {footer}
         </div>
@@ -344,5 +347,6 @@ export default function OnboardingQuiz() {
       onPick={setBirth}
     />
     </>,
+    onMeasurements ? "goals.png" : ART_FOR[current.id],
   );
 }
