@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { usePlusAuth } from "@/lib/plus/auth-context";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { isStaffPrimaryDoor } from "@/lib/plus/session";
+import { nextAuthPath } from "@/lib/plus/auth-flow";
 import PlusLoading from "../plus-loading";
 import StaffDoor from "../staff-door";
 import Dock, { ROOT_TABS, useAppPath } from "./dock";
@@ -21,13 +22,14 @@ export default function ClientFrame({ children }: { children: React.ReactNode })
     setClientDoor(window.sessionStorage.getItem(CLIENT_DOOR_KEY) === "1");
   }, []);
 
-  useEffect(() => {
-    if (ready && !session) replace("/signin");
-    // Flutter router: an unverified account stays on /verify-code.
-    else if (ready && session && session.verified === false) replace("/verify-code");
-  }, [ready, session, replace]);
+  const gate = session ? nextAuthPath(session) : "/onboarding";
 
-  if (!ready || !session || session.verified === false) {
+  useEffect(() => {
+    // Flutter router: signed out → /onboarding; unverified, missing contact or quiz → that step.
+    if (ready && gate !== "/home") replace(gate);
+  }, [ready, gate, replace]);
+
+  if (!ready || !session || gate !== "/home") {
     return <PlusLoading label="Opening Vitaway Plus…" />;
   }
 

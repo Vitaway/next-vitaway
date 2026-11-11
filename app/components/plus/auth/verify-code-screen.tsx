@@ -5,6 +5,7 @@ import { MdCheck } from "react-icons/md";
 import { usePlusAuth } from "@/lib/plus/auth-context";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { useT } from "@/lib/plus/i18n";
+import { nextAuthPath } from "@/lib/plus/auth-flow";
 import { confirmAccountVerification, resendAccountVerification } from "@/lib/plus/mobile-auth";
 import PlusLoading from "../plus-loading";
 import { ActionButton, useFeedback } from "../ui/vita";
@@ -23,7 +24,7 @@ export default function VerifyCodeScreen() {
   useEffect(() => {
     if (!ready) return;
     if (!session) replace("/signin");
-    else if (session.verified !== false) replace("/home");
+    else if (session.verified !== false) replace(nextAuthPath(session));
   }, [ready, session, replace]);
 
   if (!ready || !session || session.verified !== false) return <PlusLoading label="Opening Vitaway Plus…" />;
@@ -35,8 +36,9 @@ export default function VerifyCodeScreen() {
     : `${t("verification_code_body")} ${email}`;
 
   const goHome = () => {
-    completeSignIn({ ...session, verified: true });
-    replace("/home");
+    const next = { ...session, verified: true };
+    completeSignIn(next);
+    replace(nextAuthPath(next));
   };
 
   const goToSignIn = async () => {

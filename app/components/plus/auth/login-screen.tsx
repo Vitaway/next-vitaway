@@ -9,6 +9,7 @@ import { useT } from "@/lib/plus/i18n";
 import { DIAL_COUNTRIES, dialCountryByIso, isValidNationalNumber, phoneE164, type DialCountry } from "@/lib/plus/dial-countries";
 import { googleSignIn, linkMirafood, MobileAuthError, passwordLogin, type Identifier } from "@/lib/plus/mobile-auth";
 import type { PlusSession } from "@/lib/plus/session";
+import { nextAuthPath } from "@/lib/plus/auth-flow";
 import { ActionButton, useFeedback } from "../ui/vita";
 import { AuthField } from "../ui/fields";
 import {
@@ -25,20 +26,21 @@ import {
   savePrefill,
   takePrefill,
 } from "./auth-ui";
+import { useLegal } from "../legal/legal-dialog";
 import { googleClientId, requestGoogleAccessToken } from "./google";
 
 const EMAIL = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 
 /** Where the Flutter router sends a freshly signed-in account. */
 export function afterSignInPath(session: PlusSession): string {
-  if (session.verified === false) return "/verify-code";
-  return "/home";
+  return nextAuthPath(session);
 }
 
 /** Pages/auth/login.dart LoginPage. */
 export default function LoginScreen() {
   const t = useT();
   const { toast } = useFeedback();
+  const { openLegal } = useLegal();
   const { completeSignIn, signInNotice } = usePlusAuth();
   const { replace, push } = usePlusPaths();
   const [phoneMode, setPhoneMode] = useState(false);
@@ -197,13 +199,13 @@ export default function LoginScreen() {
         <Gap h={8} />
         <p style={{ margin: 0, textAlign: "center", fontSize: 12, lineHeight: 1.45, color: "rgba(var(--vc-navy-rgb),0.45)" }}>
           {t("agreements")}
-          <a href="/terms-and-conditions" target="_blank" rel="noopener noreferrer" style={{ color: "var(--vc-navy)", fontWeight: 600 }}>
+          <button type="button" className="vita-inline-link" onClick={() => openLegal("terms")}>
             {t("terms_of_use")}
-          </a>
+          </button>
           {` ${t("and")} `}
-          <a href="/privacy-policy" target="_blank" rel="noopener noreferrer" style={{ color: "var(--vc-navy)", fontWeight: 600 }}>
+          <button type="button" className="vita-inline-link" onClick={() => openLegal("privacy")}>
             {t("privacy_policy")}
-          </a>
+          </button>
         </p>
       </form>
     </AuthScreen>

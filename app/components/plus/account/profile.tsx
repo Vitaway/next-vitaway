@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useLegal } from "../legal/legal-dialog";
 import {
   Activity,
   ArrowRight3,
@@ -65,6 +66,7 @@ function MenuCard({ items }: { items: MenuItem[] }) {
 /** account.dart ProfilePage. */
 export function ProfileScreen() {
   const t = useT();
+  const { openLegal } = useLegal();
   const { push } = usePlusPaths();
   const { toast, alert } = useFeedback();
   const { p } = useProfile();
@@ -124,8 +126,8 @@ export function ProfileScreen() {
     { icon: icon(MessageQuestion), label: t("contact_us_title"), onClick: () => push("/account/contact") },
     { icon: icon(Export), label: t("share_app"), onClick: () => void share() },
     { icon: icon(InfoCircle), label: t("about_app"), onClick: () => push("/account/about") },
-    { icon: icon(ShieldTick), label: t("privacy_policy"), onClick: () => window.open("/privacy-policy", "_blank", "noopener") },
-    { icon: icon(DocumentText), label: t("terms_of_use"), onClick: () => window.open("/terms-and-conditions", "_blank", "noopener") },
+    { icon: icon(ShieldTick), label: t("privacy_policy"), onClick: () => openLegal("privacy") },
+    { icon: icon(DocumentText), label: t("terms_of_use"), onClick: () => openLegal("terms") },
     { icon: icon(Health), label: t("medical_disclaimer"), onClick: () => void alert(t("medical_disclaimer"), t("medical_disclaimer_body")) },
     { icon: icon(Trash), label: t("delete_account"), destructive: true, onClick: () => void deleteAccount() },
     { icon: icon(Logout), label: t("logout_title"), destructive: true, onClick: () => void logout() },

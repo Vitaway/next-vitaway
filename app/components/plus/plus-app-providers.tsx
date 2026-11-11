@@ -8,6 +8,7 @@ import { ThemeProvider, useTheme } from "@/lib/plus/theme";
 import InstallPrompt from "./install-prompt";
 import ServiceWorkerRegister from "./service-worker-register";
 import { DocumentReaderProvider } from "./ui/document-reader";
+import { LegalProvider } from "./legal/legal-dialog";
 import { FeedbackProvider } from "./ui/vita";
 
 function VitaRoot({ children }: { children: React.ReactNode }) {
@@ -34,10 +35,12 @@ export default function PlusAppProviders({
             <VitaRoot>
               <FeedbackProvider>
                 <DocumentReaderProvider>
+                  <LegalProvider>
                   <NavigationTracker />
                   <ServiceWorkerRegister />
                   {children}
                   <InstallPrompt />
+                  </LegalProvider>
                 </DocumentReaderProvider>
               </FeedbackProvider>
             </VitaRoot>

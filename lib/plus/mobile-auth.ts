@@ -101,6 +101,7 @@ export function sessionFromMobilePayload(payload: Json): PlusSession {
   const profile = ((user.profile as Json | undefined) ?? (payload.profile as Json | undefined)) ?? {};
   if (!token || user.id == null) throw new MobileAuthError("Sign-in did not return a session. Please try again.");
   const name = [str(user.first_name), str(user.last_name)].filter(Boolean).join(" ").trim();
+  const org = user.organization && typeof user.organization === "object" ? (user.organization as Json) : null;
   return {
     token: "",
     mobileToken: token,
@@ -117,6 +118,8 @@ export function sessionFromMobilePayload(payload: Json): PlusSession {
     verified: user.is_verified === true,
     needsContact: user.needs_contact === true,
     hasCompletedProfile: user.has_completed_profile === true,
+    organizationName: org ? str(org.name).trim() : "",
+    organizationDiscount: org && typeof org.discount_pct === "number" ? Math.round(org.discount_pct) : 0,
   };
 }
 

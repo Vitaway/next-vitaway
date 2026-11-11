@@ -24,6 +24,9 @@ export type PlusSession = {
   verified?: boolean;
   needsContact?: boolean;
   hasCompletedProfile?: boolean;
+  /** user.organization from the mobile payload (account_details.dart subtitle). */
+  organizationName?: string;
+  organizationDiscount?: number;
 };
 
 export const PLUS_SESSION_KEY = "vitaway.plus.session";
@@ -99,6 +102,8 @@ export function loadPlusSession(): PlusSession | null {
       verified: typeof parsed.verified === "boolean" ? parsed.verified : undefined,
       needsContact: typeof parsed.needsContact === "boolean" ? parsed.needsContact : undefined,
       hasCompletedProfile: typeof parsed.hasCompletedProfile === "boolean" ? parsed.hasCompletedProfile : undefined,
+      organizationName: typeof parsed.organizationName === "string" ? parsed.organizationName : undefined,
+      organizationDiscount: typeof parsed.organizationDiscount === "number" ? parsed.organizationDiscount : undefined,
     };
   } catch {
     return null;
