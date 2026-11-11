@@ -16,7 +16,7 @@ import Logo from "@/app/components/logo";
 type Step = "phone" | "code" | "second";
 
 export default function SignInForm() {
-  const { completeSignIn } = usePlusAuth();
+  const { completeSignIn, signInNotice } = usePlusAuth();
   const { replace } = usePlusPaths();
   const [step, setStep] = useState<Step>("phone");
   const [phone, setPhone] = useState("");
@@ -105,6 +105,7 @@ export default function SignInForm() {
       <p className="mt-2 text-sm text-[#003E48]/70">
         Use your Rwandan mobile number. We will send a one-time code by WhatsApp or SMS.
       </p>
+      {signInNotice ? <p className="mt-3 rounded-lg bg-amber-50 px-3 py-2 text-sm font-semibold text-amber-800">{signInNotice}</p> : null}
 
       {step === "phone" && (
         <form onSubmit={requestCode} className="mt-6">

@@ -3,6 +3,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { logoutPlus } from "./auth-api";
 import { setUnauthorizedHandler } from "./client/api";
+import { clearResourceCache } from "./client/use-resource";
 import {
   clearPlusSession,
   hasStaleSession,
@@ -39,6 +40,7 @@ export function PlusAuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     setUnauthorizedHandler(() => {
       clearPlusSession();
+      clearResourceCache();
       setSession(null);
       setSignInNotice("Your session ended. Please sign in again.");
     });
@@ -54,6 +56,7 @@ export function PlusAuthProvider({ children }: { children: React.ReactNode }) {
   const signOut = useCallback(async () => {
     const token = session?.token;
     clearPlusSession();
+    clearResourceCache();
     setSession(null);
     if (token) await logoutPlus(token);
   }, [session?.token]);
