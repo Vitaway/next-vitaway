@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { TickCircle } from "iconsax-react";
 import { MdArrowBack, MdArrowForward, MdCheck } from "react-icons/md";
 import { usePlusAuth } from "@/lib/plus/auth-context";
@@ -12,6 +12,7 @@ import { saveReading } from "@/lib/plus/client/readings";
 import { invalidate } from "@/lib/plus/client/use-resource";
 import PlusLoading from "../plus-loading";
 import { ActionButton, BubbleBackdrop, CircleButton, FieldLabel, useFeedback } from "../ui/vita";
+import { DatePickerModal, formatSlashDate, parseIsoDate, todayLocal, yearsAgoFromToday } from "../ui/date-picker";
 
 const navyA = (a: number) => `rgba(var(--vc-navy-rgb),${a})`;
 const ART = "/plus-assets/onboarding";
@@ -116,6 +117,7 @@ export default function OnboardingQuiz() {
   const [picked, setPicked] = useState<Record<string, string[]>>({ chronic: [], goals: [], sex: [] });
   const [other, setOther] = useState<Record<string, string>>({ chronic: "", goals: "" });
   const [birth, setBirth] = useState("");
+  const [dobOpen, setDobOpen] = useState(false);
   const [height, setHeight] = useState("170");
   const [weight, setWeight] = useState("70");
   const [submitting, setSubmitting] = useState(false);
@@ -128,7 +130,6 @@ export default function OnboardingQuiz() {
 
   const onMeasurements = index >= QUESTIONS.length;
   const current = QUESTIONS[Math.min(index, QUESTIONS.length - 1)];
-  const today = useMemo(() => new Date().toISOString().slice(0, 10), []);
 
   if (!ready || !session || nextAuthPath(session) !== "/onboarding-quiz") return <PlusLoading label="Opening Vitaway Plus…" />;
 
@@ -138,9 +139,11 @@ export default function OnboardingQuiz() {
     if (q.options.some((o) => o.other && sel.includes(o.value)) && !(other[q.id] ?? "").trim()) return false;
     return true;
   };
+  const birthDate = parseIsoDate(birth);
+  const age = birthDate ? ageFrom(birthDate) : 0;
   const h = Number(height.trim());
   const w = Number(weight.trim());
-  const measurementsReady = Boolean(birth) && h > 0 && w > 0;
+  const measurementsReady = Boolean(birthDate) && age >= 1 && h > 0 && w > 0;
   const canAdvance = onMeasurements ? measurementsReady : answered(current);
   const otherSelected = !onMeasurements && current.options.some((o) => o.other && picked[current.id].includes(o.value));
 
@@ -182,8 +185,7 @@ export default function OnboardingQuiz() {
   };
 
   const saveMeasurements = async (): Promise<boolean> => {
-    const age = birth ? ageFrom(new Date(`${birth}T00:00:00`)) : 0;
-    if (!birth || age < 1 || !(h > 0) || !(w > 0)) {
+    if (!birthDate || age < 1 || !(h > 0) || !(w > 0)) {
       toast(t("onboarding_measures_required"), { error: true });
       return false;
     }
@@ -280,7 +282,15 @@ export default function OnboardingQuiz() {
         {onMeasurements ? (
           <>
             <LineField label={t("onboarding_dob")}>
-              <input type="date" max={today} value={birth} onChange={(e) => setBirth(e.target.value)} className="vita-quiz-input" aria-label={t("onboarding_dob_hint")} />
+              <button
+                type="button"
+                className="vita-quiz-input"
+                onClick={() => setDobOpen(true)}
+                aria-label={t("onboarding_dob_hint")}
+                style={{ textAlign: "left", cursor: "pointer", color: birth ? "var(--vc-navy)" : navyA(0.35) }}
+              >
+                {birth ? formatSlashDate(birth) : t("onboarding_dob_hint")}
+              </button>
             </LineField>
             <LineField label={t("ap_height")}>
               <input inputMode="decimal" value={height} placeholder={t("onboarding_height_hint")} onChange={(e) => setHeight(e.target.value.replace(/[^0-9.]/g, ""))} className="vita-quiz-input" />
@@ -310,6 +320,7 @@ export default function OnboardingQuiz() {
         ) : null}
       </div>
     </>,
+    <>
     <div style={{ display: "flex", alignItems: "center", gap: 12, paddingTop: 12 }}>
       <CircleButton label="Back" size={56} background="#003e48" color="#fff" onClick={back}>
         <MdArrowBack size={22} />
@@ -324,6 +335,19 @@ export default function OnboardingQuiz() {
           onClick={next}
         />
       </div>
-    </div>,
+    </div>
+    <DatePickerModal
+      open={dobOpen}
+      value={birth}
+      initialDate={yearsAgoFromToday(30)}
+      firstDate={yearsAgoFromToday(120)}
+      lastDate={todayLocal()}
+      initialMode="year"
+      cancelLabel={t("cancel")}
+      okLabel={t("ok")}
+      onClose={() => setDobOpen(false)}
+      onPick={setBirth}
+    />
+    </>,
   );
 }
