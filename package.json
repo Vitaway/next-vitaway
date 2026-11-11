@@ -13,9 +13,11 @@
   "dependencies": {
     "axios": "^1.8.1",
     "cloudinary": "^2.6.0",
+    "clsx": "^2.1.1",
     "datauri": "^4.1.0",
     "flags": "^3.2.0",
     "framer-motion": "^12.6.3",
+    "iconsax-react": "^0.0.8",
     "keen-slider": "^6.8.6",
     "lucide-react": "^0.488.0",
     "next": "15.2.8",
@@ -26,8 +28,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-icons": "^5.5.0",
-    "tailwind-merge": "^3.5.0",
-    "clsx": "^2.1.1"
+    "tailwind-merge": "^3.5.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
