@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { usePlusAuth } from "@/lib/plus/auth-context";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { isStaffPrimaryDoor } from "@/lib/plus/session";
-import { nextAuthPath } from "@/lib/plus/auth-flow";
+import { useAuthGate } from "@/lib/plus/use-auth-gate";
 import PlusLoading from "../plus-loading";
 import StaffDoor from "../staff-door";
 import Dock, { ROOT_TABS, useAppPath } from "./dock";
@@ -15,7 +15,8 @@ const CLIENT_DOOR_KEY = "vitaway.plus.clientDoor";
 
 /** Signed-in client app frame: auth gate, staff door, and the Flutter-style dock on tab roots. */
 export default function ClientFrame({ children }: { children: React.ReactNode }) {
-  const { session, ready, signOut } = usePlusAuth();
+  const { signOut } = usePlusAuth();
+  const { session, allowed } = useAuthGate("/home", "/onboarding");
   const { replace } = usePlusPaths();
   const path = useAppPath();
   const [clientDoor, setClientDoor] = useState(false);
@@ -24,14 +25,7 @@ export default function ClientFrame({ children }: { children: React.ReactNode })
     setClientDoor(window.sessionStorage.getItem(CLIENT_DOOR_KEY) === "1");
   }, []);
 
-  const gate = session ? nextAuthPath(session) : "/onboarding";
-
-  useEffect(() => {
-    // Flutter router: signed out → /onboarding; unverified, missing contact or quiz → that step.
-    if (ready && gate !== "/home") replace(gate);
-  }, [ready, gate, replace]);
-
-  if (!ready || !session || gate !== "/home") {
+  if (!allowed || !session) {
     return <PlusLoading label="Opening Vitaway Plus…" />;
   }
 

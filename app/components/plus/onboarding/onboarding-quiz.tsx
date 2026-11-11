@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { TickCircle } from "iconsax-react";
 import { MdArrowBack, MdArrowForward, MdCheck } from "react-icons/md";
 import { usePlusAuth } from "@/lib/plus/auth-context";
-import { nextAuthPath } from "@/lib/plus/auth-flow";
+import { useAuthGate } from "@/lib/plus/use-auth-gate";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { useT } from "@/lib/plus/i18n";
 import { mobileRequest, MobileApiError } from "@/lib/plus/client/api";
@@ -110,7 +110,8 @@ function LineField({ label, children }: { label: string; children: React.ReactNo
 export default function OnboardingQuiz() {
   const t = useT();
   const { toast } = useFeedback();
-  const { session, ready, completeSignIn } = usePlusAuth();
+  const { completeSignIn } = usePlusAuth();
+  const { session, allowed } = useAuthGate("/onboarding-quiz");
   const { replace } = usePlusPaths();
   const [started, setStarted] = useState(false);
   const [index, setIndex] = useState(0);
@@ -122,16 +123,10 @@ export default function OnboardingQuiz() {
   const [weight, setWeight] = useState("70");
   const [submitting, setSubmitting] = useState(false);
 
-  useEffect(() => {
-    if (!ready) return;
-    if (!session) replace("/signin");
-    else if (nextAuthPath(session) !== "/onboarding-quiz") replace(nextAuthPath(session));
-  }, [ready, session, replace]);
-
   const onMeasurements = index >= QUESTIONS.length;
   const current = QUESTIONS[Math.min(index, QUESTIONS.length - 1)];
 
-  if (!ready || !session || nextAuthPath(session) !== "/onboarding-quiz") return <PlusLoading label="Opening Vitaway Plus…" />;
+  if (!allowed || !session) return <PlusLoading label="Opening Vitaway Plus…" />;
 
   const answered = (q: Question) => {
     const sel = picked[q.id];

@@ -123,6 +123,67 @@ export function sessionFromMobilePayload(payload: Json): PlusSession {
   };
 }
 
+/** Merge GET /me/ (Flutter refreshGateFromServer) into a saved PWA session. */
+export function applyMobileUserToSession(session: PlusSession, payload: Json): PlusSession {
+  const user = ((payload.user as Json | undefined) ?? payload) as Json;
+  if (!user || typeof user !== "object" || user.id == null) return session;
+  const profile = ((user.profile as Json | undefined) ?? {}) as Json;
+  const name = [str(user.first_name), str(user.last_name)].filter(Boolean).join(" ").trim();
+  const org = user.organization && typeof user.organization === "object" ? (user.organization as Json) : null;
+  return {
+    ...session,
+    user: {
+      ...session.user,
+      id: str(user.id) || session.user.id,
+      email: str(user.email) || session.user.email,
+      displayName: name || session.user.displayName,
+      role: str(user.user_type) || session.user.role,
+    },
+    phone: str(profile.phone_number) || session.phone,
+    verified: user.is_verified === true,
+    needsContact: user.needs_contact === true,
+    hasCompletedProfile: user.has_completed_profile === true,
+    organizationName: org ? str(org.name).trim() : session.organizationName,
+    organizationDiscount: org && typeof org.discount_pct === "number" ? Math.round(org.discount_pct) : session.organizationDiscount,
+  };
+}
+
+/**
+ * Re-read account flags from the API. Returns null on a 401 so the session can
+ * be dropped; any other failure keeps the local session.
+ */
+export async function refreshSessionFromMe(session: PlusSession, timeoutMs = 8_000): Promise<PlusSession | null> {
+  if (!session.mobileToken) return session;
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const response = await fetch(`${apiBase()}/me/`, {
+      method: "GET",
+      headers: { Accept: "application/json", Authorization: `Token ${session.mobileToken}` },
+      signal: controller.signal,
+      cache: "no-store",
+    });
+    if (response.status === 401) return null;
+    if (!response.ok) return session;
+    const text = await response.text();
+    let data: unknown = text;
+    try {
+      data = text ? JSON.parse(text) : {};
+    } catch {
+      return session;
+    }
+    const body =
+      data && typeof data === "object" && "data" in (data as Json) && (data as Json).success !== undefined
+        ? ((data as Json).data as Json)
+        : (data as Json);
+    return applyMobileUserToSession(session, body);
+  } catch {
+    return session;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 export async function passwordLogin(id: Identifier, password: string): Promise<PlusSession> {
   return sessionFromMobilePayload(await call("/login", { ...id, password }, { form: true }));
 }

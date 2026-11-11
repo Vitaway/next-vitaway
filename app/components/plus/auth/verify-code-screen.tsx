@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { MdCheck } from "react-icons/md";
 import { usePlusAuth } from "@/lib/plus/auth-context";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { useT } from "@/lib/plus/i18n";
 import { nextAuthPath } from "@/lib/plus/auth-flow";
+import { useAuthGate } from "@/lib/plus/use-auth-gate";
 import { confirmAccountVerification, resendAccountVerification } from "@/lib/plus/mobile-auth";
 import PlusLoading from "../plus-loading";
 import { ActionButton, useFeedback } from "../ui/vita";
@@ -15,19 +16,14 @@ import { AuthHeader, AuthScreen, AuthTextButton, CodeField, Gap } from "./auth-u
 export default function VerifyCodeScreen() {
   const t = useT();
   const { toast } = useFeedback();
-  const { session, ready, completeSignIn, signOut } = usePlusAuth();
+  const { completeSignIn, signOut } = usePlusAuth();
+  const { session, allowed } = useAuthGate("/verify-code");
   const { replace } = usePlusPaths();
   const [code, setCode] = useState("");
   const [busy, setBusy] = useState(false);
   const [resending, setResending] = useState(false);
 
-  useEffect(() => {
-    if (!ready) return;
-    if (!session) replace("/signin");
-    else if (session.verified !== false) replace(nextAuthPath(session));
-  }, [ready, session, replace]);
-
-  if (!ready || !session || session.verified !== false) return <PlusLoading label="Opening Vitaway Plus…" />;
+  if (!allowed || !session) return <PlusLoading label="Opening Vitaway Plus…" />;
 
   const email = session.user.email ?? "";
   const onPhone = email.endsWith("@phone.vitaway.local");

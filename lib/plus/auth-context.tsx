@@ -1,12 +1,14 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { logoutPlus } from "./auth-api";
 import { setUnauthorizedHandler } from "./client/api";
 import { clearResourceCache } from "./client/use-resource";
+import { refreshSessionFromMe } from "./mobile-auth";
 import {
   clearPlusSession,
   hasStaleSession,
+  isStaffPrimaryDoor,
   loadPlusSession,
   savePlusSession,
   type PlusSession,
@@ -23,43 +25,100 @@ type PlusAuthValue = {
 
 const PlusAuthContext = createContext<PlusAuthValue | null>(null);
 
+function flagsNeedServer(session: PlusSession): boolean {
+  return Boolean(session.mobileToken) && !isStaffPrimaryDoor(session.primaryDoor) && typeof session.hasCompletedProfile !== "boolean";
+}
+
 export function PlusAuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<PlusSession | null>(null);
   const [ready, setReady] = useState(false);
   const [signInNotice, setSignInNotice] = useState<string | null>(null);
+  const generation = useRef(0);
 
-  useEffect(() => {
-    if (hasStaleSession()) {
-      clearPlusSession();
-      setSignInNotice("Please sign in again to open the updated app.");
-    }
-    setSession(loadPlusSession());
-    setReady(true);
-  }, []);
-
-  useEffect(() => {
-    setUnauthorizedHandler(() => {
-      clearPlusSession();
-      clearResourceCache();
-      setSession(null);
-      setSignInNotice("Your session ended. Please sign in again.");
-    });
-    return () => setUnauthorizedHandler(null);
-  }, []);
-
-  const completeSignIn = useCallback((next: PlusSession) => {
-    savePlusSession(next);
-    setSignInNotice(null);
-    setSession(next);
-  }, []);
-
-  const signOut = useCallback(async () => {
-    const token = session?.token;
+  const dropSession = useCallback((notice: string) => {
     clearPlusSession();
     clearResourceCache();
     setSession(null);
+    setSignInNotice(notice);
+  }, []);
+
+  const acceptRefresh = useCallback(
+    (gen: number, refreshed: PlusSession | null) => {
+      if (gen !== generation.current) return;
+      if (refreshed === null) {
+        dropSession("Your session ended. Please sign in again.");
+        return;
+      }
+      let next = refreshed;
+      if (flagsNeedServer(next)) next = { ...next, hasCompletedProfile: false };
+      savePlusSession(next);
+      setSession(next);
+    },
+    [dropSession],
+  );
+
+  useEffect(() => {
+    let cancelled = false;
+    const gen = ++generation.current;
+
+    const boot = async () => {
+      if (hasStaleSession()) {
+        clearPlusSession();
+        setSignInNotice("Please sign in again to open the updated app.");
+      }
+      const current = loadPlusSession();
+      // Unknown mobile flags: wait for /me (Flutter refreshGateFromServer) so we
+      // don't bounce the quiz and home, or skip the quiz for a new account.
+      if (current && flagsNeedServer(current)) {
+        const refreshed = await refreshSessionFromMe(current);
+        if (cancelled || gen !== generation.current) return;
+        if (refreshed === null) {
+          dropSession("Your session ended. Please sign in again.");
+        } else {
+          acceptRefresh(gen, refreshed);
+        }
+        setReady(true);
+        return;
+      }
+
+      setSession(current);
+      setReady(true);
+      if (!current?.mobileToken) return;
+      const refreshed = await refreshSessionFromMe(current);
+      if (cancelled) return;
+      acceptRefresh(gen, refreshed);
+    };
+
+    void boot();
+    return () => {
+      cancelled = true;
+    };
+  }, [acceptRefresh, dropSession]);
+
+  useEffect(() => {
+    setUnauthorizedHandler(() => {
+      generation.current += 1;
+      dropSession("Your session ended. Please sign in again.");
+    });
+    return () => setUnauthorizedHandler(null);
+  }, [dropSession]);
+
+  const completeSignIn = useCallback((next: PlusSession) => {
+    const gen = ++generation.current;
+    savePlusSession(next);
+    setSignInNotice(null);
+    setSession(next);
+    if (!next.mobileToken) return;
+    void refreshSessionFromMe(next).then((refreshed) => acceptRefresh(gen, refreshed));
+  }, [acceptRefresh]);
+
+  const signOut = useCallback(async () => {
+    const token = session?.token;
+    generation.current += 1;
+    dropSession("");
+    setSignInNotice(null);
     if (token) await logoutPlus(token);
-  }, [session?.token]);
+  }, [session?.token, dropSession]);
 
   const value = useMemo(
     () => ({ session, ready, signInNotice, completeSignIn, signOut }),

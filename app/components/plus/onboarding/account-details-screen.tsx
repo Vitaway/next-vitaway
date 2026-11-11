@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Sms, User } from "iconsax-react";
 import { usePlusAuth } from "@/lib/plus/auth-context";
 import { nextAuthPath } from "@/lib/plus/auth-flow";
+import { useAuthGate } from "@/lib/plus/use-auth-gate";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { useT } from "@/lib/plus/i18n";
 import { mobileRequest, MobileApiError } from "@/lib/plus/client/api";
@@ -25,7 +26,8 @@ function partnerName(raw: string): string {
 export default function AccountDetailsScreen() {
   const t = useT();
   const { toast } = useFeedback();
-  const { session, ready, completeSignIn } = usePlusAuth();
+  const { completeSignIn } = usePlusAuth();
+  const { session, allowed } = useAuthGate("/account-details");
   const { replace } = usePlusPaths();
   const [first, setFirst] = useState("");
   const [last, setLast] = useState("");
@@ -35,19 +37,13 @@ export default function AccountDetailsScreen() {
   const [tried, setTried] = useState(false);
 
   useEffect(() => {
-    if (!ready) return;
-    if (!session) replace("/signin");
-    else if (nextAuthPath(session) !== "/account-details") replace(nextAuthPath(session));
-  }, [ready, session, replace]);
-
-  useEffect(() => {
     const current = session?.user.email?.trim() ?? "";
     if (current && !current.toLowerCase().includes(MAILBOX)) setEmail(current);
     // Only seed once per account.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session?.user.id]);
 
-  if (!ready || !session || nextAuthPath(session) !== "/account-details") return <PlusLoading label="Opening Vitaway Plus…" />;
+  if (!allowed || !session) return <PlusLoading label="Opening Vitaway Plus…" />;
 
   const nameError = tried && first.trim().length < 2 ? t("name_too_short") : null;
   const mail = email.trim();
