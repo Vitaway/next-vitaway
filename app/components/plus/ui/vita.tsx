@@ -162,17 +162,11 @@ export function ActionButton({
   type?: "button" | "submit";
   style?: React.CSSProperties;
 }) {
-  // VitaActionButton: the icon panel fills the button while pressed; a Future
-  // from onPressed shows the dot loader and ignores further taps.
+  // VitaActionButton: a Future from onPressed shows the dot loader and ignores
+  // further taps. On the web the button stays solid; pressing only darkens the fill.
   const [busy, setBusy] = useState(false);
-  const [pressed, setPressed] = useState(false);
   const showLoading = loading || busy;
   const enabled = !disabled && !showLoading;
-  const open = pressed && enabled;
-  const press = (down: boolean) => {
-    if (!enabled && down) return;
-    setPressed(down);
-  };
   return (
     <button
       type={type}
@@ -182,7 +176,6 @@ export function ActionButton({
         full && "full",
         small && "small",
         iconFirst && "icon-first",
-        open && "open",
         disabled && !showLoading && "off",
         showLoading && "busy",
       )}
@@ -190,10 +183,6 @@ export function ActionButton({
       aria-busy={showLoading || undefined}
       aria-label={label}
       style={style}
-      onPointerDown={() => press(true)}
-      onPointerUp={() => press(false)}
-      onPointerLeave={() => press(false)}
-      onPointerCancel={() => press(false)}
       onClick={
         onClick
           ? async () => {
