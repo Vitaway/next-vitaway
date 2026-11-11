@@ -6,6 +6,7 @@ import { useMe } from "@/lib/plus/client/data";
 import { MobileApiError, mobileRequest } from "@/lib/plus/client/api";
 import { invalidate } from "@/lib/plus/client/use-resource";
 import { HANDLE_PATTERN, acceptGuidelines, guidelinesAccepted } from "@/lib/plus/client/chat";
+import { useLegal } from "../legal/legal-dialog";
 import { ActionButton, Modal } from "../ui/vita";
 
 const CONTACT_EMAIL = "support@vitaway.org";
@@ -17,6 +18,7 @@ const para = { margin: "0 0 10px", fontSize: 14, lineHeight: 1.4, color: "var(--
 export function useChatGate() {
   const t = useT();
   const { user } = useMe();
+  const { openLegal } = useLegal();
   const [sheet, setSheet] = useState<null | "guidelines" | "handle">(null);
   const [handleRequired, setHandleRequired] = useState(false);
   const [handle, setHandle] = useState("");
@@ -99,7 +101,13 @@ export function useChatGate() {
         <p style={para}>You can report a message or block someone from the message menu. Blocking stops new messages both ways.</p>
         <p style={para}>In Community, people see the name you choose, not your real name.</p>
         <p style={{ ...para, fontWeight: 700, whiteSpace: "pre-line" }}>{`Questions: ${CONTACT_EMAIL}\n${CONTACT_PHONE}`}</p>
-        <a href="/privacy-policy" target="_blank" rel="noreferrer" style={{ fontSize: 14, fontWeight: 600, color: "var(--vc-teal-ink)" }}>Privacy policy</a>
+        <button
+          type="button"
+          onClick={() => openLegal("privacy")}
+          style={{ padding: 0, border: "none", background: "none", cursor: "pointer", fontSize: 14, fontWeight: 600, color: "var(--vc-teal-ink)" }}
+        >
+          Privacy policy
+        </button>
       </Modal>
       <Modal open={sheet === "handle"} title={t(handleRequired ? "community_setup_title" : "community_handle")} onClose={() => finish(false)}>
         {blurb.trim() ? <p style={{ margin: "0 0 14px", fontSize: 13, lineHeight: 1.4, fontWeight: 500, color: "var(--vc-muted)" }}>{blurb}</p> : null}
