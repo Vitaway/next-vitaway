@@ -15,7 +15,7 @@ import Logo from "@/app/components/logo";
 
 type Step = "phone" | "code" | "second";
 
-export default function SignInForm() {
+export default function PhoneCodeForm() {
   const { completeSignIn, signInNotice } = usePlusAuth();
   const { replace } = usePlusPaths();
   const [step, setStep] = useState<Step>("phone");

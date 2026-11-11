@@ -23,9 +23,11 @@ export default function ClientFrame({ children }: { children: React.ReactNode })
 
   useEffect(() => {
     if (ready && !session) replace("/signin");
+    // Flutter router: an unverified account stays on /verify-code.
+    else if (ready && session && session.verified === false) replace("/verify-code");
   }, [ready, session, replace]);
 
-  if (!ready || !session) {
+  if (!ready || !session || session.verified === false) {
     return <PlusLoading label="Opening Vitaway Plus…" />;
   }
 

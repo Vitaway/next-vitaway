@@ -20,6 +20,10 @@ export type PlusSession = {
   primaryDoor: AppDoor | null;
   /** Phone used at sign-in. Stored locally so we can show the account without a synthetic email. */
   phone?: string | null;
+  /** Mobile account flags from /login, /signup and /me (storeUserData in Flutter). */
+  verified?: boolean;
+  needsContact?: boolean;
+  hasCompletedProfile?: boolean;
 };
 
 export const PLUS_SESSION_KEY = "vitaway.plus.session";
@@ -69,7 +73,9 @@ export function loadPlusSession(): PlusSession | null {
     const raw = window.localStorage.getItem(PLUS_SESSION_KEY);
     if (!raw) return null;
     const parsed = JSON.parse(raw) as Partial<PlusSession>;
-    if (!parsed || typeof parsed.token !== "string" || !parsed.token) return null;
+    if (!parsed || typeof parsed.token !== "string") return null;
+    // Password sign-in (Flutter /login) only returns the mobile key, so the web token may be empty.
+    if (!parsed.token && !(typeof parsed.mobileToken === "string" && parsed.mobileToken)) return null;
     if (!parsed.user || typeof parsed.user !== "object" || typeof parsed.user.id !== "string") {
       return null;
     }
@@ -90,6 +96,9 @@ export function loadPlusSession(): PlusSession | null {
       doors,
       primaryDoor,
       phone: typeof parsed.phone === "string" ? parsed.phone : null,
+      verified: typeof parsed.verified === "boolean" ? parsed.verified : undefined,
+      needsContact: typeof parsed.needsContact === "boolean" ? parsed.needsContact : undefined,
+      hasCompletedProfile: typeof parsed.hasCompletedProfile === "boolean" ? parsed.hasCompletedProfile : undefined,
     };
   } catch {
     return null;

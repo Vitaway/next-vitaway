@@ -9,6 +9,9 @@ import {
 
 const APP_PAGE_PREFIXES = [
   "/signin",
+  "/register",
+  "/forgot-password",
+  "/verify-code",
   "/today",
   "/offline",
   "/home",

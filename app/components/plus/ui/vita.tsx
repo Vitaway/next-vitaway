@@ -1,7 +1,8 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft, ArrowRight } from "iconsax-react";
+import { ArrowLeft } from "iconsax-react";
+import { MdArrowForward } from "react-icons/md";
 import { useBack } from "@/lib/plus/nav";
 import { mediaUrl } from "@/lib/plus/client/api";
 
@@ -161,18 +162,42 @@ export function ActionButton({
   type?: "button" | "submit";
   style?: React.CSSProperties;
 }) {
+  // VitaActionButton: the icon panel fills the button while pressed; a Future
+  // from onPressed shows the dot loader and ignores further taps.
   const [busy, setBusy] = useState(false);
+  const [pressed, setPressed] = useState(false);
   const showLoading = loading || busy;
+  const enabled = !disabled && !showLoading;
+  const open = pressed && enabled;
+  const press = (down: boolean) => {
+    if (!enabled && down) return;
+    setPressed(down);
+  };
   return (
     <button
       type={type}
-      className={cx("vita-btn", tone, full && "full", small && "small", iconFirst && "icon-first")}
-      disabled={disabled || showLoading}
+      className={cx(
+        "vita-btn",
+        tone,
+        full && "full",
+        small && "small",
+        iconFirst && "icon-first",
+        open && "open",
+        disabled && !showLoading && "off",
+        showLoading && "busy",
+      )}
+      disabled={!enabled}
       aria-busy={showLoading || undefined}
+      aria-label={label}
       style={style}
+      onPointerDown={() => press(true)}
+      onPointerUp={() => press(false)}
+      onPointerLeave={() => press(false)}
+      onPointerCancel={() => press(false)}
       onClick={
         onClick
           ? async () => {
+              if (!enabled) return;
               const result = onClick();
               if (result && typeof (result as Promise<void>).then === "function") {
                 setBusy(true);
@@ -187,7 +212,9 @@ export function ActionButton({
       }
     >
       <span className="label">{label}</span>
-      <span className="icon">{showLoading ? <DotSpinner small /> : icon ?? <ArrowRight size={16} color="currentColor" />}</span>
+      <span className="icon">
+        {showLoading ? <DotSpinner small /> : <span className="glyph">{icon ?? <MdArrowForward size={16} />}</span>}
+      </span>
     </button>
   );
 }

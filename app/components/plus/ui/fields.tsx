@@ -1,5 +1,6 @@
 "use client";
 
+import { useId } from "react";
 import { ArrowDown2 } from "iconsax-react";
 
 const navyA = (a: number) => `rgba(var(--vc-navy-rgb),${a})`;
@@ -32,6 +33,10 @@ export function AuthField({
   onClick,
   suffix,
   maxLength,
+  leading,
+  name,
+  onEnter,
+  autoFocus,
 }: {
   label?: string;
   hint: string;
@@ -49,7 +54,13 @@ export function AuthField({
   onClick?: () => void;
   suffix?: React.ReactNode;
   maxLength?: number;
+  /** Replaces the icon, like AuthField.leading (the country dial picker). */
+  leading?: React.ReactNode;
+  name?: string;
+  onEnter?: () => void;
+  autoFocus?: boolean;
 }) {
+  const inputId = useId();
   const dimmed = disabled || (readOnly && !onClick);
   const line = error ? "var(--vc-danger)" : dimmed ? navyA(0.12) : navyA(0.55);
   const common = {
@@ -59,14 +70,33 @@ export function AuthField({
     readOnly: readOnly || Boolean(onClick),
     onClick,
     maxLength,
+    name,
+    autoFocus,
+    id: inputId,
+    onKeyDown: onEnter
+      ? (e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+          if (e.key === "Enter" && !multiline) {
+            e.preventDefault();
+            onEnter();
+          }
+        }
+      : undefined,
     onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => onChange?.(e.target.value),
     style: { flex: 1, minWidth: 0, border: 0, outline: "none", background: "transparent", fontSize: 16, fontWeight: 500, color: dimmed ? navyA(0.38) : "var(--vc-ink)", padding: "14px 0", fontFamily: "inherit", resize: "none" as const, cursor: onClick ? "pointer" : undefined },
   };
   return (
     <div style={{ opacity: dimmed ? 0.72 : 1 }}>
       {label ? <FieldCaption text={label} required={required} dimmed={dimmed} /> : null}
-      <label className="vita-auth-field" style={{ display: "flex", alignItems: multiline ? "flex-start" : "center", gap: 12, borderBottom: `1px solid ${line}` }}>
-        <span style={{ display: "inline-flex", color: dimmed ? navyA(0.28) : navyA(0.55), paddingTop: multiline ? 14 : 0, paddingLeft: 12 }}>{icon}</span>
+      <label
+        htmlFor={inputId}
+        className={error ? "vita-auth-field error" : "vita-auth-field"}
+        style={{ display: "flex", alignItems: multiline ? "flex-start" : "center", gap: leading ? 0 : 12, ["--af-line" as string]: line }}
+      >
+        {leading ? (
+          <span style={{ display: "inline-flex" }}>{leading}</span>
+        ) : (
+          <span style={{ display: "inline-flex", color: dimmed ? navyA(0.28) : navyA(0.55), paddingTop: multiline ? 14 : 0, paddingLeft: 12 }}>{icon}</span>
+        )}
         {multiline ? <textarea rows={1} {...common} /> : <input type={type} inputMode={inputMode} autoComplete={autoComplete} {...common} />}
         {suffix}
       </label>
