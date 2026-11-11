@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { headers } from "next/headers";
 import PlusAppProviders from "@/app/components/plus/plus-app-providers";
 import { appBasePathFromHost, appManifestPath } from "@/lib/plus/host";
+import { PLUS_APPLE_TOUCH_ICON, PLUS_ICON_192 } from "@/lib/plus/manifest";
 import "./plus.css";
 
 export const viewport: Viewport = {
@@ -33,7 +34,11 @@ export async function generateMetadata(): Promise<Metadata> {
       address: false,
     },
     icons: {
-      apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+      icon: [
+        { url: "/favicon.ico", sizes: "any" },
+        { url: PLUS_ICON_192, sizes: "192x192", type: "image/png" },
+      ],
+      apple: [{ url: PLUS_APPLE_TOUCH_ICON, sizes: "180x180", type: "image/png" }],
     },
     other: {
       "mobile-web-app-capable": "yes",
