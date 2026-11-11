@@ -444,10 +444,12 @@ export function ChatScreen({ roomId }: { roomId: string }) {
     }
   };
 
-  // Presence: polling stands in for the socket.
+  // Presence, as message.dart _Presence: typing, connecting, group, online.
   let presence: { label: string; dot: string } | null = null;
-  if (!chat.connected) presence = { label: "Connecting…", dot: "rgba(255,255,255,0.45)" };
+  if (chat.typingName !== null) presence = { label: "typing…", dot: "#fff" };
+  else if (!chat.connected) presence = { label: "Connecting…", dot: "rgba(255,255,255,0.45)" };
   else if (isGroup) presence = { label: "Group chat", dot: "rgba(255,255,255,0.45)" };
+  else if (chat.otherOnline) presence = { label: "Online", dot: "#2FBF71" };
 
   const rows: React.ReactNode[] = [];
   const list = chat.messages;
@@ -546,6 +548,14 @@ export function ChatScreen({ roomId }: { roomId: string }) {
           rows
         )}
       </div>
+      {chat.typingName !== null ? (
+        <div style={{ padding: "0 20px 6px 48px", display: "flex", alignItems: "center", gap: 8, flex: "none" }} aria-live="polite">
+          <span style={{ padding: "8px 10px", borderRadius: 8, background: "var(--vc-surface)", border: `1px solid ${LINE}`, display: "inline-flex" }}>
+            <DotSpinner small color={navyA(0.55)} />
+          </span>
+          <span style={{ fontSize: 12, fontWeight: 600, color: navyA(0.5), whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{chat.typingName ? `${chat.typingName} is typing…` : "Typing…"}</span>
+        </div>
+      ) : null}
       <div style={{ background: "var(--vc-surface)", borderTop: `1px solid ${LINE}`, paddingBottom: "env(safe-area-inset-bottom)", flex: "none" }}>
         {replying ? (
           <div style={{ margin: "10px 12px 0", padding: "8px 4px 8px 10px", borderRadius: 6, background: "var(--vc-canvas)", borderLeft: `3px solid ${ORANGE}`, display: "flex", alignItems: "center", gap: 8 }}>
@@ -570,6 +580,7 @@ export function ChatScreen({ roomId }: { roomId: string }) {
             placeholder={t("type_message")}
             onChange={(e) => {
               setText(e.target.value);
+              if (e.target.value.trim()) chat.sendTyping();
               e.target.style.height = "auto";
               e.target.style.height = `${Math.min(e.target.scrollHeight, 120)}px`;
             }}

@@ -3,6 +3,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { MobileApiError, apiUrl, asList, errorMessage, mobileRequest } from "./api";
 import { useResource } from "./use-resource";
+import { apiBase } from "../auth-api";
+import { loadPlusSession } from "../session";
 
 /* ───────── Rooms (support_page.dart Room) ───────── */
 
@@ -235,10 +237,18 @@ export function parseMessage(raw: unknown): ChatMessage {
 }
 
 const POLL_MS = 4000;
+const SOCKET_POLL_MS = 20_000;
+const RECONNECT_S = [1, 2, 4, 8, 15, 30];
+
+/** wss://…/ws/chat/<room>/ on the API host. Browsers cannot set headers on a socket, so the key rides in ?token=. */
+function chatSocketUrl(roomId: string, token: string): string {
+  const base = apiBase().replace(/^http/i, "ws");
+  return `${base}/ws/chat/${encodeURIComponent(roomId)}/?token=${encodeURIComponent(token)}`;
+}
 
 /**
- * ChatController over REST: the socket is replaced by polling the thread, so
- * live typing and online status do not reach the PWA.
+ * ChatController: the room socket carries new messages, typing and online
+ * status like Flutter; REST polling keeps working when the socket is down.
  */
 export function useChatRoom(roomId: string) {
   const api = `/api/v1/mobile/chat/rooms/${encodeURIComponent(roomId)}`;
@@ -250,6 +260,12 @@ export function useChatRoom(roomId: string) {
   const [error, setError] = useState<string | null>(null);
   const hasMessages = useRef(false);
   const alive = useRef(true);
+  const socket = useRef<WebSocket | null>(null);
+  const [socketOpen, setSocketOpen] = useState(false);
+  const [typingName, setTypingName] = useState<string | null>(null);
+  const [otherOnline, setOtherOnline] = useState(false);
+  const typingTimer = useRef<number | undefined>(undefined);
+  const lastTyping = useRef(0);
 
   const refresh = useCallback(async () => {
     try {
@@ -275,14 +291,113 @@ export function useChatRoom(roomId: string) {
   useEffect(() => {
     alive.current = true;
     void refresh();
+    let last = Date.now();
     const timer = window.setInterval(() => {
-      if (document.visibilityState === "visible") void refresh();
+      if (document.visibilityState !== "visible") return;
+      const every = socket.current?.readyState === WebSocket.OPEN ? SOCKET_POLL_MS : POLL_MS;
+      if (Date.now() - last < every - 100) return;
+      last = Date.now();
+      void refresh();
     }, POLL_MS);
     return () => {
       alive.current = false;
       window.clearInterval(timer);
     };
   }, [refresh]);
+
+  // Live socket, reconnecting with the same back-off as Flutter.
+  useEffect(() => {
+    const token = loadPlusSession()?.mobileToken ?? "";
+    if (!token || typeof WebSocket === "undefined") return;
+    let closed = false;
+    let attempt = 0;
+    let retry: number | undefined;
+    const connect = () => {
+      if (closed) return;
+      let ws: WebSocket;
+      try {
+        ws = new WebSocket(chatSocketUrl(roomId, token));
+      } catch {
+        schedule();
+        return;
+      }
+      socket.current = ws;
+      ws.onopen = () => {
+        attempt = 0;
+        setSocketOpen(true);
+      };
+      ws.onmessage = (event) => {
+        if (typeof event.data !== "string") return;
+        let data: unknown;
+        try {
+          data = JSON.parse(event.data);
+        } catch {
+          return;
+        }
+        if (Array.isArray(data)) {
+          const parsed = data.map(parseMessage);
+          hasMessages.current = parsed.length > 0;
+          setMessages(parsed);
+          setPending((p) => p.filter((m) => m.failed));
+          setTypingName(null);
+          setLoading(false);
+          setError(null);
+          setConnected(true);
+          return;
+        }
+        if (!data || typeof data !== "object") return;
+        const body = data as Record<string, unknown>;
+        if (body.type === "typing") {
+          setTypingName(`${String(body.first_name ?? "")} ${String(body.last_name ?? "")}`.trim());
+          window.clearTimeout(typingTimer.current);
+          typingTimer.current = window.setTimeout(() => setTypingName(null), 4000);
+        } else if (body.type === "user_status") {
+          setOtherOnline(body.status === "online");
+        } else if (body.type === "error" && typeof body.error === "string") {
+          setError(body.error);
+        }
+      };
+      ws.onclose = () => {
+        if (socket.current === ws) socket.current = null;
+        setSocketOpen(false);
+        schedule();
+      };
+      ws.onerror = () => ws.close();
+    };
+    const schedule = () => {
+      if (closed) return;
+      window.clearTimeout(retry);
+      const seconds = RECONNECT_S[Math.min(attempt, RECONNECT_S.length - 1)];
+      attempt++;
+      retry = window.setTimeout(connect, seconds * 1000);
+    };
+    connect();
+    return () => {
+      closed = true;
+      window.clearTimeout(retry);
+      window.clearTimeout(typingTimer.current);
+      const ws = socket.current;
+      socket.current = null;
+      if (ws) {
+        ws.onclose = null;
+        ws.close();
+      }
+      setSocketOpen(false);
+      setTypingName(null);
+      setOtherOnline(false);
+    };
+  }, [roomId]);
+
+  /** Tells the room you are typing, at most every 2 seconds, like Flutter. */
+  const sendTyping = useCallback(() => {
+    const ws = socket.current;
+    const token = loadPlusSession()?.mobileToken ?? "";
+    if (!ws || ws.readyState !== WebSocket.OPEN || !token) return;
+    const now = Date.now();
+    if (now - lastTyping.current < 2000) return;
+    lastTyping.current = now;
+    ws.send(JSON.stringify({ type: "typing", token }));
+  }, []);
 
   const fail = (draft: ChatMessage, msg: string) => {
     setPending((p) => p.map((m) => (m.id === draft.id ? { ...m, pending: false, failed: true } : m)));
@@ -390,7 +505,11 @@ export function useChatRoom(roomId: string) {
   return {
     messages: [...messages, ...pending],
     loading,
-    connected,
+    connected: connected || socketOpen,
+    live: socketOpen,
+    typingName,
+    otherOnline,
+    sendTyping,
     error,
     clearError: () => setError(null),
     refresh,

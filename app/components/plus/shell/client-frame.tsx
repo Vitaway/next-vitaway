@@ -8,6 +8,7 @@ import { nextAuthPath } from "@/lib/plus/auth-flow";
 import PlusLoading from "../plus-loading";
 import StaffDoor from "../staff-door";
 import Dock, { ROOT_TABS, useAppPath } from "./dock";
+import { useSupportBadge } from "@/lib/plus/client/support-badge";
 
 const CLIENT_DOOR_KEY = "vitaway.plus.clientDoor";
 
@@ -65,7 +66,13 @@ export default function ClientFrame({ children }: { children: React.ReactNode })
   return (
     <>
       {children}
-      {showDock ? <Dock /> : null}
+      <LiveDock show={showDock} path={path} />
     </>
   );
+}
+
+/** Stays mounted across pages so the Support dot survives leaving the root tabs. */
+function LiveDock({ show, path }: { show: boolean; path: string }) {
+  const supportBadge = useSupportBadge(path);
+  return show ? <Dock supportBadge={supportBadge} /> : null;
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Calendar1, Edit2, InfoCircle, Logout, NoteText, People, Ruler, Trash, User } from "iconsax-react";
+import { Calendar1, Edit2, InfoCircle, Logout, NoteText, People, Ruler, Trash, User, UserAdd } from "iconsax-react";
 import { useT } from "@/lib/plus/i18n";
 import { useMe } from "@/lib/plus/client/data";
 import { asList, mobileRequest } from "@/lib/plus/client/api";
@@ -194,9 +194,16 @@ export function ChatInfoScreen({ roomId }: { roomId: string }) {
                   <ActionButton full label="Edit community" icon={<Edit2 size={16} color="currentColor" />} onClick={() => setEdit({ name: room.name, description: room.description })} />
                 </div>
                 <div style={{ marginTop: 12 }}>
+                  <ActionButton full label={t("add_user")} icon={<UserAdd size={16} color="currentColor" />} onClick={() => push(`/chat/${encodeURIComponent(room.id)}/add-user`)} />
+                </div>
+                <div style={{ marginTop: 12 }}>
                   <ActionButton full label="Delete community" icon={<Trash size={16} color="currentColor" />} onClick={remove} />
                 </div>
               </>
+            ) : type === "coach" ? (
+              <div style={{ marginTop: 28 }}>
+                <ActionButton full label={t("add_user")} icon={<UserAdd size={16} color="currentColor" />} onClick={() => push(`/chat/${encodeURIComponent(room.id)}/add-user`)} />
+              </div>
             ) : null}
           </>
         ) : null}
