@@ -160,7 +160,7 @@
 }
 .vita-btn.small { height: 36px; }
 .vita-btn.full { width: 100%; }
-.vita-btn .label { flex: 1; display: flex; align-items: center; justify-content: center; padding: 0 18px; font-weight: 700; font-size: 14px; line-height: 1; white-space: nowrap; }
+.vita-btn .label { flex: 1; min-width: 0; display: block; align-self: center; text-align: center; padding: 0 18px; font-weight: 700; font-size: 14px; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .vita-btn.small .label { font-size: 13px; padding: 0 14px; }
 .vita-btn .icon { width: 46px; display: flex; align-items: center; justify-content: center; border-left: 1px solid rgba(255, 255, 255, 0.22); }
 .vita-btn.small .icon { width: 36px; }
