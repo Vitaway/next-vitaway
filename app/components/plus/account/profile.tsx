@@ -17,6 +17,7 @@ import {
   InfoCircle,
   Logout,
   MessageQuestion,
+  Mobile,
   Messages2,
   Moon,
   NoteText,
@@ -31,6 +32,7 @@ import {
 } from "iconsax-react";
 import { useT, useLanguage, languageDisplayName } from "@/lib/plus/i18n";
 import { useTheme } from "@/lib/plus/theme";
+import { useInstall } from "@/lib/plus/install";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { useResource } from "@/lib/plus/client/use-resource";
 import { AppBar, Modal, Page, Photo, useFeedback } from "../ui/vita";
@@ -69,6 +71,7 @@ export function ProfileScreen() {
   const { openLegal } = useLegal();
   const { push } = usePlusPaths();
   const { toast, alert } = useFeedback();
+  const installApp = useInstall();
   const { p } = useProfile();
   const { language } = useLanguage();
   const { mode, dark } = useTheme();
@@ -123,6 +126,9 @@ export function ProfileScreen() {
     { icon: icon(Setting2), label: t("settings_title"), onClick: () => push("/settings") },
   ];
   const second: MenuItem[] = [
+    ...(installApp.available
+      ? [{ icon: icon(Mobile), label: t("install_app_button"), subtitle: t("install_menu_subtitle"), onClick: () => void installApp.install() }]
+      : []),
     { icon: icon(MessageQuestion), label: t("contact_us_title"), onClick: () => push("/account/contact") },
     { icon: icon(Export), label: t("share_app"), onClick: () => void share() },
     { icon: icon(InfoCircle), label: t("about_app"), onClick: () => push("/account/about") },

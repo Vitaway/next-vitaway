@@ -2,6 +2,7 @@
 
 import { PlusAuthProvider } from "@/lib/plus/auth-context";
 import { LanguageProvider } from "@/lib/plus/i18n";
+import { InstallProvider } from "@/lib/plus/install";
 import { NavigationTracker } from "@/lib/plus/nav";
 import { PlusPathsProvider } from "@/lib/plus/plus-paths";
 import { ThemeProvider, useTheme } from "@/lib/plus/theme";
@@ -31,6 +32,7 @@ export default function PlusAppProviders({
     <PlusPathsProvider basePath={basePath}>
       <ThemeProvider>
         <LanguageProvider>
+          <InstallProvider>
           <PlusAuthProvider>
             <VitaRoot>
               <FeedbackProvider>
@@ -45,6 +47,7 @@ export default function PlusAppProviders({
               </FeedbackProvider>
             </VitaRoot>
           </PlusAuthProvider>
+          </InstallProvider>
         </LanguageProvider>
       </ThemeProvider>
     </PlusPathsProvider>
