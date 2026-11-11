@@ -1,5 +1,6 @@
 "use client";
 
+import { requestNotificationPermission } from "@/lib/plus/web-notifications";
 import { useState } from "react";
 import { ArrowDown2, Calendar1, Edit, Health, NoteText, Refresh, Repeat, Trash } from "iconsax-react";
 import { useT } from "@/lib/plus/i18n";
@@ -242,12 +243,15 @@ export function AddMedicationScreen() {
     if (!canSave) return;
     setSaving(true);
     setSubmitError(null);
+    // Like add_medication.dart scheduling reminders: ask while we still have the tap.
+    const permission = requestNotificationPermission();
     try {
       await mobileRequest("/medications/", {
         method: "POST",
         body: { user: user?.id ?? null, name: n, date_added: ymdOf(start), dosage, frequency: resolvedFreq, unit, times: times.map(fmt), instructions: instructions.trim() || null, reminders_enabled: true },
       });
       refreshMedications();
+      await permission;
       toast(t("medication_saved"));
       goBack();
     } catch {

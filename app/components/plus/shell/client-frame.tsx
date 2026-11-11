@@ -9,6 +9,7 @@ import PlusLoading from "../plus-loading";
 import StaffDoor from "../staff-door";
 import Dock, { ROOT_TABS, useAppPath } from "./dock";
 import { useSupportBadge } from "@/lib/plus/client/support-badge";
+import { WebReminderScheduler } from "../reminders/web-reminder-scheduler";
 
 const CLIENT_DOOR_KEY = "vitaway.plus.clientDoor";
 
@@ -74,5 +75,10 @@ export default function ClientFrame({ children }: { children: React.ReactNode })
 /** Stays mounted across pages so the Support dot survives leaving the root tabs. */
 function LiveDock({ show, path }: { show: boolean; path: string }) {
   const supportBadge = useSupportBadge(path);
-  return show ? <Dock supportBadge={supportBadge} /> : null;
+  return (
+    <>
+      <WebReminderScheduler />
+      {show ? <Dock supportBadge={supportBadge} /> : null}
+    </>
+  );
 }

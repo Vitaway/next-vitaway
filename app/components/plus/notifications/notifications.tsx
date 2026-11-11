@@ -9,6 +9,8 @@ import { useMe, useNotifications, type NotificationItem } from "@/lib/plus/clien
 import { invalidate } from "@/lib/plus/client/use-resource";
 import { TimePickerModal } from "../readings/log-chrome";
 import { ActionButton, AppBar, CenterSpinner, CircleButton, EmptyState, Modal, useFeedback } from "../ui/vita";
+import { REMINDER_SETTINGS_EVENT } from "@/lib/plus/web-notifications";
+import { BrowserNotificationRow } from "../reminders/notification-permission";
 
 const navyA = (a: number) => `rgba(var(--vc-navy-rgb),${a})`;
 
@@ -294,6 +296,7 @@ function NotificationSettingsModal({ open, onClose }: { open: boolean; onClose: 
     } catch {
       /* storage full or blocked */
     }
+    window.dispatchEvent(new Event(REMINDER_SETTINGS_EVENT));
   };
   const chip = (on: boolean, label: string, onClick: () => void) => (
     <button type="button" aria-pressed={on} onClick={onClick} style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "6px 12px", borderRadius: 8, fontSize: 13, fontWeight: 600, border: `1px solid ${on ? "transparent" : navyA(0.2)}`, background: on ? "var(--vc-mint)" : "transparent", color: "var(--vc-navy)" }}>
@@ -337,6 +340,7 @@ function NotificationSettingsModal({ open, onClose }: { open: boolean; onClose: 
             </div>
           );
         })}
+        <BrowserNotificationRow />
         <div style={{ height: 8 }} />
         {sw("Medicine reminders", "Notify me when it is time to take a dose", s.medicineRemindersEnabled, (v) => save({ ...s, medicineRemindersEnabled: v }))}
         {sw("Quiet hours", "Hold reminders until quiet hours end", s.quietHoursEnabled, (v) => save({ ...s, quietHoursEnabled: v }))}

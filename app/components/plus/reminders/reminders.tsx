@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { requestNotificationPermission } from "@/lib/plus/web-notifications";
+import { BrowserNotificationRow } from "./notification-permission";
 import { Add, Alarm, Clock, CloseCircle, Drop, Health, Heart, Notification as NotificationIcon, Play, Save2, Trash } from "iconsax-react";
 import { useT } from "@/lib/plus/i18n";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
@@ -24,16 +26,7 @@ const nowTime = () => {
 };
 
 /** Asks for notification permission the way NotificationPermissions.requestIfNeeded does. */
-async function requestNotifications(): Promise<boolean> {
-  if (typeof window === "undefined" || !("Notification" in window)) return false;
-  if (Notification.permission === "granted") return true;
-  if (Notification.permission === "denied") return false;
-  try {
-    return (await Notification.requestPermission()) === "granted";
-  } catch {
-    return false;
-  }
-}
+const requestNotifications = requestNotificationPermission;
 
 function SwitchKnob({ value, onChange, label }: { value: boolean; onChange: (v: boolean) => void; label: string }) {
   return (
@@ -80,7 +73,12 @@ export function RemindersScreen() {
             </div>
           </div>
         ) : (
-          list.map((r) => <ReminderTile key={r.id} reminder={r} onClick={() => push(`/reminders/${encodeURIComponent(r.id)}`)} />)
+          <>
+            <div style={{ margin: "6px 16px" }}>
+              <BrowserNotificationRow compact />
+            </div>
+            {list.map((r) => <ReminderTile key={r.id} reminder={r} onClick={() => push(`/reminders/${encodeURIComponent(r.id)}`)} />)}
+          </>
         )}
       </div>
     </Page>

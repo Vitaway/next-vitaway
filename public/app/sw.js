@@ -58,3 +58,19 @@ self.addEventListener("fetch", (event) => {
     );
   }
 });
+
+// Reminder notifications: tapping one focuses the app (or opens it) on the page it points to.
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  const target = new URL((event.notification.data && event.notification.data.url) || `${PREFIX}/home`, self.location.origin).href;
+  event.waitUntil(
+    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((clients) => {
+      for (const client of clients) {
+        if (new URL(client.url).origin === self.location.origin && "focus" in client) {
+          return client.focus().then((focused) => (focused && "navigate" in focused ? focused.navigate(target) : focused));
+        }
+      }
+      return self.clients.openWindow ? self.clients.openWindow(target) : undefined;
+    }),
+  );
+});
