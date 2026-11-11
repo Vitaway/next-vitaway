@@ -25,6 +25,17 @@ const APP_PAGE_PREFIXES = [
   "/plans",
   "/articles",
   "/reminders",
+  "/visit-reports",
+  "/notes",
+  "/meal-plans",
+  "/documents",
+  "/chat",
+  "/coaches",
+  "/account",
+  "/settings",
+  "/learn",
+  "/challenges",
+  "/payment",
 ];
 const APP_FILE_PATHS = new Set(["/manifest.webmanifest", "/sw.js"]);
 

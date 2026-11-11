@@ -167,3 +167,33 @@ export function asList<T = Record<string, unknown>>(value: unknown): T[] {
   }
   return [];
 }
+
+/** GET a protected file as a Blob (first path that answers with a file wins). */
+export async function fetchProtectedBlob(paths: string[]): Promise<Blob> {
+  const token = mobileToken();
+  let lastError: unknown = null;
+  for (const path of paths) {
+    try {
+      const response = await fetch(apiUrl(path), { headers: token ? { Authorization: `Token ${token}` } : {}, cache: "no-store" });
+      if (response.status === 401 && unauthorizedHandler) unauthorizedHandler();
+      const type = response.headers.get("content-type") ?? "";
+      if (response.ok && !type.includes("application/json") && !type.includes("text/html")) {
+        const blob = await response.blob();
+        if (blob.size > 0) return blob;
+      }
+      lastError = new MobileApiError("Could not open the file.", response.status, null);
+    } catch (error) {
+      lastError = error;
+    }
+  }
+  throw lastError ?? new Error("Could not open the file.");
+}
+
+/** Public or signed URL as a Blob, with the Token header when it is our API. */
+export async function fetchUrlBlob(url: string): Promise<Blob> {
+  const token = mobileToken();
+  const sameApi = url.startsWith(apiBase());
+  const response = await fetch(url, { headers: sameApi && token ? { Authorization: `Token ${token}` } : {}, cache: "no-store" });
+  if (!response.ok) throw new MobileApiError("Could not open the file.", response.status, null);
+  return response.blob();
+}

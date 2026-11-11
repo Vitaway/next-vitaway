@@ -7,6 +7,7 @@ import { PlusPathsProvider } from "@/lib/plus/plus-paths";
 import { ThemeProvider, useTheme } from "@/lib/plus/theme";
 import InstallPrompt from "./install-prompt";
 import ServiceWorkerRegister from "./service-worker-register";
+import { DocumentReaderProvider } from "./ui/document-reader";
 import { FeedbackProvider } from "./ui/vita";
 
 function VitaRoot({ children }: { children: React.ReactNode }) {
@@ -32,10 +33,12 @@ export default function PlusAppProviders({
           <PlusAuthProvider>
             <VitaRoot>
               <FeedbackProvider>
-                <NavigationTracker />
-                <ServiceWorkerRegister />
-                {children}
-                <InstallPrompt />
+                <DocumentReaderProvider>
+                  <NavigationTracker />
+                  <ServiceWorkerRegister />
+                  {children}
+                  <InstallPrompt />
+                </DocumentReaderProvider>
               </FeedbackProvider>
             </VitaRoot>
           </PlusAuthProvider>
