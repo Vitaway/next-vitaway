@@ -9,6 +9,11 @@ module.exports = {
     '/*.env',
     '/checkout/success',
     '/checkout/cancel',
+    '/app',
+    '/app/*',
+    '/signin',
+    '/today',
+    '/offline',
   ],
   additionalPaths: async (config) => {
     const result = [];

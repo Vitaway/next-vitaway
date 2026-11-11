@@ -1,0 +1,86 @@
+export type AppDoor = "client_app" | "care_console" | "partner_portal";
+
+export type PlusSessionUser = {
+  id: string;
+  email?: string | null;
+  displayName?: string | null;
+  role?: string | null;
+};
+
+export type PlusSession = {
+  token: string;
+  user: PlusSessionUser;
+  roles: string[];
+  doors: AppDoor[];
+  primaryDoor: AppDoor | null;
+  /** Phone used at sign-in. Stored locally so we can show the account without a synthetic email. */
+  phone?: string | null;
+};
+
+export const PLUS_SESSION_KEY = "vitaway.plus.session";
+
+const DOORS: AppDoor[] = ["client_app", "care_console", "partner_portal"];
+
+function isDoor(value: unknown): value is AppDoor {
+  return typeof value === "string" && (DOORS as string[]).includes(value);
+}
+
+export function isStaffPrimaryDoor(door: AppDoor | null | undefined): boolean {
+  return door === "care_console" || door === "partner_portal";
+}
+
+export function displayAccountName(session: PlusSession | null): string {
+  if (!session) return "Signed in";
+  const name = session.user.displayName?.trim();
+  if (name && name.toLowerCase() !== "vitaway member") return name;
+  if (session.phone) return formatPhoneForDisplay(session.phone);
+  return name || "Vitaway member";
+}
+
+export function formatPhoneForDisplay(phone: string): string {
+  const digits = phone.replace(/\D/g, "");
+  if (digits.startsWith("250") && digits.length === 12) {
+    return `+250 ${digits.slice(3, 6)} ${digits.slice(6, 9)} ${digits.slice(9)}`;
+  }
+  return phone;
+}
+
+export function loadPlusSession(): PlusSession | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem(PLUS_SESSION_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as Partial<PlusSession>;
+    if (!parsed || typeof parsed.token !== "string" || !parsed.token) return null;
+    if (!parsed.user || typeof parsed.user !== "object" || typeof parsed.user.id !== "string") {
+      return null;
+    }
+    const doors = Array.isArray(parsed.doors) ? parsed.doors.filter(isDoor) : [];
+    const primaryDoor = isDoor(parsed.primaryDoor) ? parsed.primaryDoor : null;
+    return {
+      token: parsed.token,
+      user: {
+        id: parsed.user.id,
+        email: parsed.user.email ?? null,
+        displayName: parsed.user.displayName ?? null,
+        role: parsed.user.role ?? null,
+      },
+      roles: Array.isArray(parsed.roles) ? parsed.roles.filter((role) => typeof role === "string") : [],
+      doors,
+      primaryDoor,
+      phone: typeof parsed.phone === "string" ? parsed.phone : null,
+    };
+  } catch {
+    return null;
+  }
+}
+
+export function savePlusSession(session: PlusSession): void {
+  if (typeof window === "undefined") return;
+  window.localStorage.setItem(PLUS_SESSION_KEY, JSON.stringify(session));
+}
+
+export function clearPlusSession(): void {
+  if (typeof window === "undefined") return;
+  window.localStorage.removeItem(PLUS_SESSION_KEY);
+}
