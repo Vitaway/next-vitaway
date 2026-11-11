@@ -283,3 +283,9 @@ input[type="range"].vita-range { width: 100%; accent-color: #003e48; }
 /* message.dart pending: a thin spinning ring */
 @keyframes vita-spin { to { transform: rotate(360deg); } }
 .vita-mini-ring { width: 10px; height: 10px; border-radius: 50%; border: 1.4px solid var(--vc-faint); border-top-color: transparent; display: inline-block; animation: vita-spin 0.8s linear infinite; }
+
+/* Article body (flutter_html defaults). */
+.vita-article img { max-width: 100%; height: auto; border-radius: 8px; }
+.vita-article a { color: var(--vc-teal); font-weight: 700; }
+.vita-article h1, .vita-article h2, .vita-article h3 { color: var(--vc-navy); line-height: 1.25; }
+.vita-article ul, .vita-article ol { padding-left: 22px; }

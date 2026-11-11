@@ -34,6 +34,7 @@ const APP_PAGE_PREFIXES = [
   "/account",
   "/settings",
   "/learn",
+  "/badges",
   "/challenges",
   "/payment",
 ];
