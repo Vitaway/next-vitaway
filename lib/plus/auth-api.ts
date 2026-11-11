@@ -36,7 +36,7 @@ export type VerifyOtpResult =
   | { kind: "staff_setup"; challengeToken: string; message: string };
 
 export function apiBase(): string {
-  return (process.env.NEXT_PUBLIC_ENVENTORY_API_URL || "https://care-api.vitaway.org").replace(/\/$/, "");
+  return (process.env.NEXT_PUBLIC_PLUS_API_URL || "https://care-api.vitaway.org").replace(/\/$/, "");
 }
 
 type Envelope<T> = { success?: boolean; data?: T; message?: string; error?: string };
