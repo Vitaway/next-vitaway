@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
-  APP_PRODUCTION_HOST,
   APP_SURFACE_HEADER,
   MARKETING_PRODUCTION_HOST,
   isVitawayAppHost,
-  hostnameOf,
 } from "@/lib/plus/host";
 
 const APP_PAGE_PREFIXES = [
@@ -76,15 +74,7 @@ export function middleware(request: NextRequest) {
       return NextResponse.redirect(url);
     }
 
-    if (isMarketingProductionHost(host)) {
-      const url = request.nextUrl.clone();
-      url.hostname = APP_PRODUCTION_HOST;
-      url.protocol = "https:";
-      url.port = "";
-      url.pathname = pathname.slice("/app".length) || "/";
-      return NextResponse.redirect(url);
-    }
-
+    // For now the PWA lives at www.vitaway.org/app; app.vitaway.org is not live yet.
     return nextWithSurface(request);
   }
 
@@ -104,11 +94,6 @@ export function middleware(request: NextRequest) {
   }
 
   return NextResponse.next();
-}
-
-function isMarketingProductionHost(hostHeader: string): boolean {
-  const host = hostnameOf(hostHeader);
-  return host === MARKETING_PRODUCTION_HOST || host === "vitaway.org";
 }
 
 export const config = {
