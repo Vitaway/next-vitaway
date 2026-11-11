@@ -5,6 +5,7 @@ import { logoutPlus } from "./auth-api";
 import { setUnauthorizedHandler } from "./client/api";
 import { clearResourceCache } from "./client/use-resource";
 import { refreshSessionFromMe } from "./mobile-auth";
+import { removeWebPush } from "./web-push";
 import {
   clearPlusSession,
   hasStaleSession,
@@ -36,6 +37,8 @@ export function PlusAuthProvider({ children }: { children: React.ReactNode }) {
   const generation = useRef(0);
 
   const dropSession = useCallback((notice: string) => {
+    // No token left to tell the server; without the subscription its next push gets 410 and the row goes.
+    void removeWebPush(null);
     clearPlusSession();
     clearResourceCache();
     setSession(null);
@@ -114,11 +117,12 @@ export function PlusAuthProvider({ children }: { children: React.ReactNode }) {
 
   const signOut = useCallback(async () => {
     const token = session?.token;
+    await removeWebPush(session?.mobileToken);
     generation.current += 1;
     dropSession("");
     setSignInNotice(null);
     if (token) await logoutPlus(token);
-  }, [session?.token, dropSession]);
+  }, [session?.token, session?.mobileToken, dropSession]);
 
   const value = useMemo(
     () => ({ session, ready, signInNotice, completeSignIn, signOut }),

@@ -1,5 +1,5 @@
-/* Vitaway Plus app-shell service worker. Caches a simple offline fallback. */
-const CACHE = "vitaway-plus-shell-v2";
+/* Vitaway Plus app-shell service worker. Caches a simple offline fallback and shows Web Push alerts. */
+const CACHE = "vitaway-plus-shell-v3";
 // Dev servers serve unhashed chunks; caching them would pin stale code.
 const DEV_HOST = /^(localhost|127\.0\.0\.1|\[::1\]|.+\.local)$/.test(self.location.hostname);
 const PREFIX = self.location.pathname.startsWith("/app/") ? "/app" : "";
@@ -59,7 +59,44 @@ self.addEventListener("fetch", (event) => {
   }
 });
 
-// Reminder notifications: tapping one focuses the app (or opens it) on the page it points to.
+const ICON = "/web-app-manifest-192x192.png";
+
+// Only pages inside the app; anything else opens the notifications list.
+function appPath(value) {
+  return typeof value === "string" && value.startsWith("/") && !value.startsWith("//") && !/[?#\\]/.test(value) ? value : "/notifications";
+}
+
+// Web Push from core-backend (care-team alerts and reminders), shown even when the app is closed.
+self.addEventListener("push", (event) => {
+  let data = {};
+  try {
+    data = event.data ? event.data.json() : {};
+  } catch {
+    data = { body: event.data ? event.data.text() : "" };
+  }
+  const tag = typeof data.tag === "string" && data.tag ? data.tag : undefined;
+  const options = {
+    body: typeof data.body === "string" ? data.body : "",
+    icon: ICON,
+    badge: ICON,
+    data: { url: `${PREFIX}${appPath(data.path)}` },
+    silent: data.silent === true,
+    ...(tag ? { tag, renotify: true } : {}),
+    ...(data.vibrate === false || data.silent === true ? {} : { vibrate: [200, 100, 200] }),
+  };
+  event.waitUntil(self.registration.showNotification(typeof data.title === "string" && data.title ? data.title : "Vitaway", options));
+});
+
+// The browser rotated the subscription: renew it now; the app saves the new one on its next open.
+self.addEventListener("pushsubscriptionchange", (event) => {
+  const options = event.oldSubscription && event.oldSubscription.options;
+  if (!options || !options.applicationServerKey) return;
+  event.waitUntil(
+    self.registration.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: options.applicationServerKey }).catch(() => undefined),
+  );
+});
+
+// Tapping a notification focuses the app (or opens it) on the page it points to.
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
   const target = new URL((event.notification.data && event.notification.data.url) || `${PREFIX}/home`, self.location.origin).href;

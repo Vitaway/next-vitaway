@@ -6,7 +6,8 @@ import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { useReminders, type Reminder } from "@/lib/plus/reminders";
 import { useTodayMedications } from "@/lib/plus/client/meds";
 import { doseLabel, reminderTimes, type Medication } from "@/lib/plus/medication";
-import { REMINDER_SETTINGS_EVENT, showWebNotification, type WebNotice } from "@/lib/plus/web-notifications";
+import { NOTIFICATION_STATE_EVENT, REMINDER_SETTINGS_EVENT, showWebNotification, type WebNotice } from "@/lib/plus/web-notifications";
+import { syncWebPush, webPushActive, type PushReminder } from "@/lib/plus/web-push";
 import { loadNotificationSettings, type NotificationSettings } from "../notifications/notifications";
 import { useFeedback } from "../ui/vita";
 
@@ -15,6 +16,9 @@ const LATE_OK_MS = 30 * 60 * 1000;
 const FIRED_KEY = "vitaway.plus.remindersFired";
 
 type Planned = WebNotice & { at: number; key: string; medId?: number; slot?: string; followUp?: boolean };
+
+const RESYNC_MS = 12 * 60 * 60 * 1000;
+const hhmm = (d: Date) => `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
 
 const parseHm = (s: string): [number, number] | null => {
   const m = /^(\d{1,2}):(\d{2})/.exec(s.trim());
@@ -66,9 +70,11 @@ function markFired(key: string) {
 }
 
 /**
- * Fires medicine and personal reminders as browser notifications while the app
- * is open, following medication_reminders.dart (a 5-minute warning, then a
- * dose-time follow-up) and add_reminder.dart (daily at each time).
+ * Fires medicine and personal reminders as browser notifications, following
+ * medication_reminders.dart (a 5-minute warning, then a dose-time follow-up)
+ * and add_reminder.dart (daily at each time). Once Web Push is on, the same
+ * schedule is saved on the server, which sends them even when the app is
+ * closed, so the in-tab timers stand down to avoid doubles.
  */
 export function WebReminderScheduler() {
   const t = useT();
@@ -77,6 +83,8 @@ export function WebReminderScheduler() {
   const meds = useTodayMedications();
   const { list: reminders } = useReminders();
   const medsRef = useRef<Medication[]>([]);
+  const synced = useRef<{ payload: string; at: number } | null>(null);
+  const medsReady = !meds.loading;
   const [tick, setTick] = useState(0);
   medsRef.current = meds.list;
   const medsKey = JSON.stringify(meds.list.map((m) => [m.id, m.name, m.times, m.frequency, m.reminders_enabled, m.dosage, m.unit, m.instructions, m.slots.map((s) => [s.time, s.status])]));
@@ -91,11 +99,13 @@ export function WebReminderScheduler() {
       if (e.key && /notificationSettings|reminders$/.test(e.key)) bump();
     };
     window.addEventListener(REMINDER_SETTINGS_EVENT, bump);
+    window.addEventListener(NOTIFICATION_STATE_EVENT, bump);
     window.addEventListener("storage", onStorage);
     document.addEventListener("visibilitychange", onVisible);
     const hourly = window.setInterval(bump, 60 * 60 * 1000);
     return () => {
       window.removeEventListener(REMINDER_SETTINGS_EVENT, bump);
+      window.removeEventListener(NOTIFICATION_STATE_EVENT, bump);
       window.removeEventListener("storage", onStorage);
       document.removeEventListener("visibilitychange", onVisible);
       window.clearInterval(hourly);
@@ -106,6 +116,7 @@ export function WebReminderScheduler() {
     const now = new Date();
     const settings = loadNotificationSettings();
     const planned: Planned[] = [];
+    const schedule: PushReminder[] = [];
     const day = (h: number, m: number) => new Date(now.getFullYear(), now.getMonth(), now.getDate(), h, m);
     const stamp = (d: Date) => `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}T${d.getHours()}:${d.getMinutes()}`;
 
@@ -122,8 +133,13 @@ export function WebReminderScheduler() {
           const early = adjustForQuietHours(settings, nextFire(new Date(dose.getTime() - 5 * 60_000), now, taken));
           const follow = adjustForQuietHours(settings, nextFire(dose, now, taken));
           const base = { url: href("/medications"), silent: !delivery.sound, vibrate: delivery.vibration, medId: med.id, slot: time };
-          planned.push({ ...base, at: early.getTime(), key: `med:${med.id}:${time}:early@${stamp(early)}`, tag: `med-${med.id}-${time}-early`, title: `Coming up: ${med.name}`, body: `In 5 minutes, take ${label}.` });
-          planned.push({ ...base, at: follow.getTime(), key: `med:${med.id}:${time}:due@${stamp(follow)}`, tag: `med-${med.id}-${time}-due`, title: `Log ${med.name}`, body: "You haven't logged this dose. We'll mark it as not taken in 2 minutes.", followUp: true });
+          const earlyNotice = { tag: `med-${med.id}-${time}-early`, title: `Coming up: ${med.name}`, body: `In 5 minutes, take ${label}.` };
+          const dueNotice = { tag: `med-${med.id}-${time}-due`, title: `Log ${med.name}`, body: "You haven't logged this dose. We'll mark it as not taken in 2 minutes." };
+          planned.push({ ...base, ...earlyNotice, at: early.getTime(), key: `med:${med.id}:${time}:early@${stamp(early)}` });
+          planned.push({ ...base, ...dueNotice, at: follow.getTime(), key: `med:${med.id}:${time}:due@${stamp(follow)}`, followUp: true });
+          const slot = `${String(hm[0]).padStart(2, "0")}:${String(hm[1]).padStart(2, "0")}`;
+          schedule.push({ ...earlyNotice, key: `med:${med.id}:${time}:early`, kind: "medicine_early", time: hhmm(early), path: "/medications", medication_id: med.id, slot });
+          schedule.push({ ...dueNotice, key: `med:${med.id}:${time}:due`, kind: "medicine_due", time: hhmm(follow), path: "/medications", medication_id: med.id, slot });
         });
       }
     }
@@ -139,9 +155,26 @@ export function WebReminderScheduler() {
         const hm = parseHm(time);
         if (!hm) return;
         const at = nextFire(day(hm[0], hm[1]), now, false);
-        planned.push({ at: at.getTime(), key: `rem:${reminder.id}:${i}@${stamp(at)}`, tag: `rem-${reminder.id}-${i}`, title, body, url: href(`/reminders/${encodeURIComponent(reminder.id)}`) });
+        const path = `/reminders/${encodeURIComponent(reminder.id)}`;
+        planned.push({ at: at.getTime(), key: `rem:${reminder.id}:${i}@${stamp(at)}`, tag: `rem-${reminder.id}-${i}`, title, body, url: href(path) });
+        schedule.push({ key: `rem:${reminder.id}:${i}`, kind: "reminder", time: hhmm(at), tag: `rem-${reminder.id}-${i}`, title, body, path });
       });
     }
+
+    // Save the schedule with the push subscription (only after medicines loaded, so a
+    // half-loaded list never wipes the server copy), and re-save twice a day.
+    if (medsReady) {
+      const payload = JSON.stringify({ schedule, delivery: settings.delivery });
+      const last = synced.current;
+      if (!last || last.payload !== payload || Date.now() - last.at > RESYNC_MS || !webPushActive()) {
+        void syncWebPush({ reminders: schedule, delivery: settings.delivery }).then((ok) => {
+          synced.current = ok ? { payload, at: Date.now() } : null;
+          if (ok) setTick((n) => n + 1);
+        });
+      }
+    }
+    // The server sends these while push is on; in-tab timers would show each one twice.
+    if (webPushActive()) return;
 
     const timers: number[] = [];
     const fire = (p: Planned) => {
@@ -164,7 +197,7 @@ export function WebReminderScheduler() {
     return () => timers.forEach((id) => window.clearTimeout(id));
     // Re-plan on data, reminders, settings or wake-up (tick).
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [medsKey, reminders, tick, href]);
+  }, [medsKey, medsReady, reminders, tick, href]);
 
   // Nothing to render; the permission prompt lives on the reminders and settings screens.
   return null;
