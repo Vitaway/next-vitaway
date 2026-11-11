@@ -8,6 +8,8 @@ import { appointmentKey, fmtClock, fmtMMMddY, isClinic, isClosed, isMissed, isUp
 import { relativeDayLabel } from "@/lib/plus/client/care";
 import { invalidate } from "@/lib/plus/client/use-resource";
 import { mobileRequest } from "@/lib/plus/client/api";
+import { createRoom } from "@/lib/plus/client/chat";
+import { stashRoom } from "../support/support";
 import { useGlucoseUnit } from "@/lib/plus/units";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { ActionButton, AppBar, Avatar, CenterSpinner, CircleButton, EmptyState, Modal, Page, Photo, Tabs, useFeedback } from "../ui/vita";
@@ -137,9 +139,9 @@ export function AppointmentDetailScreen({ appointmentKey: key }: { appointmentKe
   const openChat = async () => {
     if (!sub.active) return premium();
     try {
-      const room = await mobileRequest<Record<string, unknown>>("/api/create-room/", { method: "POST", body: [{ user_email: a.coach_profile?.email ?? "" }] });
-      const id = room?.id ?? room?.name;
-      if (id !== undefined) push(`/chat/${encodeURIComponent(String(id))}`);
+      const room = await createRoom([{ user_email: a.coach_profile?.email ?? "" }]);
+      stashRoom(room);
+      push(`/chat/${room.id}`);
     } catch (error) {
       toast(`Error creating chat room: ${error instanceof Error ? error.message : ""}`.trim(), { error: true });
     }
