@@ -20,6 +20,7 @@ type SessionUserPayload = {
 
 type SessionPayload = {
   token?: string;
+  mobile_token?: string | null;
   created?: boolean;
   roles?: string[];
   doors?: string[];
@@ -34,7 +35,7 @@ export type VerifyOtpResult =
   | { kind: "session"; session: PlusSession }
   | { kind: "staff_setup"; challengeToken: string; message: string };
 
-function apiBase(): string {
+export function apiBase(): string {
   return (process.env.NEXT_PUBLIC_ENVENTORY_API_URL || "https://care-api.vitaway.org").replace(/\/$/, "");
 }
 
@@ -80,6 +81,7 @@ function asSession(payload: SessionPayload, phone: string | null): PlusSession |
   };
   return {
     token: payload.token,
+    mobileToken: typeof payload.mobile_token === "string" ? payload.mobile_token : "",
     user,
     roles: stringList(payload.roles).length ? stringList(payload.roles) : stringList(payload.user.roles),
     doors: stringList(payload.doors).length

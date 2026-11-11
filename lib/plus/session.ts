@@ -9,6 +9,11 @@ export type PlusSessionUser = {
 
 export type PlusSession = {
   token: string;
+  /**
+   * DRF-style key the mobile endpoints expect as `Authorization: Token …`.
+   * Empty for staff accounts that have no client profile.
+   */
+  mobileToken: string;
   user: PlusSessionUser;
   roles: string[];
   doors: AppDoor[];
@@ -45,6 +50,19 @@ export function formatPhoneForDisplay(phone: string): string {
   return phone;
 }
 
+/** True when an older saved session exists that lacks the mobile key. */
+export function hasStaleSession(): boolean {
+  if (typeof window === "undefined") return false;
+  try {
+    const raw = window.localStorage.getItem(PLUS_SESSION_KEY);
+    if (!raw) return false;
+    const parsed = JSON.parse(raw) as Partial<PlusSession>;
+    return Boolean(parsed?.token) && typeof parsed?.mobileToken !== "string";
+  } catch {
+    return false;
+  }
+}
+
 export function loadPlusSession(): PlusSession | null {
   if (typeof window === "undefined") return null;
   try {
@@ -55,10 +73,13 @@ export function loadPlusSession(): PlusSession | null {
     if (!parsed.user || typeof parsed.user !== "object" || typeof parsed.user.id !== "string") {
       return null;
     }
+    // Sessions saved before the client app needed the mobile key must sign in again.
+    if (typeof parsed.mobileToken !== "string") return null;
     const doors = Array.isArray(parsed.doors) ? parsed.doors.filter(isDoor) : [];
     const primaryDoor = isDoor(parsed.primaryDoor) ? parsed.primaryDoor : null;
     return {
       token: parsed.token,
+      mobileToken: parsed.mobileToken,
       user: {
         id: parsed.user.id,
         email: parsed.user.email ?? null,

@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { headers } from "next/headers";
 import PlusAppProviders from "@/app/components/plus/plus-app-providers";
 import { appBasePathFromHost, appManifestPath } from "@/lib/plus/host";
+import "./plus.css";
 
 export const viewport: Viewport = {
   width: "device-width",

@@ -11,7 +11,7 @@ export default function SignInPage() {
   const { replace } = usePlusPaths();
 
   useEffect(() => {
-    if (ready && session) replace("/today");
+    if (ready && session) replace("/home");
   }, [ready, session, replace]);
 
   if (!ready || session) {

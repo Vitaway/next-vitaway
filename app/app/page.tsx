@@ -11,7 +11,7 @@ export default function PlusEntryPage() {
 
   useEffect(() => {
     if (!ready) return;
-    replace(session ? "/today" : "/signin");
+    replace(session ? "/home" : "/signin");
   }, [ready, session, replace]);
 
   return <PlusLoading label="Opening Vitaway Plus…" />;

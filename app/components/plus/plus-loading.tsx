@@ -1,8 +1,22 @@
+import { DotSpinner } from "./ui/vita";
+
 export default function PlusLoading({ label = "Loading…" }: { label?: string }) {
   return (
-    <div className="flex min-h-dvh flex-col items-center justify-center bg-[#F6F3EE] px-6 text-[#003E48]">
-      <div className="fetch-loader" aria-hidden />
-      <p className="mt-4 text-sm text-[#003E48]/70">{label}</p>
+    <div
+      style={{
+        minHeight: "100dvh",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 14,
+        padding: 24,
+        background: "var(--vc-canvas, #FFF4EE)",
+        color: "var(--vc-navy, #003E48)",
+      }}
+    >
+      <DotSpinner />
+      <p style={{ margin: 0, fontSize: 14, color: "var(--vc-muted, #5C6D66)" }}>{label}</p>
     </div>
   );
 }

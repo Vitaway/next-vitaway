@@ -1,5 +1,7 @@
 /* Vitaway Plus app-shell service worker. Caches a simple offline fallback. */
-const CACHE = "vitaway-plus-shell-v1";
+const CACHE = "vitaway-plus-shell-v2";
+// Dev servers serve unhashed chunks; caching them would pin stale code.
+const DEV_HOST = /^(localhost|127\.0\.0\.1|\[::1\]|.+\.local)$/.test(self.location.hostname);
 const PREFIX = self.location.pathname.startsWith("/app/") ? "/app" : "";
 const OFFLINE_URL = `${PREFIX}/offline`;
 
@@ -38,6 +40,8 @@ self.addEventListener("fetch", (event) => {
     );
     return;
   }
+
+  if (DEV_HOST) return;
 
   if (url.pathname.startsWith("/_next/static/") || /\.(?:png|svg|ico|webp|jpg|jpeg|gif|woff2?)$/i.test(url.pathname)) {
     event.respondWith(

@@ -7,7 +7,25 @@ import {
   hostnameOf,
 } from "@/lib/plus/host";
 
-const APP_PAGE_PREFIXES = ["/signin", "/today", "/offline"];
+const APP_PAGE_PREFIXES = [
+  "/signin",
+  "/today",
+  "/offline",
+  "/home",
+  "/care",
+  "/support",
+  "/profile",
+  "/log",
+  "/health-score",
+  "/metrics",
+  "/medications",
+  "/book-visit",
+  "/appointments",
+  "/notifications",
+  "/plans",
+  "/articles",
+  "/reminders",
+];
 const APP_FILE_PATHS = new Set(["/manifest.webmanifest", "/sw.js"]);
 
 function isAppSurfacePath(pathname: string): boolean {
@@ -77,6 +95,6 @@ function isMarketingProductionHost(hostHeader: string): boolean {
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|favicon.svg|robots.txt|sitemap.xml|site.webmanifest|images/|svgs/|paterners/).*)",
+    "/((?!_next/static|_next/image|favicon.ico|favicon.svg|robots.txt|sitemap.xml|site.webmanifest|images/|svgs/|paterners/|plus-assets/).*)",
   ],
 };

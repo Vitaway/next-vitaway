@@ -69,7 +69,7 @@ export default function SignInForm() {
         return;
       }
       completeSignIn(result.session);
-      replace("/today");
+      replace("/home");
     } catch (err) {
       fail(err, "Could not verify that code. Please try again.");
     } finally {
@@ -88,7 +88,7 @@ export default function SignInForm() {
     try {
       const session = await confirmStaffSecondFactor(challengeToken, secondCode.trim(), phone);
       completeSignIn(session);
-      replace("/today");
+      replace("/home");
     } catch (err) {
       fail(err, "Could not verify the second code. Please try again.");
     } finally {
