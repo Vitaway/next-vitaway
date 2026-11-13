@@ -718,7 +718,7 @@ export function AboutScreen() {
               {VITAWAY_CONTACT.phoneDisplay}
             </a>
           </div>
-          <div style={{ margin: "18px 0 10px", textAlign: "center", fontSize: 15, fontWeight: 800, color: "var(--vc-navy)" }}>{t("follow_us", undefined, "Follow Us")}</div>
+          <div style={{ margin: "18px 0 10px", textAlign: "center", fontSize: 15, fontWeight: 800, color: "var(--vc-navy)" }}>{t("follow_us")}</div>
           <SocialRow />
         </Card>
       </div>

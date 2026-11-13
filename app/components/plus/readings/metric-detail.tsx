@@ -2,7 +2,8 @@
 
 import { useMemo, useState } from "react";
 import { Activity, Add, Alarm, Drop, Flag, Heart, Weight } from "iconsax-react";
-import { useT } from "@/lib/plus/i18n";
+import { useT, type Translate } from "@/lib/plus/i18n";
+import { BMI_BAND_LABEL_KEY, bmiViewFor, type BmiView } from "@/lib/plus/bmi";
 import { useMe, useMetrics } from "@/lib/plus/client/data";
 import { saveWeightGoal, useGoals } from "@/lib/plus/client/goals";
 import { bpCategoryOf, bpMetricsStatus, glucoseCategoryOf, glucoseMetricsStatus, latestByType, parseStamp, type HealthMetric } from "@/lib/plus/health";
@@ -32,19 +33,21 @@ function dateLabel(raw: string, t: (k: string) => string): string {
   return fmtLongDay(at);
 }
 
-function statusFor(metric: HealthMetric, bmi: number): { label: string; chip: string; color: string } {
+function statusFor(metric: HealthMetric, bmi: BmiView, t: Translate): { label: string; chip: string; color: string } {
   const faint = "rgba(var(--vc-navy-rgb),0.45)";
   if (metric.type === "bp" || metric.type === "glucose") {
     const status = metric.type === "bp" ? bpMetricsStatus(bpCategoryOf(metric)) : glucoseMetricsStatus(glucoseCategoryOf(metric));
-    if (!status) return { label: "No reading yet", chip: "—", color: faint };
+    if (!status) return { label: t("no_reading_yet"), chip: "—", color: faint };
     const color = status.tone === "ok" ? "var(--vc-navy)" : status.tone === "warn" ? "var(--vc-action)" : "var(--vc-danger)";
     return { label: status.label, chip: status.chip, color };
   }
-  if (bmi <= 0) return { label: "Add your height for BMI", chip: "—", color: faint };
-  if (bmi < 18.5) return { label: "Underweight range", chip: "Low", color: "var(--vc-action)" };
-  if (bmi <= 24.9) return { label: "Healthy BMI range", chip: "Normal", color: "var(--vc-navy)" };
-  if (bmi <= 29.9) return { label: "Overweight range", chip: "High", color: "var(--vc-action)" };
-  return { label: "Talk with your care team", chip: "High", color: "var(--vc-danger)" };
+  // BL-013: no adult category under 18 or when the age is unknown; neutral note instead.
+  if (!bmi.band) return { label: t(bmi.noteKey ?? "bmi_need_height"), chip: "—", color: "rgba(var(--vc-navy-rgb),0.55)" };
+  const label = t(BMI_BAND_LABEL_KEY[bmi.band]);
+  if (bmi.band === "underweight") return { label, chip: t("chip_low"), color: "var(--vc-action)" };
+  if (bmi.band === "healthy") return { label, chip: t("chip_normal"), color: "var(--vc-navy)" };
+  if (bmi.band === "overweight") return { label, chip: t("chip_high"), color: "var(--vc-action)" };
+  return { label, chip: t("chip_high"), color: "var(--vc-danger)" };
 }
 
 const big = { fontSize: 40, lineHeight: 1, fontWeight: 800 } as const;
@@ -76,8 +79,9 @@ function BpRangeBar({ systolic }: { systolic: number }) {
   );
 }
 
-function SummaryHero({ metric, bmi, avg, date }: { metric: HealthMetric; bmi: number; avg: number | null; date: string }) {
-  const status = statusFor(metric, bmi);
+function SummaryHero({ metric, bmi, avg, date }: { metric: HealthMetric; bmi: BmiView; avg: number | null; date: string }) {
+  const t = useT();
+  const status = statusFor(metric, bmi, t);
   const tint = metric.type === "glucose" ? "var(--vc-tile-peach)" : metric.type === "bp" ? "var(--vc-tile-lilac)" : metric.type === "weight" ? "var(--vc-tile-mint)" : "var(--vc-wash)";
   const icon = metric.type === "glucose" ? <Drop size={20} variant="Bold" color="currentColor" /> : metric.type === "bp" ? <Activity size={20} color="currentColor" /> : metric.type === "weight" ? <Weight size={20} color="currentColor" /> : <Heart size={20} variant="Bold" color="currentColor" />;
   return (
@@ -103,7 +107,7 @@ function SummaryHero({ metric, bmi, avg, date }: { metric: HealthMetric; bmi: nu
               <Legend color="var(--vc-navy)" label="SYS" />
               <Legend color="var(--vc-action)" label="DIA" />
               <span style={{ flex: 1 }} />
-              {avg !== null ? <span style={small(0.55)}>Week avg SYS {avg.toFixed(0)}</span> : null}
+              {avg !== null ? <span style={small(0.55)}>{t("week_avg_sys", { value: avg.toFixed(0) })}</span> : null}
             </div>
             <div style={{ marginTop: 14 }}>
               <BpRangeBar systolic={metric.systolic ?? 0} />
@@ -116,11 +120,11 @@ function SummaryHero({ metric, bmi, avg, date }: { metric: HealthMetric; bmi: nu
               <span style={{ marginLeft: 8, paddingBottom: 6, ...small(0.45, 14) }}>kg</span>
               <span style={{ flex: 1 }} />
               <div style={{ textAlign: "right" }}>
-                <div style={{ fontSize: 11, fontWeight: 600, color: "rgba(var(--vc-navy-rgb),0.45)" }}>BMI</div>
-                <div style={{ fontSize: 22, fontWeight: 800, color: "var(--vc-navy)" }}>{bmi.toFixed(1)}</div>
+                <div style={{ fontSize: 11, fontWeight: 600, color: "rgba(var(--vc-navy-rgb),0.45)" }}>{t("hm_bmi")}</div>
+                <div style={{ fontSize: 22, fontWeight: 800, color: "var(--vc-navy)" }}>{bmi.value === null ? "—" : bmi.value.toFixed(1)}</div>
               </div>
             </div>
-            {avg !== null ? <div style={{ marginTop: 10, ...small(0.55) }}>Week avg {avg.toFixed(1)} kg</div> : null}
+            {avg !== null ? <div style={{ marginTop: 10, ...small(0.55) }}>{t("week_avg_kg", { value: avg.toFixed(1) })}</div> : null}
           </>
         ) : (
           <>
@@ -216,7 +220,7 @@ export default function MetricDetailScreen({ type }: { type: string }) {
   }
   const weight = Number.parseFloat(selected.latest_value);
   const height = Number(user?.profile?.height ?? 0) || 0;
-  const bmi = Number.isFinite(weight) && height > 0 ? (weight / (height * height)) * 10000 : 0;
+  const bmi = bmiViewFor(weight, height, Number(user?.age ?? user?.profile?.age ?? 0) || 0);
   const hasGoal = goals.some((g) => g.type === "weight");
   const emptyCopy = range === "week" ? "No readings this week yet" : range === "year" ? "No readings this year yet" : t(type === "glucose" ? "hm_no_glucose_data_for_current_month" : type === "bp" ? "hm_no_blood_pressure_data_for_current_month" : "hm_no_weight_data_for_current_month");
   const addPath = type === "glucose" ? "/log/glucose" : type === "bp" ? "/log/bp" : type === "weight" ? "/log/weight" : null;

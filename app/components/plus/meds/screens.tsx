@@ -42,7 +42,7 @@ export function MedicationsScreen() {
   };
   return (
     <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
-      <AppBar title={t("medications_title")} actions={<CircleButton label={t("add_medication")} onClick={() => push("/medications/add")}>{plus}</CircleButton>} />
+      <AppBar title={t("pillbox")} actions={<CircleButton label={t("add_medication")} onClick={() => push("/medications/add")}>{plus}</CircleButton>} />
       {loading ? (
         <CenterSpinner />
       ) : failed ? (

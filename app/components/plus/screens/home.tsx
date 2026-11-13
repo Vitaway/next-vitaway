@@ -2,7 +2,8 @@
 
 import { useMemo } from "react";
 import { Activity, Add, ArrowRight3, Book1, Calendar1, Crown1, Drop, Flash, Health, Heart, Notification, TickCircle, Weight } from "iconsax-react";
-import { useLanguage } from "@/lib/plus/i18n";
+import { useLanguage, type Translate } from "@/lib/plus/i18n";
+import { BMI_HOME_CAPTION_KEY, bmiViewFor } from "@/lib/plus/bmi";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { useTheme } from "@/lib/plus/theme";
 import {
@@ -183,18 +184,17 @@ function InsightCard({
   );
 }
 
-function weightCaption(heightCm: number | null | undefined, metric?: HealthMetric): string {
-  if (!metric) return "Not logged yet";
+function weightCaption(t: Translate, heightCm: number | null | undefined, age: number | null | undefined, metric?: HealthMetric): string {
+  if (!metric) return t("not_logged_yet");
   const kg = Number.parseFloat(metric.latest_value) || 0;
   const cm = heightCm ?? 0;
-  if (kg <= 0) return "Not logged yet";
-  if (cm <= 0 || cm === 110) return "Latest weigh-in";
-  const m = cm / 100;
-  const bmi = kg / (m * m);
-  if (bmi < 18.5) return "Below the usual range";
-  if (bmi < 25) return "In the usual range";
-  if (bmi < 30) return "Above the usual range";
-  return "Well above the usual range";
+  if (kg <= 0) return t("not_logged_yet");
+  // 110 cm is the old placeholder height, not a real measurement.
+  if (cm <= 0 || cm === 110) return t("latest_weigh_in");
+  // BL-013: adult ranges only from 18; children and unknown ages get a neutral caption.
+  const view = bmiViewFor(kg, cm, age);
+  if (!view.band) return t("latest_weigh_in");
+  return t(BMI_HOME_CAPTION_KEY[view.band]);
 }
 
 function BannerShell({
@@ -269,6 +269,7 @@ function SubscriptionBanner({ onClick }: { onClick: () => void }) {
 }
 
 function MedicinesToday({ onAdd, onOpenPillBox, onOpen }: { onAdd: () => void; onOpenPillBox: () => void; onOpen: (id: number) => void }) {
+  const { t } = useLanguage();
   const { list, loading, error } = useTodayMedications();
   if (loading) {
     return (
@@ -281,8 +282,8 @@ function MedicinesToday({ onAdd, onOpenPillBox, onOpen }: { onAdd: () => void; o
   if (!meds.length) {
     return (
       <div style={{ background: "var(--vc-surface)", borderRadius: 10, padding: 16, display: "flex", alignItems: "center", gap: 12 }}>
-        <span style={{ flex: 1, fontWeight: 700, fontSize: 14, color: "var(--vc-navy)" }}>No medicines scheduled today.</span>
-        <ActionButton small tone="teal" label="Add" onClick={onAdd} icon={<Add size={16} color="currentColor" />} />
+        <span style={{ flex: 1, fontWeight: 700, fontSize: 14, color: "var(--vc-navy)" }}>{t("home_no_medicines_today")}</span>
+        <ActionButton small tone="teal" label={t("add")} onClick={onAdd} icon={<Add size={16} color="currentColor" />} />
       </div>
     );
   }
@@ -293,7 +294,7 @@ function MedicinesToday({ onAdd, onOpenPillBox, onOpen }: { onAdd: () => void; o
       ))}
       {meds.length > 3 ? (
         <button type="button" onClick={onOpenPillBox} style={{ padding: 10, fontWeight: 700, color: "var(--vc-teal-ink)", fontSize: 14 }}>
-          See all {meds.length} medicines
+          {t("home_see_all_medicines", { count: meds.length })}
         </button>
       ) : null}
     </div>
@@ -425,11 +426,11 @@ export default function HomeScreen() {
             <span style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 6 }}>
               {score.inRange ? (
                 <span style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "4px 8px", borderRadius: 10, background: "var(--vc-tile-mint)", color: "var(--vc-navy)", fontSize: 11, fontWeight: 800 }}>
-                  <Heart size={12} variant="Bold" color="currentColor" /> In range
+                  <Heart size={12} variant="Bold" color="currentColor" /> {t("home_in_range")}
                 </span>
               ) : null}
               <span style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "4px 8px", borderRadius: 10, background: "var(--vc-tile-peach)", color: "var(--vc-navy)", fontSize: 11, fontWeight: 800 }}>
-                {mrn ? <TickCircle size={12} color="currentColor" /> : <Add size={12} color="currentColor" />} {mrn ? "Record linked" : "Add a reading"}
+                {mrn ? <TickCircle size={12} color="currentColor" /> : <Add size={12} color="currentColor" />} {mrn ? t("home_record_linked") : t("home_add_reading")}
               </span>
             </span>
           </span>
@@ -448,13 +449,13 @@ export default function HomeScreen() {
       </div>
 
       <div style={pad}>
-        <SectionHead title="This week" action="See all" onAction={() => push("/metrics")} style={{ margin: "24px 0 10px" }} />
+        <SectionHead title={t("home_this_week")} action={t("see_all")} onAction={() => push("/metrics")} style={{ margin: "24px 0 10px" }} />
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
           <InsightCard
             icon={<Drop size={16} variant="Bold" color="currentColor" />}
             tint="var(--vc-tile-peach)"
             ink="#E85A2E"
-            title="Glucose"
+            title={t("hm_glucose")}
             value={glucose ? formatGlucose(Number.parseFloat(glucose.latest_value) || 0, glucoseUnit) : "—"}
             unit={glucose ? glucoseUnitLabel(glucoseUnit) : ""}
             status={glucoseHomeCaption(glucoseCategoryOf(glucose))}
@@ -466,7 +467,7 @@ export default function HomeScreen() {
             icon={<Activity size={16} color="currentColor" />}
             tint="var(--vc-tile-lilac)"
             ink={dark ? "#A99BDB" : "#5B4B8A"}
-            title="Blood pressure"
+            title={t("hm_blood_pressure")}
             value={bp ? `${bp.systolic ?? "—"}/${bp.diastolic ?? "—"}` : "—"}
             unit={bp ? "mmHg" : ""}
             status={bpHomeCaption(bpCategoryOf(bp))}
@@ -480,10 +481,10 @@ export default function HomeScreen() {
               icon={<Weight size={15} color="currentColor" />}
               tint="var(--vc-tile-mint)"
               ink={dark ? "#E4EBE8" : "#003E48"}
-              title="Weight"
+              title={t("hm_weight")}
               value={weight ? (Number.parseFloat(weight.latest_value) || 0).toFixed(1) : "—"}
               unit={weight ? "kg" : ""}
-              status={weightCaption(user?.profile?.height, weight)}
+              status={weightCaption(t, user?.profile?.height, Number(user?.age ?? user?.profile?.age ?? 0) || 0, weight)}
               series={weekSeries(metrics, "weight")}
               letters={letters}
               onClick={() => push("/log/weight")}
@@ -491,13 +492,14 @@ export default function HomeScreen() {
           </div>
         </div>
 
-        <SectionHead title="Today" action="See all" onAction={() => push("/reminders")} style={{ margin: "24px 0 10px" }} />
+        <SectionHead title={t("hm_today")} action={t("see_all")} onAction={() => push("/reminders")} style={{ margin: "24px 0 10px" }} />
         <button
           type="button"
           className="vita-tap"
           onClick={() => {
             if (!next) return push("/log/glucose");
-            if (next.type === "med") return push("/medications/add");
+            // BL-122: a medicine reminder opens the Pillbox.
+            if (next.type === "med") return push("/medications");
             if (next.type === "bp") return push("/log/bp");
             return push("/log/glucose");
           }}
@@ -507,17 +509,17 @@ export default function HomeScreen() {
             {!next ? <Add size={24} color="currentColor" /> : next.type === "med" ? <Health size={24} color="currentColor" /> : next.type === "bp" ? <Activity size={24} color="currentColor" /> : <Drop size={24} variant="Bold" color="currentColor" />}
           </span>
           <span style={{ flex: 1, minWidth: 0 }}>
-            <span style={{ display: "block", fontSize: 16, fontWeight: 800, color: "var(--vc-ink)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{next ? next.name : "Nothing due right now"}</span>
+            <span style={{ display: "block", fontSize: 16, fontWeight: 800, color: "var(--vc-ink)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{next ? next.name : t("home_nothing_due")}</span>
             <span style={{ display: "block", marginTop: 4, fontSize: 13, color: "rgba(var(--vc-navy-rgb),0.6)" }}>
-              {next ? (next.times[0] ?? "Scheduled today") : "Log a reading, or add a reminder for later today."}
+              {next ? (next.times[0] ?? t("home_scheduled_today")) : t("home_nothing_due_body")}
             </span>
           </span>
         </button>
 
-        <SectionHead title="Medicines today" action="Pill box" onAction={() => push("/medications")} style={{ margin: "24px 0 10px" }} />
+        <SectionHead title={t("medicines_today")} action={t("pillbox")} onAction={() => push("/medications")} style={{ margin: "24px 0 10px" }} />
         <MedicinesToday onAdd={() => push("/medications/add")} onOpenPillBox={() => push("/medications")} onOpen={(id) => push(`/medications/${id}`)} />
 
-        <SectionHead title="Clinic visit" action="Book" onAction={() => push("/book-visit")} style={{ margin: "24px 0 10px" }} />
+        <SectionHead title={t("home_clinic_visit")} action={t("home_book")} onAction={() => push("/book-visit")} style={{ margin: "24px 0 10px" }} />
         <button
           type="button"
           className="vita-tap"
@@ -529,10 +531,10 @@ export default function HomeScreen() {
           </span>
           <span style={{ flex: 1 }}>
             <span style={{ display: "block", fontWeight: 800, fontSize: 15, color: "var(--vc-ink)" }}>
-              {upcoming.length ? `${WEEKDAYS[appointmentStart(upcoming[0]).getDay()]} with ${upcoming[0].coach_profile?.first_name || (upcoming[0].kind === "clinic" ? "Clinic" : "")}` : "Book a visit"}
+              {upcoming.length ? `${WEEKDAYS[appointmentStart(upcoming[0]).getDay()]} with ${upcoming[0].coach_profile?.first_name || (upcoming[0].kind === "clinic" ? "Clinic" : "")}` : t("quick_book_visit")}
             </span>
             <span style={{ display: "block", fontSize: 12.5, color: dark ? "#D9B8A6" : "#6A4A3A" }}>
-              {upcoming.length ? `${fmtHm(appointmentStart(upcoming[0]))} · Vitaway clinic` : "Pick a day and a time. The clinic receives the request."}
+              {upcoming.length ? `${fmtHm(appointmentStart(upcoming[0]))} · Vitaway clinic` : t("home_book_visit_body")}
             </span>
           </span>
           <ArrowRight3 size={22} color="rgba(var(--vc-navy-rgb),0.4)" />

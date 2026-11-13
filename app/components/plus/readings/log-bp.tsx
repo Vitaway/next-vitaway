@@ -4,7 +4,7 @@ import { useCallback, useMemo, useState } from "react";
 import { Activity, Heart } from "iconsax-react";
 import { useT } from "@/lib/plus/i18n";
 import { useBack } from "@/lib/plus/nav";
-import { BP_EMPTY_TIP, BP_PULSE_MAX, BP_PULSE_MIN, bpValidationError, classifyBP, type BpCategory } from "@/lib/plus/health";
+import { BP_PULSE_MAX, BP_PULSE_MIN, bpFieldComplete, bpFieldMax, bpKeypadAppend, bpValidationErrorText, classifyBP, type BpCategory } from "@/lib/plus/health";
 import { saveReading } from "@/lib/plus/client/readings";
 import { MobileApiError } from "@/lib/plus/client/api";
 import { useFeedback } from "../ui/vita";
@@ -13,12 +13,12 @@ import { FUTURE_TIME_MESSAGE, MetricFeedbackBox, MetricLogScaffold, NumericKeypa
 type Field = "top" | "bottom" | "pulse";
 
 const CATEGORIES: Array<[BpCategory, string, string]> = [
-  ["low", "Low", "#F6CF8B"],
-  ["normal", "Normal", "#8FD3B9"],
-  ["elevated", "Elevated", "#B9E2C7"],
-  ["aboveTarget", "Above", "#F6CF8B"],
-  ["high", "High", "#F4A77C"],
-  ["veryHigh", "Very high", "#E8766A"],
+  ["low", "bp_cat_low", "#F6CF8B"],
+  ["normal", "bp_cat_normal", "#8FD3B9"],
+  ["elevated", "bp_cat_elevated", "#B9E2C7"],
+  ["aboveTarget", "bp_cat_above", "#F6CF8B"],
+  ["high", "bp_cat_high", "#F4A77C"],
+  ["veryHigh", "bp_cat_very_high", "#E8766A"],
 ];
 
 function FieldTile({ value, placeholder, label, required, selected, onClick }: { value: string; placeholder: string; label: string; required?: boolean; selected: boolean; onClick: () => void }) {
@@ -69,35 +69,35 @@ export default function LogBpScreen() {
 
   const validationError = useMemo(() => {
     if (!top || !bottom) return null;
-    if (systolic === null || diastolic === null || Number.isNaN(systolic) || Number.isNaN(diastolic)) return "Check the numbers.";
-    const pair = bpValidationError(systolic, diastolic);
+    if (systolic === null || diastolic === null || Number.isNaN(systolic) || Number.isNaN(diastolic)) return t("check_the_numbers_body");
+    const pair = bpValidationErrorText(t, systolic, diastolic);
     if (pair) return pair;
     const p = pulse ? Number.parseInt(pulse, 10) : null;
-    if (pulse && (p === null || Number.isNaN(p) || p < BP_PULSE_MIN || p > BP_PULSE_MAX)) return `Pulse is usually between ${BP_PULSE_MIN} and ${BP_PULSE_MAX}.`;
+    if (pulse && (p === null || Number.isNaN(p) || p < BP_PULSE_MIN || p > BP_PULSE_MAX)) return t("bp_err_pulse_range", { min: BP_PULSE_MIN, max: BP_PULSE_MAX });
     if (stamp.getTime() > Date.now()) return FUTURE_TIME_MESSAGE;
     return null;
-  }, [top, bottom, pulse, systolic, diastolic, stamp]);
+  }, [top, bottom, pulse, systolic, diastolic, stamp, t]);
 
   const canSave = Boolean(top && bottom) && validationError === null && systolic !== null && diastolic !== null;
   const category = systolic !== null && diastolic !== null && validationError === null && top && bottom ? classifyBP(systolic, diastolic) : null;
   const activeIndex = category ? CATEGORIES.findIndex(([c]) => c === category) : -1;
 
   const feedback = ((): { kind: FeedbackKind; title: string; body: string } => {
-    if (validationError) return { kind: "bad", title: "Check the numbers", body: validationError };
-    if (!top || !bottom || !category) return { kind: "info", title: "", body: BP_EMPTY_TIP };
+    if (validationError) return { kind: "bad", title: t("check_the_numbers"), body: validationError };
+    if (!top || !bottom || !category) return { kind: "info", title: "", body: t("bp_empty_tip") };
     switch (category) {
       case "veryHigh":
-        return { kind: "bad", title: "Very high", body: "Sit quietly for 5 minutes and measure again. If it’s still this high, or you have chest pain, a severe headache, weakness, confusion or a change in your vision, call 912 now." };
+        return { kind: "bad", title: t("bp_cat_very_high"), body: t("bp_fb_very_high") };
       case "high":
-        return { kind: "warn", title: "High", body: "Rest for 5 minutes and measure again. Your care team will see this reading." };
+        return { kind: "warn", title: t("bp_cat_high"), body: t("bp_fb_high") };
       case "aboveTarget":
-        return { kind: "warn", title: "Slightly above target", body: "Your target is below 130/80 mmHg." };
+        return { kind: "warn", title: t("bp_fb_above_title"), body: t("bp_fb_target") };
       case "low":
-        return { kind: "warn", title: "Low", body: "If you feel dizzy, sit or lie down and drink some water. Tell your care team if it happens again." };
+        return { kind: "warn", title: t("bp_cat_low"), body: t("bp_fb_low") };
       case "checkNumbers":
-        return { kind: "bad", title: "Check the numbers", body: "Check the numbers." };
+        return { kind: "bad", title: t("check_the_numbers"), body: t("check_the_numbers_body") };
       default:
-        return { kind: "ok", title: "In your target", body: "Your target is below 130/80 mmHg." };
+        return { kind: "ok", title: t("bp_fb_in_target"), body: t("bp_fb_target") };
     }
   })();
 
@@ -106,11 +106,15 @@ export default function LogBpScreen() {
       const get = focus === "top" ? top : focus === "bottom" ? bottom : pulse;
       const set = focus === "top" ? setTop : focus === "bottom" ? setBottom : setPulse;
       if (key === "del") return set(get.slice(0, -1));
-      if (get.length >= 3) return;
-      const next = get + key;
+      // BL-003 BP picker fix (mirrors Flutter _onKey): no leading zero, nothing above the
+      // field's maximum, and move on as soon as no further digit could be valid.
+      const max = bpFieldMax(focus);
+      const next = bpKeypadAppend(get, key, max);
+      if (next === get) return;
       set(next);
-      if (focus === "top" && next.length === 3) setFocus("bottom");
-      else if (focus === "bottom" && next.length === 3) setFocus("pulse");
+      if (!bpFieldComplete(next, max)) return;
+      if (focus === "top") setFocus("bottom");
+      else if (focus === "bottom") setFocus("pulse");
     },
     [focus, top, bottom, pulse],
   );
@@ -129,21 +133,21 @@ export default function LogBpScreen() {
   };
 
   return (
-    <MetricLogScaffold title={t("add_blood_pressure")} icon={<Activity size={17} color="currentColor" />} saveLabel="Save reading" loading={saving} onSave={canSave ? save : undefined}>
+    <MetricLogScaffold title={t("add_blood_pressure")} icon={<Activity size={17} color="currentColor" />} saveLabel={t("save_reading")} loading={saving} onSave={canSave ? save : undefined}>
       <div style={{ padding: "8px 0 12px" }}>
         <div style={{ display: "flex", alignItems: "flex-end", padding: "0 18px" }}>
           <div style={{ flex: 1 }}>
-            <FieldTile value={top} placeholder="---" label="Top" required selected={focus === "top"} onClick={() => setFocus("top")} />
+            <FieldTile value={top} placeholder="---" label={t("bp_top")} required selected={focus === "top"} onClick={() => setFocus("top")} />
           </div>
           <span style={{ padding: "0 4px 28px", fontSize: 28, fontWeight: 800, color: "var(--vc-navy)" }}>/</span>
           <div style={{ flex: 1 }}>
-            <FieldTile value={bottom} placeholder="---" label="Bottom" required selected={focus === "bottom"} onClick={() => setFocus("bottom")} />
+            <FieldTile value={bottom} placeholder="---" label={t("bp_bottom")} required selected={focus === "bottom"} onClick={() => setFocus("bottom")} />
           </div>
           <span style={{ padding: "0 4px 30px", color: "#E85A2E", display: "inline-flex" }}>
             <Heart size={16} variant="Bold" color="currentColor" />
           </span>
           <div style={{ flex: 1 }}>
-            <FieldTile value={pulse} placeholder="--" label="Pulse" selected={focus === "pulse"} onClick={() => setFocus("pulse")} />
+            <FieldTile value={pulse} placeholder="--" label={t("bp_pulse")} selected={focus === "pulse"} onClick={() => setFocus("pulse")} />
           </div>
         </div>
         <div style={{ padding: "18px 18px 0" }}>
@@ -164,7 +168,7 @@ export default function LogBpScreen() {
           <div style={{ display: "flex", gap: 3, marginTop: 6 }}>
             {CATEGORIES.map(([, name], i) => (
               <span key={i} style={{ flex: 1, textAlign: "center", fontSize: 9.5, fontWeight: 800, lineHeight: 1.15, color: activeIndex === i ? "var(--vc-ink)" : "rgba(var(--vc-navy-rgb),0.4)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                {name}
+                {t(name)}
               </span>
             ))}
           </div>
@@ -173,10 +177,10 @@ export default function LogBpScreen() {
           <MetricFeedbackBox {...feedback} />
         </div>
         <div style={{ display: "flex", alignItems: "center", padding: "14px 18px 0", fontSize: 13 }}>
-          <span style={{ fontWeight: 700, color: "rgba(var(--vc-navy-rgb),0.55)" }}>Today · {fmtTimeOfDay(time)}</span>
+          <span style={{ fontWeight: 700, color: "rgba(var(--vc-navy-rgb),0.55)" }}>{t("hm_today")} · {fmtTimeOfDay(time)}</span>
           <span style={{ color: "rgba(var(--vc-navy-rgb),0.35)" }}>&nbsp;·&nbsp;</span>
           <button type="button" onClick={() => setPicking(true)} style={{ fontWeight: 800, color: "var(--vc-navy)", textDecoration: "underline", textDecorationThickness: 1.5 }}>
-            Change time
+            {t("change_time")}
           </button>
         </div>
         <div style={{ height: 12 }} />
