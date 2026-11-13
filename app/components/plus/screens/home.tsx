@@ -21,7 +21,8 @@ import { glucoseContextFromFullness, latestByType, parseStamp, type HealthMetric
 import { bpStatus, gatedHealthScore, glucoseStatus, healthScoreAllowed } from "@/lib/plus/clinical-rules";
 import { useClinicalConfig } from "@/lib/plus/client/clinical-config";
 import { useReminders } from "@/lib/plus/reminders";
-import { fmtHeaderDate, fmtHm, WEEKDAYS } from "@/lib/plus/format";
+import { fmtHeaderDate, WEEKDAYS } from "@/lib/plus/format";
+import { appointmentCardText } from "@/lib/plus/appointment-text";
 import { formatGlucose, glucoseUnitLabel, useGlucoseUnit } from "@/lib/plus/units";
 import { ActionButton, DotSpinner, Photo, SectionHead } from "../ui/vita";
 import { TodayMedicineCard } from "../meds/cards";
@@ -381,6 +382,10 @@ export default function HomeScreen() {
   const upcoming = appointments
     .filter((a) => a.status === "PENDING" && appointmentStart(a).getTime() > now)
     .sort((a, b) => appointmentStart(a).getTime() - appointmentStart(b).getTime());
+  // BL-103: never "Monday with Platform".
+  const visit = upcoming.length
+    ? appointmentCardText({ start: appointmentStart(upcoming[0]), firstName: upcoming[0].coach_profile?.first_name, speciality: (upcoming[0].coach_profile as { speciality?: unknown } | null | undefined)?.speciality, clinic: upcoming[0].kind === "clinic", lang: language === "rw" ? "rw" : "en" })
+    : null;
   const next = reminders[0] ?? null;
   const pad = { padding: "0 18px" };
 
@@ -555,10 +560,10 @@ export default function HomeScreen() {
           </span>
           <span style={{ flex: 1 }}>
             <span style={{ display: "block", fontWeight: 800, fontSize: 15, color: "var(--vc-ink)" }}>
-              {upcoming.length ? `${WEEKDAYS[appointmentStart(upcoming[0]).getDay()]} with ${upcoming[0].coach_profile?.first_name || (upcoming[0].kind === "clinic" ? "Clinic" : "")}` : t("quick_book_visit")}
+              {visit ? visit.title : t("quick_book_visit")}
             </span>
             <span style={{ display: "block", fontSize: 12.5, color: dark ? "#D9B8A6" : "#6A4A3A" }}>
-              {upcoming.length ? `${fmtHm(appointmentStart(upcoming[0]))} · Vitaway clinic` : t("home_book_visit_body")}
+              {visit ? visit.subtitle : t("home_book_visit_body")}
             </span>
           </span>
           <ArrowRight3 size={22} color="rgba(var(--vc-navy-rgb),0.4)" />
