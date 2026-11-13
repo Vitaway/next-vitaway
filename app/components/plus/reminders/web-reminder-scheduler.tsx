@@ -1,11 +1,13 @@
 "use client";
 
+import { reminderTapPath } from "@/lib/plus/reminder-tap";
+import { PLAN_REMINDER_ID, loadPlanMinutes } from "@/lib/plus/onboarding-plan";
 import { useEffect, useRef, useState } from "react";
 import { useT } from "@/lib/plus/i18n";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { useReminders, type Reminder } from "@/lib/plus/reminders";
 import { useTodayMedications } from "@/lib/plus/client/meds";
-import { doseLabel, reminderTimes, type Medication } from "@/lib/plus/medication";
+import { reminderTimes, type Medication } from "@/lib/plus/medication";
 import { NOTIFICATION_STATE_EVENT, REMINDER_SETTINGS_EVENT, showWebNotification, type WebNotice } from "@/lib/plus/web-notifications";
 import { syncWebPush, webPushActive, type PushReminder } from "@/lib/plus/web-push";
 import { loadNotificationSettings, type NotificationSettings } from "../notifications/notifications";
@@ -124,7 +126,6 @@ export function WebReminderScheduler() {
       const delivery = settings.delivery.medicines;
       for (const med of medsRef.current) {
         if (!med.reminders_enabled) continue;
-        const label = `${doseLabel(med)}${med.instructions ? ` · ${med.instructions}` : ""}`;
         reminderTimes(med).forEach((time) => {
           const hm = parseHm(time);
           if (!hm) return;
@@ -133,8 +134,9 @@ export function WebReminderScheduler() {
           const early = adjustForQuietHours(settings, nextFire(new Date(dose.getTime() - 5 * 60_000), now, taken));
           const follow = adjustForQuietHours(settings, nextFire(dose, now, taken));
           const base = { url: href("/medications"), silent: !delivery.sound, vibrate: delivery.vibration, medId: med.id, slot: time };
-          const earlyNotice = { tag: `med-${med.id}-${time}-early`, title: `Coming up: ${med.name}`, body: `In 5 minutes, take ${label}.` };
-          const dueNotice = { tag: `med-${med.id}-${time}-due`, title: `Log ${med.name}`, body: "You haven't logged this dose. We'll mark it as not taken in 2 minutes." };
+          // BL-127: lock-screen text never names the medicine (same keys as Flutter medication_reminders.dart).
+          const earlyNotice = { tag: `med-${med.id}-${time}-early`, title: t("med_notif_early_title"), body: t("med_notif_early_body") };
+          const dueNotice = { tag: `med-${med.id}-${time}-due`, title: t("med_notif_due_title"), body: t("med_notif_due_body") };
           planned.push({ ...base, ...earlyNotice, at: early.getTime(), key: `med:${med.id}:${time}:early@${stamp(early)}` });
           planned.push({ ...base, ...dueNotice, at: follow.getTime(), key: `med:${med.id}:${time}:due@${stamp(follow)}`, followUp: true });
           const slot = `${String(hm[0]).padStart(2, "0")}:${String(hm[1]).padStart(2, "0")}`;
@@ -147,15 +149,25 @@ export function WebReminderScheduler() {
     const heyThere = `${t("hey_there")} 🤗, ${t("its_time")}`;
     for (const reminder of reminders as Reminder[]) {
       if (!reminder.active || !reminder.isNotificationEnabled) continue;
-      const title =
-        reminder.type === "glucose" ? `⏰ ${t("glucose_reminder")}!` : reminder.type === "bp" ? `⏰ ${t("bp_reminder")}!` : reminder.type === "med" ? `💊 ${t("med_reminder")} 💊` : `⏰ ${t("your_reminder")}: ${reminder.name}`;
-      const body = reminder.type === "med" || reminder.type === "other" ? `${heyThere}, ${t("take")} ${reminder.name}!` : `${heyThere}, ${t("for")} ${title}!`;
+      const isPlan = reminder.id === PLAN_REMINDER_ID;
+      const title = isPlan
+        ? t("plan_reminder_title")
+        : reminder.type === "glucose" ? `⏰ ${t("glucose_reminder")}!` : reminder.type === "bp" ? `⏰ ${t("bp_reminder")}!` : reminder.type === "med" ? `💊 ${t("med_reminder")} 💊` : `⏰ ${t("your_reminder")}: ${reminder.name}`;
+      // BL-127: a medicine reminder never names the medicine on the lock screen.
+      const body = isPlan
+        ? t("plan_reminder_body", { minutes: loadPlanMinutes() })
+        : reminder.type === "med"
+          ? t("med_notif_due_generic")
+          : reminder.type === "other"
+            ? `${heyThere}, ${t("take")} ${reminder.name}!`
+            : `${heyThere}, ${t("for")} ${title}!`;
       reminder.times.forEach((time, i) => {
         if (reminder.timeEnabled?.[i] === false) return;
         const hm = parseHm(time);
         if (!hm) return;
         const at = nextFire(day(hm[0], hm[1]), now, false);
-        const path = `/reminders/${encodeURIComponent(reminder.id)}`;
+        // BL-122: a medicine reminder opens the Pillbox; BP and glucose open their log screen.
+        const path = reminderTapPath(isPlan ? "plan" : reminder.type, reminder.id);
         planned.push({ at: at.getTime(), key: `rem:${reminder.id}:${i}@${stamp(at)}`, tag: `rem-${reminder.id}-${i}`, title, body, url: href(path) });
         schedule.push({ key: `rem:${reminder.id}:${i}`, kind: "reminder", time: hhmm(at), tag: `rem-${reminder.id}-${i}`, title, body, path });
       });

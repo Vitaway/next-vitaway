@@ -80,7 +80,7 @@ export default function OnboardingSlides() {
   };
 
   return (
-    <div className="vita-onb">
+    <div className="vita-onb vita-fullbleed">
       <div className="vita-onb-track" ref={track}>
         <section className="vita-onb-slide">
           <Hero image="welcome.png" />
@@ -100,7 +100,8 @@ export default function OnboardingSlides() {
           </section>
         ))}
       </div>
-      <div style={{ padding: "6px 24px calc(10px + env(safe-area-inset-bottom))", background: "var(--vc-surface)" }}>
+      <div className="vita-onb-foot">
+        <div className="vita-onb-foot-inner">
         <div style={{ display: "flex", justifyContent: "center", gap: 6 }} role="tablist" aria-label="Onboarding">
           {Array.from({ length: count }, (_, i) => (
             <button
@@ -116,6 +117,7 @@ export default function OnboardingSlides() {
         </div>
         <div style={{ height: 16 }} />
         <ActionButton full tone="teal" label={t("continue")} onClick={onContinue} />
+        </div>
       </div>
     </div>
   );
