@@ -11,6 +11,7 @@ const TABS = [
   { label: "care_tab_visit_summaries", path: "" },
   { label: "care_tab_progress_notes", path: "/notes" },
   { label: "care_tab_meal_plans", path: "/meal-plans" },
+  { label: "care_tab_meal_photos", path: "/meal-photos" },
   { label: "care_tab_documents", path: "/documents" },
 ];
 

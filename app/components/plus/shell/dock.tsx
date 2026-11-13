@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { Activity, Add, CalendarTick, Drop, Health, Heart, Home2, Messages2, User, Weight } from "iconsax-react";
+import { Activity, Add, CalendarTick, Camera, Drop, Health, Heart, Home2, Messages2, User, Weight } from "iconsax-react";
 import { useT } from "@/lib/plus/i18n";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { cx } from "../ui/vita";
@@ -24,6 +24,7 @@ const QUICK_ACTIONS: QuickAction[] = [
   { label: "quick_blood_glucose", path: "/log/glucose", tint: "var(--vc-tile-sky)", icon: <Drop size={22} variant="Bold" color="#003E48" /> },
   { label: "quick_blood_pressure", path: "/log/bp", tint: "var(--vc-tile-peach)", icon: <Activity size={22} color="#003E48" /> },
   { label: "quick_weight", path: "/log/weight", tint: "var(--vc-tile-lilac)", icon: <Weight size={22} color="#003E48" /> },
+  { label: "quick_meal_photo", path: "/meal-photos/new", tint: "var(--vc-tile-sage)", icon: <Camera size={22} color="#003E48" /> },
   // BL-122: the + menu reaches the Pillbox (add a medicine from there), as in Flutter.
   { label: "pillbox", path: "/medications", tint: "var(--vc-tile-mint)", icon: <Health size={22} color="#003E48" /> },
   { label: "quick_book_visit", path: "/book-visit", tint: "var(--vc-tile-sage)", icon: <CalendarTick size={22} color="#003E48" /> },
