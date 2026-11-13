@@ -854,5 +854,19 @@
  "plan_reminder_name": "Daily check-in",
  "plan_reminder_title": "Time for your daily check-in",
  "plan_reminder_body": "Take {minutes} minutes for your health today.",
- "care_menu": "Care"
+ "care_menu": "Care",
+ "emergency_title": "Emergency",
+ "emergency_open": "Emergency help",
+ "emergency_card_title": "Need urgent help?",
+ "emergency_card_sub": "Emergency numbers and what to do",
+ "emergency_call": "Call {number}",
+ "approved_rule_source": "Approved by Vitaway's clinical lead ({rule})",
+ "reading_care_team_review": "Saved – your care team will review",
+ "reading_no_interpretation": "We don't rate readings in the app yet. Your care team sees every reading you log. If you feel unwell now, open Emergency help.",
+ "glucose_empty_tip_neutral": "Type the number on your meter.",
+ "done": "Done",
+ "health_score": "Health score",
+ "health_score_hidden_title": "No health score yet",
+ "health_score_hidden_body": "Vitaway will only show a health score after its clinical lead approves how it is worked out. Your readings are saved and your care team can see them.",
+ "reading_review_title": "Your care team will review this"
 }

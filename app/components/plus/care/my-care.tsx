@@ -5,6 +5,7 @@ import { useT } from "@/lib/plus/i18n";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { AppBar, Page } from "../ui/vita";
 import { VisitReportsList } from "./visit-reports";
+import { EmergencyLink } from "../safety/emergency-link";
 
 const TABS = [
   { label: "care_tab_visit_summaries", path: "" },
@@ -38,6 +39,9 @@ export default function MyCareScreen() {
       <AppBar title={t("my_care")} back={false} />
       <div className="vita-scroll with-dock" style={{ padding: "16px 18px calc(env(safe-area-inset-bottom) + 104px)" }}>
         <p style={{ margin: 0, fontSize: 14, color: "rgba(var(--vc-navy-rgb),0.6)" }}>{t("my_care_subtitle")}</p>
+        <div style={{ marginTop: 12 }}>
+          <EmergencyLink />
+        </div>
         <div style={{ marginTop: 18, padding: 16, borderRadius: 10, background: "var(--vc-surface)", boxShadow: "var(--vc-card-shadow)", display: "flex", alignItems: "center" }}>
           <span style={{ width: 44, height: 44, borderRadius: "50%", background: "var(--vc-teal)", color: "var(--vc-mint)", fontWeight: 800, fontSize: 18, display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>V</span>
           <div style={{ marginLeft: 12 }}>

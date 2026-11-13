@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { Activity, Add, ArrowRight3, Book1, Calendar1, Crown1, Drop, Flash, Health, Heart, Notification, TickCircle, Weight } from "iconsax-react";
+import { Activity, Add, ArrowRight3, Book1, Calendar1, Call, Crown1, Drop, Flash, Health, Heart, Notification, TickCircle, Weight } from "iconsax-react";
 import { useLanguage, type Translate } from "@/lib/plus/i18n";
 import { BMI_HOME_CAPTION_KEY, bmiViewFor } from "@/lib/plus/bmi";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
@@ -17,16 +17,9 @@ import {
   type Article,
 } from "@/lib/plus/client/data";
 import { useTodayMedications } from "@/lib/plus/client/meds";
-import {
-  bpCategoryOf,
-  bpHomeCaption,
-  glucoseCategoryOf,
-  glucoseHomeCaption,
-  healthScoreFrom,
-  latestByType,
-  parseStamp,
-  type HealthMetric,
-} from "@/lib/plus/health";
+import { glucoseContextFromFullness, latestByType, parseStamp, type HealthMetric } from "@/lib/plus/health";
+import { bpStatus, gatedHealthScore, glucoseStatus, healthScoreAllowed } from "@/lib/plus/clinical-rules";
+import { useClinicalConfig } from "@/lib/plus/client/clinical-config";
 import { useReminders } from "@/lib/plus/reminders";
 import { fmtHeaderDate, fmtHm, WEEKDAYS } from "@/lib/plus/format";
 import { formatGlucose, glucoseUnitLabel, useGlucoseUnit } from "@/lib/plus/units";
@@ -355,7 +348,8 @@ function LearnSection({ onOpenLearn, onOpenArticle }: { onOpenLearn: () => void;
 }
 
 export default function HomeScreen() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const clinical = useClinicalConfig();
   const { dark } = useTheme();
   const { push } = usePlusPaths();
   const { user } = useMe();
@@ -369,7 +363,13 @@ export default function HomeScreen() {
   const glucose = latest.glucose;
   const bp = latest.bp;
   const weight = latest.weight;
-  const score = healthScoreFrom({ glucose, bloodPressure: bp, weight });
+  // Tracker v9.0: no interpretation until CA-03/CA-04 are approved, no score until CA-15.
+  const glucoseMg = glucose ? Math.round(Number.parseFloat(glucose.latest_value) || 0) : 0;
+  const glucoseView = glucose ? glucoseStatus(clinical, glucoseMg, glucoseContextFromFullness(glucose.fullness), language) : null;
+  const bpView = bp ? bpStatus(clinical, bp.systolic, bp.diastolic, language) : null;
+  const showScore = healthScoreAllowed(clinical);
+  const scorePoints = gatedHealthScore(clinical, { bp: bpView, glucose: glucoseView, weightLogged: !!weight && (Number.parseFloat(weight.latest_value) || 0) > 0 });
+  const caption = (logged: boolean, view: { label: string } | null) => (!logged ? t("no_reading_yet") : view ? view.label : t("reading_care_team_review"));
   const first = (user?.first_name ?? "").trim();
   const name = first || t("hello");
   const mrn = (user?.profile?.medical_record_number ?? "").trim();
@@ -412,6 +412,7 @@ export default function HomeScreen() {
           </div>
           <p style={{ margin: "22px 0 0", color: "#fff", fontSize: 30, lineHeight: 1.05, fontWeight: 800, letterSpacing: -0.6 }}>Hello, {name}!</p>
         </div>
+{showScore ? (
         <button
           type="button"
           onClick={() => push("/health-score")}
@@ -419,12 +420,12 @@ export default function HomeScreen() {
           style={{ position: "absolute", left: 18, right: 18, bottom: 12, display: "flex", alignItems: "center", gap: 14, textAlign: "left", background: "var(--vc-surface)", borderRadius: 10, padding: "12px 14px", boxShadow: "var(--vc-card-shadow)" }}
         >
           <span style={{ width: 64, height: 64, borderRadius: "50%", background: "var(--vc-tile-mint)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 26, fontWeight: 800, color: "var(--vc-navy)", flex: "none" }}>
-            {score.points === null ? "—" : score.points}
+            {scorePoints === null ? "—" : scorePoints}
           </span>
           <span style={{ flex: 1 }}>
-            <span style={{ display: "block", fontSize: 16, fontWeight: 800, color: "var(--vc-ink)" }}>{score.headline}</span>
+            <span style={{ display: "block", fontSize: 16, fontWeight: 800, color: "var(--vc-ink)" }}>{t("health_score")}</span>
             <span style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 6 }}>
-              {score.inRange ? (
+              {scorePoints !== null && bpView?.tone !== "bad" && glucoseView?.tone !== "bad" && (bpView?.tone === "ok" || glucoseView?.tone === "ok") ? (
                 <span style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "4px 8px", borderRadius: 10, background: "var(--vc-tile-mint)", color: "var(--vc-navy)", fontSize: 11, fontWeight: 800 }}>
                   <Heart size={12} variant="Bold" color="currentColor" /> {t("home_in_range")}
                 </span>
@@ -436,6 +437,29 @@ export default function HomeScreen() {
           </span>
           {ARROW}
         </button>
+        ) : (
+        <button
+          type="button"
+          onClick={() => push("/emergency")}
+          className="vita-tap"
+          data-testid="home-emergency-card"
+          style={{ position: "absolute", left: 18, right: 18, bottom: 12, display: "flex", alignItems: "center", gap: 14, textAlign: "left", background: "var(--vc-surface)", borderRadius: 10, padding: "12px 14px", boxShadow: "var(--vc-card-shadow)" }}
+        >
+          <span style={{ width: 64, height: 64, borderRadius: "50%", background: dark ? "#3A1D19" : "#FCE8E8", color: dark ? "#F08A7C" : "#C62828", display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
+            <Call size={28} variant="Bold" color="currentColor" />
+          </span>
+          <span style={{ flex: 1 }}>
+            <span style={{ display: "block", fontSize: 16, fontWeight: 800, color: "var(--vc-ink)" }}>{t("emergency_card_title")}</span>
+            <span style={{ display: "block", marginTop: 4, fontSize: 12.5, fontWeight: 600, color: "rgba(var(--vc-navy-rgb),0.62)" }}>{t("emergency_card_sub")}</span>
+            <span style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 6 }}>
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "4px 8px", borderRadius: 10, background: "var(--vc-tile-peach)", color: "var(--vc-navy)", fontSize: 11, fontWeight: 800 }}>
+                {mrn ? <TickCircle size={12} color="currentColor" /> : <Add size={12} color="currentColor" />} {mrn ? t("home_record_linked") : t("home_add_reading")}
+              </span>
+            </span>
+          </span>
+          {ARROW}
+        </button>
+        )}
       </div>
 
       {orgName ? (
@@ -458,7 +482,7 @@ export default function HomeScreen() {
             title={t("hm_glucose")}
             value={glucose ? formatGlucose(Number.parseFloat(glucose.latest_value) || 0, glucoseUnit) : "—"}
             unit={glucose ? glucoseUnitLabel(glucoseUnit) : ""}
-            status={glucoseHomeCaption(glucoseCategoryOf(glucose))}
+            status={caption(!!glucose && glucoseMg > 0, glucoseView)}
             series={weekSeries(metrics, "glucose")}
             letters={letters}
             onClick={() => push("/log/glucose")}
@@ -470,7 +494,7 @@ export default function HomeScreen() {
             title={t("hm_blood_pressure")}
             value={bp ? `${bp.systolic ?? "—"}/${bp.diastolic ?? "—"}` : "—"}
             unit={bp ? "mmHg" : ""}
-            status={bpHomeCaption(bpCategoryOf(bp))}
+            status={caption(!!bp && (bp.systolic ?? 0) > 0, bpView)}
             series={weekSeries(metrics, "bp", true)}
             letters={letters}
             onClick={() => push("/log/bp")}

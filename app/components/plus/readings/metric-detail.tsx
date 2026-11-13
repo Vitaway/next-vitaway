@@ -2,11 +2,13 @@
 
 import { useMemo, useState } from "react";
 import { Activity, Add, Alarm, Drop, Flag, Heart, Weight } from "iconsax-react";
-import { useT, type Translate } from "@/lib/plus/i18n";
+import { useLanguage, useT, type Translate } from "@/lib/plus/i18n";
 import { BMI_BAND_LABEL_KEY, bmiViewFor, type BmiView } from "@/lib/plus/bmi";
 import { useMe, useMetrics } from "@/lib/plus/client/data";
 import { saveWeightGoal, useGoals } from "@/lib/plus/client/goals";
-import { bpCategoryOf, bpMetricsStatus, glucoseCategoryOf, glucoseMetricsStatus, latestByType, parseStamp, type HealthMetric } from "@/lib/plus/health";
+import { glucoseContextFromFullness, latestByType, parseStamp, type HealthMetric } from "@/lib/plus/health";
+import { bpStatus, glucoseStatus, type ClinicalConfig, type Lang } from "@/lib/plus/clinical-rules";
+import { useClinicalConfig } from "@/lib/plus/client/clinical-config";
 import { fmtLongDay, sameDay } from "@/lib/plus/format";
 import { currentMonth, currentWeek, currentYear, hasMetricReading } from "@/lib/plus/metric-series";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
@@ -33,11 +35,15 @@ function dateLabel(raw: string, t: (k: string) => string): string {
   return fmtLongDay(at);
 }
 
-function statusFor(metric: HealthMetric, bmi: BmiView, t: Translate): { label: string; chip: string; color: string } {
+function statusFor(metric: HealthMetric, bmi: BmiView, t: Translate, clinical: ClinicalConfig, lang: Lang): { label: string; chip: string; color: string } {
   const faint = "rgba(var(--vc-navy-rgb),0.45)";
   if (metric.type === "bp" || metric.type === "glucose") {
-    const status = metric.type === "bp" ? bpMetricsStatus(bpCategoryOf(metric)) : glucoseMetricsStatus(glucoseCategoryOf(metric));
-    if (!status) return { label: t("no_reading_yet"), chip: "—", color: faint };
+    const mg = Math.round(Number.parseFloat(metric.latest_value) || 0);
+    const logged = metric.type === "bp" ? (metric.systolic ?? 0) > 0 : mg > 0;
+    if (!logged) return { label: t("no_reading_yet"), chip: "—", color: faint };
+    // Tracker v9.0 BL-012: approved CA-03/CA-04 bands only; otherwise neutral, no chip.
+    const status = metric.type === "bp" ? bpStatus(clinical, metric.systolic, metric.diastolic, lang) : glucoseStatus(clinical, mg, glucoseContextFromFullness(metric.fullness), lang);
+    if (!status) return { label: t("reading_care_team_review"), chip: "—", color: "rgba(var(--vc-navy-rgb),0.62)" };
     const color = status.tone === "ok" ? "var(--vc-navy)" : status.tone === "warn" ? "var(--vc-action)" : "var(--vc-danger)";
     return { label: status.label, chip: status.chip, color };
   }
@@ -62,26 +68,10 @@ function Legend({ color, label }: { color: string; label: string }) {
   );
 }
 
-function BpRangeBar({ systolic }: { systolic: number }) {
-  const t = Math.min(1, Math.max(0, (systolic - 90) / 90));
-  return (
-    <div>
-      <div style={{ position: "relative", height: 14 }}>
-        <div style={{ position: "absolute", left: 0, right: 0, top: 3, height: 8, borderRadius: 999, background: "linear-gradient(90deg, var(--vc-tile-mint), var(--vc-tile-sage), var(--vc-tile-peach), var(--vc-danger-soft))" }} />
-        {systolic > 0 ? <span style={{ position: "absolute", top: 0, left: `clamp(0px, calc(${t * 100}% - 7px), calc(100% - 14px))`, width: 14, height: 14, borderRadius: "50%", background: "#fff", border: "2px solid var(--vc-navy)", boxShadow: "0 2px 6px rgba(var(--vc-navy-rgb),0.18)" }} /> : null}
-      </div>
-      <div style={{ display: "flex", justifyContent: "space-between", marginTop: 6, fontSize: 10, fontWeight: 600, color: "rgba(var(--vc-navy-rgb),0.4)" }}>
-        <span>90</span>
-        <span>Normal to high</span>
-        <span>180</span>
-      </div>
-    </div>
-  );
-}
-
 function SummaryHero({ metric, bmi, avg, date }: { metric: HealthMetric; bmi: BmiView; avg: number | null; date: string }) {
-  const t = useT();
-  const status = statusFor(metric, bmi, t);
+  const { t, language } = useLanguage();
+  const clinical = useClinicalConfig();
+  const status = statusFor(metric, bmi, t, clinical, language);
   const tint = metric.type === "glucose" ? "var(--vc-tile-peach)" : metric.type === "bp" ? "var(--vc-tile-lilac)" : metric.type === "weight" ? "var(--vc-tile-mint)" : "var(--vc-wash)";
   const icon = metric.type === "glucose" ? <Drop size={20} variant="Bold" color="currentColor" /> : metric.type === "bp" ? <Activity size={20} color="currentColor" /> : metric.type === "weight" ? <Weight size={20} color="currentColor" /> : <Heart size={20} variant="Bold" color="currentColor" />;
   return (
@@ -108,9 +98,6 @@ function SummaryHero({ metric, bmi, avg, date }: { metric: HealthMetric; bmi: Bm
               <Legend color="var(--vc-action)" label="DIA" />
               <span style={{ flex: 1 }} />
               {avg !== null ? <span style={small(0.55)}>{t("week_avg_sys", { value: avg.toFixed(0) })}</span> : null}
-            </div>
-            <div style={{ marginTop: 14 }}>
-              <BpRangeBar systolic={metric.systolic ?? 0} />
             </div>
           </>
         ) : metric.type === "weight" ? (

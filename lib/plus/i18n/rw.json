@@ -857,5 +857,19 @@
  "plan_reminder_title": "Time for your daily check-in",
  "plan_reminder_body": "Take {minutes} minutes for your health today.",
  "complete_appointment": "Complete Appointment",
- "care_menu": "Care"
+ "care_menu": "Care",
+ "emergency_title": "Ubutabazi bwihuse",
+ "emergency_open": "Ubutabazi bwihuse",
+ "emergency_card_title": "Ukeneye ubufasha bwihuse?",
+ "emergency_card_sub": "Nimero z'ubutabazi n'icyo wakora",
+ "emergency_call": "Hamagara {number}",
+ "approved_rule_source": "Byemejwe n'umuyobozi w'ubuvuzi wa Vitaway ({rule})",
+ "reading_care_team_review": "Byabitswe – itsinda rigukurikirana rizabireba",
+ "reading_no_interpretation": "Porogaramu ntirasobanura ibipimo. Itsinda rigukurikirana ribona buri gipimo wanditse. Niba wumva utameze neza ubu, fungura Ubutabazi bwihuse.",
+ "glucose_empty_tip_neutral": "Andika umubare uri ku cyuma gipima.",
+ "done": "Byarangiye",
+ "health_score": "Amanota y'ubuzima",
+ "health_score_hidden_title": "Nta manota y'ubuzima arahari",
+ "health_score_hidden_body": "Vitaway izerekana amanota y'ubuzima ari uko umuyobozi w'ubuvuzi yemeje uko abarwa. Ibipimo byawe birabitswe kandi itsinda rigukurikirana rirabibona.",
+ "reading_review_title": "Itsinda rigukurikirana rizabireba"
 }

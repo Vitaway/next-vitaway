@@ -2,24 +2,19 @@
 
 import { useCallback, useMemo, useState } from "react";
 import { Activity, Heart } from "iconsax-react";
-import { useT } from "@/lib/plus/i18n";
+import { useLanguage } from "@/lib/plus/i18n";
 import { useBack } from "@/lib/plus/nav";
-import { BP_PULSE_MAX, BP_PULSE_MIN, bpFieldComplete, bpFieldMax, bpKeypadAppend, bpValidationErrorText, classifyBP, type BpCategory } from "@/lib/plus/health";
+import { BP_PULSE_MAX, BP_PULSE_MIN, bpFieldComplete, bpFieldMax, bpKeypadAppend, bpValidationErrorText } from "@/lib/plus/health";
+import { bpStatus, type ReadingStatus } from "@/lib/plus/clinical-rules";
+import { useClinicalConfig } from "@/lib/plus/client/clinical-config";
+import ReadingSaved from "../safety/reading-saved";
+import { EmergencyLink } from "../safety/emergency-link";
 import { saveReading } from "@/lib/plus/client/readings";
 import { MobileApiError } from "@/lib/plus/client/api";
 import { useFeedback } from "../ui/vita";
 import { FUTURE_TIME_MESSAGE, MetricFeedbackBox, MetricLogScaffold, NumericKeypad, TimePickerModal, fmtTimeOfDay, type FeedbackKind } from "./log-chrome";
 
 type Field = "top" | "bottom" | "pulse";
-
-const CATEGORIES: Array<[BpCategory, string, string]> = [
-  ["low", "bp_cat_low", "#F6CF8B"],
-  ["normal", "bp_cat_normal", "#8FD3B9"],
-  ["elevated", "bp_cat_elevated", "#B9E2C7"],
-  ["aboveTarget", "bp_cat_above", "#F6CF8B"],
-  ["high", "bp_cat_high", "#F4A77C"],
-  ["veryHigh", "bp_cat_very_high", "#E8766A"],
-];
 
 function FieldTile({ value, placeholder, label, required, selected, onClick }: { value: string; placeholder: string; label: string; required?: boolean; selected: boolean; onClick: () => void }) {
   return (
@@ -49,8 +44,10 @@ function FieldTile({ value, placeholder, label, required, selected, onClick }: {
 }
 
 export default function LogBpScreen() {
-  const t = useT();
+  const { t, language } = useLanguage();
+  const clinical = useClinicalConfig();
   const back = useBack();
+  const [saved, setSaved] = useState<{ value: string; status: ReadingStatus | null } | null>(null);
   const { toast } = useFeedback();
   const [top, setTop] = useState("");
   const [bottom, setBottom] = useState("");
@@ -79,26 +76,14 @@ export default function LogBpScreen() {
   }, [top, bottom, pulse, systolic, diastolic, stamp, t]);
 
   const canSave = Boolean(top && bottom) && validationError === null && systolic !== null && diastolic !== null;
-  const category = systolic !== null && diastolic !== null && validationError === null && top && bottom ? classifyBP(systolic, diastolic) : null;
-  const activeIndex = category ? CATEGORIES.findIndex(([c]) => c === category) : -1;
+  // Tracker v9.0 BL-012: no interpretation unless CA-03 (bp_ranges) is approved.
+  const status = canSave ? bpStatus(clinical, systolic, diastolic, language) : null;
 
   const feedback = ((): { kind: FeedbackKind; title: string; body: string } => {
     if (validationError) return { kind: "bad", title: t("check_the_numbers"), body: validationError };
-    if (!top || !bottom || !category) return { kind: "info", title: "", body: t("bp_empty_tip") };
-    switch (category) {
-      case "veryHigh":
-        return { kind: "bad", title: t("bp_cat_very_high"), body: t("bp_fb_very_high") };
-      case "high":
-        return { kind: "warn", title: t("bp_cat_high"), body: t("bp_fb_high") };
-      case "aboveTarget":
-        return { kind: "warn", title: t("bp_fb_above_title"), body: t("bp_fb_target") };
-      case "low":
-        return { kind: "warn", title: t("bp_cat_low"), body: t("bp_fb_low") };
-      case "checkNumbers":
-        return { kind: "bad", title: t("check_the_numbers"), body: t("check_the_numbers_body") };
-      default:
-        return { kind: "ok", title: t("bp_fb_in_target"), body: t("bp_fb_target") };
-    }
+    if (!top || !bottom) return { kind: "info", title: "", body: t("bp_empty_tip") };
+    if (!status) return { kind: "info", title: t("reading_review_title"), body: t("reading_no_interpretation") };
+    return { kind: status.tone, title: status.chip, body: status.label };
   })();
 
   const onKey = useCallback(
@@ -124,13 +109,14 @@ export default function LogBpScreen() {
     setSaving(true);
     try {
       await saveReading({ type: "bp", name: "Blood pressure", unit: "mmHg", systolic, diastolic, latestValue: "0", stamp, fullness: 0 });
-      toast(t("health_metric_saved"));
-      back();
+      setSaved({ value: `${systolic}/${diastolic} mmHg`, status: bpStatus(clinical, systolic, diastolic, language) });
     } catch (error) {
       setSaving(false);
       toast(error instanceof MobileApiError && error.status === 0 ? error.message : t("failed_to_save_metric"), { error: true });
     }
   };
+
+  if (saved) return <ReadingSaved value={saved.value} status={saved.status} onDone={back} />;
 
   return (
     <MetricLogScaffold title={t("add_blood_pressure")} icon={<Activity size={17} color="currentColor" />} saveLabel={t("save_reading")} loading={saving} onSave={canSave ? save : undefined}>
@@ -150,31 +136,9 @@ export default function LogBpScreen() {
             <FieldTile value={pulse} placeholder="--" label={t("bp_pulse")} selected={focus === "pulse"} onClick={() => setFocus("pulse")} />
           </div>
         </div>
-        <div style={{ padding: "18px 18px 0" }}>
-          <div style={{ display: "flex", gap: 3 }}>
-            {CATEGORIES.map(([, , color], i) => (
-              <span
-                key={i}
-                style={{
-                  flex: 1,
-                  height: 10,
-                  background: color,
-                  borderRadius: `${i === 0 ? 5 : 3}px ${i === CATEGORIES.length - 1 ? 5 : 3}px ${i === CATEGORIES.length - 1 ? 5 : 3}px ${i === 0 ? 5 : 3}px`,
-                  boxShadow: activeIndex === i ? "inset 0 0 0 2.5px var(--vc-ink)" : "none",
-                }}
-              />
-            ))}
-          </div>
-          <div style={{ display: "flex", gap: 3, marginTop: 6 }}>
-            {CATEGORIES.map(([, name], i) => (
-              <span key={i} style={{ flex: 1, textAlign: "center", fontSize: 9.5, fontWeight: 800, lineHeight: 1.15, color: activeIndex === i ? "var(--vc-ink)" : "rgba(var(--vc-navy-rgb),0.4)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                {t(name)}
-              </span>
-            ))}
-          </div>
-        </div>
         <div style={{ padding: "14px 18px 0" }}>
           <MetricFeedbackBox {...feedback} />
+          <EmergencyLink style={{ marginTop: 10 }} />
         </div>
         <div style={{ display: "flex", alignItems: "center", padding: "14px 18px 0", fontSize: 13 }}>
           <span style={{ fontWeight: 700, color: "rgba(var(--vc-navy-rgb),0.55)" }}>{t("hm_today")} · {fmtTimeOfDay(time)}</span>
