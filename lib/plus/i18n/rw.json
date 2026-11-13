@@ -871,5 +871,17 @@
  "health_score": "Amanota y'ubuzima",
  "health_score_hidden_title": "Nta manota y'ubuzima arahari",
  "health_score_hidden_body": "Vitaway izerekana amanota y'ubuzima ari uko umuyobozi w'ubuvuzi yemeje uko abarwa. Ibipimo byawe birabitswe kandi itsinda rigukurikirana rirabibona.",
- "reading_review_title": "Itsinda rigukurikirana rizabireba"
+ "reading_review_title": "Itsinda rigukurikirana rizabireba",
+  "your_path": "Inzira yawe",
+  "your_path_week_of": "Icyumweru cya {week} kuri 12",
+  "your_path_week_title": "Icyumweru cya {week}",
+  "your_path_progress": "{done} kuri {total}",
+  "your_path_free": "Icyumweru cya 1 kirafunguye. Ibindi byumweru bifunguka iyo winjiye mu gahunda y’ibyumweru 12.",
+  "your_path_locked": "Iki cyumweru ntikira funguye.",
+  "your_path_load_error": "Ntibishoboye gufungura inzira yawe",
+  "your_path_mark_complete": "Garagaza ko iki cyiciro kirangiye",
+  "your_path_completed": "Iki cyiciro kirangiye",
+  "your_path_complete_error": "Ntibishoboye kubika iki cyiciro. Ongera ugerageze.",
+  "your_path_placeholder_label": "Isomo ritarasuzumwa",
+  "your_path_language_review": "Iyi nyandiko y’Ikinyarwanda ntarasuzumwa."
 }

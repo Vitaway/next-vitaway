@@ -868,5 +868,17 @@
  "health_score": "Health score",
  "health_score_hidden_title": "No health score yet",
  "health_score_hidden_body": "Vitaway will only show a health score after its clinical lead approves how it is worked out. Your readings are saved and your care team can see them.",
- "reading_review_title": "Your care team will review this"
+ "reading_review_title": "Your care team will review this",
+  "your_path": "Your path",
+  "your_path_week_of": "Week {week} of 12",
+  "your_path_week_title": "Week {week}",
+  "your_path_progress": "{done} of {total}",
+  "your_path_free": "Week 1 is open. Later weeks open when you join a 12-week programme.",
+  "your_path_locked": "This week is not open yet.",
+  "your_path_load_error": "Could not load your path",
+  "your_path_mark_complete": "Mark this step complete",
+  "your_path_completed": "This step is complete",
+  "your_path_complete_error": "Could not save this step. Try again.",
+  "your_path_placeholder_label": "Placeholder lesson",
+  "your_path_language_review": "This Kinyarwanda wording is a draft pending language review."
 }

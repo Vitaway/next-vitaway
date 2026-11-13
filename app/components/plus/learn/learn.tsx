@@ -9,6 +9,7 @@ import { mobileRequest, mediaUrl } from "@/lib/plus/client/api";
 import { useArticles, useSubscription, type Article } from "@/lib/plus/client/data";
 import { invalidate, useResource } from "@/lib/plus/client/use-resource";
 import { ActionButton, AppBar, CenterSpinner, EmptyState, Modal, Page, SectionLabel, Tabs, useFeedback } from "../ui/vita";
+import { YourPathBlock } from "./your-path";
 
 const navyA = (a: number) => `rgba(var(--vc-navy-rgb),${a})`;
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -78,6 +79,7 @@ export function LearnScreen() {
   return (
     <Page>
       <AppBar title={cap(t("learn_title"))} bottom={<Tabs onBar value={tab} onChange={setTab} tabs={[{ value: "1", label: cap(t("informative")) }, { value: "2", label: cap(t("sustaining")) }, { value: "3", label: cap(t("earn_badges")) }]} />} />
+      <YourPathBlock />
       <div style={{ flex: 1, overflowY: "auto", paddingBottom: 24 }}>
         {loading ? (
           <CenterSpinner />
