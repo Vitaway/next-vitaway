@@ -386,14 +386,17 @@ export function Tabs<T extends string>({
   value,
   onChange,
   onBar = false,
+  scrollable = false,
 }: {
   tabs: Array<{ value: T; label: string }>;
   value: T;
   onChange: (value: T) => void;
   onBar?: boolean;
+  /** Tabs keep their natural width and scroll sideways (vitaTabBar scrollable). */
+  scrollable?: boolean;
 }) {
   return (
-    <div className={cx("vita-tabs", onBar && "on-bar")} role="tablist">
+    <div className={cx("vita-tabs", onBar && "on-bar", scrollable && "scroll")} role="tablist">
       {tabs.map((tab) => (
         <button
           key={tab.value}

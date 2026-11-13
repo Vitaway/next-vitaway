@@ -9,6 +9,7 @@ import { invalidate } from "@/lib/plus/client/use-resource";
 import { createRoom, roomDisplayName, roomPicture, roomTime, useCommunityReports, useDirectory, useRooms, type Coach, type Room } from "@/lib/plus/client/chat";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { ActionButton, AppBar, Avatar, CenterSpinner, DotSpinner, EmptyState, Modal, Page, Tabs, useFeedback } from "../ui/vita";
+import { SupportUrgentBanner } from "../safety/safety-banners";
 import { useChatGate } from "./sheets";
 
 type Kind = "coaches" | "dietitians" | "admins";
@@ -245,7 +246,7 @@ export function SupportScreen() {
       if (am !== bm) return am - bm;
       return `${a.first_name} ${a.last_name}`.localeCompare(`${b.first_name} ${b.last_name}`);
     });
-    if (!filtered.length && !groups.length) return <EmptyState title={kind === "coaches" ? t("coaches_empty") : kind === "dietitians" ? "No dietitians yet" : "No admins yet"} />;
+    if (!filtered.length && !groups.length) return <EmptyState title={kind === "coaches" ? t("coaches_empty") : kind === "dietitians" ? t("dietitians_empty") : t("support_team_empty")} />;
     return (
       <div style={{ ...listStyle, padding: "12px 16px calc(env(safe-area-inset-bottom) + 104px + 20px)", gap: 10 }}>
         {!filtered.length ? (
@@ -273,8 +274,8 @@ export function SupportScreen() {
   };
 
   const tabs = staff
-    ? [{ value: "chats", label: "Chats" }, { value: "community", label: t("community") }]
-    : [{ value: "coaches", label: t("my_coach") }, { value: "dietitians", label: "Dietitians" }, { value: "admins", label: "Admins" }, { value: "community", label: t("community") }];
+    ? [{ value: "chats", label: t("chats") }, { value: "community", label: t("community") }]
+    : [{ value: "coaches", label: t("my_coach") }, { value: "dietitians", label: t("dietitians") }, { value: "admins", label: t("support_team") }, { value: "community", label: t("community") }];
 
   let body: React.ReactNode;
   if (dietitian) body = renderRooms("normal");
@@ -310,7 +311,8 @@ export function SupportScreen() {
 
   return (
     <Page backdrop>
-      <AppBar title={t(isPatient ? "support_page_title_normal" : "support_page_title_coach")} back={false} bottom={dietitian ? undefined : <Tabs onBar tabs={tabs} value={tab} onChange={onTab} />} />
+      <AppBar title={t(isPatient ? "support_page_title_normal" : "support_page_title_coach")} back={false} bottom={dietitian ? undefined : <Tabs onBar scrollable={!staff} tabs={tabs} value={tab} onChange={onTab} />} />
+      {isPatient ? <SupportUrgentBanner /> : null}
       {body}
       {gate.element}
       <Modal

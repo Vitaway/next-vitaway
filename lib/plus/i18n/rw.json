@@ -912,5 +912,19 @@
   "meal_type_other": "Ibindi",
   "care_tab_meal_photos": "Amafoto y’ibiryo",
   "care_tab_meal_photos_blurb": "Amafoto yoherereje itsinda ryawe ry’ubuvuzi",
-  "quick_meal_photo": "Ifoto y’ibiryo"
+  "quick_meal_photo": "Ifoto y’ibiryo",
+  "chat_safety_title": "Si iby’ibihe byihutirwa. Hamagara {number}.",
+  "chat_safety_reply": "Itsinda ryawe ry’ubuvuzi risubiza mu masaha y’akazi.",
+  "support_urgent_title": "Ukeneye ubufasha ubu?",
+  "support_urgent_body": "Hamagara {number} usabe imbangukiragutabara, cyangwa urebe imirongo yose y’ubufasha.",
+  "emergency_helplines": "Indi mirongo y’ubufasha",
+  "support_team": "Itsinda ry’ubufasha",
+  "support_team_empty": "Nta muntu wo mu itsinda ry’ubufasha urahari",
+  "dietitians": "Abahanga mu mirire",
+  "dietitians_empty": "Nta bahanga mu mirire barahari",
+  "chats": "Ibiganiro",
+  "duplicate_medicine_title": "Usanzwe uwufite mu miti yawe?",
+  "duplicate_medicine_body": "Uyu muti usa na {name} usanzwe ufata. Kuyafata yombi bishobora gukuba kabiri urugero rw’umuti.",
+  "duplicate_medicine_pharmacist": "Vugana n’umufarumasiye",
+  "duplicate_medicine_add_anyway": "Ongeraho uko byagenda kose"
 }

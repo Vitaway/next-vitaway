@@ -48,6 +48,20 @@ export default function EmergencyScreen() {
             </a>
           ))}
         </div>
+        {view.helplines.length ? (
+          <div style={{ marginTop: 18 }}>
+            <p style={{ margin: "0 0 8px", fontSize: 14, fontWeight: 800, color: "var(--vc-ink)" }}>{t("emergency_helplines")}</p>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {view.helplines.map((n) => (
+                <a key={n.dial} href={`tel:${n.dial}`} data-testid={`call-${n.dial}`} style={{ display: "flex", alignItems: "center", gap: 12, padding: "14px 16px", borderRadius: 10, background: "var(--vc-surface)", color: "var(--vc-navy)", textDecoration: "none" }}>
+                  <Call size={20} color={danger} />
+                  <span style={{ flex: 1, fontSize: 15, fontWeight: 700 }}>{n.label}</span>
+                  <span style={{ fontSize: 18, fontWeight: 900, color: danger }}>{n.dial}</span>
+                </a>
+              ))}
+            </div>
+          </div>
+        ) : null}
         {view.nearest ? (
           <div style={{ marginTop: 14, padding: 16, borderRadius: 10, background: "var(--vc-surface)", display: "flex", gap: 12, alignItems: "flex-start", color: "var(--vc-navy)" }}>
             <Hospital size={22} color="currentColor" style={{ flex: "none" }} />

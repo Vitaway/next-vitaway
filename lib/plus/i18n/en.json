@@ -909,5 +909,19 @@
   "meal_type_other": "Other",
   "care_tab_meal_photos": "Meal photos",
   "care_tab_meal_photos_blurb": "Photos you sent for your care team to check",
-  "quick_meal_photo": "Meal photo"
+  "quick_meal_photo": "Meal photo",
+  "chat_safety_title": "Not for emergencies. Call {number}.",
+  "chat_safety_reply": "Your care team replies during working hours.",
+  "support_urgent_title": "Need help now?",
+  "support_urgent_body": "Call {number} for an ambulance, or see all helplines.",
+  "emergency_helplines": "Other helplines",
+  "support_team": "Support team",
+  "support_team_empty": "No one from the support team yet",
+  "dietitians": "Dietitians",
+  "dietitians_empty": "No dietitians yet",
+  "chats": "Chats",
+  "duplicate_medicine_title": "Already in your pillbox?",
+  "duplicate_medicine_body": "This looks like {name} you already take. Taking both could double the dose.",
+  "duplicate_medicine_pharmacist": "Talk to the pharmacist",
+  "duplicate_medicine_add_anyway": "Add anyway"
 }

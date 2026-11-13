@@ -59,6 +59,12 @@ export const EMERGENCY_FALLBACK: Text = {
 };
 export const FALLBACK_NUMBERS: Array<{ dial: string; label: Text }> = [{ dial: "912", label: { en: "Emergency", rw: "Ubutabazi bwihuse" } }];
 
+/** W6: Rwanda public helplines shown under the main number(s). Boss to confirm (docs/member-safety/DECISIONS.md D2). */
+export const FALLBACK_HELPLINES: Array<{ dial: string; label: Text }> = [
+  { dial: "112", label: { en: "Police and emergencies", rw: "Polisi n’ubutabazi" } },
+  { dial: "114", label: { en: "RBC health hotline (free)", rw: "Umurongo wa RBC w’ubuzima (ni ubuntu)" } },
+];
+
 /** Template A8 (CA-01, CA-10): shown after every BP or glucose save while no range rule is approved. */
 export const CARE_TEAM_WILL_REVIEW: Text = {
   en: "Thank you for recording this. Your care team will review it. If you feel unwell now, follow the emergency instructions in the app.",
@@ -185,6 +191,8 @@ export type EmergencyView = {
   approved: boolean;
   instruction: string;
   numbers: Array<{ dial: string; label: string }>;
+  /** W6: 112/114, minus any the approved list already shows. */
+  helplines: Array<{ dial: string; label: string }>;
   nearest: string | null;
   redFlags: { intro: string; symptoms: string[]; action: string | null } | null;
   source: string | null;
@@ -194,10 +202,12 @@ export type EmergencyView = {
 export function emergencyView(config: ClinicalConfig, lang: Lang): EmergencyView {
   const em = config.rules.emergency_instruction;
   const rf = config.rules.red_flags;
+  const main = em ? em.content.numbers : FALLBACK_NUMBERS;
   return {
     approved: !!em,
     instruction: em ? pick(em.content.instruction, lang) : pick(EMERGENCY_FALLBACK, lang),
-    numbers: (em ? em.content.numbers : FALLBACK_NUMBERS).map((n) => ({ dial: n.dial, label: pick(n.label, lang) })),
+    numbers: main.map((n) => ({ dial: n.dial, label: pick(n.label, lang) })),
+    helplines: FALLBACK_HELPLINES.filter((h) => !main.some((n) => n.dial === h.dial)).map((n) => ({ dial: n.dial, label: pick(n.label, lang) })),
     nearest: em?.content.nearest_service ? pick(em.content.nearest_service, lang) : null,
     redFlags: rf ? { intro: pick(rf.content.intro, lang), symptoms: rf.content.symptoms.map((s) => pick(s, lang)), action: rf.content.action ? pick(rf.content.action, lang) : null } : null,
     source: [em ? `emergency_instruction v${em.version} (${em.ca_ref})` : null, rf ? `red_flags v${rf.version} (${rf.ca_ref})` : null].filter(Boolean).join(", ") || null,

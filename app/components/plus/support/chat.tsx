@@ -9,6 +9,7 @@ import { hasText, messagePreview, roomPicture, senderName, stillDeletable, useCh
 import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { useBack } from "@/lib/plus/nav";
 import { ActionButton, Avatar, CircleButton, DotSpinner, Modal, useFeedback } from "../ui/vita";
+import { ChatSafetyBanner } from "../safety/safety-banners";
 
 const NAVY = "var(--vc-navy)";
 const navyA = (a: number) => `rgba(var(--vc-navy-rgb),${a})`;
@@ -521,6 +522,7 @@ export function ChatScreen({ roomId }: { roomId: string }) {
           </button>
         </div>
       </header>
+      {(user?.user_type ?? "normal") === "normal" ? <ChatSafetyBanner /> : null}
       {!chat.connected && !chat.loading && chat.messages.length ? (
         <div style={{ background: "var(--vc-tile-peach)", padding: "8px 16px", display: "flex", alignItems: "center", gap: 10 }}>
           <DotSpinner small color={NAVY} />

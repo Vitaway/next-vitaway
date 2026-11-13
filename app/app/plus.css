@@ -123,6 +123,8 @@
   border-radius: 0 0 24px 24px;
   overflow: hidden;
   padding-top: env(safe-area-inset-top);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
 }
 .vita-appbar-inner { position: relative; height: 56px; display: flex; align-items: center; justify-content: center; padding: 0 64px; }
 .vita-appbar-title { font-weight: 800; font-size: 18px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; position: relative; }
@@ -221,6 +223,9 @@ textarea.vita-input { height: auto; min-height: 96px; padding: 12px 14px; resize
 /* Tabs (vitaTabBar) */
 .vita-tabs { display: flex; border-bottom: 1px solid rgba(var(--vc-navy-rgb), 0.08); }
 .vita-tabs.on-bar { border-bottom: 0; }
+.vita-tabs.scroll { overflow-x: auto; scrollbar-width: none; padding: 0 8px; }
+.vita-tabs.scroll::-webkit-scrollbar { display: none; }
+.vita-tabs.scroll button { flex: none; padding: 0 14px; white-space: nowrap; }
 .vita-tabs button { flex: 1; height: 46px; font-size: 13px; font-weight: 500; color: rgba(var(--vc-navy-rgb), 0.38); position: relative; }
 .vita-tabs button.on { font-weight: 700; color: var(--vc-navy); }
 .vita-tabs button.on::after { content: ""; position: absolute; left: 12%; right: 12%; bottom: 0; height: 3px; background: var(--vc-mint); border-radius: 2px; }
@@ -229,7 +234,7 @@ textarea.vita-input { height: auto; min-height: 96px; padding: 12px 14px; resize
 .vita-tabs.on-bar button.on::after { background: #fff; }
 
 /* Dock */
-.vita-dock-wrap { position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; max-width: 480px; margin: 0 auto; padding: 0 12px calc(max(env(safe-area-inset-bottom), 8px)); pointer-events: none; }
+.vita-dock-wrap { position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; max-width: 480px; margin: 0 auto; padding: 0 max(12px, env(safe-area-inset-right)) calc(max(env(safe-area-inset-bottom), 8px)) max(12px, env(safe-area-inset-left)); pointer-events: none; }
 .vita-dock-row { display: flex; align-items: flex-end; gap: 10px; pointer-events: auto; }
 .vita-log-btn { width: 58px; height: 58px; border-radius: 50%; flex: none; display: flex; align-items: center; justify-content: center; background: var(--vc-teal); color: #fff; box-shadow: 0 6px 12px rgba(0, 62, 72, 0.28); transition: background 0.22s, box-shadow 0.22s; }
 .vita-log-btn.open { background: var(--vc-mint); color: #003e48; box-shadow: 0 6px 18px rgba(92, 224, 198, 0.28); }
