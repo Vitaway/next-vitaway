@@ -43,6 +43,14 @@
   --vc-blob-4: #ffd0ba;
   --vc-on-dark-ok: #0b6a4c;
   --vc-warn-ink: #7a4a00;
+  /* W12 fix: status/receipt colours with >= 4.5:1 contrast in both themes (tests/receipt-contrast.test.ts). */
+  --vc-warn-bg: #fff1d6;
+  --vc-bad-ink: #9b1c14;
+  --vc-bad-bg: #fdecea;
+  --vc-ok-ink: #11704f;
+  --vc-amount: #b23f12;
+  --vc-chip-teal-ink: #146f66;
+  --vc-chip-orange-ink: #b23f12;
   --vc-picker-well: #e7f3f5;
   --vc-picker-ink: #00262e;
   color-scheme: light;
@@ -82,6 +90,14 @@
   --vc-picker-well: #133238;
   --vc-picker-ink: #7fd0db;
   --vc-bubble-accent: rgba(92, 224, 198, 0.22);
+  --vc-warn-ink: #ffd38a;
+  --vc-warn-bg: #3a2a0e;
+  --vc-bad-ink: #ffb4ab;
+  --vc-bad-bg: #3a1d19;
+  --vc-ok-ink: #6fe0b8;
+  --vc-amount: #ff9b73;
+  --vc-chip-teal-ink: #7fd8cc;
+  --vc-chip-orange-ink: #ffa27f;
   --vc-blob-1: rgba(232, 90, 46, 0.1);
   --vc-blob-2: rgba(232, 90, 46, 0.06);
   --vc-blob-3: rgba(92, 224, 198, 0.06);

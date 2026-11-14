@@ -32,10 +32,11 @@ const PROGRAMMES_KEY = "/api/v1/mobile/programmes";
 const ENROLMENTS_KEY = "/api/v1/mobile/enrolments";
 
 const TONES: Record<ReturnType<typeof stageTone>, { bg: string; fg: string }> = {
-  green: { bg: "color-mix(in srgb, #1d9e75 16%, transparent)", fg: "#1d9e75" },
-  teal: { bg: "color-mix(in srgb, #2BB3A3 16%, transparent)", fg: "#1f8f83" },
-  amber: { bg: "color-mix(in srgb, #F5A623 20%, transparent)", fg: "#9A5B00" },
-  orange: { bg: "color-mix(in srgb, #E85D2F 16%, transparent)", fg: "#C2410C" },
+  // W12 fix: text colours come from theme tokens so the pills stay readable in dark mode.
+  green: { bg: "color-mix(in srgb, #1d9e75 16%, transparent)", fg: "var(--vc-ok-ink)" },
+  teal: { bg: "color-mix(in srgb, #2BB3A3 16%, transparent)", fg: "var(--vc-chip-teal-ink)" },
+  amber: { bg: "var(--vc-warn-bg)", fg: "var(--vc-warn-ink)" },
+  orange: { bg: "color-mix(in srgb, #E85D2F 16%, transparent)", fg: "var(--vc-chip-orange-ink)" },
   grey: { bg: navyA(0.08), fg: navyA(0.6) },
 };
 
@@ -67,7 +68,7 @@ function Row({ label, value, strong = false }: { label: string; value: string; s
   return (
     <div style={{ display: "flex", justifyContent: "space-between", gap: 12, padding: "10px 0", borderBottom: `1px solid ${navyA(0.06)}` }}>
       <span style={{ fontSize: 13, fontWeight: 600, color: navyA(0.55) }}>{label}</span>
-      <span style={{ fontSize: strong ? 16 : 13, fontWeight: strong ? 800 : 700, color: strong ? "#E85D2F" : "var(--vc-ink)", textAlign: "right", wordBreak: "break-word" }}>{value}</span>
+      <span style={{ fontSize: strong ? 16 : 13, fontWeight: strong ? 800 : 700, color: strong ? "var(--vc-amount)" : "var(--vc-ink)", textAlign: "right", wordBreak: "break-word" }}>{value}</span>
     </div>
   );
 }
@@ -299,7 +300,7 @@ export function EnrolmentScreen({ id }: { id: number }) {
                       {p.status === "refunded" ? ` · ${t("receipt_refunded")}` : ""}
                     </span>
                   </span>
-                  <span style={{ fontSize: 13, fontWeight: 700, color: "#1f8f83" }}>{t("programme_view_receipt")}</span>
+                  <span style={{ fontSize: 13, fontWeight: 700, color: "var(--vc-chip-teal-ink)" }}>{t("programme_view_receipt")}</span>
                 </button>
               ))}
             </Card>
@@ -384,7 +385,7 @@ export function PaymentStatusScreen({ id, reference }: { id: number; reference: 
             <p style={{ margin: "8px 0 0", fontSize: 14, lineHeight: 1.45, color: navyA(0.6) }}>
               {paid ? (enrolment ? t(`stage_body_${enrolment.stage}`, { days: enrolment.trial?.daysLeft ?? 0 }) : "") : settled ? t("payment_failed_body") : payment?.testPayment ? t("payment_test_waiting_body") : t("payment_waiting_body")}
             </p>
-            {payment ? <p style={{ margin: "12px 0 0", fontSize: 22, fontWeight: 800, color: "#E85D2F" }}>{formatMoney(payment)}</p> : null}
+            {payment ? <p style={{ margin: "12px 0 0", fontSize: 22, fontWeight: 800, color: "var(--vc-amount)" }} data-testid="payment-amount">{formatMoney(payment)}</p> : null}
             {!settled && !stopped ? (
               <p style={{ margin: "10px 0 0", display: "flex", justifyContent: "center", alignItems: "center", gap: 6, fontSize: 12, color: navyA(0.5) }}>
                 <span className="vita-dots" style={{ transform: "scale(0.6)" }}><i /><i /><i /></span>
@@ -398,11 +399,11 @@ export function PaymentStatusScreen({ id, reference }: { id: number; reference: 
             ) : null}
           </Card>
           {payment?.testPayment && !settled ? (
-            <div style={{ padding: 12, marginBottom: 14, borderRadius: 10, background: "color-mix(in srgb, #F5A623 18%, transparent)", color: "#7A4A00", fontSize: 13, lineHeight: 1.45, fontWeight: 600 }} data-testid="test-payment-notice">
+            <div style={{ padding: 12, marginBottom: 14, borderRadius: 10, background: "var(--vc-warn-bg)", color: "var(--vc-warn-ink)", fontSize: 13, lineHeight: 1.45, fontWeight: 600 }} data-testid="test-payment-notice">
               {t("payment_test_notice")}
             </div>
           ) : null}
-          {error ? <p style={{ margin: "0 0 12px", textAlign: "center", fontSize: 13, color: "#B3261E" }}>{error}</p> : null}
+          {error ? <p style={{ margin: "0 0 12px", textAlign: "center", fontSize: 13, color: "var(--vc-bad-ink)" }}>{error}</p> : null}
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {!settled && payment?.checkoutUrl && !payment.testPayment ? (
               <ActionButton full label={t("payment_open_irembo")} onClick={() => void window.open(payment.checkoutUrl!, "_blank", "noopener")} />
@@ -460,10 +461,10 @@ export function ReceiptScreen({ id, reference }: { id: number; reference: string
             </div>
             <div style={{ padding: "6px 18px 14px" }}>
               {p.testPayment ? (
-                <div style={{ margin: "10px 0 4px", padding: "8px 10px", borderRadius: 8, background: "color-mix(in srgb, #F5A623 18%, transparent)", color: "#7A4A00", fontSize: 12, fontWeight: 700 }}>{t("receipt_test")}</div>
+                <div style={{ margin: "10px 0 4px", padding: "8px 10px", borderRadius: 8, background: "var(--vc-warn-bg)", color: "var(--vc-warn-ink)", fontSize: 12, fontWeight: 700 }} data-testid="receipt-test-banner">{t("receipt_test")}</div>
               ) : null}
               {p.status === "refunded" ? (
-                <div style={{ margin: "10px 0 4px", padding: "8px 10px", borderRadius: 8, background: "color-mix(in srgb, #B3261E 12%, transparent)", color: "#B3261E", fontSize: 12, fontWeight: 700 }}>
+                <div style={{ margin: "10px 0 4px", padding: "8px 10px", borderRadius: 8, background: "var(--vc-bad-bg)", color: "var(--vc-bad-ink)", fontSize: 12, fontWeight: 700 }}>
                   {t("receipt_refunded")} {kigaliDateTime(p.refundedAt)}
                 </div>
               ) : null}
@@ -477,7 +478,7 @@ export function ReceiptScreen({ id, reference }: { id: number; reference: string
             </div>
           </Card>
           {e ? (
-            <div style={{ display: "flex", alignItems: "center", gap: 10, padding: 12, marginBottom: 14, borderRadius: 10, background: "var(--vc-surface)" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, padding: 12, marginBottom: 14, borderRadius: 10, background: "var(--vc-surface)", border: "1px solid var(--vc-line)" }}>
               <span style={{ fontSize: 13, fontWeight: 600, color: navyA(0.6), flex: 1 }}>{t("receipt_programme_status")}</span>
               <StagePill stage={e.stage} />
             </div>
