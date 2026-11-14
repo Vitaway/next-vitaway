@@ -92,6 +92,12 @@ const nextConfig: NextConfig = {
         pathname: "/**",
       },
       {
+        // TODO staging: revert to care-api.vitaway.org before production
+        protocol: "https",
+        hostname: "vitaway.keyypress.com",
+        pathname: "/**",
+      },
+      {
         protocol: "https",
         hostname: "healthycanadians.gc.ca",
         pathname: "/**",
