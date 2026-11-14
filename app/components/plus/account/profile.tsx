@@ -29,6 +29,7 @@ import {
   Trash,
   User,
   UserTag,
+  Star1,
 } from "iconsax-react";
 import { useT, useLanguage, languageDisplayName } from "@/lib/plus/i18n";
 import { useTheme } from "@/lib/plus/theme";
@@ -110,6 +111,7 @@ export function ProfileScreen() {
     { icon: icon(ReceiptItem), label: "Payments", onClick: () => push("/account/payments") },
     ...(isPatient
       ? [
+          { icon: icon(Star1), label: t("rewards_title"), subtitle: t("rewards_menu_body"), onClick: () => push("/rewards") },
           { icon: icon(Cup), label: t("badges_earned"), trailing: `${badges.data?.earnedCount ?? 0} · ${badges.data ? badgesRemaining(badges.data) : 0} ${t("badges_remaining")}`, onClick: () => push("/badges") },
           { icon: icon(UserTag), label: t("community_handle"), subtitle: t("community_handle_body"), trailing: p.handle || null, onClick: () => void gate.ensureHandle(true) },
           { icon: icon(Calendar1), label: t("my_appointments"), onClick: () => push("/appointments") },
