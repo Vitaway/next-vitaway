@@ -9,29 +9,51 @@ import { MdCheck, MdClose } from "react-icons/md";
 
 const navyA = (a: number) => `rgba(var(--vc-navy-rgb),${a})`;
 
-/** AuthScaffold + AuthCard: bubble backdrop, 24px gutters, a 440px column that fills the screen height. */
+/**
+ * Brand side of the wide (>=1024px) auth layout: logo, onboarding art, headline and a short line.
+ * Hidden by CSS on phones and tablets, so the phone layout is unchanged.
+ */
+export function AuthBrandPanel({ image = "intro.png", title, body }: { image?: string; title?: string; body?: string }) {
+  const t = useT();
+  return (
+    <aside className="vita-auth-brand" aria-hidden>
+      <div className="vita-auth-brand-inner">
+        <span className="vita-auth-brand-logo">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/plus-assets/vitaway-logo.png" alt="" width={56} height={56} />
+        </span>
+        <div className="vita-auth-brand-art">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={`/plus-assets/onboarding/${image}`} alt="" />
+        </div>
+        <h2 className="vita-auth-brand-title">{title ?? t("onboarding1")}</h2>
+        <p className="vita-auth-brand-body">{body ?? t("onboarding1_subtitle")}</p>
+      </div>
+    </aside>
+  );
+}
+
+/**
+ * AuthScaffold + AuthCard: bubble backdrop, 24px gutters, a 440px column that fills the screen height.
+ * From 768px the column becomes a centred card on a full-bleed brand background, and from 1024px a
+ * brand panel sits on the left (see .vita-wide in plus.css). Below 768px it renders exactly as before.
+ */
 export function AuthScreen({ children, onBack }: { children: React.ReactNode; onBack?: () => void }) {
   return (
-    <div className="vita-page vita-auth" style={{ position: "relative", minHeight: "100dvh" }}>
+    <div className="vita-page vita-auth vita-wide vita-fullbleed" style={{ position: "relative", minHeight: "100dvh" }}>
       <BubbleBackdrop />
-      {onBack ? (
-        <div style={{ position: "absolute", top: "max(8px, env(safe-area-inset-top))", left: 4, zIndex: 2 }}>
-          <button type="button" aria-label="Back" onClick={onBack} className="vita-auth-back">
-            <ArrowLeft size={18} color="currentColor" />
-          </button>
+      <AuthBrandPanel />
+      <div className="vita-auth-main">
+        {onBack ? (
+          <div className="vita-auth-back-wrap">
+            <button type="button" aria-label="Back" onClick={onBack} className="vita-auth-back">
+              <ArrowLeft size={18} color="currentColor" />
+            </button>
+          </div>
+        ) : null}
+        <div className={onBack ? "vita-auth-body with-back" : "vita-auth-body"}>
+          <div className="vita-auth-card">{children}</div>
         </div>
-      ) : null}
-      <div
-        style={{
-          position: "relative",
-          zIndex: 1,
-          flex: 1,
-          display: "flex",
-          justifyContent: "center",
-          padding: `calc(env(safe-area-inset-top) + ${onBack ? 40 : 0}px) 24px calc(28px + env(safe-area-inset-bottom))`,
-        }}
-      >
-        <div style={{ width: "100%", maxWidth: 440, display: "flex", flexDirection: "column" }}>{children}</div>
       </div>
     </div>
   );

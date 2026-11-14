@@ -9,6 +9,8 @@ import { hasText, messagePreview, roomPicture, senderName, stillDeletable, useCh
 import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { useBack } from "@/lib/plus/nav";
 import { ActionButton, Avatar, CircleButton, DotSpinner, Modal, useFeedback } from "../ui/vita";
+import { ChatSafetyBanner, useEmergencyDial } from "../safety/safety-banners";
+import { matchSafetyWords } from "@/lib/plus/safety-words";
 
 const NAVY = "var(--vc-navy)";
 const navyA = (a: number) => `rgba(var(--vc-navy-rgb),${a})`;
@@ -316,7 +318,7 @@ export function ChatScreen({ roomId }: { roomId: string }) {
   const [replying, setReplying] = useState<ChatMessage | null>(null);
   const [flash, setFlash] = useState<number | null>(null);
   const [sendingFile, setSendingFile] = useState(false);
-  const [sheet, setSheet] = useState<null | { kind: "attach" } | { kind: "actions"; message: ChatMessage } | { kind: "failed"; message: ChatMessage } | { kind: "file"; file: File; image: boolean; preview: string | null; caption: string }>(null);
+  const [sheet, setSheet] = useState<null | { kind: "attach" } | { kind: "actions"; message: ChatMessage } | { kind: "failed"; message: ChatMessage } | { kind: "file"; file: File; image: boolean; preview: string | null; caption: string } | { kind: "safety" }>(null);
   const [viewer, setViewer] = useState<{ url: string; name: string } | null>(null);
   const scroller = useRef<HTMLDivElement>(null);
   const input = useRef<HTMLTextAreaElement>(null);
@@ -331,6 +333,7 @@ export function ChatScreen({ roomId }: { roomId: string }) {
   const title = room ? (isGroup ? room.name : `${room.other.first_name} ${room.other.last_name}`.trim()) : "";
   const avatarUrl = room ? (type === "normal" || !type ? roomPicture({ ...room, type: "normal" }) : roomPicture(room)) : "";
 
+  const dial = useEmergencyDial();
   const me = (): ChatSender => ({ id: user?.id ?? 0, email: user?.email ?? "", first_name: user?.first_name ?? "", last_name: user?.last_name ?? "", image: user?.profile?.profile_picture ?? "", staff: (user?.user_type ?? "normal") !== "normal" });
   const isMine = (m: ChatMessage) => {
     if (m.pending) return true;
@@ -363,6 +366,9 @@ export function ChatScreen({ roomId }: { roomId: string }) {
     const replyTo = replying;
     setText("");
     setReplying(null);
+    // W6: warning-sign words (built-in list, pending CA-02). Members only. The message is still sent unchanged;
+    // the sheet points to the emergency screen. The care team sees a "Support needed" row on Today (never Urgent).
+    if (!isStaff && matchSafetyWords(body).matched) setSheet({ kind: "safety" });
     await chat.sendText(body, me(), replyTo);
   };
 
@@ -521,6 +527,7 @@ export function ChatScreen({ roomId }: { roomId: string }) {
           </button>
         </div>
       </header>
+      {(user?.user_type ?? "normal") === "normal" ? <ChatSafetyBanner /> : null}
       {!chat.connected && !chat.loading && chat.messages.length ? (
         <div style={{ background: "var(--vc-tile-peach)", padding: "8px 16px", display: "flex", alignItems: "center", gap: 10 }}>
           <DotSpinner small color={NAVY} />
@@ -631,6 +638,31 @@ export function ChatScreen({ roomId }: { roomId: string }) {
             {type === "community" && isStaff && !actionMessage.deleted ? <SheetRow danger icon={<Trash size={18} color="currentColor" />} label="Remove post" onClick={() => void runAction("remove", actionMessage)} /> : null}
           </>
         ) : null}
+      </Modal>
+
+      <Modal open={sheet?.kind === "safety"} title={t("chat_words_title")} onClose={() => setSheet(null)}>
+        <div data-testid="chat-safety-words-sheet">
+          <p style={{ margin: "0 0 14px", fontSize: 14, lineHeight: 1.45, color: "rgba(var(--vc-navy-rgb),0.8)" }}>{t("chat_words_body")}</p>
+          <a
+            href={`tel:${dial}`}
+            data-testid="chat-safety-call"
+            style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, width: "100%", padding: "13px 16px", borderRadius: 10, background: "#C62828", color: "#fff", fontSize: 15, fontWeight: 800, textDecoration: "none" }}
+          >
+            <Warning2 size={18} variant="Bold" color="currentColor" /> {t("chat_words_call", { number: dial })}
+          </a>
+          <button
+            type="button"
+            data-testid="chat-safety-emergency"
+            onClick={() => { setSheet(null); push("/emergency"); }}
+            style={{ marginTop: 10, width: "100%", padding: "12px 16px", borderRadius: 10, background: "var(--vc-danger-soft)", color: "#C62828", fontSize: 14, fontWeight: 800 }}
+          >
+            {t("chat_words_emergency")}
+          </button>
+          <button type="button" onClick={() => setSheet(null)} style={{ marginTop: 10, width: "100%", padding: "12px 16px", borderRadius: 10, background: "transparent", color: NAVY, fontSize: 14, fontWeight: 700, border: `1px solid ${LINE}` }}>
+            {t("chat_words_ok")}
+          </button>
+          <p style={{ margin: "12px 0 0", fontSize: 12, color: "rgba(var(--vc-navy-rgb),0.6)", textAlign: "center" }}>{t("chat_words_noted")}</p>
+        </div>
       </Modal>
 
       <Modal open={sheet?.kind === "failed"} title="Message not sent" onClose={() => setSheet(null)}>

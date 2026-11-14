@@ -2,12 +2,14 @@
 
 import { Clock, Health, TickSquare } from "iconsax-react";
 import { useTheme } from "@/lib/plus/theme";
+import { useLanguage } from "@/lib/plus/i18n";
 import {
   DOSE_COLORS,
   adherenceRowTimes,
   doseLabel,
   reminderTimes,
   scheduleLabel,
+  needsCareTeamCheck,
   ymd,
   type Medication,
   type MedicationAdherence,
@@ -22,6 +24,22 @@ function dMMM(value: string): string {
   const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(value);
   if (!match) return value;
   return `${Number(match[3])} ${SHORT_MONTHS[Number(match[2]) - 1]}`;
+}
+
+/** W7: amber chip until the care team confirms a medicine the member added. */
+export function CareTeamCheckChip({ medication }: { medication: Medication }) {
+  const { dark } = useTheme();
+  const { t } = useLanguage();
+  if (!needsCareTeamCheck(medication)) return null;
+  return (
+    <span
+      className="vita-chip"
+      data-testid="medicine-care-team-check"
+      style={{ background: dark ? "#3A2A0C" : "#FFF4DE", color: dark ? "#F5C36B" : "#9A5B00", whiteSpace: "nowrap" }}
+    >
+      {t("medicine_care_team_check")}
+    </span>
+  );
 }
 
 export function MedicationListCard({ medication, onClick }: { medication: Medication; onClick: () => void }) {
@@ -62,6 +80,11 @@ export function MedicationListCard({ medication, onClick }: { medication: Medica
         </span>
         <span style={{ display: "block", marginTop: 4, color: "rgba(var(--vc-navy-rgb),0.55)", fontWeight: 600, fontSize: 13 }}>{scheduleLabel(medication)}</span>
         <span style={{ display: "block", marginTop: 4, color: "rgba(var(--vc-navy-rgb),0.45)", fontWeight: 500, fontSize: 12 }}>{meta}</span>
+        {needsCareTeamCheck(medication) ? (
+          <span style={{ display: "block", marginTop: 8 }}>
+            <CareTeamCheckChip medication={medication} />
+          </span>
+        ) : null}
       </span>
     </button>
   );

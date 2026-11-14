@@ -29,12 +29,15 @@ import {
   Trash,
   User,
   UserTag,
+  Star1,
 } from "iconsax-react";
 import { useT, useLanguage, languageDisplayName } from "@/lib/plus/i18n";
 import { useTheme } from "@/lib/plus/theme";
 import { useInstall } from "@/lib/plus/install";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { useResource } from "@/lib/plus/client/use-resource";
+import { mobileRequest } from "@/lib/plus/client/api";
+import { badgesRemaining, fetchBadgeBoard, type BadgeBoard } from "@/lib/plus/badge-board";
 import { AppBar, Modal, Page, Photo, useFeedback } from "../ui/vita";
 import { useChatGate } from "../support/sheets";
 import { AppearanceSegments, LanguageOptions, navyA, themeModeName, useAccountActions, useProfile } from "./shared";
@@ -78,7 +81,8 @@ export function ProfileScreen() {
   const { logout, deleteAccount } = useAccountActions();
   const gate = useChatGate();
   const [sheet, setSheet] = useState<null | "language" | "appearance">(null);
-  const badges = useResource<{ badges?: unknown[]; badge_number?: number }>("/badges/");
+  // Same counts as Flutter account.dart: the badge board, with the /badges/ fallback.
+  const badges = useResource<BadgeBoard>("badge-board", () => fetchBadgeBoard((path) => mobileRequest<unknown>(path)));
   const isPatient = p.type === "normal";
   const isCoach = p.type === "coach";
   const isDietitian = p.type === "dietitian";
@@ -104,12 +108,14 @@ export function ProfileScreen() {
     { icon: icon(User), label: t("my_profile"), subtitle: t("edit_account_body"), onClick: () => push("/account/my-profile") },
     ...(isPatient ? [{ icon: icon(Activity), label: t("health_details"), subtitle: t("health_details_body"), onClick: () => push("/account/health-details") }] : []),
     { icon: icon(FolderOpen), label: t("my_documents"), onClick: () => push("/documents") },
-    { icon: icon(ReceiptItem), label: "Payments", onClick: () => push("/account/payments") },
+    { icon: icon(ReceiptItem), label: t("programme_payments"), onClick: () => push("/account/payments") },
     ...(isPatient
       ? [
-          { icon: icon(Cup), label: t("badges_earned"), trailing: `${badges.data?.badges?.length ?? 0} · ${badges.data?.badge_number ?? 0} ${t("badges_remaining")}`, onClick: () => push("/badges") },
+          { icon: icon(Star1), label: t("rewards_title"), subtitle: t("rewards_menu_body"), onClick: () => push("/rewards") },
+          { icon: icon(Cup), label: t("badges_earned"), trailing: `${badges.data?.earnedCount ?? 0} · ${badges.data ? badgesRemaining(badges.data) : 0} ${t("badges_remaining")}`, onClick: () => push("/badges") },
           { icon: icon(UserTag), label: t("community_handle"), subtitle: t("community_handle_body"), trailing: p.handle || null, onClick: () => void gate.ensureHandle(true) },
           { icon: icon(Calendar1), label: t("my_appointments"), onClick: () => push("/appointments") },
+          { icon: icon(Health), label: t("my_programmes"), subtitle: t("programmes_title"), onClick: () => push("/programmes/mine") },
           { icon: icon(Crown1), label: t("plans_pricing_title"), onClick: () => push("/plans") },
           { icon: icon(Health), label: t("medications_title"), onClick: () => push("/medications") },
         ]

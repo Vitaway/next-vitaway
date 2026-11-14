@@ -6,6 +6,7 @@ import { ArrowDown2, Calendar1, Edit, Health, NoteText, Refresh, Repeat, Trash }
 import { useT } from "@/lib/plus/i18n";
 import { useMe } from "@/lib/plus/client/data";
 import { mobileRequest } from "@/lib/plus/client/api";
+import { duplicateOf } from "@/lib/plus/medicine-duplicate";
 import { markDose, refreshMedications, useAdherence, useMedicationHistory, useMedications } from "@/lib/plus/client/meds";
 import { DOSE_COLORS, canMarkDoseTaken, defaultTimesForFrequency, effectiveSlotStatus, type MedicationSlot } from "@/lib/plus/medication";
 import { useTheme } from "@/lib/plus/theme";
@@ -42,7 +43,7 @@ export function MedicationsScreen() {
   };
   return (
     <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
-      <AppBar title={t("medications_title")} actions={<CircleButton label={t("add_medication")} onClick={() => push("/medications/add")}>{plus}</CircleButton>} />
+      <AppBar title={t("pillbox")} actions={<CircleButton label={t("add_medication")} onClick={() => push("/medications/add")}>{plus}</CircleButton>} />
       {loading ? (
         <CenterSpinner />
       ) : failed ? (
@@ -220,6 +221,9 @@ export function AddMedicationScreen() {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [sheet, setSheet] = useState<null | "unit" | "freq" | "date" | { time: number }>(null);
+  // W7: name of the medicine this looks like, while the warning is open.
+  const [duplicate, setDuplicate] = useState<string | null>(null);
+  const { push } = usePlusPaths();
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -237,12 +241,21 @@ export function AddMedicationScreen() {
   const freqLabel = !hasFreq ? "Select frequency" : custom ? (customText.trim() ? `${customText.trim()} times a day` : "Custom") : PRESETS.find((p) => p[0] === preset)?.[1] ?? "Select frequency";
   const applyDefaults = (f: number) => setTimes(defaultTimesForFrequency(f).map(toHm));
 
-  const save = async () => {
+  const save = async (confirmed = false) => {
     setTouched({ name: true, dose: true, freq: true, custom: custom });
     if (future) return setSubmitError(t("medication_start_date_future"));
     if (!canSave) return;
     setSaving(true);
     setSubmitError(null);
+    if (!confirmed) {
+      // W7: advice only; a failed check never blocks saving.
+      const dup = duplicateOf(await mobileRequest("/medications/check-duplicate/", { method: "POST", body: { name: n } }).catch(() => null));
+      if (dup) {
+        setSaving(false);
+        setDuplicate(dup.name);
+        return;
+      }
+    }
     // Like add_medication.dart scheduling reminders: ask while we still have the tap.
     const permission = requestNotificationPermission();
     try {
@@ -265,7 +278,7 @@ export function AddMedicationScreen() {
   const timeIndex = typeof sheet === "object" && sheet ? sheet.time : -1;
 
   return (
-    <MetricLogScaffold title={t("add_medication")} icon={<Health size={20} color="currentColor" />} saveLabel={t("save_medication")} loading={saving} onSave={saving ? undefined : save}>
+    <MetricLogScaffold title={t("add_medication")} icon={<Health size={20} color="currentColor" />} saveLabel={t("save_medication")} loading={saving} onSave={saving ? undefined : () => void save()}>
       <div style={{ padding: "8px 16px 24px" }}>
         <Card>
           <AuthField label={t("medication_name")} required hint={t("medication_name")} icon={<Health size={20} color="currentColor" />} value={name} onChange={(v) => { setName(v); setSubmitError(null); setTouched((x) => ({ ...x, name: true })); }} error={nameError} />
@@ -333,6 +346,20 @@ export function AddMedicationScreen() {
           {submitError ? <p style={{ margin: "12px 0 0", color: "var(--vc-danger)", fontSize: 13, fontWeight: 600 }}>{submitError}</p> : null}
         </Card>
       </div>
+      <Modal
+        open={duplicate !== null}
+        compact
+        title={t("duplicate_medicine_title")}
+        onClose={() => setDuplicate(null)}
+        actions={
+          <>
+            <ActionButton small tone="white" label={t("duplicate_medicine_pharmacist")} onClick={() => { setDuplicate(null); push("/support"); }} />
+            <ActionButton small label={t("duplicate_medicine_add_anyway")} onClick={() => { setDuplicate(null); void save(true); }} />
+          </>
+        }
+      >
+        <p data-testid="duplicate-medicine" style={{ margin: 0, fontSize: 15, lineHeight: 1.6, color: "var(--vc-body)" }}>{t("duplicate_medicine_body", { name: duplicate ?? "" })}</p>
+      </Modal>
       <Modal open={sheet === "unit"} title="Unit" onClose={() => setSheet(null)}>
         <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
           {UNITS.map((u) => (

@@ -1,13 +1,15 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Book1, CloudCross, Crown1, Edit2, Gallery, TickCircle } from "iconsax-react";
+import { Activity, Award, Book1, Calendar1, Call, CloudCross, Crown1, Cup, Edit2, Flash, Gallery, Lock, MessageFavorite, People, Reserve, ShieldTick, Star1, TickCircle } from "iconsax-react";
+import { badgeFraction, badgeText, fetchBadgeBoard, type BadgeBoard, type BadgeItem } from "@/lib/plus/badge-board";
 import { useLanguage, useT } from "@/lib/plus/i18n";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { mobileRequest, mediaUrl } from "@/lib/plus/client/api";
 import { useArticles, useSubscription, type Article } from "@/lib/plus/client/data";
 import { invalidate, useResource } from "@/lib/plus/client/use-resource";
 import { ActionButton, AppBar, CenterSpinner, EmptyState, Modal, Page, SectionLabel, Tabs, useFeedback } from "../ui/vita";
+import { YourPathBlock } from "./your-path";
 
 const navyA = (a: number) => `rgba(var(--vc-navy-rgb),${a})`;
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -77,6 +79,7 @@ export function LearnScreen() {
   return (
     <Page>
       <AppBar title={cap(t("learn_title"))} bottom={<Tabs onBar value={tab} onChange={setTab} tabs={[{ value: "1", label: cap(t("informative")) }, { value: "2", label: cap(t("sustaining")) }, { value: "3", label: cap(t("earn_badges")) }]} />} />
+      <YourPathBlock />
       <div style={{ flex: 1, overflowY: "auto", paddingBottom: 24 }}>
         {loading ? (
           <CenterSpinner />
@@ -162,7 +165,7 @@ export function ArticleScreen({ id }: { id: number }) {
       await mobileRequest(`/api/articles/${id}/complete/`, { method: "POST" });
       setDone(true);
       setCelebrate(true);
-      invalidate("/badges/", `/api/check_article_completion/${id}/`);
+      invalidate("/badges/", BADGE_BOARD_KEY, `/api/check_article_completion/${id}/`);
     } catch {
       /* Flutter stays quiet */
     } finally {
@@ -214,29 +217,74 @@ export function ArticleScreen({ id }: { id: number }) {
   );
 }
 
-type Badge = { id?: number; name?: string; description?: string; image?: string; article?: { id?: number; title?: string; image?: string } | null };
-const BADGE_STASH = "vitaway.plus.badge.";
+const BADGE_STASH = "vitaway.plus.badge2.";
+const BADGE_BOARD_KEY = "badge-board";
 
-function BadgeImage({ src, size }: { src?: string; size: number }) {
+function BadgeImage({ src, size, locked = false }: { src?: string; size: number; locked?: boolean }) {
   const [failed, setFailed] = useState(false);
   const url = src ? mediaUrl(src) : null;
-  if (!url || failed) return <Crown1 size={size * 0.5} color="var(--vc-navy)" />;
+  if (!url || failed) return locked ? <Lock size={size * 0.5} color={navyA(0.35)} /> : <Crown1 size={size * 0.5} color="var(--vc-navy)" />;
   // eslint-disable-next-line @next/next/no-img-element
   return <img src={url} alt="" width={size} height={size} onError={() => setFailed(true)} style={{ width: size, height: size, objectFit: "contain" }} />;
 }
 
-/** badges.dart */
+/** badges.dart: earned and locked habit badges (BL-090), falls back to /badges/ on old servers. */
+function useBadgeBoard() {
+  return useResource<BadgeBoard>(BADGE_BOARD_KEY, () => fetchBadgeBoard((path) => mobileRequest<unknown>(path)));
+}
+
+function ProgressBar({ value, height }: { value: number; height: number }) {
+  return (
+    <div style={{ width: "100%", height, borderRadius: 99, background: navyA(0.08), overflow: "hidden" }}>
+      <div style={{ width: `${Math.round(Math.max(0, Math.min(1, value)) * 100)}%`, height: "100%", background: "var(--vc-teal)", borderRadius: 99 }} />
+    </div>
+  );
+}
+
+/** W17: the prototype's medal icons (Vitaway-Plus-Master "My badges"). */
+const MEDALS: Record<string, typeof Crown1> = {
+  spark: Flash,
+  star: Star1,
+  plate: Reserve,
+  book: Book1,
+  walk: Activity,
+  shield: ShieldTick,
+  phone: Call,
+  chat: MessageFavorite,
+  user: People,
+  cal: Calendar1,
+  care: Award,
+  trophy: Cup,
+};
+
+function BadgeTileImage({ badge }: { badge: BadgeItem }) {
+  const [failed, setFailed] = useState(false);
+  const url = badge.image ? mediaUrl(badge.image) : null;
+  const Medal = badge.icon ? MEDALS[badge.icon] : null;
+  const icon = Medal ? (
+    <Medal size={34} color={badge.earned ? "var(--vc-chip-orange-ink)" : navyA(0.35)} variant={badge.earned ? "Bold" : "Linear"} />
+  ) : badge.earned ? (
+    <Crown1 size={40} color="var(--vc-navy)" />
+  ) : (
+    <Lock size={40} color={navyA(0.35)} />
+  );
+  if (!url || failed) return icon;
+  // eslint-disable-next-line @next/next/no-img-element
+  return <img src={url} alt="" width={40} height={40} onError={() => setFailed(true)} style={{ width: 40, height: 40, objectFit: "contain", opacity: badge.earned ? 1 : 0.35 }} />;
+}
+
 export function BadgesScreen() {
   const t = useT();
   const { push } = usePlusPaths();
-  const r = useResource<{ badges?: Badge[] }>("/badges/");
-  const badges = r.data?.badges ?? [];
+  const r = useBadgeBoard();
+  const board = r.data;
+  const badges = board?.badges ?? [];
   return (
     <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
       <AppBar title={t("my_badges")} />
-      {r.loading ? (
+      {r.loading && !board ? (
         <CenterSpinner />
-      ) : r.error && !r.data ? (
+      ) : r.error && !board ? (
         <EmptyState title={t("badges_load_failed")} subtitle={t("network_error")} actionLabel={t("retry")} onAction={() => void r.reload()} actionIcon={<CloudCross size={16} color="currentColor" />} />
       ) : !badges.length ? (
         <div style={{ flex: 1, overflowY: "auto", padding: "12px 20px 32px" }}>
@@ -259,25 +307,69 @@ export function BadgesScreen() {
           <ActionButton full label={t("badges_start_learning")} onClick={() => push("/articles")} />
         </div>
       ) : (
-        <div style={{ flex: 1, overflowY: "auto", padding: "16px 16px 32px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, alignContent: "start" }}>
-          {badges.map((b, i) => (
-            <button
-              key={b.id ?? i}
-              type="button"
-              onClick={() => {
-                try {
-                  sessionStorage.setItem(BADGE_STASH + i, JSON.stringify(b));
-                } catch {
-                  /* ignore */
-                }
-                push(`/badges/${i}`);
-              }}
-              style={{ aspectRatio: "1", borderRadius: 10, background: "var(--vc-surface)", border: `1px solid ${navyA(0.08)}`, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 10, padding: 12 }}
-            >
-              <BadgeImage src={b.image} size={80} />
-              <span style={{ fontSize: 14, fontWeight: 800, color: "var(--vc-navy)", textAlign: "center" }}>{b.name ?? ""}</span>
-            </button>
-          ))}
+        <div style={{ flex: 1, overflowY: "auto", padding: "16px 16px 32px" }}>
+          <div style={{ padding: 16, borderRadius: 10, background: "var(--vc-surface)", border: `1px solid ${navyA(0.08)}`, marginBottom: 16 }}>
+            <div style={{ fontSize: 18, fontWeight: 800, color: "var(--vc-navy)" }}>{t("badges_earned_of", { earned: board!.earnedCount, total: board!.total })}</div>
+            <div style={{ marginTop: 4, fontSize: 13, lineHeight: 1.4, color: navyA(0.6) }}>{t(board!.legacy ? "badges_legacy_note" : "badges_habit_note")}</div>
+            {!board!.legacy ? (
+              <div style={{ marginTop: 10 }}>
+                <ProgressBar value={board!.earnedCount / (board!.total > 0 ? board!.total : 1)} height={7} />
+              </div>
+            ) : null}
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, alignContent: "start" }}>
+            {badges.map((b, i) => {
+              const text = badgeText(t, b);
+              const fraction = badgeFraction(b);
+              return (
+                <button
+                  key={b.code ?? b.id ?? i}
+                  type="button"
+                  aria-label={`${text.name}, ${t(b.earned ? "badge_earned" : "badge_locked")}`}
+                  onClick={() => {
+                    try {
+                      sessionStorage.setItem(BADGE_STASH + i, JSON.stringify(b));
+                    } catch {
+                      /* ignore */
+                    }
+                    push(`/badges/${i}`);
+                  }}
+                  style={{
+                    borderRadius: 10,
+                    background: b.earned ? "var(--vc-surface)" : "var(--vc-canvas)",
+                    border: b.earned ? "1.4px solid color-mix(in srgb, var(--vc-teal) 50%, transparent)" : `1px solid ${navyA(0.08)}`,
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    padding: 12,
+                    minHeight: 170,
+                  }}
+                >
+                  <span style={{ width: 64, height: 64, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", background: b.earned ? "var(--vc-tile-mint)" : navyA(0.05) }}>
+                    <BadgeTileImage badge={b} />
+                  </span>
+                  <span style={{ marginTop: 8, fontSize: 14, fontWeight: 700, textAlign: "center", color: b.earned ? "var(--vc-navy)" : navyA(0.6), display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{text.name}</span>
+                  <span style={{ height: 6 }} />
+                  {b.earned ? (
+                    <>
+                      <span style={{ fontSize: 12, fontWeight: 700, color: "var(--vc-teal)" }}>{t("badge_earned")}</span>
+                      {b.icon ? <span style={{ marginTop: 4, fontSize: 11.5, lineHeight: 1.35, textAlign: "center", color: navyA(0.6) }}>{text.description}</span> : null}
+                    </>
+                  ) : !b.available ? (
+                    <span data-testid="badge-coming-soon" style={{ fontSize: 12, fontWeight: 600, textAlign: "center", color: navyA(0.55) }}>{t("badge_coming_soon")}</span>
+                  ) : fraction != null ? (
+                    <>
+                      <ProgressBar value={fraction} height={5} />
+                      <span style={{ marginTop: 4, fontSize: 12, fontWeight: 600, color: navyA(0.55) }}>{`${b.current} / ${b.target}`}</span>
+                    </>
+                  ) : (
+                    <span style={{ fontSize: 12, fontWeight: 600, color: navyA(0.55) }}>{t("badge_locked")}</span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
         </div>
       )}
     </div>
@@ -288,30 +380,39 @@ export function BadgesScreen() {
 export function BadgeDetailScreen({ index }: { index: number }) {
   const t = useT();
   const { push } = usePlusPaths();
-  const r = useResource<{ badges?: Badge[] }>("/badges/");
-  const [stashed, setStashed] = useState<Badge | null>(null);
+  const r = useBadgeBoard();
+  const [stashed, setStashed] = useState<BadgeItem | null>(null);
   useEffect(() => {
     try {
       const raw = sessionStorage.getItem(BADGE_STASH + index);
-      if (raw) setStashed(JSON.parse(raw) as Badge);
+      if (raw) setStashed(JSON.parse(raw) as BadgeItem);
     } catch {
       /* ignore */
     }
   }, [index]);
   const badge = r.data?.badges?.[index] ?? stashed;
   if (!badge) return <div className="vita-page"><AppBar title={t("my_badges")} />{r.loading ? <CenterSpinner /> : <EmptyState title={t("badges_empty_title")} />}</div>;
+  const text = badgeText(t, badge);
+  const status = badge.earned
+    ? t("badge_earned")
+    : !badge.available
+      ? t("badge_coming_soon")
+      : badge.current != null && badge.target != null
+      ? t("badge_progress_of", { current: badge.current, target: badge.target })
+      : t("badge_locked");
   const article = badge.article ?? null;
   return (
     <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
-      <AppBar title={badge.name ?? ""} />
+      <AppBar title={text.name} />
       <div style={{ flex: 1, overflowY: "auto", padding: "20px 20px 24px" }}>
         <div style={{ display: "flex", justifyContent: "center" }}>
           <div style={{ width: 112, height: 112, borderRadius: "50%", background: "var(--vc-tile-mint)", display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
-            <BadgeImage src={badge.image} size={80} />
+            {badge.icon ? <BadgeTileImage badge={badge} /> : <BadgeImage src={badge.image ?? undefined} size={80} locked={!badge.earned} />}
           </div>
         </div>
-        <h2 style={{ margin: "16px 0 0", textAlign: "center", fontSize: 24, fontWeight: 800, letterSpacing: -0.5, color: "var(--vc-navy)" }}>{badge.name ?? ""}</h2>
-        {badge.description ? <p style={{ margin: "10px 0 0", textAlign: "center", fontSize: 15, lineHeight: 1.5, color: navyA(0.65) }}>{badge.description}</p> : null}
+        <h2 style={{ margin: "16px 0 0", textAlign: "center", fontSize: 24, fontWeight: 800, letterSpacing: -0.5, color: "var(--vc-navy)" }}>{text.name}</h2>
+        {text.description ? <p style={{ margin: "10px 0 0", textAlign: "center", fontSize: 15, lineHeight: 1.5, color: navyA(0.65) }}>{text.description}</p> : null}
+        <p style={{ margin: "14px 0 0", textAlign: "center", fontSize: 14, fontWeight: 700, color: badge.earned ? "var(--vc-teal)" : navyA(0.55) }}>{status}</p>
         {article ? (
           <div style={{ marginTop: 24 }}>
             <SectionLabel icon={<Book1 size={18} color="currentColor" />} label={t("view_article")} />

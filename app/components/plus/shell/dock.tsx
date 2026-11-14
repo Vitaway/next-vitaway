@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { Activity, Add, CalendarTick, Drop, Health, Heart, Home2, Messages2, User, Weight } from "iconsax-react";
+import { Activity, Add, CalendarTick, Camera, Drop, Health, Heart, Home2, Messages2, User, Weight } from "iconsax-react";
 import { useT } from "@/lib/plus/i18n";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { cx } from "../ui/vita";
@@ -21,11 +21,13 @@ export function useAppPath(): string {
 type QuickAction = { label: string; path: string; tint: string; icon: React.ReactNode };
 
 const QUICK_ACTIONS: QuickAction[] = [
-  { label: "Blood glucose", path: "/log/glucose", tint: "var(--vc-tile-sky)", icon: <Drop size={22} variant="Bold" color="#003E48" /> },
-  { label: "Blood pressure", path: "/log/bp", tint: "var(--vc-tile-peach)", icon: <Activity size={22} color="#003E48" /> },
-  { label: "Weight", path: "/log/weight", tint: "var(--vc-tile-lilac)", icon: <Weight size={22} color="#003E48" /> },
-  { label: "Medicine", path: "/medications/add", tint: "var(--vc-tile-mint)", icon: <Health size={22} color="#003E48" /> },
-  { label: "Book a visit", path: "/book-visit", tint: "var(--vc-tile-sage)", icon: <CalendarTick size={22} color="#003E48" /> },
+  { label: "quick_blood_glucose", path: "/log/glucose", tint: "var(--vc-tile-sky)", icon: <Drop size={22} variant="Bold" color="#003E48" /> },
+  { label: "quick_blood_pressure", path: "/log/bp", tint: "var(--vc-tile-peach)", icon: <Activity size={22} color="#003E48" /> },
+  { label: "quick_weight", path: "/log/weight", tint: "var(--vc-tile-lilac)", icon: <Weight size={22} color="#003E48" /> },
+  { label: "quick_meal_photo", path: "/meal-photos/new", tint: "var(--vc-tile-sage)", icon: <Camera size={22} color="#003E48" /> },
+  // BL-122: the + menu reaches the Pillbox (add a medicine from there), as in Flutter.
+  { label: "pillbox", path: "/medications", tint: "var(--vc-tile-mint)", icon: <Health size={22} color="#003E48" /> },
+  { label: "quick_book_visit", path: "/book-visit", tint: "var(--vc-tile-sage)", icon: <CalendarTick size={22} color="#003E48" /> },
 ];
 
 export default function Dock({ supportBadge = false }: { supportBadge?: boolean }) {
@@ -38,7 +40,7 @@ export default function Dock({ supportBadge = false }: { supportBadge?: boolean 
 
   const items = [
     { path: "/home", label: t("home_menu"), Icon: Home2 },
-    { path: "/care", label: "Care", Icon: Heart },
+    { path: "/care", label: t("care_menu"), Icon: Heart },
     { path: "/support", label: t("support_menu"), Icon: Messages2 },
     { path: "/profile", label: t("account_menu"), Icon: User },
   ];
@@ -63,7 +65,7 @@ export default function Dock({ supportBadge = false }: { supportBadge?: boolean 
                 <span className="disc" style={{ background: action.tint }}>
                   {action.icon}
                 </span>
-                <span className="tag">{action.label}</span>
+                <span className="tag">{t(action.label)}</span>
               </button>
             ))}
           </div>
@@ -72,7 +74,7 @@ export default function Dock({ supportBadge = false }: { supportBadge?: boolean 
           <button
             type="button"
             className={cx("vita-log-btn", open && "open")}
-            aria-label={open ? "Close" : "Log"}
+            aria-label={open ? t("close") : t("quick_log_title")}
             aria-expanded={open}
             onClick={() => setOpen((value) => !value)}
           >
