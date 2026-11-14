@@ -199,3 +199,19 @@ export function parseFood(raw: unknown): FoodOption {
   };
 }
 
+
+// ---------------------------------------------------------------- W24 detail page
+
+/** While a meal waits for its check, the detail page asks again every 20 s so "Checked by" shows within a minute. */
+export const MEAL_POLL_MS = 20_000;
+
+export function mealPollMs(status: string): number | null {
+  return status === "submitted" || status === "in_review" ? MEAL_POLL_MS : null;
+}
+
+/** The translation key and values for one "What changed" line. */
+export function changeLine(change: { kind: "added" | "removed" | "changed"; name: string; from: string | null; to: string | null }): { key: string; vars: Record<string, string> } {
+  if (change.kind === "added") return { key: "mr_change_added", vars: { name: change.to ? `${change.name} (${change.to})` : change.name } };
+  if (change.kind === "removed") return { key: "mr_change_removed", vars: { name: change.name } };
+  return { key: "mr_change_changed", vars: { name: change.name, from: change.from ?? "—", to: change.to ?? "—" } };
+}

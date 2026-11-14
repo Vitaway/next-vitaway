@@ -1147,5 +1147,11 @@
  "mr_prep_Baked": "Byotsewe mu ifuru",
  "mr_prep_Grilled": "Byokejwe ku muriro",
  "mr_foods_title": "Ibiryo biri kuri iri funguro",
- "mr_estimate_badge": "Ikigereranyo"
+ "mr_estimate_badge": "Ikigereranyo",
+ "mr_changes_title": "Ibyo itsinda rikwitaho ryahinduye",
+ "mr_change_added": "Hongewemo {name}",
+ "mr_change_removed": "Hakuwemo {name}",
+ "mr_change_changed": "{name}: {from} → {to}",
+ "mr_coach_changed": "Byahinduwe",
+ "mr_checked_foods": "Byasuzumwe n'itsinda rikwitaho"
 }

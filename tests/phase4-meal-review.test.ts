@@ -88,3 +88,19 @@ test("the Submit bar is sticky at the bottom of the review page, outside the scr
   assert.match(src, /data-testid="submit-bar" style=\{\{ position: "sticky", bottom: 0/);
   assert.match(src, /env\(safe-area-inset-bottom\)/);
 });
+
+test("W24: the detail page polls only while waiting, fast enough for 'Checked by' within a minute", async () => {
+  const { mealPollMs, MEAL_POLL_MS } = await import("../lib/plus/meal-review-logic.ts");
+  assert.ok(MEAL_POLL_MS <= 30_000);
+  assert.equal(mealPollMs("submitted"), MEAL_POLL_MS);
+  assert.equal(mealPollMs("in_review"), MEAL_POLL_MS);
+  assert.equal(mealPollMs("reviewed"), null);
+  assert.equal(mealPollMs("needs_retake"), null);
+});
+
+test("W24: 'What changed' lines map to translation keys", async () => {
+  const { changeLine } = await import("../lib/plus/meal-review-logic.ts");
+  assert.deepEqual(changeLine({ kind: "added", name: "Cabbage", from: null, to: "1 serving spoon · 40 g" }), { key: "mr_change_added", vars: { name: "Cabbage (1 serving spoon · 40 g)" } });
+  assert.deepEqual(changeLine({ kind: "removed", name: "Avocado", from: "50 g", to: null }), { key: "mr_change_removed", vars: { name: "Avocado" } });
+  assert.deepEqual(changeLine({ kind: "changed", name: "Rice", from: "1 cup · 160 g", to: "240 g" }), { key: "mr_change_changed", vars: { name: "Rice", from: "1 cup · 160 g", to: "240 g" } });
+});

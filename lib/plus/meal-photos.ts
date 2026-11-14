@@ -32,12 +32,18 @@ export type MealPhotoFood = {
   origin: string | null;
   verified: boolean;
   kcal: number | null;
+  /** W24: a reviewer added or changed this food. */
+  coach_changed: boolean;
 };
+
+/** W24: one line of "What changed" after a reviewer edited the foods. */
+export type MealFoodChange = { kind: "added" | "removed" | "changed"; name: string; from: string | null; to: string | null };
 export type MealPhotoTotals = { kcal: number | null; protein_g: number | null; carbs_g: number | null; fat_g: number | null; partial: boolean; unverified: boolean };
 
 export type MealPhoto = {
   foods: MealPhotoFood[];
   totals: MealPhotoTotals | null;
+  changes: MealFoodChange[];
   id: number;
   meal_type: string;
   eaten_at: string;
@@ -74,7 +80,13 @@ export function parseMealPhoto(raw: unknown): MealPhoto {
             origin: f.origin == null ? null : String(f.origin),
             verified: f.verified === true,
             kcal: num((f.nutrients as Record<string, unknown> | null | undefined)?.kcal),
+            coach_changed: f.coach_changed === true,
           }))
+      : [],
+    changes: Array.isArray(json.changes)
+      ? json.changes
+          .filter((c): c is Record<string, unknown> => !!c && typeof c === "object" && ["added", "removed", "changed"].includes(String(c.kind)))
+          .map((c) => ({ kind: c.kind as MealFoodChange["kind"], name: String(c.name ?? ""), from: c.from == null ? null : String(c.from), to: c.to == null ? null : String(c.to) }))
       : [],
     totals: totals ? { kcal: num(totals.kcal), protein_g: num(totals.protein_g), carbs_g: num(totals.carbs_g), fat_g: num(totals.fat_g), partial: totals.partial === true, unverified: totals.unverified === true } : null,
     id: Number(json.id ?? 0),

@@ -1144,5 +1144,11 @@
  "mr_prep_Baked": "Baked",
  "mr_prep_Grilled": "Grilled",
  "mr_foods_title": "Foods on this plate",
- "mr_estimate_badge": "Estimate"
+ "mr_estimate_badge": "Estimate",
+ "mr_changes_title": "What your care team changed",
+ "mr_change_added": "Added {name}",
+ "mr_change_removed": "Removed {name}",
+ "mr_change_changed": "{name}: {from} → {to}",
+ "mr_coach_changed": "Updated",
+ "mr_checked_foods": "Checked by your care team"
 }

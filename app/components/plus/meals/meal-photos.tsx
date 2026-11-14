@@ -12,7 +12,7 @@ import {
 } from "@/lib/plus/meal-photos";
 import { useLanguage, useT } from "@/lib/plus/i18n";
 import { useProgrammeConfig } from "@/lib/plus/client/programme-config";
-import { getFood, itemFromRecognised, recognizeMeal, toSubmission, type Recognition, type ReviewItem } from "@/lib/plus/meal-review";
+import { changeLine, getFood, mealPollMs, itemFromRecognised, recognizeMeal, toSubmission, type Recognition, type ReviewItem } from "@/lib/plus/meal-review";
 import { MealReviewItems, PrimaryButton } from "./meal-review";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { ActionButton, AppBar, CenterSpinner, EmptyState, Page, useFeedback } from "../ui/vita";
@@ -279,6 +279,20 @@ export function MealPhotoDetailScreen({ id }: { id: number }) {
       .then(setPhoto)
       .catch(() => setError(true));
   }, [id]);
+  // W24: keep asking while the meal waits for its check, and when the app comes back to the front.
+  const pollMs = photo ? mealPollMs(photo.status) : null;
+  useEffect(() => {
+    if (!pollMs) return;
+    const refresh = () => {
+      if (document.visibilityState === "visible") getMealPhoto(id).then(setPhoto).catch(() => undefined);
+    };
+    const timer = window.setInterval(refresh, pollMs);
+    document.addEventListener("visibilitychange", refresh);
+    return () => {
+      window.clearInterval(timer);
+      document.removeEventListener("visibilitychange", refresh);
+    };
+  }, [id, pollMs]);
   if (!photo && !error) {
     return (
       <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
@@ -314,7 +328,7 @@ export function MealPhotoDetailScreen({ id }: { id: number }) {
           <div data-testid="meal-foods" style={{ marginTop: 16, padding: 14, borderRadius: 12, background: "var(--vc-surface)", border: `1.4px ${photo.status === "reviewed" ? "solid" : "dashed"} var(--vc-line)` }}>
             <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
               <div style={{ flex: 1, fontSize: 13, fontWeight: 800, color: "var(--vc-teal-ink)" }}>{t("mr_foods_title")}</div>
-              {photo.totals?.kcal != null ? <div style={{ fontSize: 15, fontWeight: 800, color: "var(--vc-teal-ink)" }}>{photo.status === "reviewed" ? "" : "~"}{photo.totals.kcal} kcal</div> : null}
+              {photo.totals?.kcal != null ? <div style={{ fontSize: 15, fontWeight: 800, color: "var(--vc-teal-ink)" }}>~{photo.totals.kcal} kcal</div> : null}
             </div>
             {photo.foods.map((food, i) => (
               <div key={i} style={{ display: "flex", gap: 8, marginTop: 8, fontSize: 14, color: "var(--vc-body)" }}>
@@ -322,10 +336,24 @@ export function MealPhotoDetailScreen({ id }: { id: number }) {
                   <b style={{ color: "var(--vc-ink)" }}>{language === "rw" && food.name_rw ? food.name_rw : food.name}</b>
                   {food.portion || food.grams != null ? ` · ${[food.portion, food.grams != null ? `${food.grams} g` : null].filter(Boolean).join(" · ")}` : ""}
                 </span>
+                {food.coach_changed ? <span style={{ fontSize: 11, fontWeight: 700, color: "var(--vc-chip-orange-ink)" }}>{t("mr_coach_changed")}</span> : null}
                 {!food.verified ? <span style={{ fontSize: 11, fontWeight: 700, color: "var(--vc-muted)" }}>{t("mr_unverified")}</span> : null}
               </div>
             ))}
-            {photo.status !== "reviewed" ? <div style={{ marginTop: 8, fontSize: 12, color: "var(--vc-muted)" }}>{t("mr_estimate_badge")}</div> : null}
+            <div style={{ marginTop: 8, fontSize: 12, color: "var(--vc-muted)" }}>{photo.status === "reviewed" ? `${t("mr_estimate_badge")} · ${t("mr_checked_foods")}` : t("mr_estimate_badge")}</div>
+            {photo.changes.length ? (
+              <div data-testid="meal-changes" style={{ marginTop: 12, paddingTop: 10, borderTop: "1px dashed var(--vc-line)" }}>
+                <div style={{ fontSize: 13, fontWeight: 800, color: "var(--vc-chip-orange-ink)" }}>{t("mr_changes_title")}</div>
+                {photo.changes.map((change, i) => {
+                  const line = changeLine(change);
+                  return (
+                    <div key={i} style={{ marginTop: 4, fontSize: 13, color: "var(--vc-body)" }}>
+                      • {t(line.key, line.vars)}
+                    </div>
+                  );
+                })}
+              </div>
+            ) : null}
           </div>
         ) : null}
         {photo.review ? (
