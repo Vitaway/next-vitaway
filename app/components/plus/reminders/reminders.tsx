@@ -63,6 +63,10 @@ export function RemindersScreen() {
         }
       />
       <div style={{ flex: 1, overflowY: "auto", paddingBottom: "calc(env(safe-area-inset-bottom) + 24px)", maxWidth: 720, width: "100%", margin: "0 auto" }}>
+        <button type="button" onClick={() => push("/reminders/preferences")} data-testid="rp-link" style={{ display: "flex", alignItems: "center", gap: 10, width: "calc(100% - 32px)", margin: "10px 16px 4px", padding: "12px 14px", borderRadius: 10, background: "var(--vc-sheet, var(--vc-surface))", textAlign: "left", fontSize: 14, fontWeight: 700, color: "var(--vc-teal-ink)" }}>
+          <NotificationIcon size={20} color="currentColor" />
+          <span style={{ flex: 1 }}>{t("rp_open")}</span>
+        </button>
         {list.length === 0 ? (
           <div style={{ padding: "48px 32px", textAlign: "center" }}>
             <Alarm size={42} color={navyA(0.28)} />

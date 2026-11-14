@@ -603,6 +603,10 @@ export function SettingsScreen() {
             }}
           />
         </SettingsCard>
+        <button type="button" onClick={() => push("/reminders/preferences")} style={{ width: "100%", display: "flex", alignItems: "center", padding: 16, marginBottom: 14, borderRadius: 10, background: "var(--vc-surface)", textAlign: "left" }}>
+          <span style={{ flex: 1, fontSize: 15, fontWeight: 700, color: "var(--vc-ink)" }}>{t("rp_open")}</span>
+          <ArrowRight3 size={20} color={navyA(0.3)} />
+        </button>
         <ActionButton full label={t("save_changes")} onClick={() => toast(t("settings_saved"))} />
         <button type="button" onClick={() => void deleteAccount()} style={{ display: "block", margin: "16px auto 0", padding: 8, fontSize: 14, fontWeight: 700, color: "var(--vc-danger)" }}>
           {t("delete_account")}
