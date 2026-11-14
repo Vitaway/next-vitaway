@@ -7,7 +7,7 @@ import { useClinicalConfig } from "@/lib/plus/client/clinical-config";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
 
 /** The first emergency number: the approved CA-01 one, else 912. */
-function useEmergencyDial() {
+export function useEmergencyDial() {
   const { language } = useLanguage();
   return emergencyView(useClinicalConfig(), language).numbers[0]?.dial ?? "912";
 }

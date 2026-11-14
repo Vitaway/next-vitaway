@@ -1098,5 +1098,11 @@
   "visit_plan_load_failed": "Ntibyashobotse gufungura iyi gahunda",
   "visit_plan_with": "na {name}",
   "visit_plan_none": "Nta na kimwe kuri uru ruzinduko",
-  "visit_plan_paper_note": "Itsinda rikwitaho rishobora no kuyigucapira ku ivuriro."
+  "visit_plan_paper_note": "Itsinda rikwitaho rishobora no kuyigucapira ku ivuriro.",
+  "chat_words_title": "Ibi bishobora kuba bikomeye",
+  "chat_words_body": "Ubutumwa bwawe bwoherejwe ku itsinda rikwitaho, ariko bashobora kutabubona ako kanya. Niba ufite ibi bimenyetso ubu, ntutegereze igisubizo.",
+  "chat_words_call": "Hamagara {number} ubu",
+  "chat_words_emergency": "Fungura ahabugenewe ibihe byihutirwa",
+  "chat_words_ok": "Meze neza, komeza uganire",
+  "chat_words_noted": "Itsinda rikwitaho rizabubona nk'ubukeneye ubufasha."
 }

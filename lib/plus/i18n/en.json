@@ -1095,5 +1095,11 @@
   "visit_plan_load_failed": "Could not open this plan",
   "visit_plan_with": "with {name}",
   "visit_plan_none": "Nothing this visit",
-  "visit_plan_paper_note": "Your care team can also print this plan for you at the clinic."
+  "visit_plan_paper_note": "Your care team can also print this plan for you at the clinic.",
+  "chat_words_title": "This sounds like it could be serious",
+  "chat_words_body": "Your message was sent to your care team, but they may not see it straight away. If you have these signs now, do not wait for a reply.",
+  "chat_words_call": "Call {number} now",
+  "chat_words_emergency": "Open the emergency screen",
+  "chat_words_ok": "I am safe, keep chatting",
+  "chat_words_noted": "Your care team will see it as needing support."
 }
