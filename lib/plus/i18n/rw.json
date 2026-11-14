@@ -1004,5 +1004,20 @@
   "receipt_test": "Ubwishyu bw'igerageza: si amafaranga nyayo",
   "receipt_not_ready": "Iyi nyemezabwishyu ntiraboneka.",
   "receipt_programme_status": "Gahunda yawe",
-  "payment_test_waiting_body": "Turategereje ko ubwishyu bw'igerageza bwemezwa. Iyi paji irihindura ubwayo."
+  "payment_test_waiting_body": "Turategereje ko ubwishyu bw'igerageza bwemezwa. Iyi paji irihindura ubwayo.",
+  "home_readings_due": "Ibipimo by'uyu munsi",
+  "readings_all_done": "Ibipimo byose byakozwe. Wakoze neza!",
+  "reading_prompt_glucose": "Pima isukari mu maraso",
+  "reading_prompt_bp": "Pima umuvuduko w'amaraso",
+  "reading_prompt_weight": "Ipime ibiro",
+  "reading_due_today": "Bigomba gukorwa uyu munsi",
+  "reading_due_week": "{done} kuri {total} muri iki cyumweru",
+  "tod_morning": "mu gitondo",
+  "tod_before_meal": "mbere yo kurya",
+  "tod_after_meal": "nyuma yo kurya",
+  "tod_evening": "nimugoroba",
+  "tod_bedtime": "mbere yo kuryama",
+  "home_daily_question": "Ikibazo cy'umunsi",
+  "daily_question_thanks": "Murakoze! Tuzongera ejo.",
+  "home_meal_tip": "Inama ku mafunguro"
 }

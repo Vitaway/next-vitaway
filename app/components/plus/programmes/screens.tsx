@@ -6,6 +6,7 @@ import { useT } from "@/lib/plus/i18n";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { fetchProtectedBlob, mobileRequest, MobileApiError } from "@/lib/plus/client/api";
 import { invalidate, useResource } from "@/lib/plus/client/use-resource";
+import { PROGRAMME_CONFIG_KEY } from "@/lib/plus/client/programme-config";
 import {
   canPay,
   formatMoney,
@@ -48,7 +49,8 @@ function useEnrolment(id: number) {
 }
 
 function refreshProgrammeData() {
-  invalidate(PROGRAMMES_KEY, ENROLMENTS_KEY);
+  // W13: joining, paying or leaving a programme changes what Home shows.
+  invalidate(PROGRAMMES_KEY, ENROLMENTS_KEY, PROGRAMME_CONFIG_KEY);
 }
 
 export function StagePill({ stage }: { stage: MemberStage }) {

@@ -1,7 +1,7 @@
 "use client";
 
-import { useMemo } from "react";
-import { Activity, Add, ArrowRight3, Book1, Calendar1, Call, Crown1, Drop, Flash, Health, Heart, Notification, TickCircle, Weight } from "iconsax-react";
+import { useEffect, useMemo, useState } from "react";
+import { Activity, Add, ArrowRight3, Book1, Calendar1, Call, Crown1, Drop, Flash, Health, Heart, MessageQuestion, Notification, Reserve, TickCircle, Weight } from "iconsax-react";
 import { useLanguage, type Translate } from "@/lib/plus/i18n";
 import { BMI_HOME_CAPTION_KEY, bmiViewFor } from "@/lib/plus/bmi";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
@@ -24,6 +24,8 @@ import { useReminders } from "@/lib/plus/reminders";
 import { fmtHeaderDate, WEEKDAYS } from "@/lib/plus/format";
 import { appointmentCardText } from "@/lib/plus/appointment-text";
 import { formatGlucose, glucoseUnitLabel, useGlucoseUnit } from "@/lib/plus/units";
+import { useProgrammeConfig } from "@/lib/plus/client/programme-config";
+import { dailyQuestionKey, homeSections, metricCardLayout, pick, readingPrompts, tipOfTheDay, type ProgrammeConfig, type ReadingPrompt, type ReadingType } from "@/lib/plus/programme-config";
 import { ActionButton, DotSpinner, Photo, SectionHead } from "../ui/vita";
 import { TodayMedicineCard } from "../meds/cards";
 
@@ -348,6 +350,105 @@ function LearnSection({ onOpenLearn, onOpenArticle }: { onOpenLearn: () => void;
   );
 }
 
+const READING_ICON: Record<ReadingType, React.ReactNode> = {
+  glucose: <Drop size={22} variant="Bold" color="currentColor" />,
+  bp: <Activity size={22} color="currentColor" />,
+  weight: <Weight size={22} color="currentColor" />,
+};
+
+/** W13: readings the member's programme asks for today, from GET /mobile/programme-config. */
+function ReadingPrompts({ prompts, onOpen }: { prompts: ReadingPrompt[]; onOpen: (type: ReadingType) => void }) {
+  const { t, language } = useLanguage();
+  const due = prompts.filter((p) => p.due);
+  if (!due.length) {
+    return (
+      <div data-testid="home-reading-prompts" style={{ background: "var(--vc-surface)", borderRadius: 10, padding: 14, display: "flex", alignItems: "center", gap: 12 }}>
+        <span style={{ width: 40, height: 40, borderRadius: "50%", background: "var(--vc-tile-mint)", color: "var(--vc-navy)", display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
+          <TickCircle size={22} color="currentColor" />
+        </span>
+        <span style={{ fontWeight: 700, fontSize: 14, color: "var(--vc-navy)" }}>{t("readings_all_done")}</span>
+      </div>
+    );
+  }
+  return (
+    <div data-testid="home-reading-prompts" style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+      {due.map((p) => {
+        const title = pick(p.text, language) || t(`reading_prompt_${p.type}`);
+        const when = p.when === "today" ? t("reading_due_today") : t("reading_due_week", { done: p.doneThisWeek, total: p.perWeek });
+        const tod = p.timeOfDay.map((x) => t(`tod_${x}`)).join(", ");
+        return (
+          <button key={p.type} type="button" onClick={() => onOpen(p.type)} className="vita-tap" style={{ width: "100%", display: "flex", alignItems: "center", gap: 12, textAlign: "left", background: "var(--vc-surface)", borderRadius: 10, padding: 14 }}>
+            <span style={{ width: 44, height: 44, borderRadius: "50%", background: "var(--vc-tile-peach)", color: "#E85A2E", display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>{READING_ICON[p.type]}</span>
+            <span style={{ flex: 1, minWidth: 0 }}>
+              <span style={{ display: "block", fontSize: 15, fontWeight: 800, color: "var(--vc-ink)" }}>{title}</span>
+              <span style={{ display: "block", marginTop: 3, fontSize: 12.5, fontWeight: 600, color: "rgba(var(--vc-navy-rgb),0.58)" }}>{tod ? `${when} · ${tod}` : when}</span>
+            </span>
+            {ARROW}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+/** W13: one question a day from the programme. Only "answered today" is kept, on this phone; answers are not sent yet. */
+function DailyQuestion({ question }: { question: NonNullable<ProgrammeConfig["daily_question"]> }) {
+  const { t, language } = useLanguage();
+  const key = dailyQuestionKey(question.id, new Date());
+  const [answered, setAnswered] = useState(false);
+  useEffect(() => {
+    try {
+      setAnswered(window.localStorage.getItem(key) === "1");
+    } catch {
+      /* private mode */
+    }
+  }, [key]);
+  const answer = () => {
+    setAnswered(true);
+    try {
+      window.localStorage.setItem(key, "1");
+    } catch {
+      /* private mode */
+    }
+  };
+  return (
+    <div data-testid="home-daily-question" style={{ background: "var(--vc-tile-lilac)", borderRadius: 10, padding: 14 }}>
+      <span style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12, fontWeight: 800, color: "rgba(var(--vc-navy-rgb),0.6)", textTransform: "uppercase", letterSpacing: 0.4 }}>
+        <MessageQuestion size={16} color="currentColor" /> {t("home_daily_question")}
+      </span>
+      <p style={{ margin: "8px 0 0", fontSize: 15, fontWeight: 800, color: "var(--vc-ink)" }}>{pick(question.text, language)}</p>
+      {answered ? (
+        <p style={{ margin: "10px 0 0", fontSize: 13, fontWeight: 700, color: "var(--vc-navy)" }}>{t("daily_question_thanks")}</p>
+      ) : (
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 10 }}>
+          {question.answers.map((a) => (
+            <button key={a.value} type="button" onClick={answer} className="vita-tap" style={{ padding: "8px 14px", borderRadius: 999, background: "var(--vc-surface)", fontSize: 13, fontWeight: 800, color: "var(--vc-navy)" }}>
+              {pick(a.label, language)}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function MealTip({ config }: { config: ProgrammeConfig }) {
+  const { t, language } = useLanguage();
+  const tip = tipOfTheDay(config.meal_tips.tips, new Date());
+  if (!tip) return null;
+  return (
+    <div data-testid="home-meal-tip" style={{ display: "flex", gap: 12, background: "var(--vc-tile-mint)", borderRadius: 10, padding: 14 }}>
+      <span style={{ width: 40, height: 40, borderRadius: 8, background: "var(--vc-surface)", color: "var(--vc-navy)", display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
+        <Reserve size={22} color="currentColor" />
+      </span>
+      <span style={{ flex: 1 }}>
+        <span style={{ display: "block", fontSize: 12, fontWeight: 800, color: "rgba(var(--vc-navy-rgb),0.6)", textTransform: "uppercase", letterSpacing: 0.4 }}>{t("home_meal_tip")}</span>
+        <span style={{ display: "block", marginTop: 4, fontSize: 14, fontWeight: 700, color: "var(--vc-ink)", lineHeight: 1.35 }}>{pick(tip, language)}</span>
+      </span>
+    </div>
+  );
+}
+
 export default function HomeScreen() {
   const { t, language } = useLanguage();
   const clinical = useClinicalConfig();
@@ -359,6 +460,7 @@ export default function HomeScreen() {
   const { all: appointments } = useAppointments();
   const { list: reminders } = useReminders();
   const [glucoseUnit] = useGlucoseUnit();
+  const { config } = useProgrammeConfig();
 
   const latest = latestByType(metrics);
   const glucose = latest.glucose;
@@ -388,6 +490,59 @@ export default function HomeScreen() {
     : null;
   const next = reminders[0] ?? null;
   const pad = { padding: "0 18px" };
+  // W13: which sections, in which order, come from the member's programmes (default = the old Home).
+  const sections = homeSections(config.home_cards);
+  const metricCards = metricCardLayout(config.home_cards);
+  const prompts = readingPrompts(config, metrics.map((m) => ({ type: m.type, at: parseStamp(m.last_updated) })), new Date());
+  const metricCard = (type: ReadingType, wide: boolean) => {
+    if (type === "glucose")
+      return (
+        <InsightCard
+          compact={wide}
+          icon={<Drop size={16} variant="Bold" color="currentColor" />}
+          tint="var(--vc-tile-peach)"
+          ink="#E85A2E"
+          title={t("hm_glucose")}
+          value={glucose ? formatGlucose(Number.parseFloat(glucose.latest_value) || 0, glucoseUnit) : "—"}
+          unit={glucose ? glucoseUnitLabel(glucoseUnit) : ""}
+          status={caption(!!glucose && glucoseMg > 0, glucoseView)}
+          series={weekSeries(metrics, "glucose")}
+          letters={letters}
+          onClick={() => push("/log/glucose")}
+        />
+      );
+    if (type === "bp")
+      return (
+        <InsightCard
+          compact={wide}
+          icon={<Activity size={16} color="currentColor" />}
+          tint="var(--vc-tile-lilac)"
+          ink={dark ? "#A99BDB" : "#5B4B8A"}
+          title={t("hm_blood_pressure")}
+          value={bp ? `${bp.systolic ?? "—"}/${bp.diastolic ?? "—"}` : "—"}
+          unit={bp ? "mmHg" : ""}
+          status={caption(!!bp && (bp.systolic ?? 0) > 0, bpView)}
+          series={weekSeries(metrics, "bp", true)}
+          letters={letters}
+          onClick={() => push("/log/bp")}
+        />
+      );
+    return (
+        <InsightCard
+          compact={wide}
+          icon={<Weight size={15} color="currentColor" />}
+          tint="var(--vc-tile-mint)"
+          ink={dark ? "#E4EBE8" : "#003E48"}
+          title={t("hm_weight")}
+          value={weight ? (Number.parseFloat(weight.latest_value) || 0).toFixed(1) : "—"}
+          unit={weight ? "kg" : ""}
+          status={weightCaption(t, user?.profile?.height, Number(user?.age ?? user?.profile?.age ?? 0) || 0, weight)}
+          series={weekSeries(metrics, "weight")}
+          letters={letters}
+          onClick={() => push("/log/weight")}
+        />
+    );
+  };
 
   return (
     <div style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 104px)" }}>
@@ -478,99 +633,111 @@ export default function HomeScreen() {
       </div>
 
       <div style={pad}>
-        <SectionHead title={t("home_this_week")} action={t("see_all")} onAction={() => push("/metrics")} style={{ margin: "24px 0 10px" }} />
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-          <InsightCard
-            icon={<Drop size={16} variant="Bold" color="currentColor" />}
-            tint="var(--vc-tile-peach)"
-            ink="#E85A2E"
-            title={t("hm_glucose")}
-            value={glucose ? formatGlucose(Number.parseFloat(glucose.latest_value) || 0, glucoseUnit) : "—"}
-            unit={glucose ? glucoseUnitLabel(glucoseUnit) : ""}
-            status={caption(!!glucose && glucoseMg > 0, glucoseView)}
-            series={weekSeries(metrics, "glucose")}
-            letters={letters}
-            onClick={() => push("/log/glucose")}
-          />
-          <InsightCard
-            icon={<Activity size={16} color="currentColor" />}
-            tint="var(--vc-tile-lilac)"
-            ink={dark ? "#A99BDB" : "#5B4B8A"}
-            title={t("hm_blood_pressure")}
-            value={bp ? `${bp.systolic ?? "—"}/${bp.diastolic ?? "—"}` : "—"}
-            unit={bp ? "mmHg" : ""}
-            status={caption(!!bp && (bp.systolic ?? 0) > 0, bpView)}
-            series={weekSeries(metrics, "bp", true)}
-            letters={letters}
-            onClick={() => push("/log/bp")}
-          />
-          <div style={{ gridColumn: "1 / -1" }}>
-            <InsightCard
-              compact
-              icon={<Weight size={15} color="currentColor" />}
-              tint="var(--vc-tile-mint)"
-              ink={dark ? "#E4EBE8" : "#003E48"}
-              title={t("hm_weight")}
-              value={weight ? (Number.parseFloat(weight.latest_value) || 0).toFixed(1) : "—"}
-              unit={weight ? "kg" : ""}
-              status={weightCaption(t, user?.profile?.height, Number(user?.age ?? user?.profile?.age ?? 0) || 0, weight)}
-              series={weekSeries(metrics, "weight")}
-              letters={letters}
-              onClick={() => push("/log/weight")}
-            />
-          </div>
-        </div>
-
-        <SectionHead title={t("hm_today")} action={t("see_all")} onAction={() => push("/reminders")} style={{ margin: "24px 0 10px" }} />
-        <button
-          type="button"
-          className="vita-tap"
-          onClick={() => {
-            if (!next) return push("/log/glucose");
-            // BL-122: a medicine reminder opens the Pillbox.
-            if (next.type === "med") return push("/medications");
-            if (next.type === "bp") return push("/log/bp");
-            return push("/log/glucose");
-          }}
-          style={{ width: "100%", display: "flex", alignItems: "center", gap: 14, textAlign: "left", background: "var(--vc-surface)", borderRadius: 10, padding: 16 }}
-        >
-          <span style={{ width: 52, height: 52, borderRadius: "50%", background: "var(--vc-tile-peach)", color: "#E85A2E", display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
-            {!next ? <Add size={24} color="currentColor" /> : next.type === "med" ? <Health size={24} color="currentColor" /> : next.type === "bp" ? <Activity size={24} color="currentColor" /> : <Drop size={24} variant="Bold" color="currentColor" />}
-          </span>
-          <span style={{ flex: 1, minWidth: 0 }}>
-            <span style={{ display: "block", fontSize: 16, fontWeight: 800, color: "var(--vc-ink)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{next ? next.name : t("home_nothing_due")}</span>
-            <span style={{ display: "block", marginTop: 4, fontSize: 13, color: "rgba(var(--vc-navy-rgb),0.6)" }}>
-              {next ? (next.times[0] ?? t("home_scheduled_today")) : t("home_nothing_due_body")}
-            </span>
-          </span>
-        </button>
-
-        <SectionHead title={t("medicines_today")} action={t("pillbox")} onAction={() => push("/medications")} style={{ margin: "24px 0 10px" }} />
-        <MedicinesToday onAdd={() => push("/medications/add")} onOpenPillBox={() => push("/medications")} onOpen={(id) => push(`/medications/${id}`)} />
-
-        <SectionHead title={t("home_clinic_visit")} action={t("home_book")} onAction={() => push("/book-visit")} style={{ margin: "24px 0 10px" }} />
-        <button
-          type="button"
-          className="vita-tap"
-          onClick={() => push(upcoming.length ? "/appointments" : "/book-visit")}
-          style={{ width: "100%", display: "flex", alignItems: "center", gap: 12, textAlign: "left", background: "var(--vc-wash)", borderRadius: 10, padding: 14 }}
-        >
-          <span style={{ width: 40, height: 40, borderRadius: 8, background: "#E85A2E", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
-            <Calendar1 size={22} color="currentColor" />
-          </span>
-          <span style={{ flex: 1 }}>
-            <span style={{ display: "block", fontWeight: 800, fontSize: 15, color: "var(--vc-ink)" }}>
-              {visit ? visit.title : t("quick_book_visit")}
-            </span>
-            <span style={{ display: "block", fontSize: 12.5, color: dark ? "#D9B8A6" : "#6A4A3A" }}>
-              {visit ? visit.subtitle : t("home_book_visit_body")}
-            </span>
-          </span>
-          <ArrowRight3 size={22} color="rgba(var(--vc-navy-rgb),0.4)" />
-        </button>
-
-        <SectionHead title={t("learn_title")} action={t("view_all")} onAction={() => push("/articles")} style={{ margin: "24px 0 10px" }} />
-        <LearnSection onOpenLearn={() => push("/articles")} onOpenArticle={(a) => push(`/articles/${a.id}`)} />
+        {sections.map((section) => {
+          switch (section) {
+            case "metrics":
+              return (
+                <div key="metrics">
+                  <SectionHead title={t("home_this_week")} action={t("see_all")} onAction={() => push("/metrics")} style={{ margin: "24px 0 10px" }} />
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                    {metricCards.map(({ type, wide }) => (
+                      <div key={type} style={wide ? { gridColumn: "1 / -1", minWidth: 0 } : { minWidth: 0 }}>
+                        {metricCard(type, wide)}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            case "reading_prompts":
+              return prompts.length ? (
+                <div key="reading_prompts">
+                  <SectionHead title={t("home_readings_due")} style={{ margin: "24px 0 10px" }} />
+                  <ReadingPrompts prompts={prompts} onOpen={(type) => push(`/log/${type}`)} />
+                </div>
+              ) : null;
+            case "daily_question":
+              return config.daily_question ? (
+                <div key="daily_question" style={{ marginTop: 24 }}>
+                  <DailyQuestion question={config.daily_question} />
+                </div>
+              ) : null;
+            case "meal_tips":
+              return config.meal_tips.enabled ? (
+                <div key="meal_tips" style={{ marginTop: 24 }}>
+                  <MealTip config={config} />
+                </div>
+              ) : null;
+            case "today":
+              return (
+                <div key="today">
+                  <SectionHead title={t("hm_today")} action={t("see_all")} onAction={() => push("/reminders")} style={{ margin: "24px 0 10px" }} />
+                  <button
+                    type="button"
+                    className="vita-tap"
+                    onClick={() => {
+                      if (!next) return push("/log/glucose");
+                      // BL-122: a medicine reminder opens the Pillbox.
+                      if (next.type === "med") return push("/medications");
+                      if (next.type === "bp") return push("/log/bp");
+                      return push("/log/glucose");
+                    }}
+                    style={{ width: "100%", display: "flex", alignItems: "center", gap: 14, textAlign: "left", background: "var(--vc-surface)", borderRadius: 10, padding: 16 }}
+                  >
+                    <span style={{ width: 52, height: 52, borderRadius: "50%", background: "var(--vc-tile-peach)", color: "#E85A2E", display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
+                      {!next ? <Add size={24} color="currentColor" /> : next.type === "med" ? <Health size={24} color="currentColor" /> : next.type === "bp" ? <Activity size={24} color="currentColor" /> : <Drop size={24} variant="Bold" color="currentColor" />}
+                    </span>
+                    <span style={{ flex: 1, minWidth: 0 }}>
+                      <span style={{ display: "block", fontSize: 16, fontWeight: 800, color: "var(--vc-ink)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{next ? next.name : t("home_nothing_due")}</span>
+                      <span style={{ display: "block", marginTop: 4, fontSize: 13, color: "rgba(var(--vc-navy-rgb),0.6)" }}>
+                        {next ? (next.times[0] ?? t("home_scheduled_today")) : t("home_nothing_due_body")}
+                      </span>
+                    </span>
+                  </button>
+                </div>
+              );
+            case "medicines":
+              return (
+                <div key="medicines">
+                  <SectionHead title={t("medicines_today")} action={t("pillbox")} onAction={() => push("/medications")} style={{ margin: "24px 0 10px" }} />
+                  <MedicinesToday onAdd={() => push("/medications/add")} onOpenPillBox={() => push("/medications")} onOpen={(id) => push(`/medications/${id}`)} />
+                </div>
+              );
+            case "visit":
+              return (
+                <div key="visit">
+                  <SectionHead title={t("home_clinic_visit")} action={t("home_book")} onAction={() => push("/book-visit")} style={{ margin: "24px 0 10px" }} />
+                  <button
+                    type="button"
+                    className="vita-tap"
+                    onClick={() => push(upcoming.length ? "/appointments" : "/book-visit")}
+                    style={{ width: "100%", display: "flex", alignItems: "center", gap: 12, textAlign: "left", background: "var(--vc-wash)", borderRadius: 10, padding: 14 }}
+                  >
+                    <span style={{ width: 40, height: 40, borderRadius: 8, background: "#E85A2E", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
+                      <Calendar1 size={22} color="currentColor" />
+                    </span>
+                    <span style={{ flex: 1 }}>
+                      <span style={{ display: "block", fontWeight: 800, fontSize: 15, color: "var(--vc-ink)" }}>
+                        {visit ? visit.title : t("quick_book_visit")}
+                      </span>
+                      <span style={{ display: "block", fontSize: 12.5, color: dark ? "#D9B8A6" : "#6A4A3A" }}>
+                        {visit ? visit.subtitle : t("home_book_visit_body")}
+                      </span>
+                    </span>
+                    <ArrowRight3 size={22} color="rgba(var(--vc-navy-rgb),0.4)" />
+                  </button>
+                </div>
+              );
+            case "learn":
+              return (
+                <div key="learn">
+                  <SectionHead title={t("learn_title")} action={t("view_all")} onAction={() => push("/articles")} style={{ margin: "24px 0 10px" }} />
+                  <LearnSection onOpenLearn={() => push("/articles")} onOpenArticle={(a) => push(`/articles/${a.id}`)} />
+                </div>
+              );
+            default:
+              return null;
+          }
+        })}
       </div>
     </div>
   );

@@ -1001,5 +1001,20 @@
   "receipt_test": "Test payment: not real money",
   "receipt_not_ready": "This receipt is not ready yet.",
   "receipt_programme_status": "Your programme",
-  "payment_test_waiting_body": "Waiting for the test payment to be confirmed. This page updates by itself."
+  "payment_test_waiting_body": "Waiting for the test payment to be confirmed. This page updates by itself.",
+  "home_readings_due": "Readings for today",
+  "readings_all_done": "All readings done for now. Well done!",
+  "reading_prompt_glucose": "Check your blood sugar",
+  "reading_prompt_bp": "Check your blood pressure",
+  "reading_prompt_weight": "Weigh yourself",
+  "reading_due_today": "Due today",
+  "reading_due_week": "{done} of {total} this week",
+  "tod_morning": "morning",
+  "tod_before_meal": "before a meal",
+  "tod_after_meal": "after a meal",
+  "tod_evening": "evening",
+  "tod_bedtime": "at bedtime",
+  "home_daily_question": "Question of the day",
+  "daily_question_thanks": "Thanks! See you tomorrow.",
+  "home_meal_tip": "Meal tip"
 }
