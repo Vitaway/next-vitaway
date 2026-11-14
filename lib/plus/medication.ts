@@ -14,6 +14,11 @@ export type Medication = {
   instructions?: string | null;
   reminders_enabled: boolean;
   slots: MedicationSlot[];
+  /** W7 (BL-126): who added it and whether the care team has confirmed it. Old servers send neither. */
+  added_by: "member" | "staff";
+  /** null when the server does not send it (older backend): then no chip is shown. */
+  staff_confirmed: boolean | null;
+  staff_confirmed_at: string | null;
 };
 
 export type AdherenceCell = { date: string; time: string; status: string };
@@ -59,7 +64,20 @@ export function normalizeMedication(raw: Record<string, unknown>): Medication {
     instructions: raw.instructions ? String(raw.instructions) : null,
     reminders_enabled: raw.reminders_enabled !== false,
     slots,
+    added_by: raw.added_by === "staff" ? "staff" : "member",
+    staff_confirmed: raw.staff_confirmed === undefined || raw.staff_confirmed === null ? null : raw.staff_confirmed === true,
+    staff_confirmed_at: raw.staff_confirmed_at ? String(raw.staff_confirmed_at) : null,
   };
+}
+
+/**
+ * W7: show "Care team will check" on a medicine the member added until a pharmacist, nurse, doctor or the
+ * clinical lead confirms it. Only when the server sends the field, so an older backend shows no chip.
+ */
+export function needsCareTeamCheck(raw: Record<string, unknown> | Medication): boolean {
+  if (!("staff_confirmed" in raw) || raw.staff_confirmed === undefined || raw.staff_confirmed === null) return false;
+  if (raw.added_by === "staff") return false;
+  return raw.staff_confirmed !== true;
 }
 
 export function normalizeAdherence(raw: Record<string, unknown>): MedicationAdherence {

@@ -30,3 +30,30 @@ test("W7: duplicate_of answer", () => {
   assert.equal(duplicateOf({ duplicate_of: null }), null);
   assert.equal(duplicateOf("x"), null);
 });
+
+// Phase 3 W7 staff-confirm: the medicine serializer and the "Care team will check" chip rule.
+import { needsCareTeamCheck, normalizeMedication } from "../lib/plus/medication.ts";
+import en from "../lib/plus/i18n/en.json" with { type: "json" };
+import rw from "../lib/plus/i18n/rw.json" with { type: "json" };
+
+test("W7 staff-confirm: medicines carry added_by / staff_confirmed and show the chip until confirmed", () => {
+  const waiting = normalizeMedication({ id: 3, name: "Metformin", times: ["08:00"], added_by: "member", staff_confirmed: false, staff_confirmed_at: null });
+  assert.equal(waiting.added_by, "member");
+  assert.equal(waiting.staff_confirmed, false);
+  assert.equal(needsCareTeamCheck(waiting), true);
+  const checked = normalizeMedication({ id: 4, name: "Amlodipine", times: ["08:00"], added_by: "member", staff_confirmed: true, staff_confirmed_at: "2026-11-14T08:13:04.146Z" });
+  assert.equal(checked.staff_confirmed_at, "2026-11-14T08:13:04.146Z");
+  assert.equal(needsCareTeamCheck(checked), false);
+  assert.equal(needsCareTeamCheck(normalizeMedication({ id: 5, name: "X", added_by: "staff", staff_confirmed: false })), false);
+});
+
+test("W7 staff-confirm: an older server without the fields shows no chip", () => {
+  assert.equal(needsCareTeamCheck({ id: 1, name: "Old" }), false);
+  assert.equal(normalizeMedication({ id: 1, name: "Old" }).staff_confirmed, null);
+  assert.equal(needsCareTeamCheck(normalizeMedication({ id: 1, name: "Old" })), false);
+});
+
+test("W7 staff-confirm: chip strings exist in en and rw", () => {
+  assert.equal((en as Record<string, string>).medicine_care_team_check, "Care team will check");
+  assert.ok((rw as Record<string, string>).medicine_care_team_check);
+});

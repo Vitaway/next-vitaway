@@ -926,5 +926,7 @@
   "duplicate_medicine_title": "Usanzwe uwufite mu miti yawe?",
   "duplicate_medicine_body": "Uyu muti usa na {name} usanzwe ufata. Kuyafata yombi bishobora gukuba kabiri urugero rw’umuti.",
   "duplicate_medicine_pharmacist": "Vugana n’umufarumasiye",
-  "duplicate_medicine_add_anyway": "Ongeraho uko byagenda kose"
+  "duplicate_medicine_add_anyway": "Ongeraho uko byagenda kose",
+  "medicine_care_team_check": "Itsinda rikwitaho rizabigenzura",
+  "medicine_care_team_checked": "Byagenzuwe n’itsinda rikwitaho"
 }

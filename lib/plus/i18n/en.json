@@ -923,5 +923,7 @@
   "duplicate_medicine_title": "Already in your pillbox?",
   "duplicate_medicine_body": "This looks like {name} you already take. Taking both could double the dose.",
   "duplicate_medicine_pharmacist": "Talk to the pharmacist",
-  "duplicate_medicine_add_anyway": "Add anyway"
+  "duplicate_medicine_add_anyway": "Add anyway",
+  "medicine_care_team_check": "Care team will check",
+  "medicine_care_team_checked": "Checked by your care team"
 }
