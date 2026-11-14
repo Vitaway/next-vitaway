@@ -119,7 +119,7 @@ export default function LogBpScreen() {
   if (saved) return <ReadingSaved value={saved.value} status={saved.status} onDone={back} />;
 
   return (
-    <MetricLogScaffold title={t("add_blood_pressure")} icon={<Activity size={17} color="currentColor" />} saveLabel={t("save_reading")} loading={saving} onSave={canSave ? save : undefined}>
+    <MetricLogScaffold photoType="blood_pressure" title={t("add_blood_pressure")} icon={<Activity size={17} color="currentColor" />} saveLabel={t("save_reading")} loading={saving} onSave={canSave ? save : undefined}>
       <div style={{ padding: "8px 0 12px" }}>
         <div style={{ display: "flex", alignItems: "flex-end", padding: "0 18px" }}>
           <div style={{ flex: 1 }}>

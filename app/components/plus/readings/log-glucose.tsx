@@ -140,7 +140,7 @@ export default function LogGlucoseScreen() {
 
 
   return (
-    <MetricLogScaffold title={t("add_blood_glucose")} icon={<Bluetooth size={17} color="currentColor" />} saveLabel="Save reading" loading={saving} onSave={canSave ? save : undefined}>
+    <MetricLogScaffold photoType="glucose" title={t("add_blood_glucose")} icon={<Bluetooth size={17} color="currentColor" />} saveLabel="Save reading" loading={saving} onSave={canSave ? save : undefined}>
       <div style={{ padding: "4px 0 12px" }}>
         <div className="vita-hide-scroll" style={{ display: "flex", gap: 8, overflowX: "auto", padding: "0 18px", height: 44, alignItems: "center" }}>
           {GLUCOSE_CONTEXTS.map((value) => {

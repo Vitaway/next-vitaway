@@ -5,6 +5,9 @@ import { Clock, Danger, InfoCircle, TickCircle } from "iconsax-react";
 import { useTheme } from "@/lib/plus/theme";
 import { MONTHS, WEEKDAYS_SHORT, fmtLongDay, startOfDay } from "@/lib/plus/format";
 import { ActionButton, AppBar, CircleButton, Modal } from "../ui/vita";
+import { Camera } from "iconsax-react";
+import { usePlusPaths } from "@/lib/plus/plus-paths";
+import { useT } from "@/lib/plus/i18n";
 
 export const FUTURE_TIME_MESSAGE = "That time hasn’t happened yet.";
 
@@ -15,6 +18,7 @@ export function MetricLogScaffold({
   loading,
   onSave,
   children,
+  photoType,
 }: {
   title: string;
   icon: React.ReactNode;
@@ -22,7 +26,11 @@ export function MetricLogScaffold({
   loading: boolean;
   onSave?: () => void | Promise<void>;
   children: React.ReactNode;
+  /** W30: show "Read it from a photo" for this reading type. */
+  photoType?: "blood_pressure" | "glucose" | "weight";
 }) {
+  const { push } = usePlusPaths();
+  const t = useT();
   return (
     <div className="vita-page">
       <AppBar
@@ -33,7 +41,15 @@ export function MetricLogScaffold({
           </CircleButton>
         }
       />
-      <div style={{ flex: 1, overflowY: "auto" }}>{children}</div>
+      <div style={{ flex: 1, overflowY: "auto" }}>
+        {photoType ? (
+          <button type="button" data-testid="pr-link" onClick={() => push(`/log/photo?type=${photoType}`)} style={{ display: "flex", alignItems: "center", gap: 8, width: "calc(100% - 40px)", margin: "12px 20px 0", padding: "10px 14px", borderRadius: 10, border: "1px dashed var(--vc-teal)", background: "transparent", fontSize: 14, fontWeight: 800, color: "var(--vc-teal-ink)" }}>
+            <Camera size={18} color="currentColor" />
+            {t("pr_open")}
+          </button>
+        ) : null}
+        {children}
+      </div>
       <div style={{ position: "sticky", bottom: 0, padding: "8px 20px calc(12px + env(safe-area-inset-bottom))", background: "var(--vc-canvas)" }}>
         <ActionButton
           full
