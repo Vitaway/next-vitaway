@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Book1, CloudCross, Crown1, Edit2, Gallery, Lock, TickCircle } from "iconsax-react";
+import { Activity, Award, Book1, Calendar1, Call, CloudCross, Crown1, Cup, Edit2, Flash, Gallery, Lock, MessageFavorite, People, Reserve, ShieldTick, Star1, TickCircle } from "iconsax-react";
 import { badgeFraction, badgeText, fetchBadgeBoard, type BadgeBoard, type BadgeItem } from "@/lib/plus/badge-board";
 import { useLanguage, useT } from "@/lib/plus/i18n";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
@@ -241,10 +241,33 @@ function ProgressBar({ value, height }: { value: number; height: number }) {
   );
 }
 
+/** W17: the prototype's medal icons (Vitaway-Plus-Master "My badges"). */
+const MEDALS: Record<string, typeof Crown1> = {
+  spark: Flash,
+  star: Star1,
+  plate: Reserve,
+  book: Book1,
+  walk: Activity,
+  shield: ShieldTick,
+  phone: Call,
+  chat: MessageFavorite,
+  user: People,
+  cal: Calendar1,
+  care: Award,
+  trophy: Cup,
+};
+
 function BadgeTileImage({ badge }: { badge: BadgeItem }) {
   const [failed, setFailed] = useState(false);
   const url = badge.image ? mediaUrl(badge.image) : null;
-  const icon = badge.earned ? <Crown1 size={40} color="var(--vc-navy)" /> : <Lock size={40} color={navyA(0.35)} />;
+  const Medal = badge.icon ? MEDALS[badge.icon] : null;
+  const icon = Medal ? (
+    <Medal size={34} color={badge.earned ? "var(--vc-chip-orange-ink)" : navyA(0.35)} variant={badge.earned ? "Bold" : "Linear"} />
+  ) : badge.earned ? (
+    <Crown1 size={40} color="var(--vc-navy)" />
+  ) : (
+    <Lock size={40} color={navyA(0.35)} />
+  );
   if (!url || failed) return icon;
   // eslint-disable-next-line @next/next/no-img-element
   return <img src={url} alt="" width={40} height={40} onError={() => setFailed(true)} style={{ width: 40, height: 40, objectFit: "contain", opacity: badge.earned ? 1 : 0.35 }} />;
@@ -329,7 +352,12 @@ export function BadgesScreen() {
                   <span style={{ marginTop: 8, fontSize: 14, fontWeight: 700, textAlign: "center", color: b.earned ? "var(--vc-navy)" : navyA(0.6), display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{text.name}</span>
                   <span style={{ height: 6 }} />
                   {b.earned ? (
-                    <span style={{ fontSize: 12, fontWeight: 700, color: "var(--vc-teal)" }}>{t("badge_earned")}</span>
+                    <>
+                      <span style={{ fontSize: 12, fontWeight: 700, color: "var(--vc-teal)" }}>{t("badge_earned")}</span>
+                      {b.icon ? <span style={{ marginTop: 4, fontSize: 11.5, lineHeight: 1.35, textAlign: "center", color: navyA(0.6) }}>{text.description}</span> : null}
+                    </>
+                  ) : !b.available ? (
+                    <span data-testid="badge-coming-soon" style={{ fontSize: 12, fontWeight: 600, textAlign: "center", color: navyA(0.55) }}>{t("badge_coming_soon")}</span>
                   ) : fraction != null ? (
                     <>
                       <ProgressBar value={fraction} height={5} />
@@ -367,7 +395,9 @@ export function BadgeDetailScreen({ index }: { index: number }) {
   const text = badgeText(t, badge);
   const status = badge.earned
     ? t("badge_earned")
-    : badge.current != null && badge.target != null
+    : !badge.available
+      ? t("badge_coming_soon")
+      : badge.current != null && badge.target != null
       ? t("badge_progress_of", { current: badge.current, target: badge.target })
       : t("badge_locked");
   const article = badge.article ?? null;
@@ -377,7 +407,7 @@ export function BadgeDetailScreen({ index }: { index: number }) {
       <div style={{ flex: 1, overflowY: "auto", padding: "20px 20px 24px" }}>
         <div style={{ display: "flex", justifyContent: "center" }}>
           <div style={{ width: 112, height: 112, borderRadius: "50%", background: "var(--vc-tile-mint)", display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
-            <BadgeImage src={badge.image ?? undefined} size={80} locked={!badge.earned} />
+            {badge.icon ? <BadgeTileImage badge={badge} /> : <BadgeImage src={badge.image ?? undefined} size={80} locked={!badge.earned} />}
           </div>
         </div>
         <h2 style={{ margin: "16px 0 0", textAlign: "center", fontSize: 24, fontWeight: 800, letterSpacing: -0.5, color: "var(--vc-navy)" }}>{text.name}</h2>

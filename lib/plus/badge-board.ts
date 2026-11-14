@@ -15,6 +15,10 @@ export type BadgeItem = {
   current: number | null;
   target: number | null;
   article: { id?: number; title?: string; image?: string } | null;
+  /** W17: the prototype medal icon (spark, star, plate, ...); null for article badges. */
+  icon: string | null;
+  /** W17: false when the app cannot record what this badge counts yet (shown as "coming soon"). */
+  available: boolean;
 };
 
 export type BadgeBoard = { badges: BadgeItem[]; earnedCount: number; total: number; legacy: boolean };
@@ -42,6 +46,8 @@ function item(raw: Record<string, unknown>, legacy: boolean): BadgeItem {
     current: progress ? int(progress.current) : null,
     target: progress ? int(progress.target) : null,
     article: (raw.article as BadgeItem["article"]) ?? null,
+    icon: raw.icon ? String(raw.icon) : null,
+    available: raw.available !== false,
   };
 }
 
@@ -53,6 +59,11 @@ export function badgeFraction(b: BadgeItem): number | null {
 export function parseBadgeBoard(data: unknown): BadgeBoard {
   const d = (data ?? {}) as Record<string, unknown>;
   const list = (Array.isArray(d.badges) ? d.badges : []).filter((b) => b && typeof b === "object").map((b) => item(b as Record<string, unknown>, false));
+  const board = d.board && typeof d.board === "object" ? (d.board as Record<string, unknown>) : null;
+  if (board) {
+    // W17: the twelve prototype badges keep the prototype's order; earned article badges follow.
+    return { badges: list, earnedCount: int(board.earned) ?? list.filter((b) => b.earned && b.code).length, total: int(board.total) ?? list.filter((b) => b.code).length, legacy: false };
+  }
   // Earned first, then the closest to earning.
   list.sort((a, b) => (a.earned !== b.earned ? (a.earned ? -1 : 1) : (badgeFraction(b) ?? 0) - (badgeFraction(a) ?? 0)));
   return {

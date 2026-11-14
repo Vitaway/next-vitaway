@@ -35,12 +35,15 @@ export type MealPhoto = {
   thumb_url: string;
   created_at: string;
   points?: MealPhotoPoints | null;
+  /** W17: kudos from the care team (once per checked photo). */
+  kudos?: { message: string; by: string; at: string } | null;
 };
 
 export function parseMealPhoto(raw: unknown): MealPhoto {
   const json = raw && typeof raw === "object" ? (raw as Record<string, unknown>) : {};
   const review = json.review && typeof json.review === "object" ? (json.review as Record<string, unknown>) : null;
   const points = json.points && typeof json.points === "object" ? (json.points as Record<string, unknown>) : null;
+  const kudos = json.kudos && typeof json.kudos === "object" ? (json.kudos as Record<string, unknown>) : null;
   return {
     id: Number(json.id ?? 0),
     meal_type: String(json.meal_type ?? "other"),
@@ -59,6 +62,7 @@ export function parseMealPhoto(raw: unknown): MealPhoto {
     image_url: String(json.image_url ?? ""),
     thumb_url: String(json.thumb_url ?? ""),
     created_at: String(json.created_at ?? ""),
+    kudos: kudos && kudos.message ? { message: String(kudos.message), by: String(kudos.by ?? ""), at: String(kudos.at ?? "") } : null,
     points: points
       ? {
           awarded: points.awarded === true,

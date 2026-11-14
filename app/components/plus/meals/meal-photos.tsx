@@ -236,6 +236,12 @@ export function MealPhotoDetailScreen({ id }: { id: number }) {
             {photo.review.note ? <p style={{ margin: "8px 0 0", fontSize: 15, lineHeight: 1.4, color: "var(--vc-body)" }}>{photo.review.note}</p> : null}
           </div>
         ) : null}
+        {photo.kudos ? (
+          <div data-testid="meal-kudos" style={{ marginTop: 12, padding: 14, borderRadius: 12, background: "var(--vc-surface)", border: "1.4px solid color-mix(in srgb, var(--vc-chip-orange-ink) 45%, transparent)" }}>
+            <div style={{ fontSize: 13, fontWeight: 800, color: "var(--vc-chip-orange-ink)" }}>{t("meal_kudos_from", { name: photo.kudos.by })}</div>
+            <p style={{ margin: "6px 0 0", fontSize: 15, lineHeight: 1.4, color: "var(--vc-body)" }}>{photo.kudos.message}</p>
+          </div>
+        ) : null}
         {photo.status === "needs_retake" ? (
           <div style={{ marginTop: 24 }}>
             <ActionButton full label={t("meal_photos_retake")} onClick={() => push(`/meal-photos/new?retake_of=${photo.id}`)} icon={<Camera size={16} color="currentColor" />} />
