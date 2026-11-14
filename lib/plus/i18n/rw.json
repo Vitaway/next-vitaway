@@ -1091,5 +1091,12 @@
   "badge_plus_graduate_desc": "Warangije ibyumweru 12 byose by'inzira yawe yo kwiga.",
   "badge_plus_champion_name": "Intwari ya Vitaway",
   "badge_plus_champion_desc": "Wabonye imidari 11 yindi yose.",
-  "meal_kudos_from": "Ishimwe rivuye kuri {name}"
+  "meal_kudos_from": "Ishimwe rivuye kuri {name}",
+  "visit_plans_title": "Gahunda zo gukurikiza mu rugo",
+  "visit_plans_next": "Igihe uzagarukira: {date}",
+  "visit_plan_screen_title": "Gahunda yawe yo gukurikiza mu rugo",
+  "visit_plan_load_failed": "Ntibyashobotse gufungura iyi gahunda",
+  "visit_plan_with": "na {name}",
+  "visit_plan_none": "Nta na kimwe kuri uru ruzinduko",
+  "visit_plan_paper_note": "Itsinda rikwitaho rishobora no kuyigucapira ku ivuriro."
 }

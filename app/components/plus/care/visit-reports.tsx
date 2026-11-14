@@ -6,6 +6,7 @@ import { refreshVisitReports, useVisitReport, useVisitReports, visitReportPdf, v
 import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { ActionButton, AppBar, CenterSpinner, CircleButton, DotSpinner, EmptyState, useFeedback } from "../ui/vita";
 import { useDocumentReader } from "../ui/document-reader";
+import { useVisitPlans, VisitPlansList } from "./visit-plans";
 
 function ReportCard({ report, onOpen }: { report: VisitReport; onOpen: () => void }) {
   return (
@@ -30,12 +31,15 @@ function ReportCard({ report, onOpen }: { report: VisitReport; onOpen: () => voi
 /** VisitReportsList — also embedded under My care. */
 export function VisitReportsList({ embedded = false }: { embedded?: boolean }) {
   const { reports, loading, error, reload } = useVisitReports();
+  const plans = useVisitPlans();
+  const hasPlans = (plans.data ?? []).length > 0;
   const { push } = usePlusPaths();
   if (loading) return <div style={{ padding: embedded ? "28px 0" : 0, display: "flex", justifyContent: "center" }}><DotSpinner /></div>;
-  if (error && !reports.length) return <EmptyState title="Could not load visit reports" subtitle="Check your connection and try again." actionLabel="Try again" onAction={reload} />;
-  if (!reports.length) return <EmptyState title="No visit reports yet" subtitle="After a visit at the Vitaway clinic, your care team can send the summary here." />;
+  if (!hasPlans && error && !reports.length) return <EmptyState title="Could not load visit reports" subtitle="Check your connection and try again." actionLabel="Try again" onAction={reload} />;
+  if (!hasPlans && !reports.length) return <EmptyState title="No visit reports yet" subtitle="After a visit at the Vitaway clinic, your care team can send the summary here." />;
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 12, padding: embedded ? "4px 0 8px" : "8px 20px 24px" }}>
+      <VisitPlansList />
       {reports.map((r) => (
         <ReportCard key={r.id} report={r} onOpen={() => push(`/visit-reports/${r.id}`)} />
       ))}

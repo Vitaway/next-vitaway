@@ -1088,5 +1088,12 @@
   "badge_plus_graduate_desc": "Finished all 12 weeks of your learning path.",
   "badge_plus_champion_name": "Vitaway Champion",
   "badge_plus_champion_desc": "Earned all the other 11 badges.",
-  "meal_kudos_from": "Kudos from {name}"
+  "meal_kudos_from": "Kudos from {name}",
+  "visit_plans_title": "Take-home plans",
+  "visit_plans_next": "Next visit: {date}",
+  "visit_plan_screen_title": "Your take-home plan",
+  "visit_plan_load_failed": "Could not open this plan",
+  "visit_plan_with": "with {name}",
+  "visit_plan_none": "Nothing this visit",
+  "visit_plan_paper_note": "Your care team can also print this plan for you at the clinic."
 }
