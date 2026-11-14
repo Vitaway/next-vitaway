@@ -108,7 +108,7 @@ export function ProfileScreen() {
     { icon: icon(User), label: t("my_profile"), subtitle: t("edit_account_body"), onClick: () => push("/account/my-profile") },
     ...(isPatient ? [{ icon: icon(Activity), label: t("health_details"), subtitle: t("health_details_body"), onClick: () => push("/account/health-details") }] : []),
     { icon: icon(FolderOpen), label: t("my_documents"), onClick: () => push("/documents") },
-    { icon: icon(ReceiptItem), label: "Payments", onClick: () => push("/account/payments") },
+    { icon: icon(ReceiptItem), label: t("programme_payments"), onClick: () => push("/account/payments") },
     ...(isPatient
       ? [
           { icon: icon(Star1), label: t("rewards_title"), subtitle: t("rewards_menu_body"), onClick: () => push("/rewards") },

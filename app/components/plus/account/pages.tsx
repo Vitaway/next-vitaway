@@ -438,6 +438,7 @@ type Txn = { id: number | string; name?: string | null; amount?: unknown; status
 
 /** payments_page.dart: list and receipts. */
 export function PaymentsScreen() {
+  const t = useT();
   const { toast } = useFeedback();
   const rows = useResource<Txn[]>("/transactions/", async () => asList<Txn>(await mobileRequest("/transactions/")));
   const [savingId, setSavingId] = useState<string | null>(null);
@@ -472,7 +473,7 @@ export function PaymentsScreen() {
   const list = rows.data ?? [];
   return (
     <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
-      <AppBar title="Payments" />
+      <AppBar title={t("programme_payments")} />
       {rows.loading && !rows.data ? (
         <CenterSpinner />
       ) : !list.length ? (
