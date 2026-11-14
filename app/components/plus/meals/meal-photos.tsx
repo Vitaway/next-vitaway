@@ -65,6 +65,10 @@ export function MealPhotosScreen() {
     <Page>
       <AppBar title={t("meal_photos_title")} />
       <div style={{ flex: 1, overflowY: "auto", padding: "12px 16px 96px" }}>
+        <button type="button" data-testid="food-reports-link" onClick={() => push("/food-reports")} style={{ width: "100%", textAlign: "left", marginBottom: 12, padding: "12px 14px", borderRadius: 14, border: "1px solid var(--vc-line)", background: "var(--vc-surface)", display: "flex", alignItems: "center", gap: 10, fontSize: 14, fontWeight: 800, color: "var(--vc-teal-ink)" }}>
+          <span style={{ flex: 1 }}>{t("fr_open")}</span>
+          <ArrowRight3 size={18} color="var(--vc-muted)" />
+        </button>
         {rows == null && !error ? <CenterSpinner /> : null}
         {error ? <EmptyState title={t("meal_photos_load_error")} actionLabel={t("retry")} onAction={load} /> : null}
         {rows && !rows.length ? <EmptyState title={t("meal_photos_empty_title")} subtitle={t("meal_photos_empty_body")} /> : null}
