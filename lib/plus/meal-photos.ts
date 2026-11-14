@@ -22,7 +22,22 @@ export type MealPhotoPoints = {
   message: string | null;
 };
 
+/** W23: a food as stored by the server (with its own snapshot and nutrients). */
+export type MealPhotoFood = {
+  name: string;
+  name_rw: string | null;
+  portion: string | null;
+  grams: number | null;
+  preparation: string | null;
+  origin: string | null;
+  verified: boolean;
+  kcal: number | null;
+};
+export type MealPhotoTotals = { kcal: number | null; protein_g: number | null; carbs_g: number | null; fat_g: number | null; partial: boolean; unverified: boolean };
+
 export type MealPhoto = {
+  foods: MealPhotoFood[];
+  totals: MealPhotoTotals | null;
   id: number;
   meal_type: string;
   eaten_at: string;
@@ -44,7 +59,24 @@ export function parseMealPhoto(raw: unknown): MealPhoto {
   const review = json.review && typeof json.review === "object" ? (json.review as Record<string, unknown>) : null;
   const points = json.points && typeof json.points === "object" ? (json.points as Record<string, unknown>) : null;
   const kudos = json.kudos && typeof json.kudos === "object" ? (json.kudos as Record<string, unknown>) : null;
+  const totals = json.totals && typeof json.totals === "object" ? (json.totals as Record<string, unknown>) : null;
+  const num = (v: unknown) => (v == null || !Number.isFinite(Number(v)) ? null : Number(v));
   return {
+    foods: Array.isArray(json.foods)
+      ? json.foods
+          .filter((f): f is Record<string, unknown> => !!f && typeof f === "object")
+          .map((f) => ({
+            name: String(f.name ?? ""),
+            name_rw: f.name_rw == null ? null : String(f.name_rw),
+            portion: f.portion == null ? null : String(f.portion),
+            grams: num(f.grams),
+            preparation: f.preparation == null ? null : String(f.preparation),
+            origin: f.origin == null ? null : String(f.origin),
+            verified: f.verified === true,
+            kcal: num((f.nutrients as Record<string, unknown> | null | undefined)?.kcal),
+          }))
+      : [],
+    totals: totals ? { kcal: num(totals.kcal), protein_g: num(totals.protein_g), carbs_g: num(totals.carbs_g), fat_g: num(totals.fat_g), partial: totals.partial === true, unverified: totals.unverified === true } : null,
     id: Number(json.id ?? 0),
     meal_type: String(json.meal_type ?? "other"),
     eaten_at: String(json.eaten_at ?? ""),
@@ -88,6 +120,11 @@ export async function uploadMealPhoto(input: {
   mealType: string;
   note?: string;
   retakeOf?: number | null;
+  /** W23: reviewed foods (toSubmission) and the recognition versions, when the member reviewed them. */
+  foods?: unknown[];
+  mirafoodRequestId?: string | null;
+  modelVersion?: string | null;
+  datasetVersion?: string | null;
 }): Promise<MealPhoto> {
   const form = new FormData();
   form.append("image", input.file);
@@ -95,6 +132,10 @@ export async function uploadMealPhoto(input: {
   form.append("eaten_at", new Date().toISOString());
   if (input.note?.trim()) form.append("note", input.note.trim());
   if (input.retakeOf) form.append("retake_of", String(input.retakeOf));
+  if (input.foods?.length) form.append("foods", JSON.stringify(input.foods));
+  if (input.mirafoodRequestId) form.append("mirafood_request_id", input.mirafoodRequestId);
+  if (input.modelVersion) form.append("model_version", input.modelVersion);
+  if (input.datasetVersion) form.append("dataset_version", input.datasetVersion);
   return parseMealPhoto(await mobileRequest(MEAL_PHOTOS_PATH, { method: "POST", form }));
 }
 

@@ -25,6 +25,8 @@ export type ProgrammeConfig = {
   home_cards: HomeCard[];
   meal_tips: { enabled: boolean; tips: Text[] };
   charts: { metrics: ReadingType[]; default_range_days: number };
+  /** W23: "Please check" threshold on the meal review screen (percent). */
+  meal_review: { confidence_percent: number };
 };
 
 export const READING_TYPES: ReadingType[] = ["glucose", "bp", "weight"];
@@ -40,7 +42,14 @@ export const DEFAULT_CONFIG: ProgrammeConfig = {
   home_cards: DEFAULT_HOME_CARDS,
   meal_tips: { enabled: false, tips: [] },
   charts: { metrics: [], default_range_days: 30 },
+  meal_review: { confidence_percent: 60 },
 };
+
+/** W23: the server's threshold when sent (30-95), else 60. */
+export function mealConfidencePercent(raw: unknown): number {
+  const v = Number(obj(obj(raw).meal_review).confidence_percent);
+  return Number.isInteger(v) && v >= 30 && v <= 95 ? v : 60;
+}
 
 const obj = (v: unknown): Record<string, unknown> => (v && typeof v === "object" && !Array.isArray(v) ? (v as Record<string, unknown>) : {});
 const arr = (v: unknown): unknown[] => (Array.isArray(v) ? v : []);
@@ -64,7 +73,7 @@ export function pick(t: Text | null | undefined, lang: string): string {
 export function parseProgrammeConfig(raw: unknown): ProgrammeConfig {
   const o = obj(raw);
   if (o.source !== "programmes") {
-    return { ...DEFAULT_CONFIG, programmes: arr(o.programmes).map(obj).map((p) => ({ code: String(p.code ?? ""), name: String(p.name ?? ""), version: Number(p.version ?? 1), status: String(p.status ?? "") })) };
+    return { ...DEFAULT_CONFIG, meal_review: { confidence_percent: mealConfidencePercent(o) }, programmes: arr(o.programmes).map(obj).map((p) => ({ code: String(p.code ?? ""), name: String(p.name ?? ""), version: Number(p.version ?? 1), status: String(p.status ?? "") })) };
   }
   const cards = arr(o.home_cards).filter((c): c is HomeCard => typeof c === "string" && (KNOWN_CARDS as string[]).includes(c));
   const readings: ReadingSchedule[] = [];
@@ -95,6 +104,7 @@ export function parseProgrammeConfig(raw: unknown): ProgrammeConfig {
     home_cards: cards.length ? cards : DEFAULT_HOME_CARDS,
     meal_tips: { enabled: tips.enabled === true, tips: arr(tips.tips).map(text).filter((t): t is Text => Boolean(t)) },
     charts: { metrics: arr(charts.metrics).filter((m): m is ReadingType => (READING_TYPES as unknown[]).includes(m)), default_range_days: Number(charts.default_range_days) || 30 },
+    meal_review: { confidence_percent: mealConfidencePercent(o) },
   };
 }
 

@@ -10,7 +10,10 @@ import {
   uploadMealPhoto,
   type MealPhoto,
 } from "@/lib/plus/meal-photos";
-import { useT } from "@/lib/plus/i18n";
+import { useLanguage, useT } from "@/lib/plus/i18n";
+import { useProgrammeConfig } from "@/lib/plus/client/programme-config";
+import { getFood, itemFromRecognised, recognizeMeal, toSubmission, type Recognition, type ReviewItem } from "@/lib/plus/meal-review";
+import { MealReviewItems, PrimaryButton } from "./meal-review";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { ActionButton, AppBar, CenterSpinner, EmptyState, Page, useFeedback } from "../ui/vita";
 
@@ -76,7 +79,7 @@ export function MealPhotosScreen() {
               <AuthImage id={photo.id} thumb alt="" />
             </span>
             <span style={{ flex: 1, minWidth: 0 }}>
-              <span style={{ display: "block", fontSize: 15, fontWeight: 800, color: "var(--vc-teal)" }}>{t(`meal_type_${photo.meal_type}`)}</span>
+              <span style={{ display: "block", fontSize: 15, fontWeight: 800, color: "var(--vc-teal-ink)" }}>{t(`meal_type_${photo.meal_type}`)}</span>
               <span style={{ display: "block", marginTop: 4, fontSize: 13, fontWeight: 600, color: statusColor(photo.status) }}>{photo.status_label}</span>
               {photo.review?.note ? <span style={{ display: "block", marginTop: 4, fontSize: 12, color: "var(--vc-muted)" }}>{t("meal_photos_has_feedback")}</span> : null}
             </span>
@@ -102,6 +105,33 @@ export function MealPhotoComposeScreen({ retakeOf }: { retakeOf?: number }) {
   const [mealType, setMealType] = useState("lunch");
   const [note, setNote] = useState("");
   const [saving, setSaving] = useState(false);
+  const { language } = useLanguage();
+  const { config } = useProgrammeConfig();
+  const [step, setStep] = useState<"photo" | "review">("photo");
+  const [recognition, setRecognition] = useState<Recognition | null>(null);
+  const [looking, setLooking] = useState(false);
+  const [items, setItems] = useState<ReviewItem[]>([]);
+
+  /** W23: after the photo, ask for suggestions (MiraFood when on), then let the member check them. */
+  const toReview = async () => {
+    if (!file) {
+      toast(t("meal_photos_need_photo"), { error: true });
+      return;
+    }
+    setStep("review");
+    if (recognition) return;
+    setLooking(true);
+    try {
+      const rec = await recognizeMeal(file);
+      setRecognition(rec);
+      const details = await Promise.all(rec.items.map((r) => getFood(r.food_key).catch(() => null)));
+      setItems(rec.items.map((r, i) => itemFromRecognised(r, details[i])));
+    } catch {
+      setRecognition({ available: false, reason: "unavailable", request_id: null, model_version: null, dataset_version: null, items: [] });
+    } finally {
+      setLooking(false);
+    }
+  };
 
   useEffect(() => {
     if (!file) {
@@ -120,7 +150,16 @@ export function MealPhotoComposeScreen({ retakeOf }: { retakeOf?: number }) {
     }
     setSaving(true);
     try {
-      const photo = await uploadMealPhoto({ file, mealType, note, retakeOf });
+      const photo = await uploadMealPhoto({
+        file,
+        mealType,
+        note,
+        retakeOf,
+        foods: toSubmission(items, language),
+        mirafoodRequestId: recognition?.available ? recognition.request_id : null,
+        modelVersion: recognition?.available ? recognition.model_version : null,
+        datasetVersion: recognition?.available ? recognition.dataset_version : null,
+      });
       toast(photo.points?.awarded ? t("meal_photos_saved_points", { points: photo.points.points }) : t("meal_photos_saved"));
       replace(`/meal-photos/${photo.id}`);
     } catch {
@@ -128,6 +167,47 @@ export function MealPhotoComposeScreen({ retakeOf }: { retakeOf?: number }) {
       setSaving(false);
     }
   };
+
+  if (step === "review") {
+    return (
+      <Page>
+        <AppBar title={t("mr_title")} onBack={() => setStep("photo")} />
+        <div style={{ flex: 1, overflowY: "auto", padding: "12px 16px 24px" }}>
+          <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+            {preview ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={preview} alt="" style={{ width: 72, height: 72, borderRadius: 12, objectFit: "cover", flex: "none" }} />
+            ) : null}
+            <div style={{ fontSize: 13, lineHeight: 1.4, color: "var(--vc-body)" }}>
+              <b style={{ color: "var(--vc-teal-ink)" }}>{t(`meal_type_${mealType}`)}</b>
+              <br />
+              {t("mr_estimate_note")}
+            </div>
+          </div>
+          {looking ? <CenterSpinner label={t("mr_looking")} /> : null}
+          {!looking && recognition && !recognition.available ? (
+            <div data-testid="recognition-off" style={{ marginTop: 12, padding: 12, borderRadius: 12, background: "var(--vc-surface-muted)", fontSize: 13, color: "var(--vc-body)" }}>
+              {recognition.reason === "off" ? t("mr_recognition_off") : t("mr_recognition_failed")}
+            </div>
+          ) : null}
+          {!looking ? <MealReviewItems items={items} setItems={setItems} thresholdPercent={config.meal_review?.confidence_percent ?? 60} /> : null}
+          <label style={{ display: "block", marginTop: 16, fontSize: 13, fontWeight: 600, color: "var(--vc-muted)" }}>
+            {t("meal_photos_note_optional")}
+            <textarea
+              value={note}
+              onChange={(event) => setNote(event.target.value)}
+              maxLength={1000}
+              rows={2}
+              style={{ display: "block", width: "100%", marginTop: 8, padding: 12, borderRadius: 12, border: "1px solid var(--vc-line)", background: "var(--vc-surface)", color: "var(--vc-ink)", font: "inherit" }}
+            />
+          </label>
+        </div>
+        <div data-testid="submit-bar" style={{ position: "sticky", bottom: 0, zIndex: 5, padding: "10px 16px calc(12px + env(safe-area-inset-bottom))", background: "var(--vc-canvas)", borderTop: "1px solid var(--vc-line)" }}>
+          <PrimaryButton testId="meal-submit" label={t("mr_submit")} disabled={saving || looking} onClick={() => void send()} />
+        </div>
+      </Page>
+    );
+  }
 
   return (
     <Page>
@@ -162,7 +242,7 @@ export function MealPhotoComposeScreen({ retakeOf }: { retakeOf?: number }) {
                 key={type}
                 type="button"
                 onClick={() => setMealType(type)}
-                style={{ padding: "8px 12px", borderRadius: 999, border: `1px solid ${on ? "var(--vc-teal)" : "var(--vc-line)"}`, background: on ? "var(--vc-tile-mint)" : "var(--vc-surface)", color: "var(--vc-teal)", fontWeight: 700, fontSize: 13 }}
+                style={{ padding: "8px 12px", borderRadius: 999, border: `1px solid ${on ? "var(--vc-teal)" : "var(--vc-line)"}`, background: on ? "var(--vc-tile-mint)" : "var(--vc-surface)", color: "var(--vc-teal-ink)", fontWeight: 700, fontSize: 13 }}
               >
                 {t(`meal_type_${type}`)}
               </button>
@@ -180,7 +260,7 @@ export function MealPhotoComposeScreen({ retakeOf }: { retakeOf?: number }) {
           />
         </label>
         <div style={{ marginTop: 20 }}>
-          <ActionButton full label={t("meal_photos_send")} loading={saving} onClick={() => void send()} />
+          <ActionButton full label={t("mr_next")} onClick={() => void toReview()} />
         </div>
       </div>
     </Page>
@@ -190,6 +270,7 @@ export function MealPhotoComposeScreen({ retakeOf }: { retakeOf?: number }) {
 /** One meal photo and any nutritionist feedback — Flutter MealPhotoDetailPage. */
 export function MealPhotoDetailScreen({ id }: { id: number }) {
   const t = useT();
+  const { language } = useLanguage();
   const { push } = usePlusPaths();
   const [photo, setPhoto] = useState<MealPhoto | null>(null);
   const [error, setError] = useState(false);
@@ -221,7 +302,7 @@ export function MealPhotoDetailScreen({ id }: { id: number }) {
         <div style={{ aspectRatio: "4 / 3", borderRadius: 14, overflow: "hidden" }}>
           <AuthImage id={photo.id} alt="" />
         </div>
-        <h1 style={{ margin: "16px 0 0", fontSize: 22, fontWeight: 800, color: "var(--vc-teal)" }}>{t(`meal_type_${photo.meal_type}`)}</h1>
+        <h1 style={{ margin: "16px 0 0", fontSize: 22, fontWeight: 800, color: "var(--vc-teal-ink)" }}>{t(`meal_type_${photo.meal_type}`)}</h1>
         <div style={{ marginTop: 6, fontSize: 14, fontWeight: 700, color: "var(--vc-body)" }}>{photo.status_label}</div>
         {photo.note ? (
           <>
@@ -229,9 +310,27 @@ export function MealPhotoDetailScreen({ id }: { id: number }) {
             <p style={{ margin: "4px 0 0", fontSize: 15, lineHeight: 1.4, color: "var(--vc-body)" }}>{photo.note}</p>
           </>
         ) : null}
+        {photo.foods.length ? (
+          <div data-testid="meal-foods" style={{ marginTop: 16, padding: 14, borderRadius: 12, background: "var(--vc-surface)", border: `1.4px ${photo.status === "reviewed" ? "solid" : "dashed"} var(--vc-line)` }}>
+            <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
+              <div style={{ flex: 1, fontSize: 13, fontWeight: 800, color: "var(--vc-teal-ink)" }}>{t("mr_foods_title")}</div>
+              {photo.totals?.kcal != null ? <div style={{ fontSize: 15, fontWeight: 800, color: "var(--vc-teal-ink)" }}>{photo.status === "reviewed" ? "" : "~"}{photo.totals.kcal} kcal</div> : null}
+            </div>
+            {photo.foods.map((food, i) => (
+              <div key={i} style={{ display: "flex", gap: 8, marginTop: 8, fontSize: 14, color: "var(--vc-body)" }}>
+                <span style={{ flex: 1 }}>
+                  <b style={{ color: "var(--vc-ink)" }}>{language === "rw" && food.name_rw ? food.name_rw : food.name}</b>
+                  {food.portion || food.grams != null ? ` · ${[food.portion, food.grams != null ? `${food.grams} g` : null].filter(Boolean).join(" · ")}` : ""}
+                </span>
+                {!food.verified ? <span style={{ fontSize: 11, fontWeight: 700, color: "var(--vc-muted)" }}>{t("mr_unverified")}</span> : null}
+              </div>
+            ))}
+            {photo.status !== "reviewed" ? <div style={{ marginTop: 8, fontSize: 12, color: "var(--vc-muted)" }}>{t("mr_estimate_badge")}</div> : null}
+          </div>
+        ) : null}
         {photo.review ? (
           <div style={{ marginTop: 20, padding: 14, borderRadius: 12, background: photo.status === "needs_retake" ? "var(--vc-tile-peach)" : "var(--vc-tile-mint)" }}>
-            <div style={{ fontSize: 13, fontWeight: 800, color: "var(--vc-teal)" }}>{t("meal_photos_feedback_title")}</div>
+            <div style={{ fontSize: 13, fontWeight: 800, color: "var(--vc-teal-ink)" }}>{t("meal_photos_feedback_title")}</div>
             {photo.review.checked_by ? <div style={{ marginTop: 4, fontSize: 12, color: "var(--vc-muted)" }}>{t("meal_photos_checked_by", { name: photo.review.checked_by })}</div> : null}
             {photo.review.note ? <p style={{ margin: "8px 0 0", fontSize: 15, lineHeight: 1.4, color: "var(--vc-body)" }}>{photo.review.note}</p> : null}
           </div>
