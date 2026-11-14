@@ -1016,5 +1016,17 @@
   "tod_bedtime": "at bedtime",
   "home_daily_question": "Question of the day",
   "daily_question_thanks": "Thanks! See you tomorrow.",
-  "home_meal_tip": "Meal tip"
+  "home_meal_tip": "Meal tip",
+  "safety_title": "A few safety questions",
+  "safety_intro": "Your answers keep the programme safe for you. Only your care team sees them.",
+  "safety_q_pregnant": "Are you pregnant, or could you be?",
+  "safety_q_eating_disorder": "Have you ever had an eating disorder?",
+  "safety_q_insulin": "Do you use insulin?",
+  "safety_yes": "Yes",
+  "safety_no": "No",
+  "safety_continue": "Continue",
+  "safety_note_no_weight_points": "We will not give points for weight or set weight-loss challenges for you. Your care team will plan what is right for you.",
+  "safety_note_doctor": "Because you use insulin, a doctor on our team checks your plan before care starts.",
+  "care_step_doctor": "A doctor checks your insulin plan",
+  "stage_body_doctor_review": "A doctor on your care team is checking your insulin plan. Care starts after that."
 }

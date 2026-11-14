@@ -29,6 +29,8 @@ export type Programme = {
   needsTriage: boolean;
   pilot: boolean;
   trialAvailable: boolean;
+  /** W15: the join flow asks "do you use insulin?" only where it changes the rules (diabetes). */
+  asksInsulin: boolean;
   myEnrolment: Enrolment | null;
 };
 
@@ -64,7 +66,7 @@ export type Enrolment = {
   paymentState: string;
   stage: MemberStage;
   trial: { startedAt: string; endsAt: string; daysLeft: number } | null;
-  care: { active: boolean; careTeamAssigned: boolean; intakeDone: boolean; waitingFor: string[] };
+  care: { active: boolean; careTeamAssigned: boolean; intakeDone: boolean; waitingFor: string[]; safetyAnswered: boolean };
   startDate: string | null;
   reviewDate: string | null;
   price: Money;
@@ -161,6 +163,7 @@ export function normalizeEnrolment(v: unknown): Enrolment {
       careTeamAssigned: care.care_team_assigned === true,
       intakeDone: care.intake_done === true,
       waitingFor: Array.isArray(care.waiting_for) ? care.waiting_for.map(str) : [],
+      safetyAnswered: care.safety_questions_answered === true,
     },
     startDate: strOrNull(e.start_date),
     reviewDate: strOrNull(e.review_date),
@@ -182,8 +185,46 @@ export function normalizeProgramme(v: unknown): Programme {
     needsTriage: p.needs_triage === true,
     pilot: p.pilot === true,
     trialAvailable: p.trial_available === true,
+    asksInsulin: p.asks_insulin === true || (p.asks_insulin === undefined && str(p.pathway) === "diabetes"),
     myEnrolment: p.my_enrolment ? normalizeEnrolment(p.my_enrolment) : null,
   };
+}
+
+/* ───────── W15 safety questions (BL-147) ───────── */
+
+export type YesNo = "yes" | "no" | "";
+export type SafetyAnswers = { pregnant: YesNo; eatingDisorder: YesNo; insulin: YesNo };
+export const EMPTY_SAFETY: SafetyAnswers = { pregnant: "", eatingDisorder: "", insulin: "" };
+
+/** The questions to show for one programme, in order (i18n keys). */
+export function safetyQuestions(asksInsulin: boolean): Array<{ field: keyof SafetyAnswers; key: string }> {
+  const qs: Array<{ field: keyof SafetyAnswers; key: string }> = [
+    { field: "pregnant", key: "safety_q_pregnant" },
+    { field: "eatingDisorder", key: "safety_q_eating_disorder" },
+  ];
+  if (asksInsulin) qs.push({ field: "insulin", key: "safety_q_insulin" });
+  return qs;
+}
+
+export function safetyComplete(a: SafetyAnswers, asksInsulin: boolean): boolean {
+  return safetyQuestions(asksInsulin).every((q) => a[q.field] === "yes" || a[q.field] === "no");
+}
+
+/** Body for POST /mobile/programmes/:code/{trial|enrol|redeem}. */
+export function safetyPayload(a: SafetyAnswers, asksInsulin: boolean): Record<string, boolean> {
+  return {
+    pregnant: a.pregnant === "yes",
+    eating_disorder_history: a.eatingDisorder === "yes",
+    ...(asksInsulin ? { uses_insulin: a.insulin === "yes" } : {}),
+  };
+}
+
+/** What the member should know after answering (i18n keys), shown before they continue. */
+export function safetyNotes(a: SafetyAnswers, asksInsulin: boolean): string[] {
+  const notes: string[] = [];
+  if (a.pregnant === "yes" || a.eatingDisorder === "yes") notes.push("safety_note_no_weight_points");
+  if (asksInsulin && a.insulin === "yes") notes.push("safety_note_doctor");
+  return notes;
 }
 
 export function listOf(body: unknown): unknown[] {
@@ -252,4 +293,9 @@ export function methodLabel(method: string | null, testPayment: boolean): string
   if (testPayment || method === "mock") return "test";
   if (!method) return "IremboPay";
   return method.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+/** The doctor check only means something once payment is done (or during a trial). */
+export function waitingForDoctor(e: Enrolment): boolean {
+  return (e.stage === "waiting_for_care_team" || e.stage === "on_trial") && e.care.waitingFor.includes("doctor_approval");
 }

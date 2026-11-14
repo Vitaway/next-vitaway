@@ -1019,5 +1019,17 @@
   "tod_bedtime": "mbere yo kuryama",
   "home_daily_question": "Ikibazo cy'umunsi",
   "daily_question_thanks": "Murakoze! Tuzongera ejo.",
-  "home_meal_tip": "Inama ku mafunguro"
+  "home_meal_tip": "Inama ku mafunguro",
+  "safety_title": "Ibibazo bike by'umutekano",
+  "safety_intro": "Ibisubizo byawe bituma gahunda ikubera nziza kandi itekanye. Itsinda rikwitaho ni ryo ryonyine ribibona.",
+  "safety_q_pregnant": "Waba utwite, cyangwa ushobora kuba utwite?",
+  "safety_q_eating_disorder": "Waba warigeze kugira indwara yo kurya nabi (eating disorder)?",
+  "safety_q_insulin": "Ukoresha insuline?",
+  "safety_yes": "Yego",
+  "safety_no": "Oya",
+  "safety_continue": "Komeza",
+  "safety_note_no_weight_points": "Ntituzaguha amanota ku biro cyangwa ngo tugushyirireho intego zo kugabanya ibiro. Itsinda rikwitaho rizagutegurira ibikubereye.",
+  "safety_note_doctor": "Kubera ko ukoresha insuline, umuganga wo mu itsinda ryacu abanza kureba gahunda yawe mbere y'uko ubuvuzi butangira.",
+  "care_step_doctor": "Umuganga areba gahunda yawe ya insuline",
+  "stage_body_doctor_review": "Umuganga wo mu itsinda rikwitaho ari kureba gahunda yawe ya insuline. Ubuvuzi buzatangira nyuma y'aho."
 }

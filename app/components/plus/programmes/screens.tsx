@@ -19,7 +19,14 @@ import {
   normalizeProgramme,
   paymentSettled,
   receiptPayments,
+  safetyComplete,
+  safetyNotes,
+  safetyPayload,
+  safetyQuestions,
+  waitingForDoctor,
   stageTone,
+  EMPTY_SAFETY,
+  type SafetyAnswers,
   type Enrolment,
   type MemberStage,
   type Programme,
@@ -148,10 +155,16 @@ export function ProgrammeDetailScreen({ code }: { code: string }) {
   const { toast } = useFeedback();
   const list = useProgrammes();
   const p = (list.data ?? []).find((x) => x.code === code) ?? null;
+  // W15 (BL-147): the safety questions come before a trial or enrolment starts.
+  const [asking, setAsking] = useState<"trial" | "enrol" | null>(null);
+  const [answers, setAnswers] = useState<SafetyAnswers>(EMPTY_SAFETY);
+  const [busy, setBusy] = useState(false);
 
   const start = async (kind: "trial" | "enrol") => {
+    if (!p) return;
+    setBusy(true);
     try {
-      const body = await mobileRequest(`/api/v1/mobile/programmes/${encodeURIComponent(code)}/${kind}`, { method: "POST", body: {} });
+      const body = await mobileRequest(`/api/v1/mobile/programmes/${encodeURIComponent(code)}/${kind}`, { method: "POST", body: { eligibility: safetyPayload(answers, p.asksInsulin) } });
       const e = normalizeEnrolment(body);
       refreshProgrammeData();
       if (kind === "trial") toast(t("programme_started_trial"));
@@ -159,8 +172,60 @@ export function ProgrammeDetailScreen({ code }: { code: string }) {
     } catch (error) {
       toast(errorText(error, t("network_error")), { error: true });
       refreshProgrammeData();
+    } finally {
+      setBusy(false);
     }
   };
+
+  if (p && asking) {
+    const notes = safetyNotes(answers, p.asksInsulin);
+    return (
+      <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
+        <AppBar title={t("safety_title")} onBack={() => setAsking(null)} />
+        <div style={{ flex: 1, overflowY: "auto", padding: "8px 16px 28px" }} data-testid="safety-questions">
+          <p style={{ margin: "4px 2px 16px", fontSize: 14, lineHeight: 1.45, color: navyA(0.65) }}>{t("safety_intro")}</p>
+          {safetyQuestions(p.asksInsulin).map((q) => (
+            <Card key={q.field} padding={16} style={{ marginBottom: 12 }}>
+              <p style={{ margin: "0 0 12px", fontSize: 15, fontWeight: 700, color: "var(--vc-ink)" }}>{t(q.key)}</p>
+              <div style={{ display: "flex", gap: 10 }}>
+                {(["no", "yes"] as const).map((v) => {
+                  const on = answers[q.field] === v;
+                  return (
+                    <button
+                      key={v}
+                      type="button"
+                      aria-pressed={on}
+                      data-testid={`safety-${q.field}-${v}`}
+                      onClick={() => setAnswers((a) => ({ ...a, [q.field]: v }))}
+                      style={{
+                        flex: 1,
+                        padding: "12px 0",
+                        borderRadius: 10,
+                        fontSize: 15,
+                        fontWeight: 800,
+                        border: on ? "2px solid var(--vc-navy)" : `1px solid ${navyA(0.18)}`,
+                        background: on ? "var(--vc-tile-mint)" : "var(--vc-surface)",
+                        color: "var(--vc-ink)",
+                      }}
+                    >
+                      {t(v === "yes" ? "safety_yes" : "safety_no")}
+                    </button>
+                  );
+                })}
+              </div>
+            </Card>
+          ))}
+          {notes.map((k) => (
+            <div key={k} style={{ display: "flex", gap: 10, padding: 12, marginBottom: 12, borderRadius: 10, background: "var(--vc-warn-bg)", color: "var(--vc-warn-ink)", fontSize: 13, lineHeight: 1.45, fontWeight: 600 }} data-testid={k}>
+              <Health size={18} color="currentColor" style={{ flex: "none", marginTop: 1 }} />
+              <span>{t(k)}</span>
+            </div>
+          ))}
+          <ActionButton full label={t("safety_continue")} disabled={!safetyComplete(answers, p.asksInsulin) || busy} onClick={() => void start(asking)} />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
@@ -202,8 +267,8 @@ export function ProgrammeDetailScreen({ code }: { code: string }) {
             <ActionButton full label={t("programme_open")} onClick={() => push(`/programmes/enrolments/${p.myEnrolment!.id}`)} />
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              {p.trialAvailable ? <ActionButton full tone="teal" label={t("programme_start_trial", { days: p.trialDays })} onClick={() => start("trial")} /> : null}
-              <ActionButton full label={t("programme_join_pay", { price: formatMoney(p.price) })} onClick={() => start("enrol")} />
+              {p.trialAvailable ? <ActionButton full tone="teal" label={t("programme_start_trial", { days: p.trialDays })} onClick={() => setAsking("trial")} /> : null}
+              <ActionButton full label={t("programme_join_pay", { price: formatMoney(p.price) })} onClick={() => setAsking("enrol")} />
               {!p.trialAvailable ? <p style={{ margin: "2px 0 0", textAlign: "center", fontSize: 12, color: navyA(0.5) }}>{t("programme_trial_used")}</p> : null}
             </div>
           )}
@@ -261,11 +326,17 @@ export function EnrolmentScreen({ id }: { id: number }) {
             <p style={{ margin: "12px 0 0", fontSize: 15, lineHeight: 1.45, fontWeight: 600, color: "var(--vc-ink)" }} data-testid="stage-body">
               {stageBody(t, e)}
             </p>
+            {waitingForDoctor(e) ? (
+              <p style={{ margin: "8px 0 0", fontSize: 14, lineHeight: 1.45, color: navyA(0.7) }} data-testid="doctor-review">
+                {t("stage_body_doctor_review")}
+              </p>
+            ) : null}
             {e.stage === "waiting_for_care_team" ? (
               <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 6 }}>
                 <Step done label={t("care_step_paid")} />
                 <Step done={e.care.careTeamAssigned} label={t("care_step_team")} />
                 <Step done={e.care.intakeDone} label={t("care_step_intake")} />
+                {waitingForDoctor(e) ? <Step done={false} label={t("care_step_doctor")} /> : null}
                 <Step done={false} label={t("care_step_start")} />
               </div>
             ) : null}
