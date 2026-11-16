@@ -545,12 +545,12 @@ export default function HomeScreen() {
   };
 
   return (
-    <div style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 104px)" }}>
+    <div className="vita-home" style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 104px)" }}>
       {/* Dashboard header */}
-      <div style={{ position: "relative", paddingBottom: 40 }}>
-        <div style={{ background: "#003E48", borderRadius: "0 0 24px 24px", padding: "calc(env(safe-area-inset-top) + 14px) 20px 86px" }}>
+      <div className="vita-home-top" style={{ position: "relative", paddingBottom: 12 }}>
+        <div className="vita-home-hero" style={{ background: "#003E48", borderRadius: "0 0 24px 24px", padding: "calc(env(safe-area-inset-top) + 14px) 20px 86px" }}>
           <div style={{ display: "flex", alignItems: "center" }}>
-            <span style={{ width: 52, height: 52, borderRadius: "50%", background: "#fff", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
+            <span className="vita-home-logo" style={{ width: 52, height: 52, borderRadius: "50%", background: "#fff", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/plus-assets/vitaway-logo.png" alt="Vitaway" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
             </span>
@@ -570,14 +570,13 @@ export default function HomeScreen() {
               </span>
             </button>
           </div>
-          <p style={{ margin: "22px 0 0", color: "#fff", fontSize: 30, lineHeight: 1.05, fontWeight: 800, letterSpacing: -0.6 }}>Hello, {name}!</p>
+          <p className="vita-home-hello" style={{ margin: "22px 0 0", color: "#fff", fontSize: 30, lineHeight: 1.05, fontWeight: 800, letterSpacing: -0.6 }}>Hello, {name}!</p>
         </div>
 {showScore ? (
         <button
           type="button"
           onClick={() => push("/health-score")}
-          className="vita-tap"
-          style={{ position: "absolute", left: 18, right: 18, bottom: 12, display: "flex", alignItems: "center", gap: 14, textAlign: "left", background: "var(--vc-surface)", borderRadius: 10, padding: "12px 14px", boxShadow: "var(--vc-card-shadow)" }}
+          className="vita-tap vita-home-score" style={{ position: "relative", width: "calc(100% - 36px)", margin: "-66px 18px 0", display: "flex", alignItems: "center", gap: 14, textAlign: "left", background: "var(--vc-surface)", borderRadius: 10, padding: "12px 14px", boxShadow: "var(--vc-card-shadow)" }}
         >
           <span style={{ width: 64, height: 64, borderRadius: "50%", background: "var(--vc-tile-mint)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 26, fontWeight: 800, color: "var(--vc-navy)", flex: "none" }}>
             {scorePoints === null ? "—" : scorePoints}
@@ -601,9 +600,8 @@ export default function HomeScreen() {
         <button
           type="button"
           onClick={() => push("/emergency")}
-          className="vita-tap"
           data-testid="home-emergency-card"
-          style={{ position: "absolute", left: 18, right: 18, bottom: 12, display: "flex", alignItems: "center", gap: 14, textAlign: "left", background: "var(--vc-surface)", borderRadius: 10, padding: "12px 14px", boxShadow: "var(--vc-card-shadow)" }}
+          className="vita-tap vita-home-score" style={{ position: "relative", width: "calc(100% - 36px)", margin: "-66px 18px 0", display: "flex", alignItems: "center", gap: 14, textAlign: "left", background: "var(--vc-surface)", borderRadius: 10, padding: "12px 14px", boxShadow: "var(--vc-card-shadow)" }}
         >
           <span style={{ width: 64, height: 64, borderRadius: "50%", background: dark ? "#3A1D19" : "#FCE8E8", color: dark ? "#F08A7C" : "#C62828", display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
             <Call size={28} variant="Bold" color="currentColor" />
@@ -623,23 +621,23 @@ export default function HomeScreen() {
       </div>
 
       {orgName ? (
-        <p style={{ margin: "0 18px 8px", fontSize: 14, fontWeight: 800, color: "var(--vc-navy)" }}>
+        <p className="vita-home-pad" style={{ margin: "0 18px 8px", fontSize: 14, fontWeight: 800, color: "var(--vc-navy)" }}>
           {discount > 0 ? t("org_discount", { name: orgName, percent: discount }) : t("org_with", { name: orgName })}
         </p>
       ) : null}
 
-      <div style={{ padding: "0 18px 4px" }}>
+      <div className="vita-home-pad" style={{ padding: "0 18px 4px" }}>
         <SubscriptionBanner onClick={() => push("/plans")} />
       </div>
 
-      <div style={pad}>
+      <div className="vita-home-sections" style={pad}>
         {sections.map((section) => {
           switch (section) {
             case "metrics":
               return (
-                <div key="metrics">
+                <div key="metrics" data-sec="metrics">
                   <SectionHead title={t("home_this_week")} action={t("see_all")} onAction={() => push("/metrics")} style={{ margin: "24px 0 10px" }} />
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                  <div className="vita-home-metrics" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                     {metricCards.map(({ type, wide }) => (
                       <div key={type} style={wide ? { gridColumn: "1 / -1", minWidth: 0 } : { minWidth: 0 }}>
                         {metricCard(type, wide)}
@@ -650,26 +648,26 @@ export default function HomeScreen() {
               );
             case "reading_prompts":
               return prompts.length ? (
-                <div key="reading_prompts">
+                <div key="reading_prompts" data-sec="reading_prompts">
                   <SectionHead title={t("home_readings_due")} style={{ margin: "24px 0 10px" }} />
                   <ReadingPrompts prompts={prompts} onOpen={(type) => push(`/log/${type}`)} />
                 </div>
               ) : null;
             case "daily_question":
               return config.daily_question ? (
-                <div key="daily_question" style={{ marginTop: 24 }}>
+                <div key="daily_question" data-sec="daily_question" style={{ marginTop: 24 }}>
                   <DailyQuestion question={config.daily_question} />
                 </div>
               ) : null;
             case "meal_tips":
               return config.meal_tips.enabled ? (
-                <div key="meal_tips" style={{ marginTop: 24 }}>
+                <div key="meal_tips" data-sec="meal_tips" style={{ marginTop: 24 }}>
                   <MealTip config={config} />
                 </div>
               ) : null;
             case "today":
               return (
-                <div key="today">
+                <div key="today" data-sec="today">
                   <SectionHead title={t("hm_today")} action={t("see_all")} onAction={() => push("/reminders")} style={{ margin: "24px 0 10px" }} />
                   <button
                     type="button"
@@ -697,14 +695,14 @@ export default function HomeScreen() {
               );
             case "medicines":
               return (
-                <div key="medicines">
+                <div key="medicines" data-sec="medicines">
                   <SectionHead title={t("medicines_today")} action={t("pillbox")} onAction={() => push("/medications")} style={{ margin: "24px 0 10px" }} />
                   <MedicinesToday onAdd={() => push("/medications/add")} onOpenPillBox={() => push("/medications")} onOpen={(id) => push(`/medications/${id}`)} />
                 </div>
               );
             case "visit":
               return (
-                <div key="visit">
+                <div key="visit" data-sec="visit">
                   <SectionHead title={t("home_clinic_visit")} action={t("home_book")} onAction={() => push("/book-visit")} style={{ margin: "24px 0 10px" }} />
                   <button
                     type="button"
@@ -729,7 +727,7 @@ export default function HomeScreen() {
               );
             case "learn":
               return (
-                <div key="learn">
+                <div key="learn" data-sec="learn">
                   <SectionHead title={t("learn_title")} action={t("view_all")} onAction={() => push("/articles")} style={{ margin: "24px 0 10px" }} />
                   <LearnSection onOpenLearn={() => push("/articles")} onOpenArticle={(a) => push(`/articles/${a.id}`)} />
                 </div>
