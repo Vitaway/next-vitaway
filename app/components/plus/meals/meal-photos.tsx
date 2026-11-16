@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ArrowRight3, Camera, Gallery } from "iconsax-react";
+import { ArrowRight3, Camera, DocumentText, Gallery, MessageText1 } from "iconsax-react";
 import {
   MEAL_TYPES,
   getMealPhoto,
@@ -15,12 +15,12 @@ import { useProgrammeConfig } from "@/lib/plus/client/programme-config";
 import { changeLine, getFood, mealPollMs, itemFromRecognised, recognizeMeal, toSubmission, type Recognition, type ReviewItem } from "@/lib/plus/meal-review";
 import { MealReviewItems, PrimaryButton } from "./meal-review";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
-import { ActionButton, AppBar, CenterSpinner, EmptyState, Page, useFeedback } from "../ui/vita";
+import { ActionButton, AppBar, CenterSpinner, EmptyState, HubLinks, Page, useFeedback } from "../ui/vita";
 
 function statusColor(status: string) {
   if (status === "reviewed") return "#0B6A4C";
   if (status === "needs_retake") return "var(--vc-danger)";
-  if (status === "in_review") return "var(--vc-action, #E85A2E)";
+  if (status === "in_review") return "var(--vc-action, #F47C20)";
   return "var(--vc-muted)";
 }
 
@@ -63,12 +63,15 @@ export function MealPhotosScreen() {
   }, []);
   return (
     <Page width="wide">
-      <AppBar title={t("meal_photos_title")} />
+      <AppBar title={t("nav_nutrition")} back={false} profile />
       <div style={{ flex: 1, overflowY: "auto", padding: "12px 16px 96px" }}>
-        <button type="button" data-testid="food-reports-link" onClick={() => push("/food-reports")} style={{ width: "100%", textAlign: "left", marginBottom: 12, padding: "12px 14px", borderRadius: 14, border: "1px solid var(--vc-line)", background: "var(--vc-surface)", display: "flex", alignItems: "center", gap: 10, fontSize: 14, fontWeight: 800, color: "var(--vc-teal-ink)" }}>
-          <span style={{ flex: 1 }}>{t("fr_open")}</span>
-          <ArrowRight3 size={18} color="var(--vc-muted)" />
-        </button>
+        <HubLinks
+          links={[
+            { label: t("meal_plans_title"), icon: <DocumentText size={20} color="currentColor" />, onClick: () => push("/meal-plans") },
+            { label: t("fr_open"), icon: <MessageText1 size={20} color="currentColor" />, onClick: () => push("/food-reports"), testId: "food-reports-link" },
+          ]}
+        />
+        <div style={{ height: 12 }} />
         {rows == null && !error ? <CenterSpinner /> : null}
         {error ? <EmptyState title={t("meal_photos_load_error")} actionLabel={t("retry")} onAction={load} /> : null}
         {rows && !rows.length ? <EmptyState title={t("meal_photos_empty_title")} subtitle={t("meal_photos_empty_body")} /> : null}
@@ -86,7 +89,7 @@ export function MealPhotosScreen() {
             <span style={{ flex: 1, minWidth: 0 }}>
               <span style={{ display: "block", fontSize: 15, fontWeight: 800, color: "var(--vc-teal-ink)" }}>{t(`meal_type_${photo.meal_type}`)}</span>
               <span style={{ display: "block", marginTop: 4, fontSize: 13, fontWeight: 600, color: statusColor(photo.status) }}>{photo.status_label}</span>
-              {photo.review?.note ? <span style={{ display: "block", marginTop: 4, fontSize: 12, color: "var(--vc-muted)" }}>{t("meal_photos_has_feedback")}</span> : null}
+              {photo.review?.note ? <span style={{ display: "block", marginTop: 4, fontSize: 13, color: "var(--vc-muted)" }}>{t("meal_photos_has_feedback")}</span> : null}
             </span>
             <ArrowRight3 size={18} color="var(--vc-muted)" />
           </button>
@@ -316,17 +319,18 @@ export function MealPhotoDetailScreen({ id }: { id: number }) {
     );
   }
   return (
-    <div className="vita-page w-narrow" style={{ background: "var(--vc-canvas)" }}>
+    <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
       <AppBar title={t("meal_photos_title")} />
-      <div style={{ flex: 1, overflowY: "auto", padding: "16px 20px 32px" }}>
-        <div style={{ aspectRatio: "4 / 3", borderRadius: 14, overflow: "hidden" }}>
+      <div className="vita-media-split" style={{ flex: 1, overflowY: "auto", padding: "16px 20px 32px" }}>
+        <div className="media" style={{ aspectRatio: "4 / 3", borderRadius: 14, overflow: "hidden" }}>
           <AuthImage id={photo.id} alt="" />
         </div>
+        <div className="info">
         <h1 style={{ margin: "16px 0 0", fontSize: 22, fontWeight: 800, color: "var(--vc-teal-ink)" }}>{t(`meal_type_${photo.meal_type}`)}</h1>
         <div style={{ marginTop: 6, fontSize: 14, fontWeight: 700, color: "var(--vc-body)" }}>{photo.status_label}</div>
         {photo.note ? (
           <>
-            <div style={{ marginTop: 16, fontSize: 12, fontWeight: 700, color: "var(--vc-muted)" }}>{t("meal_photos_your_note")}</div>
+            <div style={{ marginTop: 16, fontSize: 13, fontWeight: 700, color: "var(--vc-muted)" }}>{t("meal_photos_your_note")}</div>
             <p style={{ margin: "4px 0 0", fontSize: 15, lineHeight: 1.4, color: "var(--vc-body)" }}>{photo.note}</p>
           </>
         ) : null}
@@ -342,11 +346,11 @@ export function MealPhotoDetailScreen({ id }: { id: number }) {
                   <b style={{ color: "var(--vc-ink)" }}>{language === "rw" && food.name_rw ? food.name_rw : food.name}</b>
                   {food.portion || food.grams != null ? ` · ${[food.portion, food.grams != null ? `${food.grams} g` : null].filter(Boolean).join(" · ")}` : ""}
                 </span>
-                {food.coach_changed ? <span style={{ fontSize: 11, fontWeight: 700, color: "var(--vc-chip-orange-ink)" }}>{t("mr_coach_changed")}</span> : null}
-                {!food.verified ? <span style={{ fontSize: 11, fontWeight: 700, color: "var(--vc-muted)" }}>{t("mr_unverified")}</span> : null}
+                {food.coach_changed ? <span style={{ fontSize: 13, fontWeight: 700, color: "var(--vc-chip-orange-ink)" }}>{t("mr_coach_changed")}</span> : null}
+                {!food.verified ? <span style={{ fontSize: 13, fontWeight: 700, color: "var(--vc-muted)" }}>{t("mr_unverified")}</span> : null}
               </div>
             ))}
-            <div style={{ marginTop: 8, fontSize: 12, color: "var(--vc-muted)" }}>{photo.status === "reviewed" ? `${t("mr_estimate_badge")} · ${t("mr_checked_foods")}` : t("mr_estimate_badge")}</div>
+            <div style={{ marginTop: 8, fontSize: 13, color: "var(--vc-muted)" }}>{photo.status === "reviewed" ? `${t("mr_estimate_badge")} · ${t("mr_checked_foods")}` : t("mr_estimate_badge")}</div>
             {photo.changes.length ? (
               <div data-testid="meal-changes" style={{ marginTop: 12, paddingTop: 10, borderTop: "1px dashed var(--vc-line)" }}>
                 <div style={{ fontSize: 13, fontWeight: 800, color: "var(--vc-chip-orange-ink)" }}>{t("mr_changes_title")}</div>
@@ -365,7 +369,7 @@ export function MealPhotoDetailScreen({ id }: { id: number }) {
         {photo.review ? (
           <div style={{ marginTop: 20, padding: 14, borderRadius: 12, background: photo.status === "needs_retake" ? "var(--vc-tile-peach)" : "var(--vc-tile-mint)" }}>
             <div style={{ fontSize: 13, fontWeight: 800, color: "var(--vc-teal-ink)" }}>{t("meal_photos_feedback_title")}</div>
-            {photo.review.checked_by ? <div style={{ marginTop: 4, fontSize: 12, color: "var(--vc-muted)" }}>{t("meal_photos_checked_by", { name: photo.review.checked_by })}</div> : null}
+            {photo.review.checked_by ? <div style={{ marginTop: 4, fontSize: 13, color: "var(--vc-muted)" }}>{t("meal_photos_checked_by", { name: photo.review.checked_by })}</div> : null}
             {photo.review.note ? <p style={{ margin: "8px 0 0", fontSize: 15, lineHeight: 1.4, color: "var(--vc-body)" }}>{photo.review.note}</p> : null}
           </div>
         ) : null}
@@ -380,6 +384,7 @@ export function MealPhotoDetailScreen({ id }: { id: number }) {
             <ActionButton full label={t("meal_photos_retake")} onClick={() => push(`/meal-photos/new?retake_of=${photo.id}`)} icon={<Camera size={16} color="currentColor" />} />
           </div>
         ) : null}
+        </div>
       </div>
     </div>
   );

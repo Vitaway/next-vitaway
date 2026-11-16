@@ -37,10 +37,10 @@ export function VisitPlansList() {
           </span>
           <span style={{ marginLeft: 14, flex: 1, minWidth: 0 }}>
             <span style={{ display: "block", fontSize: 16, fontWeight: 800 }}>{language === "rw" ? p.title.rw : p.title.en}</span>
-            <span style={{ display: "block", marginTop: 4, fontSize: 12, fontWeight: 600, color: navyA(0.55) }}>
+            <span style={{ display: "block", marginTop: 4, fontSize: 13, fontWeight: 600, color: navyA(0.55) }}>
               {[planDate(p.visitDate), p.clinician].filter(Boolean).join(" · ")}
             </span>
-            {p.nextVisit ? <span style={{ display: "block", marginTop: 2, fontSize: 12, fontWeight: 700, color: "var(--vc-teal)" }}>{t("visit_plans_next", { date: planDate(p.nextVisit) }, `Next visit: ${planDate(p.nextVisit)}`)}</span> : null}
+            {p.nextVisit ? <span style={{ display: "block", marginTop: 2, fontSize: 13, fontWeight: 700, color: "var(--vc-teal)" }}>{t("visit_plans_next", { date: planDate(p.nextVisit) }, `Next visit: ${planDate(p.nextVisit)}`)}</span> : null}
           </span>
           {!p.read ? <span style={{ width: 8, height: 8, borderRadius: "50%", background: "var(--vc-action)", marginRight: 6 }} /> : null}
           <span style={{ color: navyA(0.35), display: "inline-flex" }}>
@@ -76,11 +76,11 @@ export function VisitPlanScreen({ id }: { id: number }) {
               </div>
             </div>
             {body.draftNote ? (
-              <div style={{ marginBottom: 12, padding: "10px 14px", borderRadius: 10, background: "var(--vc-chip-amber, var(--vc-tile-peach))", fontSize: 12.5, lineHeight: 1.4, color: "var(--vc-ink)" }}>{body.draftNote}</div>
+              <div style={{ marginBottom: 12, padding: "10px 14px", borderRadius: 10, background: "var(--vc-chip-amber, var(--vc-tile-peach))", fontSize: 13, lineHeight: 1.4, color: "var(--vc-ink)" }}>{body.draftNote}</div>
             ) : null}
             {body.sections.map((s, i) => (
               <div key={s.heading} style={{ marginBottom: 12, padding: 16, borderRadius: 10, background: TINTS[i % TINTS.length], border: TINTS[i % TINTS.length] === "var(--vc-surface)" ? `1px solid ${navyA(0.06)}` : undefined }}>
-                <div style={{ fontSize: 11, letterSpacing: 0.6, fontWeight: 700, color: navyA(0.6) }}>{s.heading.toUpperCase()}</div>
+                <div style={{ fontSize: 13, letterSpacing: 0.6, fontWeight: 700, color: navyA(0.6) }}>{s.heading.toUpperCase()}</div>
                 {s.items.length ? (
                   <ul style={{ margin: "8px 0 0", paddingLeft: s.items.length > 1 ? 18 : 0, listStyle: s.items.length > 1 ? "disc" : "none" }}>
                     {s.items.map((item) => (
@@ -92,7 +92,7 @@ export function VisitPlanScreen({ id }: { id: number }) {
                 )}
               </div>
             ))}
-            <p style={{ margin: "14px 0 0", fontSize: 12.5, lineHeight: 1.45, color: navyA(0.55), display: "flex", gap: 8 }}>
+            <p style={{ margin: "14px 0 0", fontSize: 13, lineHeight: 1.45, color: navyA(0.55), display: "flex", gap: 8 }}>
               <Printer size={16} color="currentColor" style={{ flex: "none", marginTop: 1 }} />
               {t("visit_plan_paper_note", undefined, "Your care team can also print this plan for you at the clinic.")}
             </p>

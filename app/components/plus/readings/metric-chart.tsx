@@ -117,7 +117,7 @@ export default function MetricChart({ metrics, onSelect }: { metrics: HealthMetr
       ))}
       {tip !== null && pts[tip] ? (
         <g pointerEvents="none">
-          <rect x={Math.min(W - right - 96, Math.max(left, xOf(tip) - 48))} y={Math.max(0, yOf(pts[tip].primary) - 46)} width={96} height={24} rx={4} fill="#003E48" />
+          <rect x={Math.min(W - right - 96, Math.max(left, xOf(tip) - 48))} y={Math.max(0, yOf(pts[tip].primary) - 46)} width={96} height={24} rx={4} fill="#0B2C4D" />
           <text x={Math.min(W - right - 48, Math.max(left + 48, xOf(tip)))} y={Math.max(0, yOf(pts[tip].primary) - 46) + 16} textAnchor="middle" fontSize={12} fontWeight={700} fill="#fff">
             {pts[tip].label} : {fmtPrimary(pts[tip].metric)}
           </text>

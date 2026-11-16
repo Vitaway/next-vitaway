@@ -102,7 +102,7 @@ function ReminderTile({ reminder, onClick }: { reminder: Reminder; onClick: () =
       </span>
       <span style={{ flex: 1, minWidth: 0 }}>
         <span style={{ display: "block", fontSize: 15, fontWeight: 700, color: "var(--vc-navy)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{reminder.name || kind}</span>
-        {time ? <span style={{ display: "block", fontSize: 12, color: navyA(0.45) }}>{time}</span> : null}
+        {time ? <span style={{ display: "block", fontSize: 13, color: navyA(0.45) }}>{time}</span> : null}
       </span>
       <span style={{ width: 36, height: 36, borderRadius: "50%", background: color, display: "flex", alignItems: "center", justifyContent: "center" }}>
         <Play size={20} color="var(--vc-navy)" variant="Bold" />
@@ -175,7 +175,7 @@ export function AddReminderScreen() {
             {kinds.map((k) => (
               <button key={k.value} type="button" aria-pressed={type === k.value} onClick={() => setType(k.value)} style={{ flex: 1, padding: 10, borderRadius: 8, border: `1px solid ${type === k.value ? "var(--vc-navy)" : navyA(0.12)}`, display: "flex", flexDirection: "column", alignItems: "center", gap: 5 }}>
                 {k.icon}
-                <span style={{ fontSize: 11, lineHeight: 1.25, textAlign: "center", color: "var(--vc-ink)" }}>
+                <span style={{ fontSize: 13, lineHeight: 1.25, textAlign: "center", color: "var(--vc-ink)" }}>
                   {k.label}
                   <br />
                   {t("reminders_title")}
@@ -221,7 +221,7 @@ export function AddReminderScreen() {
                 const v = d.toLowerCase();
                 const on = days.includes(v);
                 return (
-                  <button key={v} type="button" onClick={() => setDays((all) => (on ? all.filter((x) => x !== v) : [...all, v]))} style={{ width: 40, padding: 10, borderRadius: 6, border, fontSize: 10, background: on ? "var(--vc-teal)" : "var(--vc-surface)", color: on ? "#fff" : undefined }}>
+                  <button key={v} type="button" onClick={() => setDays((all) => (on ? all.filter((x) => x !== v) : [...all, v]))} style={{ width: 40, padding: 10, borderRadius: 6, border, fontSize: 13, background: on ? "var(--vc-teal)" : "var(--vc-surface)", color: on ? "#fff" : undefined }}>
                     {d}
                   </button>
                 );

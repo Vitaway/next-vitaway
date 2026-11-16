@@ -32,7 +32,7 @@ export function FoodReportsScreen() {
             <span style={{ flex: 1, minWidth: 0 }}>
               <span style={{ display: "block", fontSize: 15, fontWeight: 800, color: "var(--vc-teal-ink)" }}>{t(checkpointKey(r.checkpoint))}</span>
               <span style={{ display: "block", marginTop: 4, fontSize: 13, color: "var(--vc-ink)" }}>{r.programme?.name ?? ""}</span>
-              <span style={{ display: "block", marginTop: 2, fontSize: 12, color: "var(--vc-muted)" }}>
+              <span style={{ display: "block", marginTop: 2, fontSize: 13, color: "var(--vc-muted)" }}>
                 {periodLabel(r.baseline)} → {periodLabel(r.now)} · {r.issued_by_name}
               </span>
             </span>
@@ -76,14 +76,14 @@ export function FoodReportBody({ report: r }: { report: FoodReport }) {
           <Period label={t("fr_baseline")} p={r.baseline} meals={t("fr_meals")} />
           <Period label={r.checkpoint === "interim" ? t("fr_now") : t(checkpointKey(r.checkpoint))} p={r.now} meals={t("fr_meals")} />
         </div>
-        {!r.enough_meals ? <p style={{ margin: "10px 0 0", fontSize: 12, fontWeight: 700, color: "var(--vc-danger)" }}>{t("fr_few_meals")}</p> : null}
+        {!r.enough_meals ? <p style={{ margin: "10px 0 0", fontSize: 13, fontWeight: 700, color: "var(--vc-danger)" }}>{t("fr_few_meals")}</p> : null}
       </div>
       <div style={card}>
         <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr 1fr 1fr", gap: "10px 8px", alignItems: "center", fontSize: 14 }}>
-          <span style={{ fontSize: 12, fontWeight: 700, color: "var(--vc-muted)" }}>{t("fr_measure")}</span>
-          <span style={{ fontSize: 12, fontWeight: 700, color: "var(--vc-muted)", textAlign: "right" }}>{t("fr_week1")}</span>
-          <span style={{ fontSize: 12, fontWeight: 700, color: "var(--vc-muted)", textAlign: "right" }}>{t("fr_then")}</span>
-          <span style={{ fontSize: 12, fontWeight: 700, color: "var(--vc-muted)", textAlign: "right" }}>{t("fr_change")}</span>
+          <span style={{ fontSize: 13, fontWeight: 700, color: "var(--vc-muted)" }}>{t("fr_measure")}</span>
+          <span style={{ fontSize: 13, fontWeight: 700, color: "var(--vc-muted)", textAlign: "right" }}>{t("fr_week1")}</span>
+          <span style={{ fontSize: 13, fontWeight: 700, color: "var(--vc-muted)", textAlign: "right" }}>{t("fr_then")}</span>
+          <span style={{ fontSize: 13, fontWeight: 700, color: "var(--vc-muted)", textAlign: "right" }}>{t("fr_change")}</span>
           {r.metrics.map((m) => {
             const c = formatChange(m.change, m.unit);
             return (
@@ -96,12 +96,12 @@ export function FoodReportBody({ report: r }: { report: FoodReport }) {
             );
           })}
         </div>
-        <p style={{ margin: "12px 0 0", fontSize: 12, color: "var(--vc-muted)" }}>{t("fr_checked_only")}</p>
+        <p style={{ margin: "12px 0 0", fontSize: 13, color: "var(--vc-muted)" }}>{t("fr_checked_only")}</p>
       </div>
       <div style={{ ...card, borderLeft: "4px solid var(--vc-teal)" }}>
         <div style={{ fontSize: 13, fontWeight: 800, color: "var(--vc-muted)" }}>{t("fr_note")}</div>
         <p style={{ margin: "6px 0 0", fontSize: 15, lineHeight: 1.5, color: "var(--vc-ink)", whiteSpace: "pre-wrap" }}>{r.nutritionist_note}</p>
-        <p style={{ margin: "8px 0 0", fontSize: 12, color: "var(--vc-muted)" }}>
+        <p style={{ margin: "8px 0 0", fontSize: 13, color: "var(--vc-muted)" }}>
           {r.issued_by_name} · {r.issued_at.slice(0, 10)}
         </p>
       </div>
@@ -112,9 +112,9 @@ export function FoodReportBody({ report: r }: { report: FoodReport }) {
 function Period({ label, p, meals }: { label: string; p: { from: string; to: string; meals: number }; meals: string }) {
   return (
     <div style={{ padding: 10, borderRadius: 10, background: "var(--vc-canvas)" }}>
-      <div style={{ fontSize: 12, fontWeight: 700, color: "var(--vc-muted)" }}>{label}</div>
+      <div style={{ fontSize: 13, fontWeight: 700, color: "var(--vc-muted)" }}>{label}</div>
       <div style={{ marginTop: 2, fontSize: 14, fontWeight: 800, color: "var(--vc-ink)" }}>{periodLabel(p)}</div>
-      <div style={{ fontSize: 12, color: "var(--vc-muted)" }}>
+      <div style={{ fontSize: 13, color: "var(--vc-muted)" }}>
         {p.meals} {meals}
       </div>
     </div>

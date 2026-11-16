@@ -125,7 +125,7 @@ export default function MyDocumentsScreen() {
                 </span>
                 <span style={{ marginLeft: 12, flex: 1, minWidth: 0 }}>
                   <span style={{ display: "block", fontSize: 15, fontWeight: 800, color: "var(--vc-ink)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{doc.name}</span>
-                  <span style={{ display: "block", marginTop: 2, fontSize: 12, fontWeight: 600, color: "rgba(var(--vc-navy-rgb),0.5)" }}>{`${documentTypeName(doc.documentType)} · ${fmtMMMdY(doc.uploadedAt)}`}</span>
+                  <span style={{ display: "block", marginTop: 2, fontSize: 13, fontWeight: 600, color: "rgba(var(--vc-navy-rgb),0.5)" }}>{`${documentTypeName(doc.documentType)} · ${fmtMMMdY(doc.uploadedAt)}`}</span>
                 </span>
                 {openingId === doc.id ? <DotSpinner small /> : <span style={{ fontSize: 13, fontWeight: 800, color: "var(--vc-action)" }}>Read</span>}
                 <button type="button" aria-label={t("delete")} onClick={(e) => { e.stopPropagation(); void remove(doc); }} style={{ marginLeft: 4, width: 40, height: 40, display: "flex", alignItems: "center", justifyContent: "center", color: "var(--vc-danger)", opacity: 0.85 }}>

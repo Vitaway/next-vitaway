@@ -80,9 +80,9 @@ function SummaryHero({ metric, bmi, avg, date }: { metric: HealthMetric; bmi: Bm
         <span style={{ width: 40, height: 40, borderRadius: 8, background: tint, color: "var(--vc-navy)", display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>{icon}</span>
         <div style={{ marginLeft: 12, flex: 1, minWidth: 0 }}>
           <div style={{ fontSize: 13, fontWeight: 700, color: "var(--vc-navy)" }}>{date}</div>
-          <div style={{ marginTop: 2, fontSize: 12, fontWeight: 600, color: status.color }}>{status.label}</div>
+          <div style={{ marginTop: 2, fontSize: 13, fontWeight: 600, color: status.color }}>{status.label}</div>
         </div>
-        <span style={{ padding: "6px 10px", borderRadius: 999, background: `color-mix(in srgb, ${status.color} 12%, transparent)`, fontSize: 11, fontWeight: 800, color: status.color }}>{status.chip}</span>
+        <span style={{ padding: "6px 10px", borderRadius: 999, background: `color-mix(in srgb, ${status.color} 12%, transparent)`, fontSize: 13, fontWeight: 800, color: status.color }}>{status.chip}</span>
       </div>
       <div style={{ marginTop: 16 }}>
         {metric.type === "bp" ? (
@@ -107,7 +107,7 @@ function SummaryHero({ metric, bmi, avg, date }: { metric: HealthMetric; bmi: Bm
               <span style={{ marginLeft: 8, paddingBottom: 6, ...small(0.45, 14) }}>kg</span>
               <span style={{ flex: 1 }} />
               <div style={{ textAlign: "right" }}>
-                <div style={{ fontSize: 11, fontWeight: 600, color: "rgba(var(--vc-navy-rgb),0.45)" }}>{t("hm_bmi")}</div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: "rgba(var(--vc-navy-rgb),0.45)" }}>{t("hm_bmi")}</div>
                 <div style={{ fontSize: 22, fontWeight: 800, color: "var(--vc-navy)" }}>{bmi.value === null ? "—" : bmi.value.toFixed(1)}</div>
               </div>
             </div>
@@ -238,7 +238,7 @@ export default function MetricDetailScreen({ type }: { type: string }) {
         ) : null}
         {type === "weight" && hasGoal ? (
           <div style={{ display: "flex", justifyContent: "center" }}>
-            <button type="button" onClick={() => setGoalOpen(true)} style={{ width: 280, padding: 20, borderRadius: 10, background: "var(--vc-surface)", boxShadow: "0 3px 7px 5px rgba(0,62,72,0.5)", color: "var(--vc-navy)" }}>
+            <button type="button" onClick={() => setGoalOpen(true)} style={{ width: 280, padding: 20, borderRadius: 10, background: "var(--vc-surface)", boxShadow: "0 3px 7px 5px rgba(11, 44, 77,0.5)", color: "var(--vc-navy)" }}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
                 <Flag size={20} color="currentColor" />
                 <span style={{ fontSize: 15 }}>{t("hm_my_goal")}</span>
@@ -249,7 +249,7 @@ export default function MetricDetailScreen({ type }: { type: string }) {
                   <div style={{ fontSize: 14, fontWeight: 500 }}>{selected.latest_value}</div>
                 </div>
                 <div style={{ width: 90 }}>
-                  <div style={{ fontSize: 12 }}>{Math.round(toGo * 10) / 10} Kg to go</div>
+                  <div style={{ fontSize: 13 }}>{Math.round(toGo * 10) / 10} Kg to go</div>
                   <div style={{ height: 1, background: "rgba(var(--vc-navy-rgb),0.65)" }} />
                 </div>
                 <div style={{ padding: 10, borderRadius: 6, border: "1px solid rgba(var(--vc-navy-rgb),0.15)" }}>

@@ -243,7 +243,7 @@ export function BookVisitScreen() {
             <DropdownField label="Day" required value={day ? fmtEEEcdMMM(day) : null} placeholder="Select a day" onClick={pickDay} />
             <div style={{ height: 14 }} />
             <DropdownField label="Time" required value={time} placeholder={!day ? "Pick a day first" : !slots.length ? "No times left today" : "Select a time"} enabled={Boolean(day) && slots.length > 0} onClick={pickTime} />
-            {day && !slots.length ? <p style={{ margin: "10px 0 0", fontSize: 12, fontWeight: 500, color: navyA(0.55) }}>Times need to be at least one hour from now.</p> : null}
+            {day && !slots.length ? <p style={{ margin: "10px 0 0", fontSize: 13, fontWeight: 500, color: navyA(0.55) }}>Times need to be at least one hour from now.</p> : null}
           </>
         ) : step === 1 ? (
           <>

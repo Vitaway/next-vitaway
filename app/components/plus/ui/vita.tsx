@@ -5,6 +5,8 @@ import { ArrowLeft } from "iconsax-react";
 import { MdArrowForward } from "react-icons/md";
 import { useBack } from "@/lib/plus/nav";
 import { mediaUrl } from "@/lib/plus/client/api";
+import { useMe } from "@/lib/plus/client/data";
+import { usePlusPaths } from "@/lib/plus/plus-paths";
 
 export function cx(...parts: Array<string | false | null | undefined>): string {
   return parts.filter(Boolean).join(" ");
@@ -50,6 +52,31 @@ export function CircleButton({
   );
 }
 
+/** Shortcut tiles at the top of a tab screen (F16: each tab groups its related screens). */
+export function HubLinks({ links }: { links: Array<{ label: string; icon: React.ReactNode; onClick: () => void; testId?: string }> }) {
+  return (
+    <div className="vita-hub-links">
+      {links.map((link) => (
+        <button key={link.label} type="button" className="vita-hub-link vita-tap" data-testid={link.testId} onClick={link.onClick}>
+          <span className="ic">{link.icon}</span>
+          <span className="lb">{link.label}</span>
+        </button>
+      ))}
+    </div>
+  );
+}
+
+/** F16: account and settings open from the profile picture in the top bar. */
+export function ProfileButton() {
+  const { user } = useMe();
+  const { push } = usePlusPaths();
+  return (
+    <button type="button" className="vita-avatar-btn" aria-label="Account" onClick={() => push("/profile")}>
+      <Photo url={user?.profile?.profile_picture} size={40} />
+    </button>
+  );
+}
+
 export function AppBar({
   title,
   back = true,
@@ -58,6 +85,7 @@ export function AppBar({
   actions,
   bottom,
   bubbles = true,
+  profile = false,
 }: {
   title: string;
   back?: boolean;
@@ -66,6 +94,8 @@ export function AppBar({
   actions?: React.ReactNode;
   bottom?: React.ReactNode;
   bubbles?: boolean;
+  /** Show the profile picture (opens Account) — used on the tab screens. */
+  profile?: boolean;
 }) {
   const goBack = useBack(backTo);
   return (
@@ -80,7 +110,12 @@ export function AppBar({
           </div>
         ) : null}
         <h1 className="vita-appbar-title">{title}</h1>
-        {actions ? <div className="vita-appbar-trail">{actions}</div> : null}
+        {actions || profile ? (
+          <div className="vita-appbar-trail">
+            {actions}
+            {profile ? <ProfileButton /> : null}
+          </div>
+        ) : null}
       </div>
       {bottom ? <div className="vita-appbar-bottom">{bottom}</div> : null}
     </header>

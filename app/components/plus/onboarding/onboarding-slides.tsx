@@ -45,7 +45,7 @@ function LanguageButton({ code, text, greeting, image }: { code: AppLanguageCode
         <span style={{ display: "block", fontSize: 16, lineHeight: 1.2, fontWeight: 700, color: on ? "#fff" : "var(--vc-navy)" }}>{text}</span>
         <span style={{ display: "block", marginTop: 2, fontSize: 13, color: on ? "rgba(255,255,255,0.7)" : navyA(0.45) }}>{greeting}</span>
       </span>
-      <span className="tick">{on ? <MdCheck size={16} color="#003e48" /> : null}</span>
+      <span className="tick">{on ? <MdCheck size={16} color="#0b2c4d" /> : null}</span>
     </button>
   );
 }

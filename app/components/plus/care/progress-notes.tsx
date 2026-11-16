@@ -15,14 +15,14 @@ function NoteCard({ note, coachView, onOpen }: { note: CoachNote; coachView: boo
       <div style={{ padding: 10, display: "flex", alignItems: "center" }}>
         <Avatar url={who.profilePicture} size={50} />
         <div style={{ marginLeft: 10 }}>
-          <div style={{ fontSize: 12, fontWeight: 700, color: "var(--vc-ink)" }}>{who.firstName}</div>
-          <div style={{ fontSize: 12, fontWeight: 500, color: "rgba(var(--vc-navy-rgb),0.55)" }}>{relativeDayLabel(note.timestamp, t)}</div>
+          <div style={{ fontSize: 13, fontWeight: 700, color: "var(--vc-ink)" }}>{who.firstName}</div>
+          <div style={{ fontSize: 13, fontWeight: 500, color: "rgba(var(--vc-navy-rgb),0.55)" }}>{relativeDayLabel(note.timestamp, t)}</div>
         </div>
       </div>
       <div style={{ padding: "0 10px 10px" }}>
         <div style={{ fontSize: 15, fontWeight: 700 }}>{t("note")}</div>
         <div style={{ fontSize: 13, color: "rgba(var(--vc-navy-rgb),0.55)", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{note.note}</div>
-        <div style={{ marginTop: 10, fontSize: 12, fontWeight: 700, color: "rgba(var(--vc-navy-rgb),0.55)" }}>
+        <div style={{ marginTop: 10, fontSize: 13, fontWeight: 700, color: "rgba(var(--vc-navy-rgb),0.55)" }}>
           {t("recommendations")}: {note.recommendations.length}
         </div>
       </div>
@@ -109,7 +109,7 @@ export function ProgressNoteScreen({ id }: { id: number }) {
                 <Card padding="6px 18px">
                   {note.recommendations.map((r, i) => (
                     <div key={i} style={{ display: "flex", alignItems: "flex-start", padding: "14px 0", borderBottom: i === note.recommendations.length - 1 ? undefined : "1px solid rgba(var(--vc-navy-rgb),0.06)" }}>
-                      <span style={{ width: 26, height: 26, borderRadius: "50%", background: "rgba(92,224,198,0.28)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 800, color: "var(--vc-navy)", flex: "none" }}>{i + 1}</span>
+                      <span style={{ width: 26, height: 26, borderRadius: "50%", background: "rgba(92,224,198,0.28)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 800, color: "var(--vc-navy)", flex: "none" }}>{i + 1}</span>
                       <span style={{ marginLeft: 12, paddingTop: 3, fontSize: 14, lineHeight: 1.5, fontWeight: 500, color: "rgba(var(--vc-navy-rgb),0.78)" }}>{r}</span>
                     </div>
                   ))}

@@ -100,7 +100,7 @@ export function AuthField({
         {multiline ? <textarea rows={1} {...common} /> : <input type={type} inputMode={inputMode} autoComplete={autoComplete} {...common} />}
         {suffix}
       </label>
-      {error ? <div style={{ marginTop: 6, fontSize: 12, lineHeight: 1.3, color: "var(--vc-danger)" }}>{error}</div> : null}
+      {error ? <div style={{ marginTop: 6, fontSize: 13, lineHeight: 1.3, color: "var(--vc-danger)" }}>{error}</div> : null}
     </div>
   );
 }

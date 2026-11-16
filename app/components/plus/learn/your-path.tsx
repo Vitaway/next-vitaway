@@ -103,13 +103,13 @@ function PathCard({
     <div>
       <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
         <div style={{ flex: 1, fontSize: 16, fontWeight: 800, color: "var(--vc-teal)", letterSpacing: -0.2 }}>{t("your_path")}</div>
-        <div style={{ fontSize: 12, fontWeight: 600, color: "var(--vc-muted)" }}>{progress}</div>
+        <div style={{ fontSize: 13, fontWeight: 600, color: "var(--vc-muted)" }}>{progress}</div>
       </div>
-      <div style={{ marginTop: 2, fontSize: 12, color: "var(--vc-body)" }}>{subtitle}</div>
-      <div style={{ marginTop: 8, fontSize: 11, lineHeight: 1.35, color: "var(--vc-muted)" }}>{textOf(path.placeholderNotice, language)}</div>
+      <div style={{ marginTop: 2, fontSize: 13, color: "var(--vc-body)" }}>{subtitle}</div>
+      <div style={{ marginTop: 8, fontSize: 13, lineHeight: 1.35, color: "var(--vc-muted)" }}>{textOf(path.placeholderNotice, language)}</div>
       {path.units.map((unit) => (
         <div key={unit.id} style={{ marginTop: 10 }}>
-          <div style={{ fontSize: 11, fontWeight: 700, color: "var(--vc-muted)", letterSpacing: 0.2 }}>{textOf(unit.title, language)}</div>
+          <div style={{ fontSize: 13, fontWeight: 700, color: "var(--vc-muted)", letterSpacing: 0.2 }}>{textOf(unit.title, language)}</div>
           <div style={{ display: "flex", marginTop: 6 }}>
             {unit.weekNumbers.map((number) => {
               const week = weekByNumber(path, number);
@@ -172,13 +172,13 @@ function WeekDot({
           background: fill,
           border: `${state === "open" ? 1.5 : 1}px solid ${ring}`,
           color: ink,
-          fontSize: 12,
+          fontSize: 13,
           fontWeight: 800,
         }}
       >
         {showLock ? <Lock size={14} color={ink} /> : showCheck ? <TickCircle size={16} color={ink} variant="Bold" /> : number}
       </span>
-      <span style={{ display: "block", marginTop: 2, fontSize: 9, fontWeight: 600, color: "var(--vc-muted)" }}>{number}</span>
+      <span style={{ display: "block", marginTop: 2, fontSize: 13, fontWeight: 600, color: "var(--vc-muted)" }}>{number}</span>
     </button>
   );
 }
@@ -254,15 +254,15 @@ export function PathLessonScreen({ week, lessonId }: { week: number; lessonId: s
         <div style={{ padding: 12, borderRadius: 10, background: "var(--vc-tile-peach)", display: "flex", gap: 8, alignItems: "flex-start" }}>
           <InfoCircle size={18} color="var(--vc-teal)" />
           <div>
-            <div style={{ fontSize: 12, fontWeight: 800, color: "var(--vc-teal)" }}>{t("your_path_placeholder_label")}</div>
-            <div style={{ marginTop: 4, fontSize: 12, lineHeight: 1.4, color: "var(--vc-body)" }}>{textOf(path.placeholderNotice, language)}</div>
+            <div style={{ fontSize: 13, fontWeight: 800, color: "var(--vc-teal)" }}>{t("your_path_placeholder_label")}</div>
+            <div style={{ marginTop: 4, fontSize: 13, lineHeight: 1.4, color: "var(--vc-body)" }}>{textOf(path.placeholderNotice, language)}</div>
           </div>
         </div>
         <div style={{ marginTop: 20, fontSize: 13, fontWeight: 600, color: "var(--vc-muted)" }}>{textOf(weekRow.title, language)}</div>
         <h1 style={{ margin: "6px 0 0", fontSize: 24, fontWeight: 800, lineHeight: 1.2, letterSpacing: -0.6, color: "var(--vc-teal)" }}>{textOf(lesson.title, language)}</h1>
         <p style={{ margin: "14px 0 0", fontSize: 15, lineHeight: 1.5, color: "var(--vc-body)" }}>{textOf(lesson.aim, language)}</p>
         {lesson.pendingLanguageReview && language === "rw" ? (
-          <p style={{ margin: "12px 0 0", fontSize: 12, color: "var(--vc-muted)" }}>{t("your_path_language_review")}</p>
+          <p style={{ margin: "12px 0 0", fontSize: 13, color: "var(--vc-muted)" }}>{t("your_path_language_review")}</p>
         ) : null}
         <div style={{ marginTop: 28 }}>
           {lesson.completed ? (

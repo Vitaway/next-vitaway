@@ -66,7 +66,7 @@ export function MedicationsScreen() {
                   <MedicationListCard key={m.id} medication={m} onClick={() => push(`/medications/${m.id}`)} />
                 ))}
               </div>
-              <p style={{ margin: "8px 0 0", textAlign: "center", fontSize: 12, fontWeight: 500, color: navyA(0.4) }}>Add only medicines your doctor prescribed. Your care team sees this list.</p>
+              <p style={{ margin: "8px 0 0", textAlign: "center", fontSize: 13, fontWeight: 500, color: navyA(0.4) }}>Add only medicines your doctor prescribed. Your care team sees this list.</p>
             </>
           )}
           <div style={{ height: 20 }} />
@@ -84,7 +84,7 @@ function HistoryBadge({ slot }: { slot: MedicationSlot }) {
   const colors = DOSE_COLORS[slot.status];
   const [bg, fg] = colors ? (dark ? colors.dark : colors.light) : ["var(--vc-surface-muted)", "var(--vc-muted)"];
   const label = slot.status === "taken" ? `${slot.time} taken` : slot.status === "due" || slot.status === "pending" ? `${slot.time} due` : slot.status === "missed" ? `${slot.time} missed` : slot.time;
-  return <span style={{ padding: "6px 10px", borderRadius: 10, background: bg, color: fg, fontWeight: 700, fontSize: 12 }}>{label}</span>;
+  return <span style={{ padding: "6px 10px", borderRadius: 10, background: bg, color: fg, fontWeight: 700, fontSize: 13 }}>{label}</span>;
 }
 
 /** medication_detail_page.dart */
@@ -297,7 +297,7 @@ export function AddMedicationScreen() {
                 onChange={(e) => { setDose(e.target.value); setSubmitError(null); setTouched((x) => ({ ...x, dose: true })); }}
                 style={{ width: "100%", padding: "14px 0", border: 0, borderBottom: `1px solid ${doseError ? "var(--vc-danger)" : navyA(0.55)}`, outline: "none", background: "transparent", fontSize: 16, fontWeight: 500, color: "var(--vc-ink)" }}
               />
-              {doseError ? <div style={{ marginTop: 6, fontSize: 12, lineHeight: 1.3, color: "var(--vc-danger)" }}>{doseError}</div> : null}
+              {doseError ? <div style={{ marginTop: 6, fontSize: 13, lineHeight: 1.3, color: "var(--vc-danger)" }}>{doseError}</div> : null}
             </div>
             <div style={{ flex: 3, minWidth: 0 }}>
               <UnderlineButton onClick={() => setSheet("unit")}>
@@ -313,7 +313,7 @@ export function AddMedicationScreen() {
             {lineText(freqLabel, !hasFreq)}
             {caret(Boolean(freqError))}
           </UnderlineButton>
-          {freqError ? <div style={{ marginTop: 6, fontSize: 12, color: "var(--vc-danger)" }}>{freqError}</div> : null}
+          {freqError ? <div style={{ marginTop: 6, fontSize: 13, color: "var(--vc-danger)" }}>{freqError}</div> : null}
           {custom ? (
             <>
               <div style={{ height: 14 }} />

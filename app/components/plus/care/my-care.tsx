@@ -1,9 +1,9 @@
 "use client";
 
-import { ArrowRight3, Calendar1, Health } from "iconsax-react";
+import { ArrowRight3, Calendar1, CalendarAdd, Health, Messages2 } from "iconsax-react";
 import { useT } from "@/lib/plus/i18n";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
-import { AppBar, Page } from "../ui/vita";
+import { AppBar, HubLinks, Page } from "../ui/vita";
 import { VisitReportsList } from "./visit-reports";
 import { EmergencyLink } from "../safety/emergency-link";
 
@@ -21,7 +21,7 @@ function LinkRow({ icon, title, subtitle, onClick }: { icon: React.ReactNode; ti
       <span style={{ width: 40, height: 40, borderRadius: 8, background: "var(--vc-wash)", display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>{icon}</span>
       <span style={{ marginLeft: 12, flex: 1 }}>
         <span style={{ display: "block", fontWeight: 800, fontSize: 15, color: "var(--vc-ink)" }}>{title}</span>
-        <span style={{ display: "block", fontSize: 12.5, color: "rgba(var(--vc-navy-rgb),0.55)" }}>{subtitle}</span>
+        <span style={{ display: "block", fontSize: 13, color: "rgba(var(--vc-navy-rgb),0.55)" }}>{subtitle}</span>
       </span>
       <span style={{ color: "rgba(var(--vc-navy-rgb),0.35)", display: "inline-flex" }}>
         <ArrowRight3 size={22} color="currentColor" />
@@ -37,9 +37,18 @@ export default function MyCareScreen() {
   const tab = 0;
   return (
     <Page backdrop width="wide">
-      <AppBar title={t("my_care")} back={false} />
+      <AppBar title={t("nav_care_team")} back={false} profile />
       <div className="vita-scroll with-dock" style={{ padding: "16px 18px calc(env(safe-area-inset-bottom) + 104px)" }}>
         <p style={{ margin: 0, fontSize: 14, color: "rgba(var(--vc-navy-rgb),0.6)" }}>{t("my_care_subtitle")}</p>
+        <div style={{ marginTop: 12 }}>
+          <HubLinks
+            links={[
+              { label: t("nav_messages"), icon: <Messages2 size={20} color="currentColor" />, onClick: () => push("/support") },
+              { label: t("quick_book_visit"), icon: <CalendarAdd size={20} color="currentColor" />, onClick: () => push("/book-visit") },
+              { label: t("appointments_title"), icon: <Calendar1 size={20} color="currentColor" />, onClick: () => push("/appointments") },
+            ]}
+          />
+        </div>
         <div style={{ marginTop: 12 }}>
           <EmergencyLink />
         </div>
@@ -47,7 +56,7 @@ export default function MyCareScreen() {
           <span style={{ width: 44, height: 44, borderRadius: "50%", background: "var(--vc-teal)", color: "var(--vc-mint)", fontWeight: 800, fontSize: 18, display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>V</span>
           <div style={{ marginLeft: 12 }}>
             <div style={{ fontWeight: 800, fontSize: 15, color: "var(--vc-ink)" }}>{t("my_care_clinic_name")}</div>
-            <div style={{ fontSize: 12.5, color: "rgba(var(--vc-navy-rgb),0.55)" }}>{t("my_care_clinic_record")}</div>
+            <div style={{ fontSize: 13, color: "rgba(var(--vc-navy-rgb),0.55)" }}>{t("my_care_clinic_record")}</div>
           </div>
         </div>
         <div className="vita-hide-scroll" style={{ marginTop: 16, display: "flex", gap: 8, overflowX: "auto" }}>
@@ -58,7 +67,7 @@ export default function MyCareScreen() {
                 key={tabItem.label}
                 type="button"
                 onClick={() => (i === 0 ? undefined : push(tabItem.path))}
-                style={{ flex: "none", padding: "8px 14px", borderRadius: 8, fontSize: 12.5, fontWeight: 700, background: on ? "var(--vc-teal)" : "var(--vc-surface)", color: on ? "#fff" : "var(--vc-ink)", border: `1px solid ${on ? "var(--vc-teal)" : "rgba(var(--vc-navy-rgb),0.12)"}` }}
+                style={{ flex: "none", padding: "8px 14px", borderRadius: 8, fontSize: 13, fontWeight: 700, background: on ? "var(--vc-teal)" : "var(--vc-surface)", color: on ? "#fff" : "var(--vc-ink)", border: `1px solid ${on ? "var(--vc-teal)" : "rgba(var(--vc-navy-rgb),0.12)"}` }}
               >
                 {t(tabItem.label)}
               </button>

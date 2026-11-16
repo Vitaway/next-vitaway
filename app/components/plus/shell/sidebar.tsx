@@ -1,36 +1,24 @@
 "use client";
 
-import { Book1, Calendar1, Camera, Heart, Home2, Messages2, Notification, Setting2, Timer1, User } from "iconsax-react";
+import { Calendar1, Home2, Messages2, Notification, Setting2, Timer1 } from "iconsax-react";
 import { useT } from "@/lib/plus/i18n";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { displayName, useMe, useNotifications } from "@/lib/plus/client/data";
 import { Photo, cx } from "../ui/vita";
-import { QUICK_ACTIONS, useAppPath } from "./dock";
+import { QUICK_ACTIONS, TAB_OWNERS, useAppPath, useMainTabs } from "./dock";
 
 type NavItem = { path: string; label: string; Icon: typeof Home2; badge?: boolean; count?: number };
 
 /** Which sidebar entry owns a nested screen, so the right item stays lit (e.g. /chat/12 → Support). */
 const OWNERS: Array<[string, string]> = [
-  ["/chat", "/support"],
-  ["/coaches", "/support"],
-  ["/today", "/home"],
-  ["/health-score", "/home"],
-  ["/metrics", "/home"],
-  ["/log", "/home"],
-  ["/emergency", "/home"],
-  ["/visit-reports", "/care"],
-  ["/notes", "/care"],
-  ["/meal-plans", "/care"],
-  ["/documents", "/care"],
-  ["/food-reports", "/meal-photos"],
-  ["/book-visit", "/appointments"],
-  ["/academy", "/articles"],
   ["/account", "/profile"],
   ["/programmes", "/profile"],
   ["/plans", "/profile"],
   ["/payment", "/profile"],
   ["/rewards", "/profile"],
-  ["/badges", "/profile"],
+  ["/chat", "/support"],
+  ["/coaches", "/support"],
+  ...TAB_OWNERS,
 ];
 
 function matches(path: string, item: string): boolean {
@@ -52,18 +40,12 @@ export default function Sidebar({ supportBadge = false }: { supportBadge?: boole
   const { user } = useMe();
   const { unread } = useNotifications();
 
-  const main: NavItem[] = [
-    { path: "/home", label: t("home_menu"), Icon: Home2 },
-    { path: "/care", label: t("care_menu"), Icon: Heart },
-    { path: "/support", label: t("support_menu"), Icon: Messages2, badge: supportBadge },
-    { path: "/profile", label: t("account_menu"), Icon: User },
-  ];
+  const main: NavItem[] = useMainTabs(supportBadge);
   const more: NavItem[] = [
-    { path: "/notifications", label: t("notifications"), Icon: Notification, count: unread },
+    { path: "/support", label: t("nav_messages"), Icon: Messages2, badge: supportBadge },
     { path: "/appointments", label: t("appointments"), Icon: Calendar1 },
-    { path: "/meal-photos", label: t("meal_photos_title"), Icon: Camera },
+    { path: "/notifications", label: t("notifications"), Icon: Notification, count: unread },
     { path: "/reminders", label: t("reminders_title"), Icon: Timer1 },
-    { path: "/articles", label: t("learn_title"), Icon: Book1 },
     { path: "/settings", label: t("settings"), Icon: Setting2 },
   ];
   const all = [...main, ...more, ...QUICK_ACTIONS.map((a) => ({ path: a.path }))].map((i) => i.path);

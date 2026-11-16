@@ -65,7 +65,7 @@ function PrimaryButton({ label, onClick, disabled, testId }: { label: string; on
       data-testid={testId}
       disabled={disabled}
       onClick={onClick}
-      style={{ width: "100%", minHeight: 50, borderRadius: 14, border: "none", background: "var(--vc-action, #E85A2E)", color: "#fff", fontWeight: 800, fontSize: 16, opacity: disabled ? 0.6 : 1 }}
+      style={{ width: "100%", minHeight: 50, borderRadius: 14, border: "none", background: "var(--vc-action, #F47C20)", color: "#fff", fontWeight: 800, fontSize: 16, opacity: disabled ? 0.6 : 1 }}
     >
       {label}
     </button>
@@ -114,7 +114,7 @@ export function PortionSheet({ item, onChange, onClose }: { item: ReviewItem | n
         </button>
         <div style={{ flex: 1, textAlign: "center" }}>
           <div data-testid="grams-value" style={{ fontSize: 26, fontWeight: 800, color: "var(--vc-ink)" }}>{item.grams} g</div>
-          <div style={{ fontSize: 12, color: "var(--vc-muted)" }}>{item.unit_key && item.quantity ? portionText(item, language).split(" · ")[0] : "\u00a0"}</div>
+          <div style={{ fontSize: 13, color: "var(--vc-muted)" }}>{item.unit_key && item.quantity ? portionText(item, language).split(" · ")[0] : "\u00a0"}</div>
         </div>
         <button type="button" aria-label={t("mr_more")} data-testid="grams-more" onClick={() => onChange(stepGrams(item, 1))} style={{ ...chip(false), width: 52, height: 44, fontSize: 20 }}>
           +
@@ -196,12 +196,12 @@ export function FoodSearchSheet({ open, onPick, onClose }: { open: boolean; onPi
           >
             <span style={{ flex: 1, minWidth: 0 }}>
               <span style={{ display: "block", fontWeight: 700, color: "var(--vc-ink)" }}>{language === "rw" && food.name_rw ? food.name_rw : food.name}</span>
-              <span style={{ display: "block", marginTop: 2, fontSize: 12, color: "var(--vc-muted)" }}>
+              <span style={{ display: "block", marginTop: 2, fontSize: 13, color: "var(--vc-muted)" }}>
                 {(language === "rw" ? food.name : food.name_rw) ?? ""}
                 {food.per_100g.kcal != null ? ` · ${t("mr_per_100g", { kcal: food.per_100g.kcal })}` : ""}
               </span>
             </span>
-            {!food.verified ? <span style={{ fontSize: 11, fontWeight: 700, color: "var(--vc-muted)", border: "1px dashed var(--vc-muted)", borderRadius: 999, padding: "2px 8px" }}>{t("mr_unverified")}</span> : null}
+            {!food.verified ? <span style={{ fontSize: 13, fontWeight: 700, color: "var(--vc-muted)", border: "1px dashed var(--vc-muted)", borderRadius: 999, padding: "2px 8px" }}>{t("mr_unverified")}</span> : null}
             <Add size={20} color="var(--vc-teal-ink)" />
           </button>
         ))}
@@ -256,7 +256,7 @@ export function MealReviewItems({
             <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
               <button type="button" onClick={() => setEditing(item.uid)} style={{ flex: 1, minWidth: 0, textAlign: "left", border: "none", background: "transparent", padding: 0 }}>
                 <span style={{ display: "block", fontSize: 15, fontWeight: 800, color: "var(--vc-ink)" }}>{name}</span>
-                {other && other !== name ? <span style={{ display: "block", fontSize: 12, color: "var(--vc-muted)" }}>{other}</span> : null}
+                {other && other !== name ? <span style={{ display: "block", fontSize: 13, color: "var(--vc-muted)" }}>{other}</span> : null}
                 <span style={{ display: "block", marginTop: 4, fontSize: 13, color: "var(--vc-body)" }}>
                   {portionText(item, language)}
                   {item.preparation ? ` · ${t(`mr_prep_${item.preparation}`)}` : ""}
@@ -266,11 +266,11 @@ export function MealReviewItems({
             </div>
             <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 6, marginTop: 8 }}>
               {unsure ? (
-                <span data-testid="please-check" style={{ fontSize: 12, fontWeight: 800, color: "var(--vc-chip-orange-ink)", border: "1.4px dashed var(--vc-chip-orange-ink)", borderRadius: 999, padding: "3px 9px" }}>
+                <span data-testid="please-check" style={{ fontSize: 13, fontWeight: 800, color: "var(--vc-chip-orange-ink)", border: "1.4px dashed var(--vc-chip-orange-ink)", borderRadius: 999, padding: "3px 9px" }}>
                   {t("mr_please_check")} · {t("mr_sure", { pct: Math.round((item.confidence ?? 0) * 100) })}
                 </span>
               ) : null}
-              {!item.verified ? <span style={{ fontSize: 11, fontWeight: 700, color: "var(--vc-muted)", border: "1px dashed var(--vc-muted)", borderRadius: 999, padding: "2px 8px" }}>{t("mr_unverified")}</span> : null}
+              {!item.verified ? <span style={{ fontSize: 13, fontWeight: 700, color: "var(--vc-muted)", border: "1px dashed var(--vc-muted)", borderRadius: 999, padding: "2px 8px" }}>{t("mr_unverified")}</span> : null}
               <span style={{ flex: 1 }} />
               <button type="button" onClick={() => setEditing(item.uid)} style={{ display: "inline-flex", alignItems: "center", gap: 4, border: "none", background: "transparent", color: "var(--vc-teal-ink)", fontWeight: 700, fontSize: 13, padding: "6px 4px" }}>
                 <Edit2 size={14} color="currentColor" /> {t("mr_change")}
@@ -284,7 +284,7 @@ export function MealReviewItems({
                 <Trash size={16} color="currentColor" />
               </button>
             </div>
-            {unsure ? <div style={{ marginTop: 6, fontSize: 12, color: "var(--vc-body)" }}>{t("mr_please_check_help")}</div> : null}
+            {unsure ? <div style={{ marginTop: 6, fontSize: 13, color: "var(--vc-body)" }}>{t("mr_please_check_help")}</div> : null}
           </div>
         );
       })}
@@ -298,7 +298,7 @@ export function MealReviewItems({
       </button>
       {items.length ? (
         <div data-testid="meal-totals" style={{ marginTop: 14, padding: 14, borderRadius: 14, background: "var(--vc-tile-mint)", border: "1.4px dashed var(--vc-teal-ink)" }}>
-          <div style={{ fontSize: 12, fontWeight: 800, color: "var(--vc-muted)", textTransform: "uppercase", letterSpacing: 0.4 }}>{t("mr_totals")}</div>
+          <div style={{ fontSize: 13, fontWeight: 800, color: "var(--vc-muted)", textTransform: "uppercase", letterSpacing: 0.4 }}>{t("mr_totals")}</div>
           <div style={{ marginTop: 4, fontSize: 26, fontWeight: 800, color: "var(--vc-teal-ink)" }}>{totals.kcal != null ? `~${totals.kcal} kcal` : "—"}</div>
           <div style={{ display: "flex", gap: 14, marginTop: 4, fontSize: 13, color: "var(--vc-body)", flexWrap: "wrap" }}>
             <span>
@@ -311,7 +311,7 @@ export function MealReviewItems({
               {t("mr_fat")} ~{totals.fat_g ?? "—"} g
             </span>
           </div>
-          {totals.partial ? <div style={{ marginTop: 6, fontSize: 12, color: "var(--vc-muted)" }}>{t("mr_partial")}</div> : null}
+          {totals.partial ? <div style={{ marginTop: 6, fontSize: 13, color: "var(--vc-muted)" }}>{t("mr_partial")}</div> : null}
         </div>
       ) : null}
       <PortionSheet item={editItem} onChange={update} onClose={() => setEditing(null)} />

@@ -35,7 +35,7 @@ function FieldTile({ value, placeholder, label, required, selected, onClick }: {
       }}
     >
       <span style={{ fontSize: 32, fontWeight: 800, lineHeight: 1, letterSpacing: -0.8, color: value ? "var(--vc-ink)" : "rgba(var(--vc-navy-rgb),0.2)" }}>{value || placeholder}</span>
-      <span style={{ marginTop: 6, fontSize: 10, fontWeight: 800, letterSpacing: 0.6, color: "rgba(var(--vc-navy-rgb),0.45)" }}>
+      <span style={{ marginTop: 6, fontSize: 13, fontWeight: 800, letterSpacing: 0.6, color: "rgba(var(--vc-navy-rgb),0.45)" }}>
         {label.toUpperCase()}
         {required ? <span style={{ color: "#D64545" }}> *</span> : null}
       </span>
@@ -129,7 +129,7 @@ export default function LogBpScreen() {
           <div style={{ flex: 1 }}>
             <FieldTile value={bottom} placeholder="---" label={t("bp_bottom")} required selected={focus === "bottom"} onClick={() => setFocus("bottom")} />
           </div>
-          <span style={{ padding: "0 4px 30px", color: "#E85A2E", display: "inline-flex" }}>
+          <span style={{ padding: "0 4px 30px", color: "#F47C20", display: "inline-flex" }}>
             <Heart size={16} variant="Bold" color="currentColor" />
           </span>
           <div style={{ flex: 1 }}>

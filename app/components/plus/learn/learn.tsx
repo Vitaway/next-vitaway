@@ -78,7 +78,7 @@ export function LearnScreen() {
   };
   return (
     <Page width="wide">
-      <AppBar title={cap(t("learn_title"))} bottom={<Tabs onBar value={tab} onChange={setTab} tabs={[{ value: "1", label: cap(t("informative")) }, { value: "2", label: cap(t("sustaining")) }, { value: "3", label: cap(t("earn_badges")) }]} />} />
+      <AppBar title={cap(t("learn_title"))} back={false} profile bottom={<Tabs onBar value={tab} onChange={setTab} tabs={[{ value: "1", label: cap(t("informative")) }, { value: "2", label: cap(t("sustaining")) }, { value: "3", label: cap(t("earn_badges")) }]} />} />
       <YourPathBlock />
       <div style={{ flex: 1, overflowY: "auto", paddingBottom: 24 }}>
         {loading ? (
@@ -353,18 +353,18 @@ export function BadgesScreen() {
                   <span style={{ height: 6 }} />
                   {b.earned ? (
                     <>
-                      <span style={{ fontSize: 12, fontWeight: 700, color: "var(--vc-teal)" }}>{t("badge_earned")}</span>
-                      {b.icon ? <span style={{ marginTop: 4, fontSize: 11.5, lineHeight: 1.35, textAlign: "center", color: navyA(0.6) }}>{text.description}</span> : null}
+                      <span style={{ fontSize: 13, fontWeight: 700, color: "var(--vc-teal)" }}>{t("badge_earned")}</span>
+                      {b.icon ? <span style={{ marginTop: 4, fontSize: 13, lineHeight: 1.35, textAlign: "center", color: navyA(0.6) }}>{text.description}</span> : null}
                     </>
                   ) : !b.available ? (
-                    <span data-testid="badge-coming-soon" style={{ fontSize: 12, fontWeight: 600, textAlign: "center", color: navyA(0.55) }}>{t("badge_coming_soon")}</span>
+                    <span data-testid="badge-coming-soon" style={{ fontSize: 13, fontWeight: 600, textAlign: "center", color: navyA(0.55) }}>{t("badge_coming_soon")}</span>
                   ) : fraction != null ? (
                     <>
                       <ProgressBar value={fraction} height={5} />
-                      <span style={{ marginTop: 4, fontSize: 12, fontWeight: 600, color: navyA(0.55) }}>{`${b.current} / ${b.target}`}</span>
+                      <span style={{ marginTop: 4, fontSize: 13, fontWeight: 600, color: navyA(0.55) }}>{`${b.current} / ${b.target}`}</span>
                     </>
                   ) : (
-                    <span style={{ fontSize: 12, fontWeight: 600, color: navyA(0.55) }}>{t("badge_locked")}</span>
+                    <span style={{ fontSize: 13, fontWeight: 600, color: navyA(0.55) }}>{t("badge_locked")}</span>
                   )}
                 </button>
               );

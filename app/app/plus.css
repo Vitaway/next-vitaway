@@ -12,15 +12,15 @@
   --vc-surface-muted: #f6f3ee;
   --vc-line: #e4ddd2;
   --vc-ink: #0d1b2a;
-  --vc-navy: #003e48;
-  --vc-navy-rgb: 0, 62, 72;
+  --vc-navy: #0b2c4d;
+  --vc-navy-rgb: 11, 44, 77;
   --vc-body: #31423c;
   --vc-muted: #5c6d66;
   --vc-faint: #8d9b95;
-  --vc-teal-ink: #003e48;
-  --vc-teal: #003e48;
-  --vc-action: #e85a2e;
-  --vc-header: #e85a2e;
+  --vc-teal-ink: #0b2c4d;
+  --vc-teal: #0b2c4d;
+  --vc-action: #f47c20;
+  --vc-header: #0b2c4d;
   --vc-mint: #5ce0c6;
   --vc-danger: #d64545;
   --vc-danger-soft: #fbe4e4;
@@ -31,11 +31,11 @@
   --vc-tile-lilac: #e4eaf6;
   --vc-tile-sky: #d7ecfa;
   --vc-card-shadow: 0 10px 24px rgba(27, 42, 74, 0.06);
-  --vc-dock: #e85a2e;
-  --vc-dock-muted: rgba(255, 255, 255, 0.72);
-  --vc-dock-shadow: 0 -4px 18px rgba(232, 90, 46, 0.32);
+  --vc-dock: #0b2c4d;
+  --vc-dock-muted: rgba(255, 255, 255, 0.78);
+  --vc-dock-shadow: 0 -4px 18px rgba(11, 44, 77, 0.28);
   --vc-scrim: rgba(10, 30, 52, 0.28);
-  --vc-dial-scrim: rgba(0, 62, 72, 0.42);
+  --vc-dial-scrim: rgba(11, 44, 77, 0.42);
   --vc-bubble-accent: rgba(255, 138, 76, 0.55);
   --vc-blob-1: #ffc4a3;
   --vc-blob-2: #ffe4d6;
@@ -52,7 +52,7 @@
   --vc-chip-teal-ink: #146f66;
   --vc-chip-orange-ink: #b23f12;
   --vc-picker-well: #e7f3f5;
-  --vc-picker-ink: #00262e;
+  --vc-picker-ink: #071e36;
   color-scheme: light;
   font-family: "PlusJakartaSans", ui-sans-serif, system-ui, sans-serif;
   color: var(--vc-ink);
@@ -73,7 +73,7 @@
   --vc-muted: #95a6a0;
   --vc-faint: #6c7c76;
   --vc-teal-ink: #7fd0db;
-  --vc-header: #003e48;
+  --vc-header: #0b2c4d;
   --vc-danger-soft: #3a1d19;
   --vc-wash: #1a2a28;
   --vc-tile-mint: #133238;
@@ -98,10 +98,10 @@
   --vc-amount: #ff9b73;
   --vc-chip-teal-ink: #7fd8cc;
   --vc-chip-orange-ink: #ffa27f;
-  --vc-blob-1: rgba(232, 90, 46, 0.1);
-  --vc-blob-2: rgba(232, 90, 46, 0.06);
+  --vc-blob-1: rgba(244, 124, 32, 0.1);
+  --vc-blob-2: rgba(244, 124, 32, 0.06);
   --vc-blob-3: rgba(92, 224, 198, 0.06);
-  --vc-blob-4: rgba(232, 90, 46, 0.08);
+  --vc-blob-4: rgba(244, 124, 32, 0.08);
   color-scheme: dark;
 }
 
@@ -173,14 +173,14 @@
 .vita-section-title { font-size: 18px; font-weight: 800; color: var(--vc-ink); }
 .vita-section-action { font-size: 13px; font-weight: 700; color: rgba(var(--vc-navy-rgb), 0.55); }
 
-.vita-chip { display: inline-flex; align-items: center; gap: 4px; padding: 4px 9px; border-radius: 999px; font-size: 11.5px; font-weight: 700; }
+.vita-chip { display: inline-flex; align-items: center; gap: 4px; padding: 4px 9px; border-radius: 999px; font-size: 13px; font-weight: 700; }
 
 /* Action button (VitaActionButton) */
 /* VitaActionButton (widgets/vita_action_button.dart). Scoped under .vita-root so the
    ".vita-root button" reset cannot strip the fill. Web keeps a solid resting look:
    no hover effects and no "panel fills the button" press animation. */
 .vita-root .vita-btn {
-  --btn-fill: #e85a2e; --btn-pressed: #d14e26; --btn-edge: #b8431f; --btn-ink: #fff;
+  --btn-fill: #f47c20; --btn-pressed: #e06d12; --btn-edge: #c9620f; --btn-ink: #0b2c4d;
   --btn-h: 46px; --btn-panel: 42px; --btn-lead: 18px;
   position: relative; display: inline-flex; align-items: center; height: var(--btn-h); border-radius: 6px; overflow: hidden;
   background: var(--btn-fill); color: var(--btn-ink); border: 0; padding: 0; font: inherit; cursor: pointer;
@@ -206,10 +206,10 @@
 .vita-root .vita-btn[disabled] { cursor: default; }
 .vita-root .vita-btn.off { opacity: 0.55; }
 .vita-root .vita-btn:focus-visible { outline: 2px solid var(--vc-navy); outline-offset: 2px; }
-.vita-root .vita-btn.primary { --btn-fill: #e85a2e; --btn-pressed: #d14e26; --btn-edge: #b8431f; --btn-ink: #fff; }
-.vita-root .vita-btn.teal { --btn-fill: #003e48; --btn-pressed: #00262e; --btn-edge: #001c22; --btn-ink: #fff; }
+.vita-root .vita-btn.primary { --btn-fill: #f47c20; --btn-pressed: #e06d12; --btn-edge: #c9620f; --btn-ink: #0b2c4d; }
+.vita-root .vita-btn.teal { --btn-fill: #0b2c4d; --btn-pressed: #071e36; --btn-edge: #061829; --btn-ink: #fff; }
 .vita-root .vita-btn.danger { --btn-fill: #9f3a2f; --btn-pressed: #b54438; --btn-edge: #7d2e25; --btn-ink: #fff; }
-.vita-root .vita-btn.white { --btn-fill: #fff; --btn-pressed: #f6f3ee; --btn-edge: #e4ddd2; --btn-ink: #003e48; border: 1px solid #e4ddd2; box-shadow: none; }
+.vita-root .vita-btn.white { --btn-fill: #fff; --btn-pressed: #f6f3ee; --btn-edge: #e4ddd2; --btn-ink: #0b2c4d; border: 1px solid #e4ddd2; box-shadow: none; }
 .vita-root[data-theme="dark"] .vita-btn.white { --btn-fill: #1a2a28; --btn-pressed: #22332f; --btn-edge: rgba(255, 255, 255, 0.1); --btn-ink: #e4ebe8; border-color: rgba(255, 255, 255, 0.1); }
 
 /* AuthField underline (UnderlineInputBorder: 1px at 55%, focused navy 1.6px) */
@@ -230,7 +230,7 @@
 .vita-input:focus { border-color: var(--vc-navy); }
 textarea.vita-input { height: auto; min-height: 96px; padding: 12px 14px; resize: vertical; }
 .vita-input[readonly] { background: var(--vc-surface-muted); color: var(--vc-muted); }
-.vita-field-error { color: var(--vc-danger); font-size: 12px; margin-top: 6px; font-weight: 600; }
+.vita-field-error { color: var(--vc-danger); font-size: 13px; margin-top: 6px; font-weight: 600; }
 
 /* Pills (choice chips) */
 .vita-pill { height: 38px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--vc-line); background: var(--vc-surface); color: var(--vc-navy); font-weight: 700; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; }
@@ -247,27 +247,27 @@ textarea.vita-input { height: auto; min-height: 96px; padding: 12px 14px; resize
 .vita-tabs button.on::after { content: ""; position: absolute; left: 12%; right: 12%; bottom: 0; height: 3px; background: var(--vc-mint); border-radius: 2px; }
 .vita-tabs.on-bar button { color: rgba(255, 255, 255, 0.62); }
 .vita-tabs.on-bar button.on { color: #fff; }
-.vita-tabs.on-bar button.on::after { background: #fff; }
+.vita-tabs.on-bar button.on::after { background: #f47c20; }
 
 /* Dock */
 .vita-dock-wrap { position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; max-width: 480px; margin: 0 auto; padding: 0 max(12px, env(safe-area-inset-right)) calc(max(env(safe-area-inset-bottom), 8px)) max(12px, env(safe-area-inset-left)); pointer-events: none; }
 .vita-dock-row { display: flex; align-items: flex-end; gap: 10px; pointer-events: auto; }
-.vita-log-btn { width: 58px; height: 58px; border-radius: 50%; flex: none; display: flex; align-items: center; justify-content: center; background: var(--vc-teal); color: #fff; box-shadow: 0 6px 12px rgba(0, 62, 72, 0.28); transition: background 0.22s, box-shadow 0.22s; }
-.vita-log-btn.open { background: var(--vc-mint); color: #003e48; box-shadow: 0 6px 18px rgba(92, 224, 198, 0.28); }
+.vita-log-btn { width: 58px; height: 58px; border-radius: 50%; flex: none; display: flex; align-items: center; justify-content: center; background: var(--vc-teal); color: #fff; box-shadow: 0 6px 12px rgba(11, 44, 77, 0.28); transition: background 0.22s, box-shadow 0.22s; }
+.vita-log-btn.open { background: var(--vc-mint); color: #0b2c4d; box-shadow: 0 6px 18px rgba(92, 224, 198, 0.28); }
 .vita-log-btn svg { transition: transform 0.2s ease; }
 .vita-log-btn.open svg { transform: rotate(90deg); }
 .vita-dock { flex: 1; display: flex; background: var(--vc-dock); border-radius: 12px; padding: 8px 4px 6px; box-shadow: var(--vc-dock-shadow); }
 .vita-root[data-theme="dark"] .vita-dock { border: 1px solid var(--vc-line); }
 .vita-dock-item { flex: 1; margin: 0 2px; padding: 6px 8px; border-radius: 8px; display: flex; flex-direction: column; align-items: center; gap: 3px; color: var(--vc-dock-muted); transition: background 0.2s; min-width: 0; }
-.vita-dock-item span { font-size: 11px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
-.vita-dock-item.on { background: #003e48; color: #fff; }
+.vita-dock-item span { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.vita-dock-item.on { background: #f47c20; color: #0b2c4d; }
 .vita-dock-item.on span { font-weight: 800; }
 .vita-dock-badge { position: absolute; top: -2px; right: -3px; width: 8px; height: 8px; border-radius: 50%; background: var(--vc-danger); }
 .vita-dial-scrim { position: fixed; inset: 0; z-index: 35; background: var(--vc-dial-scrim); animation: vita-fade 0.2s ease; }
 .vita-dial { padding: 0 0 10px 6px; display: flex; flex-direction: column; align-items: flex-start; pointer-events: auto; }
 .vita-dial-action { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; animation: vita-dial-in 0.28s cubic-bezier(0.22, 1, 0.36, 1) both; }
-.vita-dial-action .disc { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #003e48; border: 1.5px solid rgba(0, 62, 72, 0.12); box-shadow: 0 4px 12px rgba(0, 62, 72, 0.22); }
-.vita-dial-action .tag { max-width: 160px; padding: 9px 12px; border-radius: 999px; background: rgba(0, 62, 72, 0.94); border: 1px solid rgba(255, 255, 255, 0.14); color: #fff; font-weight: 700; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.vita-dial-action .disc { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #0b2c4d; border: 1.5px solid rgba(11, 44, 77, 0.12); box-shadow: 0 4px 12px rgba(11, 44, 77, 0.22); }
+.vita-dial-action .tag { max-width: 160px; padding: 9px 12px; border-radius: 999px; background: rgba(11, 44, 77, 0.94); border: 1px solid rgba(255, 255, 255, 0.14); color: #fff; font-weight: 700; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 @keyframes vita-dial-in { from { opacity: 0; transform: translateY(20px) scale(0.55); transform-origin: left center; } to { opacity: 1; transform: none; } }
 @keyframes vita-fade { from { opacity: 0; } to { opacity: 1; } }
 
@@ -275,18 +275,18 @@ textarea.vita-input { height: auto; min-height: 96px; padding: 12px 14px; resize
 .vita-modal-scrim { position: fixed; inset: 0; z-index: 60; background: var(--vc-scrim); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 16px; animation: vita-fade 0.18s ease; }
 .vita-modal { width: 100%; max-width: 576px; max-height: calc(100dvh - 32px); display: flex; flex-direction: column; background: var(--vc-surface); border-radius: 4px; overflow: hidden; box-shadow: 0 22px 60px rgba(8, 32, 56, 0.28); }
 .vita-modal.compact { max-width: 384px; }
-.vita-modal-head { background: #003e48; color: #fff; padding: 16px 20px; display: flex; align-items: center; gap: 16px; }
+.vita-modal-head { background: #0b2c4d; color: #fff; padding: 16px 20px; display: flex; align-items: center; gap: 16px; }
 .vita-modal.compact .vita-modal-head { padding: 11px 14px; }
 .vita-modal-head h2 { flex: 1; font-size: 18px; font-weight: 600; line-height: 1.3; margin: 0; }
 .vita-modal.compact .vita-modal-head h2 { font-size: 15.2px; }
 .vita-modal-close { width: 32px; height: 32px; border-radius: 50%; border: 1px solid rgba(255, 255, 255, 0.45) !important; display: flex; align-items: center; justify-content: center; color: #fff !important; }
 .vita-modal-body { padding: 24px; overflow-y: auto; }
 .vita-modal.compact .vita-modal-body { padding: 14px 16px 6px; }
-.vita-modal-foot { display: flex; justify-content: flex-end; gap: 10px; padding: 14px 20px; border-top: 1px solid rgba(0, 62, 72, 0.12); flex-wrap: wrap; }
+.vita-modal-foot { display: flex; justify-content: flex-end; gap: 10px; padding: 14px 20px; border-top: 1px solid rgba(11, 44, 77, 0.12); flex-wrap: wrap; }
 
 /* Toast */
 .vita-toast-wrap { position: fixed; left: 0; right: 0; top: calc(env(safe-area-inset-top) + 12px); z-index: 80; display: flex; justify-content: center; pointer-events: none; padding: 0 16px; }
-.vita-toast { max-width: 440px; padding: 12px 16px; border-radius: 8px; background: #003e48; color: #fff; font-size: 14px; font-weight: 600; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18); animation: vita-toast-in 0.25s ease; }
+.vita-toast { max-width: 440px; padding: 12px 16px; border-radius: 8px; background: #0b2c4d; color: #fff; font-size: 14px; font-weight: 600; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18); animation: vita-toast-in 0.25s ease; }
 .vita-toast.error { background: #9f3a2f; }
 @keyframes vita-toast-in { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
 
@@ -305,7 +305,7 @@ textarea.vita-input { height: auto; min-height: 96px; padding: 12px 14px; resize
 .vita-keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
 .vita-key { aspect-ratio: 1.85; background: var(--vc-surface); border: 1px solid rgba(var(--vc-navy-rgb), 0.08); border-radius: 8px; font-size: 22px; font-weight: 700; color: var(--vc-navy); display: flex; align-items: center; justify-content: center; }
 .vita-key:active { background: var(--vc-surface-muted); }
-.vita-cursor { display: inline-block; width: 3px; height: 0.9em; background: #e85a2e; margin-left: 4px; border-radius: 2px; animation: vita-blink 1s steps(1) infinite; vertical-align: -0.08em; }
+.vita-cursor { display: inline-block; width: 3px; height: 0.9em; background: #f47c20; margin-left: 4px; border-radius: 2px; animation: vita-blink 1s steps(1) infinite; vertical-align: -0.08em; }
 @keyframes vita-blink { 50% { opacity: 0; } }
 
 /* Rich text from the API */
@@ -314,12 +314,12 @@ textarea.vita-input { height: auto; min-height: 96px; padding: 12px 14px; resize
 .vita-prose h1, .vita-prose h2, .vita-prose h3 { color: var(--vc-navy); font-weight: 800; margin: 18px 0 8px; line-height: 1.3; }
 .vita-prose ul, .vita-prose ol { padding-left: 20px; margin: 0 0 12px; }
 .vita-prose img { max-width: 100%; border-radius: 10px; }
-.vita-prose a { color: #e85a2e; text-decoration: underline; }
+.vita-prose a { color: #f47c20; text-decoration: underline; }
 
 .vita-hide-scroll { scrollbar-width: none; }
 .vita-hide-scroll::-webkit-scrollbar { display: none; }
 
-input[type="range"].vita-range { width: 100%; accent-color: #003e48; }
+input[type="range"].vita-range { width: 100%; accent-color: #0b2c4d; }
 
 /* book_visit AnimatedSwitcher: fade + small slide in */
 @keyframes vita-step-in { from { opacity: 0; transform: translateX(6%); } to { opacity: 1; transform: none; } }
@@ -378,7 +378,7 @@ input[type="range"].vita-range { width: 100%; accent-color: #003e48; }
   background: var(--vc-surface); border: 1.4px solid rgba(var(--vc-navy-rgb), 0.1); box-shadow: 0 3px 12px rgba(0,0,0,0.04);
   transition: background-color 0.22s, border-color 0.22s, box-shadow 0.22s;
 }
-.vita-root .vita-lang-btn.on { background: #003e48; border-color: #003e48; box-shadow: 0 8px 18px rgba(0,62,72,0.2); }
+.vita-root .vita-lang-btn.on { background: #0b2c4d; border-color: #0b2c4d; box-shadow: 0 8px 18px rgba(11, 44, 77,0.2); }
 .vita-lang-btn .flag { width: 46px; height: 46px; border-radius: 50%; flex-shrink: 0; background-size: cover; background-position: center; border: 1px solid rgba(var(--vc-navy-rgb), 0.06); background-color: var(--vc-canvas); }
 .vita-lang-btn.on .flag { border-color: rgba(255,255,255,0.18); }
 .vita-lang-btn .tick { width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; border: 1.4px solid rgba(var(--vc-navy-rgb), 0.18); transition: background-color 0.22s; }
@@ -441,7 +441,7 @@ button.vita-quiz-input { text-align: left; cursor: pointer; }
 .vita-install-head { display: flex; align-items: center; gap: 14px; padding-right: 40px; }
 .vita-install-icon {
   flex: none; display: block; border-radius: 22%; overflow: hidden; background: #fff;
-  box-shadow: 0 6px 16px rgba(0, 62, 72, 0.16), 0 0 0 1px rgba(0, 62, 72, 0.08);
+  box-shadow: 0 6px 16px rgba(11, 44, 77, 0.16), 0 0 0 1px rgba(11, 44, 77, 0.08);
 }
 .vita-install-icon img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .vita-install-title { margin: 0; font-size: 19px; font-weight: 800; line-height: 1.2; color: var(--vc-ink); }
@@ -450,7 +450,7 @@ button.vita-quiz-input { text-align: left; cursor: pointer; }
 .vita-install-perks { list-style: none; margin: 14px 0 18px; padding: 0; display: flex; gap: 8px; flex-wrap: wrap; }
 .vita-install-perks li {
   display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 999px;
-  background: var(--vc-tile-mint); color: var(--vc-teal-ink); font-size: 12.5px; font-weight: 700;
+  background: var(--vc-tile-mint); color: var(--vc-teal-ink); font-size: 13px; font-weight: 700;
 }
 .vita-install-later {
   display: block; width: 100%; margin-top: 8px; padding: 10px 0 2px; text-align: center;
@@ -462,7 +462,7 @@ button.vita-quiz-input { text-align: left; cursor: pointer; }
 }
 .vita-install-step-no {
   flex: none; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-  background: var(--vc-action); color: #fff; font-size: 12.5px; font-weight: 800;
+  background: var(--vc-action); color: #fff; font-size: 13px; font-weight: 800;
 }
 .vita-install-step-glyph {
   flex: none; width: 48px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center;
@@ -471,7 +471,7 @@ button.vita-quiz-input { text-align: left; cursor: pointer; }
 .vita-install-addpill { font-size: 14px; font-weight: 700; color: #0a84ff; }
 .vita-install-step-text { flex: 1; min-width: 0; font-size: 14px; line-height: 1.45; color: var(--vc-body); }
 .vita-install-step-text strong { color: var(--vc-ink); font-weight: 800; }
-.vita-install-note { margin: -8px 2px 16px; font-size: 12.5px; line-height: 1.45; color: var(--vc-muted); }
+.vita-install-note { margin: -8px 2px 16px; font-size: 13px; line-height: 1.45; color: var(--vc-muted); }
 .vita-install-pointer { display: flex; color: var(--vc-action); pointer-events: none; animation: vita-install-bob 1.1s ease-in-out infinite; }
 .vita-install-pointer.bottom-center { justify-content: center; margin-top: 10px; }
 .vita-install-pointer.bottom-right { justify-content: flex-end; margin-top: 10px; padding-right: 6px; }
@@ -506,11 +506,11 @@ button.vita-quiz-input { text-align: left; cursor: pointer; }
 
 @media (min-width: 768px) {
   .vita-root:has(.vita-fullbleed) { background: var(--vc-canvas); }
-  .vita-root:has(.vita-wide) { background: #003e48; }
+  .vita-root:has(.vita-wide) { background: #0b2c4d; }
   .vita-column:has(.vita-fullbleed) { max-width: none; background: transparent; box-shadow: none; }
 
   /* Tablet: full-bleed brand background, form in a centred card. */
-  .vita-wide { background: #003e48; }
+  .vita-wide { background: #0b2c4d; }
   .vita-wide > .vita-blobs { display: none; }
   .vita-wide::before, .vita-wide::after {
     content: ""; position: fixed; border-radius: 50%; pointer-events: none; z-index: 0;
@@ -550,7 +550,7 @@ button.vita-quiz-input { text-align: left; cursor: pointer; }
   .vita-wide::after { left: auto; right: 22%; bottom: -260px; width: 420px; height: 420px; background: var(--vc-blob-3); }
   .vita-auth-brand {
     display: flex; position: sticky; top: 0; z-index: 1; flex: 0 0 44%; max-width: 640px; height: 100dvh;
-    background: #003e48; color: #fff; overflow: hidden; isolation: isolate;
+    background: #0b2c4d; color: #fff; overflow: hidden; isolation: isolate;
     padding: calc(env(safe-area-inset-top) + 48px) 56px calc(48px + env(safe-area-inset-bottom));
   }
   .vita-auth-brand::before, .vita-auth-brand::after { content: ""; position: absolute; border-radius: 50%; z-index: -1; pointer-events: none; }
@@ -594,9 +594,9 @@ button.vita-quiz-input { text-align: left; cursor: pointer; }
    content is centred at a readable width, dock kept. Desktops (≥1024px): a persistent
    sidebar replaces the dock, pages get a contained header and multi-column grids. */
 .vita-root .vita-log-btn { background: var(--vc-teal); color: #fff; }
-.vita-root .vita-log-btn.open { background: var(--vc-mint); color: #003e48; }
+.vita-root .vita-log-btn.open { background: var(--vc-mint); color: #0b2c4d; }
 .vita-root .vita-circle-btn { background: var(--vc-surface); color: var(--vc-navy); }
-.vita-root[data-theme="dark"] .vita-log-btn:not(.open) { background: #00505c; }
+.vita-root[data-theme="dark"] .vita-log-btn:not(.open) { background: #12406b; }
 .vita-appbar-lead { top: 6px; }
 .vita-appbar-trail { top: 6px; }
 .vita-app { position: relative; min-height: 100dvh; }
@@ -660,7 +660,7 @@ button.vita-quiz-input { text-align: left; cursor: pointer; }
   /* Header: a contained, left-aligned page header instead of a phone app bar. */
   .vita-app-main .vita-appbar {
     top: 16px; margin-top: 16px; border-radius: 20px;
-    box-shadow: 0 -40px 0 0 var(--vc-canvas), 0 12px 28px rgba(232, 90, 46, 0.18);
+    box-shadow: 0 -40px 0 0 var(--vc-canvas), 0 12px 28px rgba(11, 44, 77, 0.16);
     padding: 0;
   }
   .vita-root[data-theme="dark"] .vita-app-main .vita-appbar { box-shadow: 0 -40px 0 0 var(--vc-canvas), 0 12px 28px rgba(0, 0, 0, 0.3); }
@@ -686,7 +686,7 @@ button.vita-quiz-input { text-align: left; cursor: pointer; }
   .vita-sidebar {
     position: sticky; top: 0; z-index: 30; flex: 0 0 264px; width: 264px; height: 100dvh;
     display: flex; flex-direction: column; padding: calc(env(safe-area-inset-top) + 20px) 14px 16px;
-    background: #003e48; color: #fff; overflow: hidden; isolation: isolate;
+    background: #0b2c4d; color: #fff; overflow: hidden; isolation: isolate;
   }
   .vita-sidebar::before, .vita-sidebar::after { content: ""; position: absolute; border-radius: 50%; z-index: -1; pointer-events: none; }
   .vita-sidebar::before { width: 260px; height: 260px; right: -150px; top: -110px; background: rgba(92, 224, 198, 0.1); }
@@ -705,16 +705,16 @@ button.vita-quiz-input { text-align: left; cursor: pointer; }
     color: rgba(255, 255, 255, 0.74); font-size: 14px; font-weight: 600; text-align: left; transition: background 0.15s, color 0.15s;
   }
   .vita-root .vita-side-link:hover { background: rgba(255, 255, 255, 0.08); color: #fff; }
-  .vita-root .vita-side-link.on { background: #e85a2e; color: #fff; font-weight: 800; box-shadow: 0 8px 18px rgba(232, 90, 46, 0.35); }
+  .vita-root .vita-side-link.on { background: #f47c20; color: #0b2c4d; font-weight: 800; box-shadow: 0 8px 18px rgba(244, 124, 32, 0.35); }
   .vita-root .vita-side-link:focus-visible, .vita-root .vita-side-chip:focus-visible, .vita-root .vita-side-me:focus-visible { outline: 2px solid var(--vc-mint); outline-offset: 1px; }
   .vita-side-link .ic { position: relative; display: inline-flex; flex: none; }
   .vita-side-link .tx { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .vita-side-link .ct { min-width: 22px; height: 20px; padding: 0 6px; border-radius: 999px; background: var(--vc-mint); color: #003e48; font-size: 11px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; }
-  .vita-side-head { margin: 22px 12px 8px; font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255, 255, 255, 0.45); }
+  .vita-side-link .ct { min-width: 22px; height: 20px; padding: 0 6px; border-radius: 999px; background: var(--vc-mint); color: #0b2c4d; font-size: 13px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; }
+  .vita-side-head { margin: 22px 12px 8px; font-size: 13px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255, 255, 255, 0.45); }
   .vita-side-quick { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
   .vita-root .vita-side-chip {
     min-height: 44px; display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 10px; text-align: left;
-    background: rgba(255, 255, 255, 0.06); color: #fff; font-size: 12px; font-weight: 700; line-height: 1.2; transition: background 0.15s;
+    background: rgba(255, 255, 255, 0.06); color: #fff; font-size: 13px; font-weight: 700; line-height: 1.2; transition: background 0.15s;
   }
   .vita-root .vita-side-chip:hover { background: rgba(255, 255, 255, 0.13); }
   .vita-root .vita-side-chip.on { box-shadow: inset 0 0 0 1.5px var(--vc-mint); }
@@ -729,7 +729,7 @@ button.vita-quiz-input { text-align: left; cursor: pointer; }
   .vita-side-me .av { width: 36px; height: 36px; border-radius: 50%; overflow: hidden; flex: none; background: var(--vc-tile-mint); }
   .vita-side-me .who { min-width: 0; display: flex; flex-direction: column; }
   .vita-side-me b { font-size: 14px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .vita-side-me small { font-size: 12px; color: rgba(255, 255, 255, 0.6); font-weight: 600; }
+  .vita-side-me small { font-size: 13px; color: rgba(255, 255, 255, 0.6); font-weight: 600; }
 }
 
 @media (min-width: 1440px) {
@@ -752,7 +752,7 @@ button.vita-quiz-input { text-align: left; cursor: pointer; }
   .vita-home-hero { position: relative; overflow: hidden; isolation: isolate; border-radius: 24px !important; padding: 28px 36px 92px !important; }
   .vita-home-hero::before, .vita-home-hero::after { content: ""; position: absolute; border-radius: 50%; z-index: -1; pointer-events: none; }
   .vita-home-hero::before { width: 360px; height: 360px; right: -90px; top: -170px; background: rgba(92, 224, 198, 0.12); }
-  .vita-home-hero::after { width: 200px; height: 200px; right: 22%; bottom: -120px; background: rgba(232, 90, 46, 0.22); }
+  .vita-home-hero::after { width: 200px; height: 200px; right: 22%; bottom: -120px; background: rgba(244, 124, 32, 0.22); }
   .vita-home-logo { display: none !important; }
   .vita-home-hero > div:first-child > span:nth-child(2) { margin-left: 0 !important; }
   .vita-home-hello { font-size: 40px !important; margin-top: 26px !important; }
@@ -818,3 +818,58 @@ button.vita-quiz-input { text-align: left; cursor: pointer; }
   .vita-chat .vita-appbar { margin-top: 0 !important; top: 0 !important; border-radius: 0 !important; box-shadow: none !important; }
   .vita-chat .vita-bubble-col { max-width: 62% !important; }
 }
+
+/* Photo + details side by side on desktop (meal photo detail). */
+@media (min-width: 1024px) {
+  .vita-media-split { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 32px; align-items: start; padding-left: 0 !important; padding-right: 0 !important; }
+  .vita-media-split > .media { position: sticky; top: 116px; }
+  .vita-media-split > .info > :first-child { margin-top: 0 !important; }
+}
+
+@media (min-width: 768px) {
+  .vita-coach-photo { width: 220px; height: 220px !important; border-radius: 50% !important; margin: 12px auto 0; box-shadow: 0 12px 30px rgba(var(--vc-navy-rgb), 0.14); }
+}
+
+/* ------------------------------------------------------------------ */
+/* F16/F20: five-tab bar, "+ Log" pill above it, hub tiles, avatar.    */
+/* ------------------------------------------------------------------ */
+.vita-dock-wrap { max-width: 560px; padding: 0 max(8px, env(safe-area-inset-right)) max(env(safe-area-inset-bottom), 8px) max(8px, env(safe-area-inset-left)); }
+.vita-log-row { display: flex; justify-content: flex-end; padding: 0 4px 10px; pointer-events: none; }
+.vita-root .vita-log-btn { pointer-events: auto; width: auto; height: 52px; padding: 0 20px 0 16px; border-radius: 999px; gap: 6px; background: #f47c20; color: #0b2c4d; font-weight: 800; font-size: 15px; box-shadow: 0 8px 20px rgba(244, 124, 32, 0.38); }
+.vita-root .vita-log-btn.open { background: #fff; color: #0b2c4d; box-shadow: 0 8px 20px rgba(11, 44, 77, 0.25); }
+.vita-root[data-theme="dark"] .vita-log-btn:not(.open) { background: #f47c20; }
+.vita-dock { pointer-events: auto; border-radius: 16px; padding: 6px 4px; }
+.vita-root .vita-dock-item { color: var(--vc-dock-muted); }
+.vita-root .vita-dock-item.on { background: #f47c20; color: #0b2c4d; }
+.vita-dock-item { margin: 0 1px; padding: 6px 2px; min-height: 52px; justify-content: center; border-radius: 12px; }
+.vita-dock-item .lb { font-size: 13px; line-height: 1.1; white-space: normal; text-align: center; overflow-wrap: normal; word-break: keep-all; max-width: 100%; }
+.vita-dial { align-items: flex-end; padding: 0 4px 10px 0; }
+.vita-dial-action { flex-direction: row; }
+@keyframes vita-dial-in { from { opacity: 0; transform: translateY(20px) scale(0.55); transform-origin: right center; } to { opacity: 1; transform: none; } }
+/* Tab screens: leave room for the Log pill + tab bar on phones/tablets. */
+@media (max-width: 1023.98px) {
+  .vita-app.has-dock .vita-scroll { padding-bottom: calc(env(safe-area-inset-bottom) + 150px) !important; }
+}
+
+.vita-hub-links { display: grid; grid-template-columns: repeat(auto-fit, minmax(104px, 1fr)); gap: 10px; }
+.vita-root .vita-hub-link { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; min-height: 76px; padding: 10px; border-radius: 16px; background: var(--vc-surface); box-shadow: var(--vc-card-shadow); border: 1px solid var(--vc-line); color: var(--vc-ink); text-align: left; }
+.vita-hub-link .ic { width: 34px; height: 34px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; background: rgba(244, 124, 32, 0.14); color: #c9620f; }
+.vita-hub-link .lb { font-size: 13px; font-weight: 800; line-height: 1.2; overflow-wrap: break-word; hyphens: auto; }
+.vita-root[data-theme="dark"] .vita-hub-link .ic { color: #f8a35e; }
+@media (min-width: 768px) {
+  .vita-hub-links { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
+  .vita-root .vita-hub-link { flex-direction: row; align-items: center; min-height: 64px; }
+}
+@media (hover: hover) { .vita-root .vita-hub-link:hover { border-color: rgba(244, 124, 32, 0.5); } }
+
+.vita-root .vita-avatar-btn { width: 44px; height: 44px; border-radius: 50%; padding: 2px; display: inline-flex; align-items: center; justify-content: center; background: rgba(255, 255, 255, 0.18); border: 2px solid #f47c20; flex: none; overflow: hidden; }
+.vita-appbar-trail { display: flex; align-items: center; gap: 8px; }
+
+/* Offline banner (F23 states). */
+.vita-offline-banner { position: fixed; top: env(safe-area-inset-top); left: 50%; transform: translateX(-50%); z-index: 60; max-width: calc(100% - 24px); margin-top: 8px; padding: 10px 14px; border-radius: 12px; background: #0b2c4d; color: #fff; font-size: 13px; font-weight: 700; line-height: 1.35; box-shadow: 0 8px 20px rgba(11, 44, 77, 0.3); display: flex; gap: 8px; align-items: center; }
+.vita-offline-banner::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #f47c20; flex: none; }
+@media (min-width: 1024px) { .vita-offline-banner { left: calc(50% + 132px); } }
+
+.vita-score-ring { width: 68px; height: 68px; border-radius: 50%; flex: none; display: flex; align-items: center; justify-content: center; background: conic-gradient(#f47c20 var(--pct, 0%), var(--vc-tile-mint) 0); }
+.vita-score-ring > span { width: 54px; height: 54px; border-radius: 50%; background: var(--vc-surface); display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 800; color: var(--vc-ink); }
+@media (min-width: 1024px) { .vita-score-ring { width: 84px; height: 84px; } .vita-score-ring > span { width: 68px; height: 68px; font-size: 26px; } }

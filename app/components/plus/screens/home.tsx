@@ -151,7 +151,7 @@ function InsightCard({
             <span style={{ fontWeight: 800, fontSize: 13, color: "var(--vc-ink)", ...ellipsis }}>{title}</span>
           </span>
           <span style={{ display: "block", marginTop: 8, fontSize: 22, fontWeight: 800, color: "var(--vc-ink)", ...ellipsis }}>{valueText}</span>
-          <span style={{ display: "block", fontSize: 12, fontWeight: 600, color: "rgba(var(--vc-navy-rgb),0.55)", ...ellipsis }}>{status}</span>
+          <span style={{ display: "block", fontSize: 13, fontWeight: 600, color: "rgba(var(--vc-navy-rgb),0.55)", ...ellipsis }}>{status}</span>
         </span>
         <span style={{ width: 120, flex: "none", display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
           <ArrowRight3 size={18} color="rgba(var(--vc-navy-rgb),0.35)" />
@@ -171,7 +171,7 @@ function InsightCard({
         <ArrowRight3 size={18} color="rgba(var(--vc-navy-rgb),0.35)" />
       </span>
       <span style={{ display: "block", marginTop: 12, fontSize: 20, fontWeight: 800, color: "var(--vc-ink)", ...ellipsis }}>{valueText}</span>
-      <span style={{ display: "block", fontSize: 12, fontWeight: 600, color: "rgba(var(--vc-navy-rgb),0.55)", ...ellipsis }}>{status}</span>
+      <span style={{ display: "block", fontSize: 13, fontWeight: 600, color: "rgba(var(--vc-navy-rgb),0.55)", ...ellipsis }}>{status}</span>
       <span style={{ display: "block", marginTop: 10 }}>
         <WeekChart series={series} color={ink} height={44} />
       </span>
@@ -223,7 +223,7 @@ function BannerShell({
       <span style={{ width: 40, height: 40, borderRadius: 8, background: "var(--vc-surface)", color: ink, display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>{icon}</span>
       <span style={{ flex: 1, minWidth: 0 }}>
         <span style={{ display: "block", fontSize: 14, fontWeight: 800, color: "var(--vc-ink)" }}>{title}</span>
-        <span style={{ display: "block", marginTop: 2, fontSize: 12.5, fontWeight: 600, color: "rgba(var(--vc-navy-rgb),0.58)" }}>{subtitle}</span>
+        <span style={{ display: "block", marginTop: 2, fontSize: 13, fontWeight: 600, color: "rgba(var(--vc-navy-rgb),0.58)" }}>{subtitle}</span>
       </span>
       {loading ? (
         <span style={{ color: ink, marginRight: 4 }}>
@@ -261,7 +261,7 @@ function SubscriptionBanner({ onClick }: { onClick: () => void }) {
   if (sub.canTrial) {
     return <BannerShell onClick={onClick} tint="var(--vc-tile-mint)" ink={mintInk} icon={<Flash size={22} color="currentColor" />} title={t("home_start_trial_cta")} subtitle={t("plans_trial_included")} />;
   }
-  return <BannerShell onClick={onClick} tint="var(--vc-tile-peach)" ink="#E85A2E" icon={<Crown1 size={22} color="currentColor" />} title={t("home_subscribe_cta")} subtitle={t("choose_plan")} />;
+  return <BannerShell onClick={onClick} tint="var(--vc-tile-peach)" ink="#F47C20" icon={<Crown1 size={22} color="currentColor" />} title={t("home_subscribe_cta")} subtitle={t("choose_plan")} />;
 }
 
 function MedicinesToday({ onAdd, onOpenPillBox, onOpen }: { onAdd: () => void; onOpenPillBox: () => void; onOpen: (id: number) => void }) {
@@ -308,7 +308,7 @@ function LearnSection({ onOpenLearn, onOpenArticle }: { onOpenLearn: () => void;
         </span>
         <span style={{ flex: 1 }}>
           <span style={{ display: "block", fontSize: 15, fontWeight: 800, color: "var(--vc-ink)" }}>{t("earn_badges")}</span>
-          <span style={{ display: "block", marginTop: 2, fontSize: 12.5, fontWeight: 600, color: "rgba(var(--vc-navy-rgb),0.6)" }}>{t("home_learn_hint")}</span>
+          <span style={{ display: "block", marginTop: 2, fontSize: 13, fontWeight: 600, color: "rgba(var(--vc-navy-rgb),0.6)" }}>{t("home_learn_hint")}</span>
         </span>
         <ArrowRight3 size={22} color="rgba(var(--vc-navy-rgb),0.4)" />
       </button>
@@ -337,7 +337,7 @@ function LearnSection({ onOpenLearn, onOpenArticle }: { onOpenLearn: () => void;
                 </span>
                 <span style={{ padding: "10px 12px" }}>
                   <span style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", fontSize: 13, fontWeight: 800, lineHeight: 1.25, color: "var(--vc-ink)" }}>{article.title}</span>
-                  <span style={{ display: "block", marginTop: 6, fontSize: 11, fontWeight: 600, color: "rgba(var(--vc-navy-rgb),0.45)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                  <span style={{ display: "block", marginTop: 6, fontSize: 13, fontWeight: 600, color: "rgba(var(--vc-navy-rgb),0.45)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                     {article.author?.trim() ? article.author : "Vitaway"}
                   </span>
                 </span>
@@ -378,10 +378,10 @@ function ReadingPrompts({ prompts, onOpen }: { prompts: ReadingPrompt[]; onOpen:
         const tod = p.timeOfDay.map((x) => t(`tod_${x}`)).join(", ");
         return (
           <button key={p.type} type="button" onClick={() => onOpen(p.type)} className="vita-tap" style={{ width: "100%", display: "flex", alignItems: "center", gap: 12, textAlign: "left", background: "var(--vc-surface)", borderRadius: 10, padding: 14 }}>
-            <span style={{ width: 44, height: 44, borderRadius: "50%", background: "var(--vc-tile-peach)", color: "#E85A2E", display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>{READING_ICON[p.type]}</span>
+            <span style={{ width: 44, height: 44, borderRadius: "50%", background: "var(--vc-tile-peach)", color: "#F47C20", display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>{READING_ICON[p.type]}</span>
             <span style={{ flex: 1, minWidth: 0 }}>
               <span style={{ display: "block", fontSize: 15, fontWeight: 800, color: "var(--vc-ink)" }}>{title}</span>
-              <span style={{ display: "block", marginTop: 3, fontSize: 12.5, fontWeight: 600, color: "rgba(var(--vc-navy-rgb),0.58)" }}>{tod ? `${when} · ${tod}` : when}</span>
+              <span style={{ display: "block", marginTop: 3, fontSize: 13, fontWeight: 600, color: "rgba(var(--vc-navy-rgb),0.58)" }}>{tod ? `${when} · ${tod}` : when}</span>
             </span>
             {ARROW}
           </button>
@@ -413,7 +413,7 @@ function DailyQuestion({ question }: { question: NonNullable<ProgrammeConfig["da
   };
   return (
     <div data-testid="home-daily-question" style={{ background: "var(--vc-tile-lilac)", borderRadius: 10, padding: 14 }}>
-      <span style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12, fontWeight: 800, color: "rgba(var(--vc-navy-rgb),0.6)", textTransform: "uppercase", letterSpacing: 0.4 }}>
+      <span style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, fontWeight: 800, color: "rgba(var(--vc-navy-rgb),0.6)", textTransform: "uppercase", letterSpacing: 0.4 }}>
         <MessageQuestion size={16} color="currentColor" /> {t("home_daily_question")}
       </span>
       <p style={{ margin: "8px 0 0", fontSize: 15, fontWeight: 800, color: "var(--vc-ink)" }}>{pick(question.text, language)}</p>
@@ -442,7 +442,7 @@ function MealTip({ config }: { config: ProgrammeConfig }) {
         <Reserve size={22} color="currentColor" />
       </span>
       <span style={{ flex: 1 }}>
-        <span style={{ display: "block", fontSize: 12, fontWeight: 800, color: "rgba(var(--vc-navy-rgb),0.6)", textTransform: "uppercase", letterSpacing: 0.4 }}>{t("home_meal_tip")}</span>
+        <span style={{ display: "block", fontSize: 13, fontWeight: 800, color: "rgba(var(--vc-navy-rgb),0.6)", textTransform: "uppercase", letterSpacing: 0.4 }}>{t("home_meal_tip")}</span>
         <span style={{ display: "block", marginTop: 4, fontSize: 14, fontWeight: 700, color: "var(--vc-ink)", lineHeight: 1.35 }}>{pick(tip, language)}</span>
       </span>
     </div>
@@ -501,7 +501,7 @@ export default function HomeScreen() {
           compact={wide}
           icon={<Drop size={16} variant="Bold" color="currentColor" />}
           tint="var(--vc-tile-peach)"
-          ink="#E85A2E"
+          ink="#F47C20"
           title={t("hm_glucose")}
           value={glucose ? formatGlucose(Number.parseFloat(glucose.latest_value) || 0, glucoseUnit) : "—"}
           unit={glucose ? glucoseUnitLabel(glucoseUnit) : ""}
@@ -532,7 +532,7 @@ export default function HomeScreen() {
           compact={wide}
           icon={<Weight size={15} color="currentColor" />}
           tint="var(--vc-tile-mint)"
-          ink={dark ? "#E4EBE8" : "#003E48"}
+          ink={dark ? "#E4EBE8" : "#0B2C4D"}
           title={t("hm_weight")}
           value={weight ? (Number.parseFloat(weight.latest_value) || 0).toFixed(1) : "—"}
           unit={weight ? "kg" : ""}
@@ -548,7 +548,7 @@ export default function HomeScreen() {
     <div className="vita-home" style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 104px)" }}>
       {/* Dashboard header */}
       <div className="vita-home-top" style={{ position: "relative", paddingBottom: 12 }}>
-        <div className="vita-home-hero" style={{ background: "#003E48", borderRadius: "0 0 24px 24px", padding: "calc(env(safe-area-inset-top) + 14px) 20px 86px" }}>
+        <div className="vita-home-hero" style={{ background: "#0B2C4D", borderRadius: "0 0 24px 24px", padding: "calc(env(safe-area-inset-top) + 14px) 20px 86px" }}>
           <div style={{ display: "flex", alignItems: "center" }}>
             <span className="vita-home-logo" style={{ width: 52, height: 52, borderRadius: "50%", background: "#fff", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -559,7 +559,7 @@ export default function HomeScreen() {
             <button type="button" aria-label="Notifications" onClick={() => push("/notifications")} style={{ width: 40, height: 40, borderRadius: "50%", background: "rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center", position: "relative", color: "#fff" }}>
               <Notification size={20} variant="Bold" color="currentColor" />
               {unread > 0 ? (
-                <span style={{ position: "absolute", top: 4, right: 4, width: 14, height: 14, borderRadius: "50%", background: "#003E48", border: "1.2px solid #fff", color: "#fff", fontSize: 8, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", lineHeight: 1 }}>
+                <span style={{ position: "absolute", top: 4, right: 4, width: 14, height: 14, borderRadius: "50%", background: "#0B2C4D", border: "1.2px solid #fff", color: "#fff", fontSize: 8, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", lineHeight: 1 }}>
                   {unread > 9 ? "9" : unread}
                 </span>
               ) : null}
@@ -578,18 +578,23 @@ export default function HomeScreen() {
           onClick={() => push("/health-score")}
           className="vita-tap vita-home-score" style={{ position: "relative", width: "calc(100% - 36px)", margin: "-66px 18px 0", display: "flex", alignItems: "center", gap: 14, textAlign: "left", background: "var(--vc-surface)", borderRadius: 10, padding: "12px 14px", boxShadow: "var(--vc-card-shadow)" }}
         >
-          <span style={{ width: 64, height: 64, borderRadius: "50%", background: "var(--vc-tile-mint)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 26, fontWeight: 800, color: "var(--vc-navy)", flex: "none" }}>
-            {scorePoints === null ? "—" : scorePoints}
+          {/* Wellness score ring (boss review F20 reference): orange arc on a soft track. */}
+          <span
+            className="vita-score-ring"
+            aria-hidden
+            style={{ ["--pct" as string]: `${scorePoints === null ? 0 : Math.max(0, Math.min(100, scorePoints))}%` } as React.CSSProperties}
+          >
+            <span>{scorePoints === null ? "—" : scorePoints}</span>
           </span>
           <span style={{ flex: 1 }}>
             <span style={{ display: "block", fontSize: 16, fontWeight: 800, color: "var(--vc-ink)" }}>{t("health_score")}</span>
             <span style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 6 }}>
               {scorePoints !== null && bpView?.tone !== "bad" && glucoseView?.tone !== "bad" && (bpView?.tone === "ok" || glucoseView?.tone === "ok") ? (
-                <span style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "4px 8px", borderRadius: 10, background: "var(--vc-tile-mint)", color: "var(--vc-navy)", fontSize: 11, fontWeight: 800 }}>
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "4px 8px", borderRadius: 10, background: "var(--vc-tile-mint)", color: "var(--vc-navy)", fontSize: 13, fontWeight: 800 }}>
                   <Heart size={12} variant="Bold" color="currentColor" /> {t("home_in_range")}
                 </span>
               ) : null}
-              <span style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "4px 8px", borderRadius: 10, background: "var(--vc-tile-peach)", color: "var(--vc-navy)", fontSize: 11, fontWeight: 800 }}>
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "4px 8px", borderRadius: 10, background: "var(--vc-tile-peach)", color: "var(--vc-navy)", fontSize: 13, fontWeight: 800 }}>
                 {mrn ? <TickCircle size={12} color="currentColor" /> : <Add size={12} color="currentColor" />} {mrn ? t("home_record_linked") : t("home_add_reading")}
               </span>
             </span>
@@ -608,9 +613,9 @@ export default function HomeScreen() {
           </span>
           <span style={{ flex: 1 }}>
             <span style={{ display: "block", fontSize: 16, fontWeight: 800, color: "var(--vc-ink)" }}>{t("emergency_card_title")}</span>
-            <span style={{ display: "block", marginTop: 4, fontSize: 12.5, fontWeight: 600, color: "rgba(var(--vc-navy-rgb),0.62)" }}>{t("emergency_card_sub")}</span>
+            <span style={{ display: "block", marginTop: 4, fontSize: 13, fontWeight: 600, color: "rgba(var(--vc-navy-rgb),0.62)" }}>{t("emergency_card_sub")}</span>
             <span style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 6 }}>
-              <span style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "4px 8px", borderRadius: 10, background: "var(--vc-tile-peach)", color: "var(--vc-navy)", fontSize: 11, fontWeight: 800 }}>
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "4px 8px", borderRadius: 10, background: "var(--vc-tile-peach)", color: "var(--vc-navy)", fontSize: 13, fontWeight: 800 }}>
                 {mrn ? <TickCircle size={12} color="currentColor" /> : <Add size={12} color="currentColor" />} {mrn ? t("home_record_linked") : t("home_add_reading")}
               </span>
             </span>
@@ -681,7 +686,7 @@ export default function HomeScreen() {
                     }}
                     style={{ width: "100%", display: "flex", alignItems: "center", gap: 14, textAlign: "left", background: "var(--vc-surface)", borderRadius: 10, padding: 16 }}
                   >
-                    <span style={{ width: 52, height: 52, borderRadius: "50%", background: "var(--vc-tile-peach)", color: "#E85A2E", display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
+                    <span style={{ width: 52, height: 52, borderRadius: "50%", background: "var(--vc-tile-peach)", color: "#F47C20", display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
                       {!next ? <Add size={24} color="currentColor" /> : next.type === "med" ? <Health size={24} color="currentColor" /> : next.type === "bp" ? <Activity size={24} color="currentColor" /> : <Drop size={24} variant="Bold" color="currentColor" />}
                     </span>
                     <span style={{ flex: 1, minWidth: 0 }}>
@@ -710,14 +715,14 @@ export default function HomeScreen() {
                     onClick={() => push(upcoming.length ? "/appointments" : "/book-visit")}
                     style={{ width: "100%", display: "flex", alignItems: "center", gap: 12, textAlign: "left", background: "var(--vc-wash)", borderRadius: 10, padding: 14 }}
                   >
-                    <span style={{ width: 40, height: 40, borderRadius: 8, background: "#E85A2E", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
+                    <span style={{ width: 40, height: 40, borderRadius: 8, background: "#F47C20", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
                       <Calendar1 size={22} color="currentColor" />
                     </span>
                     <span style={{ flex: 1 }}>
                       <span style={{ display: "block", fontWeight: 800, fontSize: 15, color: "var(--vc-ink)" }}>
                         {visit ? visit.title : t("quick_book_visit")}
                       </span>
-                      <span style={{ display: "block", fontSize: 12.5, color: dark ? "#D9B8A6" : "#6A4A3A" }}>
+                      <span style={{ display: "block", fontSize: 13, color: dark ? "#D9B8A6" : "#6A4A3A" }}>
                         {visit ? visit.subtitle : t("home_book_visit_body")}
                       </span>
                     </span>

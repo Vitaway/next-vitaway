@@ -62,7 +62,7 @@ export function MyProfileScreen() {
 
   const stat = (label: string, value: string, known: boolean, onClick: () => void) => (
     <button type="button" onClick={onClick} style={{ flex: 1, padding: "14px 8px", borderRadius: 8, background: "var(--vc-surface)", border: `1px solid ${navyA(0.08)}`, textAlign: "center" }}>
-      <div style={{ fontSize: 12, fontWeight: 600, color: navyA(0.55) }}>{label}</div>
+      <div style={{ fontSize: 13, fontWeight: 600, color: navyA(0.55) }}>{label}</div>
       <div style={{ marginTop: 4, fontSize: 16, fontWeight: 800, color: known ? "var(--vc-navy)" : "var(--vc-action)" }}>{known ? value : t("add")}</div>
     </button>
   );
@@ -214,7 +214,7 @@ function ProfileField({ label, value, onChange, inputMode, multiline = false, er
     <label style={{ display: "block", padding: "12px 0" }}>
       <span style={{ display: "block", fontSize: 13, fontWeight: 600, color: navyA(0.55) }}>{label}</span>
       {multiline ? <textarea rows={4} value={value} placeholder={label} onChange={(e) => onChange(e.target.value)} style={style} /> : <input value={value} placeholder={label} inputMode={inputMode} onChange={(e) => onChange(e.target.value)} style={style} />}
-      {error ? <span style={{ display: "block", marginTop: 4, fontSize: 12, lineHeight: 1.3, color: "var(--vc-danger)" }}>{error}</span> : null}
+      {error ? <span style={{ display: "block", marginTop: 4, fontSize: 13, lineHeight: 1.3, color: "var(--vc-danger)" }}>{error}</span> : null}
     </label>
   );
 }
@@ -523,7 +523,7 @@ function Toggle({ label, value, onChange }: { label: string; value: boolean; onC
 function SelectBox({ label, value, options, onChange }: { label: string; value: string; options: Array<[string, string]>; onChange: (v: string) => void }) {
   return (
     <label style={{ display: "block", position: "relative", marginBottom: 12, padding: "8px 14px", borderRadius: 8, border: `1px solid ${navyA(0.12)}`, background: "var(--vc-surface)" }}>
-      <span style={{ display: "block", fontSize: 12, fontWeight: 600, color: navyA(0.55) }}>{label}</span>
+      <span style={{ display: "block", fontSize: 13, fontWeight: 600, color: navyA(0.55) }}>{label}</span>
       <select value={value} onChange={(e) => onChange(e.target.value)} style={{ width: "100%", appearance: "none", border: 0, outline: "none", background: "transparent", fontSize: 15, fontWeight: 700, color: "var(--vc-ink)", padding: "4px 0" }}>
         {options.map(([v, l]) => (
           <option key={v} value={v}>
@@ -664,7 +664,7 @@ export function ContactScreen() {
               <>
                 <span style={{ width: 44, height: 44, borderRadius: "50%", flex: "none", display: "flex", alignItems: "center", justifyContent: "center", background: "var(--vc-tile-mint)", color: "var(--vc-navy)" }}>{r.icon}</span>
                 <span style={{ flex: 1, minWidth: 0 }}>
-                  <span style={{ display: "block", fontSize: 12, fontWeight: 600, color: navyA(0.5) }}>{r.label}</span>
+                  <span style={{ display: "block", fontSize: 13, fontWeight: 600, color: navyA(0.5) }}>{r.label}</span>
                   <span style={{ display: "block", marginTop: 2, fontSize: 14, fontWeight: 700, color: "var(--vc-navy)", whiteSpace: "pre-line" }}>{r.value}</span>
                 </span>
               </>

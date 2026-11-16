@@ -46,8 +46,8 @@ function PointsHero({ s, onBadges }: { s: PointsSummary; onBadges: () => void })
   const { t } = useLanguage();
   const pct = levelProgress(s);
   return (
-    <section data-testid="rewards-hero" style={{ borderRadius: 14, padding: 18, marginBottom: 12, color: "#fff", background: "linear-gradient(135deg, #003e48 0%, #0b5a63 100%)", boxShadow: "0 8px 20px rgba(0,62,72,0.22)" }}>
-      <span style={{ display: "inline-block", padding: "3px 10px", borderRadius: 999, background: "rgba(232,93,47,0.95)", fontSize: 12, fontWeight: 800 }}>{t("rewards_level", { name: s.level.name })}</span>
+    <section data-testid="rewards-hero" style={{ borderRadius: 14, padding: 18, marginBottom: 12, color: "#fff", background: "linear-gradient(135deg, #0b2c4d 0%, #0b5a63 100%)", boxShadow: "0 8px 20px rgba(11, 44, 77,0.22)" }}>
+      <span style={{ display: "inline-block", padding: "3px 10px", borderRadius: 999, background: "rgba(232,93,47,0.95)", fontSize: 13, fontWeight: 800 }}>{t("rewards_level", { name: s.level.name })}</span>
       <div style={{ display: "flex", alignItems: "flex-end", gap: 8, marginTop: 8 }}>
         <span data-testid="rewards-balance" style={{ fontSize: 44, fontWeight: 800, lineHeight: 1 }}>{fmt(s.balance)}</span>
         <span style={{ paddingBottom: 6, color: "#c9e3e6", fontWeight: 600 }}>{t("rewards_points")}</span>
@@ -77,7 +77,7 @@ function TodayCard({ s }: { s: PointsSummary }) {
         </span>
         <span style={{ flex: 1 }}>
           <b style={{ display: "block", fontSize: 15, color: "var(--vc-ink)" }}>{s.streak.current > 0 ? t("rewards_streak", { days: s.streak.current }) : t("rewards_streak_none")}</b>
-          <span style={{ fontSize: 12, color: navyA(0.6) }}>{s.streak.longest === 1 ? t("rewards_longest_one") : t("rewards_longest", { days: s.streak.longest })}</span>
+          <span style={{ fontSize: 13, color: navyA(0.6) }}>{s.streak.longest === 1 ? t("rewards_longest_one") : t("rewards_longest", { days: s.streak.longest })}</span>
         </span>
       </div>
       <p style={{ margin: "14px 0 6px", fontSize: 13, fontWeight: 700, color: "var(--vc-ink)" }} data-testid="rewards-today">
@@ -86,7 +86,7 @@ function TodayCard({ s }: { s: PointsSummary }) {
       <div style={{ height: 6, borderRadius: 999, background: navyA(0.1), overflow: "hidden" }}>
         <span style={{ display: "block", height: "100%", width: `${pct}%`, background: "#1d9e75" }} />
       </div>
-      {s.today.capReached ? <p style={{ margin: "8px 0 0", fontSize: 12, color: navyA(0.65) }}>{t("rewards_cap_reached")}</p> : null}
+      {s.today.capReached ? <p style={{ margin: "8px 0 0", fontSize: 13, color: navyA(0.65) }}>{t("rewards_cap_reached")}</p> : null}
     </Card>
   );
 }
@@ -101,9 +101,9 @@ function WaysCard({ w, s }: { w: WaysToEarn; s: PointsSummary }) {
         <div key={a.action} style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "10px 0", borderBottom: `1px solid ${navyA(0.08)}` }}>
           <span style={{ flex: 1 }}>
             <b style={{ display: "block", fontSize: 14, color: "var(--vc-ink)" }}>{label(a.action, a.label)}</b>
-            <span style={{ fontSize: 12, color: navyA(0.6) }}>{a.countsTowardCap ? t("rewards_counts_cap") : t("rewards_no_cap")}</span>
+            <span style={{ fontSize: 13, color: navyA(0.6) }}>{a.countsTowardCap ? t("rewards_counts_cap") : t("rewards_no_cap")}</span>
             {a.note ? (
-              <span data-testid="rewards-way-note" style={{ display: "block", marginTop: 4, fontSize: 12, fontWeight: 700, color: "var(--vc-warn-ink)" }}>
+              <span data-testid="rewards-way-note" style={{ display: "block", marginTop: 4, fontSize: 13, fontWeight: 700, color: "var(--vc-warn-ink)" }}>
                 {a.action === "log_reading" && !s.weightPoints ? t("rewards_weight_note") : a.note}
               </span>
             ) : null}
@@ -140,13 +140,13 @@ function HistoryCard({ entries, more, loadingMore, onMore }: { entries: HistoryE
       {entries.length === 0 ? <p style={{ margin: "6px 0", fontSize: 13, color: navyA(0.6) }}>{t("rewards_history_empty")}</p> : null}
       {byDay(entries).map((g) => (
         <div key={g.day} style={{ marginTop: 8 }}>
-          <span style={{ fontSize: 12, fontWeight: 800, color: navyA(0.5) }}>{g.day}</span>
+          <span style={{ fontSize: 13, fontWeight: 800, color: navyA(0.5) }}>{g.day}</span>
           {g.entries.map((e) => (
             <div key={e.id} data-testid="rewards-history-row" style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 0", borderBottom: `1px solid ${navyA(0.06)}` }}>
               <span style={{ flex: 1 }}>
                 <span style={{ display: "block", fontSize: 14, fontWeight: 700, color: "var(--vc-ink)" }}>{e.correction ? t("rewards_correction") : e.action && e.action !== "streak_milestone" ? label(e.action, e.label) : e.label}</span>
-                {e.capped ? <span style={{ fontSize: 12, color: navyA(0.6) }}>{t("rewards_capped")}</span> : null}
-                {e.correction && e.reason ? <span style={{ fontSize: 12, color: navyA(0.6) }}>{e.reason}</span> : null}
+                {e.capped ? <span style={{ fontSize: 13, color: navyA(0.6) }}>{t("rewards_capped")}</span> : null}
+                {e.correction && e.reason ? <span style={{ fontSize: 13, color: navyA(0.6) }}>{e.reason}</span> : null}
               </span>
               <b style={{ fontSize: 15, color: e.points < 0 ? "var(--vc-bad-ink)" : e.points > 0 ? "var(--vc-ok-ink)" : navyA(0.5) }}>{signed(e.points)}</b>
             </div>

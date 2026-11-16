@@ -99,10 +99,10 @@ export default function PhoneCodeForm() {
   return (
     <div className="mx-auto w-full max-w-md">
       <Logo className="h-14 w-auto" />
-      <h1 className="mt-6 text-3xl font-bold tracking-tight text-[#003E48]">
+      <h1 className="mt-6 text-3xl font-bold tracking-tight text-[#0B2C4D]">
         Sign in to <span className="font-accent">Vitaway Plus</span>
       </h1>
-      <p className="mt-2 text-sm text-[#003E48]/70">
+      <p className="mt-2 text-sm text-[#0B2C4D]/70">
         Use your Rwandan mobile number. We will send a one-time code by WhatsApp or SMS.
       </p>
       {signInNotice ? <p className="mt-3 rounded-lg bg-amber-50 px-3 py-2 text-sm font-semibold text-amber-800">{signInNotice}</p> : null}
@@ -119,9 +119,9 @@ export default function PhoneCodeForm() {
 
       {step === "code" && (
         <form onSubmit={verifyCode} className="mt-6 space-y-4">
-          {notice ? <p className="text-sm text-[#003E48]/80">{notice}</p> : null}
+          {notice ? <p className="text-sm text-[#0B2C4D]/80">{notice}</p> : null}
           <label className="block">
-            <span className="text-sm font-semibold text-[#003E48]">6-digit code</span>
+            <span className="text-sm font-semibold text-[#0B2C4D]">6-digit code</span>
             <input
               type="text"
               inputMode="numeric"
@@ -130,7 +130,7 @@ export default function PhoneCodeForm() {
               maxLength={6}
               value={code}
               onChange={(event) => setCode(event.target.value.replace(/\D/g, "").slice(0, 6))}
-              className="mt-2 block w-full rounded-2xl border border-transparent bg-white px-4 py-3 text-lg tracking-[0.3em] text-[#003E48] caret-[#003E48] focus:border-[#003E48] focus:outline-none"
+              className="mt-2 block w-full rounded-2xl border border-transparent bg-white px-4 py-3 text-lg tracking-[0.3em] text-[#0B2C4D] caret-[#0B2C4D] focus:border-[#0B2C4D] focus:outline-none"
               placeholder="••••••"
             />
           </label>
@@ -140,7 +140,7 @@ export default function PhoneCodeForm() {
           </button>
           <button
             type="button"
-            className="w-full text-sm font-semibold text-[#003E48]/70 underline-offset-2 hover:underline disabled:opacity-50"
+            className="w-full text-sm font-semibold text-[#0B2C4D]/70 underline-offset-2 hover:underline disabled:opacity-50"
             onClick={() => requestCode()}
             disabled={pending}
           >
@@ -148,7 +148,7 @@ export default function PhoneCodeForm() {
           </button>
           <button
             type="button"
-            className="w-full text-sm text-[#003E48]/60"
+            className="w-full text-sm text-[#0B2C4D]/60"
             onClick={() => {
               setStep("phone");
               setError(null);
@@ -162,9 +162,9 @@ export default function PhoneCodeForm() {
 
       {step === "second" && (
         <form onSubmit={verifySecond} className="mt-6 space-y-4">
-          {notice ? <p className="text-sm text-[#003E48]/80">{notice}</p> : null}
+          {notice ? <p className="text-sm text-[#0B2C4D]/80">{notice}</p> : null}
           <label className="block">
-            <span className="text-sm font-semibold text-[#003E48]">Second sign-in code</span>
+            <span className="text-sm font-semibold text-[#0B2C4D]">Second sign-in code</span>
             <input
               type="text"
               inputMode="numeric"
@@ -173,7 +173,7 @@ export default function PhoneCodeForm() {
               maxLength={6}
               value={secondCode}
               onChange={(event) => setSecondCode(event.target.value.replace(/\D/g, "").slice(0, 6))}
-              className="mt-2 block w-full rounded-2xl border border-transparent bg-white px-4 py-3 text-lg tracking-[0.3em] text-[#003E48] caret-[#003E48] focus:border-[#003E48] focus:outline-none"
+              className="mt-2 block w-full rounded-2xl border border-transparent bg-white px-4 py-3 text-lg tracking-[0.3em] text-[#0B2C4D] caret-[#0B2C4D] focus:border-[#0B2C4D] focus:outline-none"
               placeholder="••••••"
             />
           </label>

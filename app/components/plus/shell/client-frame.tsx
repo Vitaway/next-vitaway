@@ -7,10 +7,11 @@ import { isStaffPrimaryDoor } from "@/lib/plus/session";
 import { useAuthGate } from "@/lib/plus/use-auth-gate";
 import PlusLoading from "../plus-loading";
 import StaffDoor from "../staff-door";
-import Dock, { ROOT_TABS, useAppPath } from "./dock";
+import Dock, { DOCK_SCREENS, useAppPath } from "./dock";
 import Sidebar from "./sidebar";
 import { useSupportBadge } from "@/lib/plus/client/support-badge";
 import { WebReminderScheduler } from "../reminders/web-reminder-scheduler";
+import { useT } from "@/lib/plus/i18n";
 
 const CLIENT_DOOR_KEY = "vitaway.plus.clientDoor";
 
@@ -57,7 +58,7 @@ export default function ClientFrame({ children }: { children: React.ReactNode })
     );
   }
 
-  const showDock = (ROOT_TABS as readonly string[]).includes(path);
+  const showDock = (DOCK_SCREENS as readonly string[]).includes(path);
 
   return <AppShell path={path} showDock={showDock}>{children}</AppShell>;
 }
@@ -77,6 +78,22 @@ function useDesktop(): boolean {
   return desktop;
 }
 
+/** Tracks navigator.onLine so every screen gets the same offline notice (F23). */
+function useOnline(): boolean {
+  const [online, setOnline] = useState(true);
+  useEffect(() => {
+    const update = () => setOnline(navigator.onLine);
+    update();
+    window.addEventListener("online", update);
+    window.addEventListener("offline", update);
+    return () => {
+      window.removeEventListener("online", update);
+      window.removeEventListener("offline", update);
+    };
+  }, []);
+  return online;
+}
+
 /**
  * Responsive app shell. Phones and tablets keep the Flutter dock on the tab roots;
  * desktops get a persistent sidebar and a wider content area (see .vita-app in plus.css).
@@ -85,12 +102,20 @@ function useDesktop(): boolean {
 function AppShell({ path, showDock, children }: { path: string; showDock: boolean; children: React.ReactNode }) {
   const supportBadge = useSupportBadge(path);
   const desktop = useDesktop();
+  const online = useOnline();
+  const t = useT();
+  const dock = showDock && !desktop;
   return (
-    <div className="vita-app vita-fullbleed">
+    <div className={dock ? "vita-app vita-fullbleed has-dock" : "vita-app vita-fullbleed"}>
+      {online ? null : (
+        <div className="vita-offline-banner" role="status">
+          {t("offline_banner")}
+        </div>
+      )}
       {desktop ? <Sidebar supportBadge={supportBadge} /> : null}
       <div className="vita-app-main">{children}</div>
       <WebReminderScheduler />
-      {showDock && !desktop ? <Dock supportBadge={supportBadge} /> : null}
+      {dock ? <Dock supportBadge={supportBadge} /> : null}
     </div>
   );
 }

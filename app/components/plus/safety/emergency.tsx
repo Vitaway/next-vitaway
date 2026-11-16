@@ -25,7 +25,7 @@ export default function EmergencyScreen() {
       <div className="vita-scroll" data-testid="emergency-screen" data-approved={view.approved ? "yes" : "no"} style={{ padding: "16px 18px calc(env(safe-area-inset-bottom) + 32px)" }}>
         <div style={{ display: "flex", justifyContent: "flex-end", gap: 6 }}>
           {(["en", "rw"] as const).map((code) => (
-            <button key={code} type="button" onClick={() => setLanguage(code)} style={{ padding: "6px 12px", borderRadius: 999, fontSize: 12, fontWeight: 800, background: language === code ? "var(--vc-teal)" : "var(--vc-surface)", color: language === code ? "#fff" : "var(--vc-ink)" }}>
+            <button key={code} type="button" onClick={() => setLanguage(code)} style={{ padding: "6px 12px", borderRadius: 999, fontSize: 13, fontWeight: 800, background: language === code ? "var(--vc-teal)" : "var(--vc-surface)", color: language === code ? "#fff" : "var(--vc-ink)" }}>
               {code === "en" ? "English" : "Kinyarwanda"}
             </button>
           ))}
@@ -80,7 +80,7 @@ export default function EmergencyScreen() {
           </div>
         ) : null}
         {view.source ? (
-          <p style={{ margin: "18px 0 0", fontSize: 11, fontWeight: 600, color: "rgba(var(--vc-navy-rgb),0.45)" }}>{t("approved_rule_source", { rule: view.source })}</p>
+          <p style={{ margin: "18px 0 0", fontSize: 13, fontWeight: 600, color: "rgba(var(--vc-navy-rgb),0.45)" }}>{t("approved_rule_source", { rule: view.source })}</p>
         ) : null}
       </div>
     </Page>

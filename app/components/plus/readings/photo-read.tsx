@@ -14,7 +14,7 @@ const TYPE_KEY: Record<PhotoReadType, string> = { blood_pressure: "pr_type_bp", 
 
 function Field({ label, value, onChange, suffix, testId }: { label: string; value: string; onChange: (v: string) => void; suffix?: string; testId: string }) {
   return (
-    <label style={{ display: "block", flex: 1, fontSize: 12, fontWeight: 700, color: "var(--vc-muted)" }}>
+    <label style={{ display: "block", flex: 1, fontSize: 13, fontWeight: 700, color: "var(--vc-muted)" }}>
       {label}
       <span style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 6 }}>
         <input data-testid={testId} className="vita-input" inputMode="decimal" value={value} onChange={(e) => onChange(e.target.value.replace(",", "."))} style={{ fontSize: 24, fontWeight: 800 }} />
@@ -84,7 +84,7 @@ export function PhotoReadScreen({ initialType }: { initialType: string | null })
           <p style={{ margin: 0, fontSize: 28, fontWeight: 800, color: "var(--vc-teal-ink)" }}>
             {read.type === "blood_pressure" ? `${draft.systolic}/${draft.diastolic} mmHg` : `${draft.value} ${draft.unit}`}
           </p>
-          <span style={{ display: "inline-block", marginTop: 10, padding: "4px 10px", borderRadius: 999, background: "var(--vc-mint)", color: "#0f3a3a", fontSize: 12, fontWeight: 800 }}>{t("pr_label")}</span>
+          <span style={{ display: "inline-block", marginTop: 10, padding: "4px 10px", borderRadius: 999, background: "var(--vc-mint)", color: "#0f3a3a", fontSize: 13, fontWeight: 800 }}>{t("pr_label")}</span>
           <div style={{ marginTop: 24 }}>
             <ActionButton full label={t("done")} onClick={back} />
           </div>
@@ -149,7 +149,7 @@ export function PhotoReadScreen({ initialType }: { initialType: string | null })
               <input data-testid="pr-checked" type="checkbox" checked={checked} onChange={(e) => setChecked(e.target.checked)} style={{ width: 20, height: 20, marginTop: 1 }} />
               <span>{t("pr_i_checked")}</span>
             </label>
-            <p style={{ margin: "10px 0 0", fontSize: 12, color: "var(--vc-muted)" }}>{t("pr_label_help")}</p>
+            <p style={{ margin: "10px 0 0", fontSize: 13, color: "var(--vc-muted)" }}>{t("pr_label_help")}</p>
             <div style={{ marginTop: 14 }}>
               <ActionButton full label={t("pr_save")} loading={saving} disabled={Boolean(problem) || !checked} onClick={() => void save()} />
             </div>

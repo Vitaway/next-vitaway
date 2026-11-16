@@ -12,7 +12,7 @@ export default function PlusLoading({ label = "Loading…" }: { label?: string }
         gap: 14,
         padding: 24,
         background: "var(--vc-canvas, #FFF4EE)",
-        color: "var(--vc-navy, #003E48)",
+        color: "var(--vc-navy, #0B2C4D)",
       }}
     >
       <DotSpinner />

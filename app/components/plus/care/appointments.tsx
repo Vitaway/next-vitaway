@@ -51,9 +51,9 @@ function AppointmentTile({ a, onOpen }: { a: FullAppointment; onOpen: () => void
       <Avatar url={a.coach_profile?.profile_picture} size={48} />
       <span style={{ marginLeft: 12, flex: 1, minWidth: 0 }}>
         <span style={{ display: "block", fontSize: 15, fontWeight: 700, color: "var(--vc-navy)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{title}</span>
-        <span style={{ display: "block", fontSize: 12, color, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{subtitle}</span>
+        <span style={{ display: "block", fontSize: 13, color, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{subtitle}</span>
         {a.change_note?.trim() || a.notes?.trim() ? (
-          <span style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", fontSize: 11, color: "rgba(var(--vc-navy-rgb),0.5)" }}>{(a.change_note ?? a.notes ?? "").trim()}</span>
+          <span style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", fontSize: 13, color: "rgba(var(--vc-navy-rgb),0.5)" }}>{(a.change_note ?? a.notes ?? "").trim()}</span>
         ) : null}
       </span>
       <span style={{ width: 36, height: 36, borderRadius: "50%", background: "var(--vc-tile-mint)", color: "var(--vc-navy)", display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
@@ -171,7 +171,7 @@ export function AppointmentDetailScreen({ appointmentKey: key }: { appointmentKe
             </span>
             <div style={{ marginLeft: 16 }}>
               <div style={{ fontSize: 16, fontWeight: 700, color: "var(--vc-navy)" }}>{`${t("coach")} ${a.coach_profile?.first_name ?? ""} ${a.coach_profile?.last_name ?? ""}`}</div>
-              <div style={{ marginTop: 4, fontSize: 12, color: "rgba(var(--vc-navy-rgb),0.55)" }}>{a.meeting_id && a.status === "PENDING" ? t("meeting_in_progress") : relativeDayLabel(a.reservation_day, t)}</div>
+              <div style={{ marginTop: 4, fontSize: 13, color: "rgba(var(--vc-navy-rgb),0.55)" }}>{a.meeting_id && a.status === "PENDING" ? t("meeting_in_progress") : relativeDayLabel(a.reservation_day, t)}</div>
             </div>
           </div>
           <div style={{ marginTop: 16, textAlign: "center", fontSize: 22, fontWeight: 700, color: "rgba(var(--vc-navy-rgb),0.55)" }}>{`${fmtClock(a.start_time)} - ${fmtClock(a.end_time)}`}</div>

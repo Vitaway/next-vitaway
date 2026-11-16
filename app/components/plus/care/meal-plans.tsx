@@ -24,13 +24,13 @@ function PlanCard({ plan, onOpen }: { plan: MealPlan; onOpen: () => void }) {
         </span>
       </div>
       {hasDates ? (
-        <div style={{ marginTop: 14, display: "flex", alignItems: "center", gap: 6, fontSize: 12, fontWeight: 600, color: navyA(0.5) }}>
+        <div style={{ marginTop: 14, display: "flex", alignItems: "center", gap: 6, fontSize: 13, fontWeight: 600, color: navyA(0.5) }}>
           <Calendar1 size={13} color="currentColor" />
           <span style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{`${plan.startDate}  –  ${plan.endDate}`}</span>
         </div>
       ) : null}
       {plan.notes ? <div style={{ marginTop: 10, fontSize: 13, lineHeight: 1.45, color: navyA(0.6), display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{plan.notes}</div> : null}
-      <span style={{ display: "inline-block", marginTop: 14, padding: "7px 12px", borderRadius: 999, background: navyA(0.05), fontSize: 11, fontWeight: 700, color: navyA(0.6) }}>{uploaded ? "Uploaded document" : `${plan.items.length} meal entries`}</span>
+      <span style={{ display: "inline-block", marginTop: 14, padding: "7px 12px", borderRadius: 999, background: navyA(0.05), fontSize: 13, fontWeight: 700, color: navyA(0.6) }}>{uploaded ? "Uploaded document" : `${plan.items.length} meal entries`}</span>
     </button>
   );
 }
@@ -73,7 +73,7 @@ function DayTable({ dayIndex, slots }: { dayIndex: number; slots: Map<number, st
   const rows = [0, 1, 2, 3, 4, 5].filter((i) => (slots.get(i) ?? "") !== "");
   if (!rows.length) return null;
   const name = dayIndex >= 0 && dayIndex < 7 ? MEAL_DAY_NAMES[dayIndex] : `Day ${dayIndex}`;
-  const th = { padding: "9px 10px", fontSize: 11, fontWeight: 800, letterSpacing: 0.3, color: "var(--vc-navy)" };
+  const th = { padding: "9px 10px", fontSize: 13, fontWeight: 800, letterSpacing: 0.3, color: "var(--vc-navy)" };
   return (
     <div style={{ marginBottom: 16, borderRadius: 10, overflow: "hidden", background: "var(--vc-surface)", border: `1px solid ${navyA(0.06)}` }}>
       <div style={{ background: "var(--vc-teal)", padding: "12px 16px", display: "flex", alignItems: "center", gap: 8, color: "rgba(255,255,255,0.7)" }}>
@@ -87,7 +87,7 @@ function DayTable({ dayIndex, slots }: { dayIndex: number; slots: Map<number, st
           const bg = ri % 2 === 0 ? "var(--vc-surface)" : "var(--vc-canvas)";
           const line = `1px solid ${navyA(0.06)}`;
           return [
-            <div key={`t${slot}`} style={{ background: bg, borderTop: line, padding: 10, fontSize: 11, fontWeight: 700, color: navyA(0.55) }}>{MEAL_SLOT_LABELS[slot]}</div>,
+            <div key={`t${slot}`} style={{ background: bg, borderTop: line, padding: 10, fontSize: 13, fontWeight: 700, color: navyA(0.55) }}>{MEAL_SLOT_LABELS[slot]}</div>,
             <div key={`m${slot}`} style={{ background: bg, borderTop: line, padding: 10, fontSize: 13, lineHeight: 1.45, fontWeight: 500, color: navyA(0.78), whiteSpace: "pre-wrap" }}>{slots.get(slot)}</div>,
           ];
         })}

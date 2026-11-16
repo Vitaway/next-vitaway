@@ -15,7 +15,7 @@ import { matchSafetyWords } from "@/lib/plus/safety-words";
 const NAVY = "var(--vc-navy)";
 const navyA = (a: number) => `rgba(var(--vc-navy-rgb),${a})`;
 const ORANGE = "var(--vc-action)";
-const MINE_BUBBLE = "#00262E";
+const MINE_BUBBLE = "#071E36";
 const LINE = "var(--vc-line)";
 const QUICK = ["👍", "❤️", "😂", "😮", "😢", "🙏"];
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -82,7 +82,7 @@ function FileCard({ name, mine, onClick }: { name: string; mine: boolean; onClic
       </span>
       <span style={{ marginLeft: 10, minWidth: 0 }}>
         <span style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", fontSize: 13, fontWeight: 700, color: fg }}>{name}</span>
-        <span style={{ display: "block", marginTop: 2, fontSize: 11, color: mine ? "rgba(255,255,255,0.55)" : navyA(0.55) }}>{onClick ? `${ext} · Tap to open` : ext}</span>
+        <span style={{ display: "block", marginTop: 2, fontSize: 13, color: mine ? "rgba(255,255,255,0.55)" : navyA(0.55) }}>{onClick ? `${ext} · Tap to open` : ext}</span>
       </span>
     </div>
   );
@@ -106,7 +106,7 @@ function DaySeparator({ day }: { day: Date }) {
   return (
     <div style={{ display: "flex", alignItems: "center", padding: "14px 20px" }}>
       <span style={{ flex: 1, height: 1, background: LINE }} />
-      <span style={{ padding: "0 10px", fontSize: 11, fontWeight: 700, color: navyA(0.5) }}>{label}</span>
+      <span style={{ padding: "0 10px", fontSize: 13, fontWeight: 700, color: navyA(0.5) }}>{label}</span>
       <span style={{ flex: 1, height: 1, background: LINE }} />
     </div>
   );
@@ -230,8 +230,8 @@ function MessageRow({
             }}
             style={{ marginBottom: 4, padding: "6px 10px", borderRadius: 6, background: mine ? "rgba(255,255,255,0.1)" : "var(--vc-surface)", borderLeft: `3px solid ${ORANGE}`, cursor: "pointer" }}
           >
-            <div style={{ fontSize: 11, fontWeight: 800, color: mine ? "#fff" : ORANGE, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{message.replyTo.sender}</div>
-            <div style={{ marginTop: 2, fontSize: 12, lineHeight: 1.3, fontStyle: message.replyTo.deleted ? "italic" : "normal", color: mine ? "rgba(255,255,255,0.7)" : navyA(0.7), display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{message.replyTo.deleted ? "Message deleted" : message.replyTo.body}</div>
+            <div style={{ fontSize: 13, fontWeight: 800, color: mine ? "#fff" : ORANGE, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{message.replyTo.sender}</div>
+            <div style={{ marginTop: 2, fontSize: 13, lineHeight: 1.3, fontStyle: message.replyTo.deleted ? "italic" : "normal", color: mine ? "rgba(255,255,255,0.7)" : navyA(0.7), display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{message.replyTo.deleted ? "Message deleted" : message.replyTo.body}</div>
           </div>
         ) : null}
         {att && att.kind === "image" ? <AuthImage url={attachmentUrl} mine={mine} onClick={onOpenAttachment} /> : null}
@@ -250,9 +250,9 @@ function MessageRow({
       <div className="vita-bubble-col" style={{ maxWidth: "74%", display: "flex", flexDirection: "column", alignItems: mine ? "flex-end" : "flex-start", minWidth: 0 }}>
         {showName ? (
           <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "0 0 4px 2px", maxWidth: "100%" }}>
-            <span style={{ fontSize: 11, fontWeight: 700, color: navyA(0.7), whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{senderName(message.sender)}</span>
+            <span style={{ fontSize: 13, fontWeight: 700, color: navyA(0.7), whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{senderName(message.sender)}</span>
             {message.sender.staff ? (
-              <span style={{ padding: "2px 6px", borderRadius: 4, background: "var(--vc-tile-mint)", display: "inline-flex", alignItems: "center", gap: 4, fontSize: 10, fontWeight: 700, color: NAVY }}>
+              <span style={{ padding: "2px 6px", borderRadius: 4, background: "var(--vc-tile-mint)", display: "inline-flex", alignItems: "center", gap: 4, fontSize: 13, fontWeight: 700, color: NAVY }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src="/plus-assets/logo.png" alt="" height={10} style={{ height: 10 }} />
                 Coach
@@ -273,13 +273,13 @@ function MessageRow({
             {message.reactions.map((r) => (
               <button key={r.emoji} type="button" onClick={() => onToggleReaction(r.emoji)} style={{ padding: "3px 7px", borderRadius: 999, background: r.mine ? "#E7F3F5" : "var(--vc-surface)", border: `1px solid ${r.mine ? "color-mix(in srgb, var(--vc-teal-ink) 40%, transparent)" : LINE}`, boxShadow: "0 1px 2px rgba(0,0,0,0.06)", display: "inline-flex", alignItems: "center", gap: 3 }}>
                 <span style={{ fontSize: 13 }}>{r.emoji}</span>
-                {r.count > 1 ? <span style={{ fontSize: 11, fontWeight: 700, color: r.mine ? "var(--vc-teal-ink)" : "var(--vc-body)" }}>{r.count}</span> : null}
+                {r.count > 1 ? <span style={{ fontSize: 13, fontWeight: 700, color: r.mine ? "var(--vc-teal-ink)" : "var(--vc-body)" }}>{r.count}</span> : null}
               </button>
             ))}
           </div>
         ) : null}
         <div style={{ display: "flex", alignItems: "center", gap: 4, padding: "3px 2px 0" }}>
-          <span style={{ fontSize: 11, fontWeight: message.failed ? 700 : 500, color: message.failed ? "var(--vc-danger)" : "var(--vc-faint)" }}>{label}</span>
+          <span style={{ fontSize: 13, fontWeight: message.failed ? 700 : 500, color: message.failed ? "var(--vc-danger)" : "var(--vc-faint)" }}>{label}</span>
           {mine ? (
             message.failed ? (
               <Warning2 size={13} color="var(--vc-danger)" />
@@ -520,7 +520,7 @@ export function ChatScreen({ roomId }: { roomId: string }) {
               {presence ? (
                 <span style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 2 }}>
                   <span style={{ width: 7, height: 7, borderRadius: "50%", background: presence.dot }} />
-                  <span style={{ fontSize: 12, fontWeight: 600, color: "rgba(255,255,255,0.85)" }}>{presence.label}</span>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: "rgba(255,255,255,0.85)" }}>{presence.label}</span>
                 </span>
               ) : null}
             </span>
@@ -531,7 +531,7 @@ export function ChatScreen({ roomId }: { roomId: string }) {
       {!chat.connected && !chat.loading && chat.messages.length ? (
         <div style={{ background: "var(--vc-tile-peach)", padding: "8px 16px", display: "flex", alignItems: "center", gap: 10 }}>
           <DotSpinner small color={NAVY} />
-          <span style={{ fontSize: 12, fontWeight: 600, color: NAVY }}>Reconnecting. New messages will appear shortly.</span>
+          <span style={{ fontSize: 13, fontWeight: 600, color: NAVY }}>Reconnecting. New messages will appear shortly.</span>
         </div>
       ) : null}
       <div ref={scroller} style={{ flex: 1, overflowY: "auto", padding: "12px 0", overscrollBehavior: "contain" }}>
@@ -560,7 +560,7 @@ export function ChatScreen({ roomId }: { roomId: string }) {
           <span style={{ padding: "8px 10px", borderRadius: 8, background: "var(--vc-surface)", border: `1px solid ${LINE}`, display: "inline-flex" }}>
             <DotSpinner small color={navyA(0.55)} />
           </span>
-          <span style={{ fontSize: 12, fontWeight: 600, color: navyA(0.5), whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{chat.typingName ? `${chat.typingName} is typing…` : "Typing…"}</span>
+          <span style={{ fontSize: 13, fontWeight: 600, color: navyA(0.5), whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{chat.typingName ? `${chat.typingName} is typing…` : "Typing…"}</span>
         </div>
       ) : null}
       <div style={{ background: "var(--vc-surface)", borderTop: `1px solid ${LINE}`, paddingBottom: "env(safe-area-inset-bottom)", flex: "none" }}>
@@ -568,8 +568,8 @@ export function ChatScreen({ roomId }: { roomId: string }) {
           <div style={{ margin: "10px 12px 0", padding: "8px 4px 8px 10px", borderRadius: 6, background: "var(--vc-canvas)", borderLeft: `3px solid ${ORANGE}`, display: "flex", alignItems: "center", gap: 8 }}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={ORANGE} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z" /></svg>
             <span style={{ flex: 1, minWidth: 0 }}>
-              <span style={{ display: "block", fontSize: 12, fontWeight: 800, color: NAVY }}>{`Replying to ${isMine(replying) ? "yourself" : senderName(replying.sender)}`}</span>
-              <span style={{ display: "block", fontSize: 12, color: navyA(0.6), whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{messagePreview(replying)}</span>
+              <span style={{ display: "block", fontSize: 13, fontWeight: 800, color: NAVY }}>{`Replying to ${isMine(replying) ? "yourself" : senderName(replying.sender)}`}</span>
+              <span style={{ display: "block", fontSize: 13, color: navyA(0.6), whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{messagePreview(replying)}</span>
             </span>
             <button type="button" aria-label="Cancel reply" onClick={() => setReplying(null)} style={{ padding: 8, color: NAVY }}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M6 6l12 12M18 6L6 18" /></svg>
@@ -661,7 +661,7 @@ export function ChatScreen({ roomId }: { roomId: string }) {
           <button type="button" onClick={() => setSheet(null)} style={{ marginTop: 10, width: "100%", padding: "12px 16px", borderRadius: 10, background: "transparent", color: NAVY, fontSize: 14, fontWeight: 700, border: `1px solid ${LINE}` }}>
             {t("chat_words_ok")}
           </button>
-          <p style={{ margin: "12px 0 0", fontSize: 12, color: "rgba(var(--vc-navy-rgb),0.6)", textAlign: "center" }}>{t("chat_words_noted")}</p>
+          <p style={{ margin: "12px 0 0", fontSize: 13, color: "rgba(var(--vc-navy-rgb),0.6)", textAlign: "center" }}>{t("chat_words_noted")}</p>
         </div>
       </Modal>
 

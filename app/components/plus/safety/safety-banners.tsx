@@ -27,7 +27,7 @@ export function ChatSafetyBanner() {
       <Danger size={20} variant="Bold" color="#C62828" style={{ flex: "none" }} />
       <span style={{ flex: 1, minWidth: 0 }}>
         <span style={{ display: "block", fontSize: 13, fontWeight: 800, color: "#C62828" }}>{t("chat_safety_title", { number: dial })}</span>
-        <span style={{ display: "block", marginTop: 2, fontSize: 12, fontWeight: 600, color: "rgba(var(--vc-navy-rgb),0.7)" }}>{t("chat_safety_reply")}</span>
+        <span style={{ display: "block", marginTop: 2, fontSize: 13, fontWeight: 600, color: "rgba(var(--vc-navy-rgb),0.7)" }}>{t("chat_safety_reply")}</span>
       </span>
     </button>
   );
@@ -52,7 +52,7 @@ export function SupportUrgentBanner() {
         </span>
         <span style={{ flex: 1, minWidth: 0 }}>
           <span style={{ display: "block", fontSize: 14, fontWeight: 800, color: "#C62828" }}>{t("support_urgent_title")}</span>
-          <span style={{ display: "block", marginTop: 2, fontSize: 12.5, fontWeight: 600, lineHeight: 1.35, color: "rgba(var(--vc-navy-rgb),0.75)" }}>{t("support_urgent_body", { number: dial })}</span>
+          <span style={{ display: "block", marginTop: 2, fontSize: 13, fontWeight: 600, lineHeight: 1.35, color: "rgba(var(--vc-navy-rgb),0.75)" }}>{t("support_urgent_body", { number: dial })}</span>
         </span>
       </button>
     </div>

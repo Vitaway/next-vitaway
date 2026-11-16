@@ -16,7 +16,7 @@ function ReportCard({ report, onOpen }: { report: VisitReport; onOpen: () => voi
       </span>
       <span style={{ marginLeft: 14, flex: 1, minWidth: 0 }}>
         <span style={{ display: "block", fontSize: 16, fontWeight: 800 }}>{report.visitType}</span>
-        <span style={{ display: "block", marginTop: 4, fontSize: 12, fontWeight: 600, color: "rgba(var(--vc-navy-rgb),0.5)" }}>
+        <span style={{ display: "block", marginTop: 4, fontSize: 13, fontWeight: 600, color: "rgba(var(--vc-navy-rgb),0.5)" }}>
           {report.clinician ? `${visitWhenLabel(report)} · ${report.clinician}` : visitWhenLabel(report)}
         </span>
       </span>
@@ -62,7 +62,7 @@ function Section({ title, body, emptyLabel, tint, alwaysShow = false }: { title:
   if (!alwaysShow && body === null) return null;
   return (
     <div style={{ marginBottom: 12, padding: 16, borderRadius: 10, background: tint ?? "var(--vc-surface)", border: tint ? undefined : "1px solid rgba(var(--vc-navy-rgb),0.06)" }}>
-      <div style={{ fontSize: 11, letterSpacing: 0.6, fontWeight: 700, color: "rgba(var(--vc-navy-rgb),0.55)" }}>{title.toUpperCase()}</div>
+      <div style={{ fontSize: 13, letterSpacing: 0.6, fontWeight: 700, color: "rgba(var(--vc-navy-rgb),0.55)" }}>{title.toUpperCase()}</div>
       <div style={{ marginTop: 8, fontSize: 14, lineHeight: 1.5, whiteSpace: "pre-wrap", color: body === null ? "rgba(var(--vc-navy-rgb),0.5)" : "var(--vc-navy)" }}>{body ?? emptyLabel ?? "None this visit"}</div>
     </div>
   );
@@ -106,7 +106,7 @@ export function VisitReportScreen({ id }: { id: number }) {
             <div style={{ marginBottom: 14, padding: 20, borderRadius: 10, background: "var(--vc-teal)" }}>
               <div style={{ fontSize: 20, fontWeight: 800, color: "#fff" }}>{report.visitType}</div>
               <div style={{ marginTop: 6, fontSize: 13, color: "rgba(255,255,255,0.8)" }}>{report.clinician ? `${visitWhenLabel(report)} · with ${report.clinician}` : visitWhenLabel(report)}</div>
-              {report.fileNumber ? <div style={{ marginTop: 10, fontSize: 12, color: "rgba(255,255,255,0.7)" }}>Patient number {report.fileNumber}</div> : null}
+              {report.fileNumber ? <div style={{ marginTop: 10, fontSize: 13, color: "rgba(255,255,255,0.7)" }}>Patient number {report.fileNumber}</div> : null}
             </div>
             <Section title="Message from your care team" body={report.message} tint="var(--vc-tile-mint)" />
             <Section title="Reason for visit" body={report.reason} />

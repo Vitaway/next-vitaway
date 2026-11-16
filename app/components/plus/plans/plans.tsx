@@ -109,14 +109,14 @@ function PlanCard({ plan, selected, onClick }: { plan: PlanOption; selected: boo
       <span style={{ flex: 1, minWidth: 0 }}>
         <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <span style={{ flex: 1, fontSize: 16, fontWeight: 800, color: "var(--vc-ink)" }}>{plan.label ?? t(plan.titleKey)}</span>
-          {plan.badgeKey ? <span style={{ padding: "3px 8px", borderRadius: 999, background: ACCENT, color: "#fff", fontSize: 10, fontWeight: 800 }}>{t(plan.badgeKey)}</span> : null}
+          {plan.badgeKey ? <span style={{ padding: "3px 8px", borderRadius: 999, background: ACCENT, color: "#fff", fontSize: 13, fontWeight: 800 }}>{t(plan.badgeKey)}</span> : null}
         </span>
-        {plan.kind === "plan" ? <span style={{ display: "block", marginTop: 2, fontSize: 12, fontWeight: 600, color: navyA(0.5) }}>{t(plan.subtitleKey)}</span> : null}
+        {plan.kind === "plan" ? <span style={{ display: "block", marginTop: 2, fontSize: 13, fontWeight: 600, color: navyA(0.5) }}>{t(plan.subtitleKey)}</span> : null}
       </span>
       <span style={{ textAlign: "right", flex: "none" }}>
-        {plan.listPrice ? <span style={{ display: "block", fontSize: 12, fontWeight: 700, textDecoration: "line-through", color: navyA(0.4) }}>{priceLabel(plan.listPrice)}</span> : null}
+        {plan.listPrice ? <span style={{ display: "block", fontSize: 13, fontWeight: 700, textDecoration: "line-through", color: navyA(0.4) }}>{priceLabel(plan.listPrice)}</span> : null}
         <span style={{ display: "block", fontSize: 18, fontWeight: 800, color: "var(--vc-ink)" }}>{priceLabel(plan.price)}</span>
-        <span style={{ display: "block", fontSize: 11, fontWeight: 600, color: navyA(0.45) }}>RWF{suffix}</span>
+        <span style={{ display: "block", fontSize: 13, fontWeight: 600, color: navyA(0.45) }}>RWF{suffix}</span>
       </span>
     </button>
   );
@@ -244,7 +244,7 @@ export function PlansScreen() {
               </div>
             </>
           )}
-          <p style={{ margin: "12px 0 16px", textAlign: "center", fontSize: 12, lineHeight: 1.4, color: navyA(0.4) }}>{t("plans_legal_note")}</p>
+          <p style={{ margin: "12px 0 16px", textAlign: "center", fontSize: 13, lineHeight: 1.4, color: navyA(0.4) }}>{t("plans_legal_note")}</p>
           {plans.length ? <ActionButton full label={cta} loading={startingTrial} disabled={paidActive || startingTrial} onClick={() => void subscribe()} style={{ background: ACCENT }} /> : null}
         </div>
       )}
@@ -428,7 +428,7 @@ export function PaymentScreen() {
           <div style={{ marginTop: 6, fontSize: 22, fontWeight: 800, color: "var(--vc-navy)" }}>{title}</div>
           <div style={{ marginTop: 4, fontSize: 18, fontWeight: 800, color: "var(--vc-navy)" }}>{req.price} RWF</div>
           {req.renews ? <div style={{ marginTop: 4, fontSize: 13, color: navyA(0.55) }}>{req.renews}. Cancel anytime.</div> : null}
-          <p style={{ margin: "28px 0 12px", textAlign: "center", fontSize: 12, fontWeight: 600, color: navyA(0.45) }}>Secure payment by IremboPay</p>
+          <p style={{ margin: "28px 0 12px", textAlign: "center", fontSize: 13, fontWeight: 600, color: navyA(0.45) }}>Secure payment by IremboPay</p>
           <ActionButton full label={`Pay ${req.price} RWF`} onClick={() => void launch()} />
         </div>
       ) : (

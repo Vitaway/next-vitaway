@@ -100,7 +100,7 @@ function ProgrammeCard({ p, onOpen }: { p: Programme; onOpen: () => void }) {
             {p.pilot ? <span className="vita-chip" style={{ background: navyA(0.08), color: navyA(0.6) }}>{t("programme_pilot")}</span> : null}
           </span>
           <span style={{ display: "block", marginTop: 4, fontSize: 13, color: navyA(0.6), lineHeight: 1.4 }}>{p.description}</span>
-          <span style={{ display: "block", marginTop: 8, fontSize: 12, fontWeight: 700, color: navyA(0.5) }}>
+          <span style={{ display: "block", marginTop: 8, fontSize: 13, fontWeight: 700, color: navyA(0.5) }}>
             {t("programme_weeks", { weeks: p.durationWeeks })} · {formatMoney(p.price)}
             {p.trialAvailable && !p.myEnrolment ? ` · ${t("programme_trial_days", { days: p.trialDays })}` : ""}
           </span>
@@ -182,7 +182,7 @@ export function ProgrammeDetailScreen({ code }: { code: string }) {
   if (p && asking) {
     const notes = safetyNotes(answers, p.asksInsulin);
     return (
-      <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
+      <div className="vita-page w-narrow" style={{ background: "var(--vc-canvas)" }}>
         <AppBar title={t("safety_title")} onBack={() => setAsking(null)} />
         <div style={{ flex: 1, overflowY: "auto", padding: "8px 16px 28px" }} data-testid="safety-questions">
           <p style={{ margin: "4px 2px 16px", fontSize: 14, lineHeight: 1.45, color: navyA(0.65) }}>{t("safety_intro")}</p>
@@ -230,7 +230,7 @@ export function ProgrammeDetailScreen({ code }: { code: string }) {
   }
 
   return (
-    <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
+    <div className="vita-page w-narrow" style={{ background: "var(--vc-canvas)" }}>
       <AppBar title={p?.name ?? t("programmes_title")} backTo="/programmes" />
       {list.loading ? (
         <CenterSpinner />
@@ -271,7 +271,7 @@ export function ProgrammeDetailScreen({ code }: { code: string }) {
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               {p.trialAvailable ? <ActionButton full tone="teal" label={t("programme_start_trial", { days: p.trialDays })} onClick={() => setAsking("trial")} /> : null}
               <ActionButton full label={t("programme_join_pay", { price: formatMoney(p.price) })} onClick={() => setAsking("enrol")} />
-              {!p.trialAvailable ? <p style={{ margin: "2px 0 0", textAlign: "center", fontSize: 12, color: navyA(0.5) }}>{t("programme_trial_used")}</p> : null}
+              {!p.trialAvailable ? <p style={{ margin: "2px 0 0", textAlign: "center", fontSize: 13, color: navyA(0.5) }}>{t("programme_trial_used")}</p> : null}
             </div>
           )}
         </div>
@@ -368,7 +368,7 @@ export function EnrolmentScreen({ id }: { id: number }) {
                   <ReceiptItem size={20} color="var(--vc-navy)" />
                   <span style={{ flex: 1 }}>
                     <span style={{ display: "block", fontSize: 14, fontWeight: 700, color: "var(--vc-ink)" }}>{p.receipt?.number}</span>
-                    <span style={{ display: "block", fontSize: 12, color: navyA(0.5) }}>
+                    <span style={{ display: "block", fontSize: 13, color: navyA(0.5) }}>
                       {formatMoney(p)} · {kigaliDateTime(p.paidAt)}
                       {p.status === "refunded" ? ` · ${t("receipt_refunded")}` : ""}
                     </span>
@@ -460,7 +460,7 @@ export function PaymentStatusScreen({ id, reference }: { id: number; reference: 
             </p>
             {payment ? <p style={{ margin: "12px 0 0", fontSize: 22, fontWeight: 800, color: "var(--vc-amount)" }} data-testid="payment-amount">{formatMoney(payment)}</p> : null}
             {!settled && !stopped ? (
-              <p style={{ margin: "10px 0 0", display: "flex", justifyContent: "center", alignItems: "center", gap: 6, fontSize: 12, color: navyA(0.5) }}>
+              <p style={{ margin: "10px 0 0", display: "flex", justifyContent: "center", alignItems: "center", gap: 6, fontSize: 13, color: navyA(0.5) }}>
                 <span className="vita-dots" style={{ transform: "scale(0.6)" }}><i /><i /><i /></span>
                 {t("payment_auto_update")}
               </p>
@@ -530,14 +530,14 @@ export function ReceiptScreen({ id, reference }: { id: number; reference: string
           <Card padding={0} style={{ overflow: "hidden", marginBottom: 14 }}>
             <div style={{ background: "#0B4F57", color: "#fff", padding: "16px 18px" }}>
               <div style={{ fontSize: 18, fontWeight: 800 }}>Vitaway</div>
-              <div style={{ fontSize: 12, opacity: 0.85 }}>{t("receipt_title")} · {r.number}</div>
+              <div style={{ fontSize: 13, opacity: 0.85 }}>{t("receipt_title")} · {r.number}</div>
             </div>
             <div style={{ padding: "6px 18px 14px" }}>
               {p.testPayment ? (
-                <div style={{ margin: "10px 0 4px", padding: "8px 10px", borderRadius: 8, background: "var(--vc-warn-bg)", color: "var(--vc-warn-ink)", fontSize: 12, fontWeight: 700 }} data-testid="receipt-test-banner">{t("receipt_test")}</div>
+                <div style={{ margin: "10px 0 4px", padding: "8px 10px", borderRadius: 8, background: "var(--vc-warn-bg)", color: "var(--vc-warn-ink)", fontSize: 13, fontWeight: 700 }} data-testid="receipt-test-banner">{t("receipt_test")}</div>
               ) : null}
               {p.status === "refunded" ? (
-                <div style={{ margin: "10px 0 4px", padding: "8px 10px", borderRadius: 8, background: "var(--vc-bad-bg)", color: "var(--vc-bad-ink)", fontSize: 12, fontWeight: 700 }}>
+                <div style={{ margin: "10px 0 4px", padding: "8px 10px", borderRadius: 8, background: "var(--vc-bad-bg)", color: "var(--vc-bad-ink)", fontSize: 13, fontWeight: 700 }}>
                   {t("receipt_refunded")} {kigaliDateTime(p.refundedAt)}
                 </div>
               ) : null}

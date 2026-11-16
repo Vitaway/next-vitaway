@@ -56,9 +56,9 @@ function MenuCard({ items }: { items: MenuItem[] }) {
               <span style={{ display: "inline-flex", flex: "none" }}>{item.icon}</span>
               <span style={{ flex: 1, minWidth: 0 }}>
                 <span style={{ display: "block", fontSize: 15, fontWeight: 600 }}>{item.label}</span>
-                {item.subtitle ? <span style={{ display: "block", marginTop: 2, fontSize: 12, fontWeight: 500, opacity: 0.45, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{item.subtitle}</span> : null}
+                {item.subtitle ? <span style={{ display: "block", marginTop: 2, fontSize: 13, fontWeight: 500, opacity: 0.45, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{item.subtitle}</span> : null}
               </span>
-              {item.trailing ? <span style={{ flexShrink: 1, minWidth: 0, maxWidth: "45%", fontSize: 12, fontWeight: 600, opacity: 0.42, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", textAlign: "right" }}>{item.trailing}</span> : null}
+              {item.trailing ? <span style={{ flexShrink: 1, minWidth: 0, maxWidth: "45%", fontSize: 13, fontWeight: 600, opacity: 0.42, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", textAlign: "right" }}>{item.trailing}</span> : null}
               {!item.destructive ? <ArrowRight3 size={22} color="currentColor" style={{ opacity: 0.28, flex: "none" }} /> : null}
             </button>
           </div>

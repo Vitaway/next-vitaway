@@ -93,7 +93,7 @@ export function ReminderPreferencesScreen() {
         <div style={{ ...card, borderLeft: "4px solid var(--vc-teal)" }} data-testid="rp-notice">
           <div style={{ fontSize: 15, fontWeight: 800, color: "var(--vc-navy)" }}>{t("rp_notice_title")}</div>
           <p style={{ margin: "8px 0 0", fontSize: 14, lineHeight: 1.5, color: "var(--vc-ink)" }}>{language === "rw" ? s.notice.text_rw : s.notice.text_en}</p>
-          <p style={{ margin: "8px 0 0", fontSize: 12, color: navyA(0.5) }}>{t("rp_notice_version")} {s.notice.version}</p>
+          <p style={{ margin: "8px 0 0", fontSize: 13, color: navyA(0.5) }}>{t("rp_notice_version")} {s.notice.version}</p>
           {needsRenewal(s.consents, s.notice.version) ? <p style={{ margin: "8px 0 0", fontSize: 13, fontWeight: 700, color: "var(--vc-danger)" }}>{t("rp_notice_changed")}</p> : null}
         </div>
 
@@ -122,7 +122,7 @@ export function ReminderPreferencesScreen() {
               </Row>
             ))}
           </div>
-          {!s.sms_live ? <p style={{ margin: "12px 0 0", fontSize: 12, color: navyA(0.5) }}>{t("rp_sms_test")}</p> : null}
+          {!s.sms_live ? <p style={{ margin: "12px 0 0", fontSize: 13, color: navyA(0.5) }}>{t("rp_sms_test")}</p> : null}
         </div>
 
         <div style={card}>
@@ -158,9 +158,9 @@ export function ReminderPreferencesScreen() {
             <div key={j.id} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 0", borderTop: `1px solid ${navyA(0.06)}` }}>
               <span style={{ flex: 1, minWidth: 0 }}>
                 <span style={{ display: "block", fontSize: 14, fontWeight: 700, color: "var(--vc-ink)" }}>{t(PURPOSE_KEY[j.purpose as ReminderPurpose] ?? "reminders_title")} · {j.channel === "sms" ? t("rp_sms") : t("rp_push")}</span>
-                <span style={{ display: "block", fontSize: 12, color: navyA(0.5) }}>{shortDue(j.due_local)} · {t("rp_rule")} {j.rule_key} v{j.rule_version}</span>
+                <span style={{ display: "block", fontSize: 13, color: navyA(0.5) }}>{shortDue(j.due_local)} · {t("rp_rule")} {j.rule_key} v{j.rule_version}</span>
               </span>
-              <span style={{ fontSize: 12, fontWeight: 800, padding: "4px 8px", borderRadius: 999, background: j.status === "sent" ? "var(--vc-mint)" : navyA(0.08), color: j.status === "sent" ? "#0f3a3a" : "var(--vc-ink)", textAlign: "right" }}>
+              <span style={{ fontSize: 13, fontWeight: 800, padding: "4px 8px", borderRadius: 999, background: j.status === "sent" ? "var(--vc-mint)" : navyA(0.08), color: j.status === "sent" ? "#0f3a3a" : "var(--vc-ink)", textAlign: "right" }}>
                 {j.status === "sent" ? t("rp_sent") : j.status === "scheduled" ? t("rp_planned") : j.status === "failed" ? t("rp_failed") : `${t("rp_not_sent")}: ${j.reason_label ?? j.suppression_reason ?? ""}`}
               </span>
             </div>

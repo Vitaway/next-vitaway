@@ -125,7 +125,7 @@ export function useChatGate() {
           }}
           style={{ width: "100%", padding: "14px 12px", borderRadius: 10, border: `1px solid ${error ? "var(--vc-danger)" : "rgba(var(--vc-navy-rgb),0.12)"}`, background: "var(--vc-surface)", fontSize: 16, color: "var(--vc-ink)", outline: "none" }}
         />
-        {error ? <div style={{ marginTop: 6, fontSize: 12, color: "var(--vc-danger)" }}>{error}</div> : null}
+        {error ? <div style={{ marginTop: 6, fontSize: 13, color: "var(--vc-danger)" }}>{error}</div> : null}
         <div style={{ height: 16 }} />
         <ActionButton
           full
