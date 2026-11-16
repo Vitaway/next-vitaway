@@ -46,7 +46,7 @@ function PointsHero({ s, onBadges }: { s: PointsSummary; onBadges: () => void })
   const { t } = useLanguage();
   const pct = levelProgress(s);
   return (
-    <section data-testid="rewards-hero" style={{ borderRadius: 14, padding: 18, marginBottom: 12, color: "#fff", background: "linear-gradient(135deg, #0b2c4d 0%, #0b5a63 100%)", boxShadow: "0 8px 20px rgba(11, 44, 77,0.22)" }}>
+    <section data-testid="rewards-hero" style={{ borderRadius: 14, padding: 18, marginBottom: 12, color: "#fff", background: "linear-gradient(135deg, #003e48 0%, #0b5a63 100%)", boxShadow: "0 8px 20px rgba(0,62,72,0.22)" }}>
       <span style={{ display: "inline-block", padding: "3px 10px", borderRadius: 999, background: "rgba(232,93,47,0.95)", fontSize: 13, fontWeight: 800 }}>{t("rewards_level", { name: s.level.name })}</span>
       <div style={{ display: "flex", alignItems: "flex-end", gap: 8, marginTop: 8 }}>
         <span data-testid="rewards-balance" style={{ fontSize: 44, fontWeight: 800, lineHeight: 1 }}>{fmt(s.balance)}</span>

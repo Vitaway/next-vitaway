@@ -377,7 +377,7 @@ export default function OnboardingQuiz() {
     </>,
     <>
     <div style={{ display: "flex", alignItems: "center", gap: 12, paddingTop: 12 }}>
-      <CircleButton label="Back" size={56} background="#0b2c4d" color="#fff" onClick={back}>
+      <CircleButton label="Back" size={56} background="#003e48" color="#fff" onClick={back}>
         <MdArrowBack size={22} />
       </CircleButton>
       <div style={{ flex: 1 }}>

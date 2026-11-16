@@ -261,7 +261,7 @@ function SubscriptionBanner({ onClick }: { onClick: () => void }) {
   if (sub.canTrial) {
     return <BannerShell onClick={onClick} tint="var(--vc-tile-mint)" ink={mintInk} icon={<Flash size={22} color="currentColor" />} title={t("home_start_trial_cta")} subtitle={t("plans_trial_included")} />;
   }
-  return <BannerShell onClick={onClick} tint="var(--vc-tile-peach)" ink="#F47C20" icon={<Crown1 size={22} color="currentColor" />} title={t("home_subscribe_cta")} subtitle={t("choose_plan")} />;
+  return <BannerShell onClick={onClick} tint="var(--vc-tile-peach)" ink="#E85A2E" icon={<Crown1 size={22} color="currentColor" />} title={t("home_subscribe_cta")} subtitle={t("choose_plan")} />;
 }
 
 function MedicinesToday({ onAdd, onOpenPillBox, onOpen }: { onAdd: () => void; onOpenPillBox: () => void; onOpen: (id: number) => void }) {
@@ -378,7 +378,7 @@ function ReadingPrompts({ prompts, onOpen }: { prompts: ReadingPrompt[]; onOpen:
         const tod = p.timeOfDay.map((x) => t(`tod_${x}`)).join(", ");
         return (
           <button key={p.type} type="button" onClick={() => onOpen(p.type)} className="vita-tap" style={{ width: "100%", display: "flex", alignItems: "center", gap: 12, textAlign: "left", background: "var(--vc-surface)", borderRadius: 10, padding: 14 }}>
-            <span style={{ width: 44, height: 44, borderRadius: "50%", background: "var(--vc-tile-peach)", color: "#F47C20", display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>{READING_ICON[p.type]}</span>
+            <span style={{ width: 44, height: 44, borderRadius: "50%", background: "var(--vc-tile-peach)", color: "#E85A2E", display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>{READING_ICON[p.type]}</span>
             <span style={{ flex: 1, minWidth: 0 }}>
               <span style={{ display: "block", fontSize: 15, fontWeight: 800, color: "var(--vc-ink)" }}>{title}</span>
               <span style={{ display: "block", marginTop: 3, fontSize: 13, fontWeight: 600, color: "rgba(var(--vc-navy-rgb),0.58)" }}>{tod ? `${when} · ${tod}` : when}</span>
@@ -501,7 +501,7 @@ export default function HomeScreen() {
           compact={wide}
           icon={<Drop size={16} variant="Bold" color="currentColor" />}
           tint="var(--vc-tile-peach)"
-          ink="#F47C20"
+          ink="#E85A2E"
           title={t("hm_glucose")}
           value={glucose ? formatGlucose(Number.parseFloat(glucose.latest_value) || 0, glucoseUnit) : "—"}
           unit={glucose ? glucoseUnitLabel(glucoseUnit) : ""}
@@ -532,7 +532,7 @@ export default function HomeScreen() {
           compact={wide}
           icon={<Weight size={15} color="currentColor" />}
           tint="var(--vc-tile-mint)"
-          ink={dark ? "#E4EBE8" : "#0B2C4D"}
+          ink={dark ? "#E4EBE8" : "#003E48"}
           title={t("hm_weight")}
           value={weight ? (Number.parseFloat(weight.latest_value) || 0).toFixed(1) : "—"}
           unit={weight ? "kg" : ""}
@@ -548,7 +548,7 @@ export default function HomeScreen() {
     <div className="vita-home" style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 104px)" }}>
       {/* Dashboard header */}
       <div className="vita-home-top" style={{ position: "relative", paddingBottom: 12 }}>
-        <div className="vita-home-hero" style={{ background: "#0B2C4D", borderRadius: "0 0 24px 24px", padding: "calc(env(safe-area-inset-top) + 14px) 20px 86px" }}>
+        <div className="vita-home-hero" style={{ background: "#003E48", borderRadius: "0 0 24px 24px", padding: "calc(env(safe-area-inset-top) + 14px) 20px 86px" }}>
           <div style={{ display: "flex", alignItems: "center" }}>
             <span className="vita-home-logo" style={{ width: 52, height: 52, borderRadius: "50%", background: "#fff", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -559,7 +559,7 @@ export default function HomeScreen() {
             <button type="button" aria-label="Notifications" onClick={() => push("/notifications")} style={{ width: 40, height: 40, borderRadius: "50%", background: "rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center", position: "relative", color: "#fff" }}>
               <Notification size={20} variant="Bold" color="currentColor" />
               {unread > 0 ? (
-                <span style={{ position: "absolute", top: 4, right: 4, width: 14, height: 14, borderRadius: "50%", background: "#0B2C4D", border: "1.2px solid #fff", color: "#fff", fontSize: 8, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", lineHeight: 1 }}>
+                <span style={{ position: "absolute", top: 4, right: 4, width: 14, height: 14, borderRadius: "50%", background: "#003E48", border: "1.2px solid #fff", color: "#fff", fontSize: 8, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", lineHeight: 1 }}>
                   {unread > 9 ? "9" : unread}
                 </span>
               ) : null}
@@ -686,7 +686,7 @@ export default function HomeScreen() {
                     }}
                     style={{ width: "100%", display: "flex", alignItems: "center", gap: 14, textAlign: "left", background: "var(--vc-surface)", borderRadius: 10, padding: 16 }}
                   >
-                    <span style={{ width: 52, height: 52, borderRadius: "50%", background: "var(--vc-tile-peach)", color: "#F47C20", display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
+                    <span style={{ width: 52, height: 52, borderRadius: "50%", background: "var(--vc-tile-peach)", color: "#E85A2E", display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
                       {!next ? <Add size={24} color="currentColor" /> : next.type === "med" ? <Health size={24} color="currentColor" /> : next.type === "bp" ? <Activity size={24} color="currentColor" /> : <Drop size={24} variant="Bold" color="currentColor" />}
                     </span>
                     <span style={{ flex: 1, minWidth: 0 }}>
@@ -715,7 +715,7 @@ export default function HomeScreen() {
                     onClick={() => push(upcoming.length ? "/appointments" : "/book-visit")}
                     style={{ width: "100%", display: "flex", alignItems: "center", gap: 12, textAlign: "left", background: "var(--vc-wash)", borderRadius: 10, padding: 14 }}
                   >
-                    <span style={{ width: 40, height: 40, borderRadius: 8, background: "#F47C20", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
+                    <span style={{ width: 40, height: 40, borderRadius: 8, background: "#E85A2E", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
                       <Calendar1 size={22} color="currentColor" />
                     </span>
                     <span style={{ flex: 1 }}>

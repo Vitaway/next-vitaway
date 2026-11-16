@@ -238,7 +238,7 @@ export default function MetricDetailScreen({ type }: { type: string }) {
         ) : null}
         {type === "weight" && hasGoal ? (
           <div style={{ display: "flex", justifyContent: "center" }}>
-            <button type="button" onClick={() => setGoalOpen(true)} style={{ width: 280, padding: 20, borderRadius: 10, background: "var(--vc-surface)", boxShadow: "0 3px 7px 5px rgba(11, 44, 77,0.5)", color: "var(--vc-navy)" }}>
+            <button type="button" onClick={() => setGoalOpen(true)} style={{ width: 280, padding: 20, borderRadius: 10, background: "var(--vc-surface)", boxShadow: "0 3px 7px 5px rgba(0,62,72,0.5)", color: "var(--vc-navy)" }}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
                 <Flag size={20} color="currentColor" />
                 <span style={{ fontSize: 15 }}>{t("hm_my_goal")}</span>

@@ -21,8 +21,8 @@ export function plusManifest(hostHeader?: string | null): MetadataRoute.Manifest
     scope,
     display: "standalone",
     orientation: "portrait",
-    background_color: "#0B2C4D",
-    theme_color: "#0B2C4D",
+    background_color: "#003E48",
+    theme_color: "#003E48",
     lang: "en",
     categories: ["health", "medical", "lifestyle"],
     icons: [

@@ -20,7 +20,7 @@ import { ActionButton, AppBar, CenterSpinner, EmptyState, HubLinks, Page, useFee
 function statusColor(status: string) {
   if (status === "reviewed") return "#0B6A4C";
   if (status === "needs_retake") return "var(--vc-danger)";
-  if (status === "in_review") return "var(--vc-action, #F47C20)";
+  if (status === "in_review") return "var(--vc-action, #E85A2E)";
   return "var(--vc-muted)";
 }
 

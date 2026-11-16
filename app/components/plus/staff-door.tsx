@@ -19,9 +19,9 @@ export default function StaffDoor({
 
   return (
     <section className="rounded-3xl bg-white p-6 shadow-sm">
-      <p className="text-sm font-semibold uppercase tracking-wide text-[#F47C20]">Staff account</p>
-      <h1 className="mt-2 text-2xl font-bold text-[#0B2C4D]">This is the client app</h1>
-      <p className="mt-3 text-sm leading-6 text-[#0B2C4D]/75">
+      <p className="text-sm font-semibold uppercase tracking-wide text-[#E85A2E]">Staff account</p>
+      <h1 className="mt-2 text-2xl font-bold text-[#003E48]">This is the client app</h1>
+      <p className="mt-3 text-sm leading-6 text-[#003E48]/75">
         You signed in as {displayAccountName(session)}. This PWA is the Vitaway Plus client app
         for members. {desk[0].toUpperCase() + desk.slice(1)} stays in its own product — it is not
         available here.
@@ -34,7 +34,7 @@ export default function StaffDoor({
         ) : null}
         <button
           type="button"
-          className="rounded-full border border-[#0B2C4D]/20 px-6 py-3 text-sm font-semibold text-[#0B2C4D] disabled:opacity-55"
+          className="rounded-full border border-[#003E48]/20 px-6 py-3 text-sm font-semibold text-[#003E48] disabled:opacity-55"
           disabled={pending}
           onClick={async () => {
             setPending(true);

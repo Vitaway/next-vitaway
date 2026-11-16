@@ -129,7 +129,7 @@ export default function LogBpScreen() {
           <div style={{ flex: 1 }}>
             <FieldTile value={bottom} placeholder="---" label={t("bp_bottom")} required selected={focus === "bottom"} onClick={() => setFocus("bottom")} />
           </div>
-          <span style={{ padding: "0 4px 30px", color: "#F47C20", display: "inline-flex" }}>
+          <span style={{ padding: "0 4px 30px", color: "#E85A2E", display: "inline-flex" }}>
             <Heart size={16} variant="Bold" color="currentColor" />
           </span>
           <div style={{ flex: 1 }}>

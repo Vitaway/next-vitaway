@@ -15,7 +15,7 @@ import { matchSafetyWords } from "@/lib/plus/safety-words";
 const NAVY = "var(--vc-navy)";
 const navyA = (a: number) => `rgba(var(--vc-navy-rgb),${a})`;
 const ORANGE = "var(--vc-action)";
-const MINE_BUBBLE = "#071E36";
+const MINE_BUBBLE = "#00262E";
 const LINE = "var(--vc-line)";
 const QUICK = ["👍", "❤️", "😂", "😮", "😢", "🙏"];
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];

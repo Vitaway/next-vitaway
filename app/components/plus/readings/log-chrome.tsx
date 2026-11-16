@@ -172,7 +172,7 @@ export function TimePickerModal({
 
 export function TimeChip({ label, onClick }: { label: string; onClick: () => void }) {
   return (
-    <button type="button" onClick={onClick} style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "10px 18px", borderRadius: 999, background: "#0B2C4D", color: "#fff", fontWeight: 700, fontSize: 15 }}>
+    <button type="button" onClick={onClick} style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "10px 18px", borderRadius: 999, background: "#003E48", color: "#fff", fontWeight: 700, fontSize: 15 }}>
       <Clock size={16} color="currentColor" />
       {label}
     </button>
@@ -214,7 +214,7 @@ export function DateLine({ value, onChange }: { value: Date; onChange: (d: Date)
                 alignItems: "center",
                 justifyContent: "center",
                 gap: 4,
-                background: active ? "#0B2C4D" : isToday ? "var(--vc-tile-mint)" : "var(--vc-surface)",
+                background: active ? "#003E48" : isToday ? "var(--vc-tile-mint)" : "var(--vc-surface)",
                 border: active ? "none" : "1px solid rgba(var(--vc-navy-rgb),0.08)",
               }}
             >

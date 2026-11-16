@@ -65,7 +65,7 @@ function PrimaryButton({ label, onClick, disabled, testId }: { label: string; on
       data-testid={testId}
       disabled={disabled}
       onClick={onClick}
-      style={{ width: "100%", minHeight: 50, borderRadius: 14, border: "none", background: "var(--vc-action, #F47C20)", color: "#fff", fontWeight: 800, fontSize: 16, opacity: disabled ? 0.6 : 1 }}
+      style={{ width: "100%", minHeight: 50, borderRadius: 14, border: "none", background: "var(--vc-action, #E85A2E)", color: "#fff", fontWeight: 800, fontSize: 16, opacity: disabled ? 0.6 : 1 }}
     >
       {label}
     </button>
