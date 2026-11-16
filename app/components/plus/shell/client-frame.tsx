@@ -8,6 +8,7 @@ import { useAuthGate } from "@/lib/plus/use-auth-gate";
 import PlusLoading from "../plus-loading";
 import StaffDoor from "../staff-door";
 import Dock, { ROOT_TABS, useAppPath } from "./dock";
+import Sidebar from "./sidebar";
 import { useSupportBadge } from "@/lib/plus/client/support-badge";
 import { WebReminderScheduler } from "../reminders/web-reminder-scheduler";
 
@@ -58,21 +59,38 @@ export default function ClientFrame({ children }: { children: React.ReactNode })
 
   const showDock = (ROOT_TABS as readonly string[]).includes(path);
 
-  return (
-    <>
-      {children}
-      <LiveDock show={showDock} path={path} />
-    </>
-  );
+  return <AppShell path={path} showDock={showDock}>{children}</AppShell>;
 }
 
-/** Stays mounted across pages so the Support dot survives leaving the root tabs. */
-function LiveDock({ show, path }: { show: boolean; path: string }) {
+const DESKTOP_QUERY = "(min-width: 1024px)";
+
+/** True from 1024px: the sidebar replaces the phone dock. */
+function useDesktop(): boolean {
+  const [desktop, setDesktop] = useState(false);
+  useEffect(() => {
+    const query = window.matchMedia(DESKTOP_QUERY);
+    const update = () => setDesktop(query.matches);
+    update();
+    query.addEventListener("change", update);
+    return () => query.removeEventListener("change", update);
+  }, []);
+  return desktop;
+}
+
+/**
+ * Responsive app shell. Phones and tablets keep the Flutter dock on the tab roots;
+ * desktops get a persistent sidebar and a wider content area (see .vita-app in plus.css).
+ * Stays mounted across pages so the Support dot survives leaving the root tabs.
+ */
+function AppShell({ path, showDock, children }: { path: string; showDock: boolean; children: React.ReactNode }) {
   const supportBadge = useSupportBadge(path);
+  const desktop = useDesktop();
   return (
-    <>
+    <div className="vita-app vita-fullbleed">
+      {desktop ? <Sidebar supportBadge={supportBadge} /> : null}
+      <div className="vita-app-main">{children}</div>
       <WebReminderScheduler />
-      {show ? <Dock supportBadge={supportBadge} /> : null}
-    </>
+      {showDock && !desktop ? <Dock supportBadge={supportBadge} /> : null}
+    </div>
   );
 }

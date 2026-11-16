@@ -20,7 +20,7 @@ export function useAppPath(): string {
 
 type QuickAction = { label: string; path: string; tint: string; icon: React.ReactNode };
 
-const QUICK_ACTIONS: QuickAction[] = [
+export const QUICK_ACTIONS: QuickAction[] = [
   { label: "quick_blood_glucose", path: "/log/glucose", tint: "var(--vc-tile-sky)", icon: <Drop size={22} variant="Bold" color="#003E48" /> },
   { label: "quick_blood_pressure", path: "/log/bp", tint: "var(--vc-tile-peach)", icon: <Activity size={22} color="#003E48" /> },
   { label: "quick_weight", path: "/log/weight", tint: "var(--vc-tile-lilac)", icon: <Weight size={22} color="#003E48" /> },

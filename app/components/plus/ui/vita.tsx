@@ -26,7 +26,7 @@ export function CircleButton({
   onClick,
   children,
   label,
-  size = 40,
+  size = 44,
   background,
   color,
 }: {
@@ -103,12 +103,17 @@ export function BubbleBackdrop() {
 export function Page({
   children,
   backdrop = false,
+  width = "regular",
+  className,
 }: {
   children: React.ReactNode;
   backdrop?: boolean;
+  /** Desktop content width: narrow for forms, wide for dashboards and grids. Phones are unaffected. */
+  width?: "narrow" | "regular" | "wide";
+  className?: string;
 }) {
   return (
-    <div className="vita-page" style={{ position: "relative" }}>
+    <div className={cx("vita-page", width !== "regular" && `w-${width}`, className)} style={{ position: "relative" }}>
       {backdrop ? <BubbleBackdrop /> : null}
       <div style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", flex: 1 }}>{children}</div>
     </div>
