@@ -52,7 +52,7 @@ export function FoodReportScreen({ id }: { id: number }) {
     getFoodReport(id).then(setR).catch(() => setError(true));
   }, [id]);
   return (
-    <Page>
+    <Page width="narrow">
       <AppBar title={t("fr_title")} />
       <div style={{ flex: 1, overflowY: "auto", padding: "12px 16px 32px", maxWidth: 720, width: "100%", margin: "0 auto" }}>
         {!r && !error ? <CenterSpinner /> : null}

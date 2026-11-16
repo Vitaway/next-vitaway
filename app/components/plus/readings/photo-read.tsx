@@ -76,7 +76,7 @@ export function PhotoReadScreen({ initialType }: { initialType: string | null })
 
   if (saved && read && draft) {
     return (
-      <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
+      <div className="vita-page w-narrow" style={{ background: "var(--vc-canvas)" }}>
         <AppBar title={t("pr_title")} bubbles={false} />
         <div style={{ padding: "32px 20px", maxWidth: 560, width: "100%", margin: "0 auto", textAlign: "center" }} data-testid="pr-saved">
           <TickCircle size={56} color="var(--vc-teal)" variant="Bold" />
@@ -94,7 +94,7 @@ export function PhotoReadScreen({ initialType }: { initialType: string | null })
   }
 
   return (
-    <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
+    <div className="vita-page w-narrow" style={{ background: "var(--vc-canvas)" }}>
       <AppBar title={t("pr_title")} bubbles={false} />
       <div style={{ flex: 1, overflowY: "auto", padding: "8px 20px calc(env(safe-area-inset-bottom) + 32px)", maxWidth: 560, width: "100%", margin: "0 auto" }}>
         <div style={card}>

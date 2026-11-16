@@ -36,7 +36,7 @@ export default function MyCareScreen() {
   const { push } = usePlusPaths();
   const tab = 0;
   return (
-    <Page backdrop>
+    <Page backdrop width="wide">
       <AppBar title={t("my_care")} back={false} />
       <div className="vita-scroll with-dock" style={{ padding: "16px 18px calc(env(safe-area-inset-bottom) + 104px)" }}>
         <p style={{ margin: 0, fontSize: 14, color: "rgba(var(--vc-navy-rgb),0.6)" }}>{t("my_care_subtitle")}</p>
@@ -69,8 +69,10 @@ export default function MyCareScreen() {
         <VisitReportsList embedded />
         <div style={{ height: 8 }} />
         {/* BL-122: the Pillbox is reachable from the Care card (Flutter my_care_page.dart). */}
-        <LinkRow icon={<Health size={20} color="currentColor" />} title={t("pillbox")} subtitle={t("pillbox_subtitle")} onClick={() => push("/medications")} />
-        <LinkRow icon={<Calendar1 size={20} color="currentColor" />} title={t("appointments_title")} subtitle={t("appointments_subtitle")} onClick={() => push("/appointments")} />
+        <div className="vita-flex-list">
+          <LinkRow icon={<Health size={20} color="currentColor" />} title={t("pillbox")} subtitle={t("pillbox_subtitle")} onClick={() => push("/medications")} />
+          <LinkRow icon={<Calendar1 size={20} color="currentColor" />} title={t("appointments_title")} subtitle={t("appointments_subtitle")} onClick={() => push("/appointments")} />
+        </div>
       </div>
     </Page>
   );

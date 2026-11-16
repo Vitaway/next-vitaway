@@ -225,7 +225,7 @@ export function BookVisitScreen() {
   ];
 
   return (
-    <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
+    <div className="vita-page w-narrow" style={{ background: "var(--vc-canvas)" }}>
       <AppBar title="Book a visit" />
       <div style={{ padding: "4px 20px 0" }}>
         <StepProgress step={step} total={3} />

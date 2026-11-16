@@ -20,7 +20,7 @@ export default function EmergencyScreen() {
   const danger = dark ? "#F08A7C" : "#C62828";
   const tint = dark ? "#3A1D19" : "#FCE8E8";
   return (
-    <Page backdrop>
+    <Page backdrop width="narrow">
       <AppBar title={t("emergency_title")} />
       <div className="vita-scroll" data-testid="emergency-screen" data-approved={view.approved ? "yes" : "no"} style={{ padding: "16px 18px calc(env(safe-area-inset-bottom) + 32px)" }}>
         <div style={{ display: "flex", justifyContent: "flex-end", gap: 6 }}>

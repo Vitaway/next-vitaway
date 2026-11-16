@@ -146,7 +146,7 @@ export function ProfileScreen() {
   ];
 
   return (
-    <Page backdrop>
+    <Page backdrop width="wide">
       <AppBar title={t("account_menu")} back={false} />
       <div className="vita-scroll with-dock" style={{ padding: "4px 20px calc(env(safe-area-inset-bottom) + 104px)" }}>
         <div role="button" tabIndex={0} onClick={() => push("/account/my-profile")} onKeyDown={(e) => e.key === "Enter" && push("/account/my-profile")} style={{ display: "flex", alignItems: "center", gap: 12, padding: "14px 12px 14px 14px", borderRadius: 10, background: "var(--vc-surface)", cursor: "pointer" }}>
@@ -170,9 +170,11 @@ export function ProfileScreen() {
           </button>
         </div>
         <div style={{ height: 14 }} />
-        <MenuCard items={first} />
-        <div style={{ height: 12 }} />
-        <MenuCard items={second} />
+        <div className="vita-profile-menus">
+          <MenuCard items={first} />
+          <div className="vita-mobile-gap" style={{ height: 12 }} />
+          <MenuCard items={second} />
+        </div>
       </div>
       <Modal open={sheet === "language"} title={t("language")} onClose={() => setSheet(null)}>
         <LanguageOptions onPicked={() => setSheet(null)} />

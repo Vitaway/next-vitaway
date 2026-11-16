@@ -121,7 +121,7 @@ export function ProgrammesScreen() {
   const list = useProgrammes();
   const rows = list.data ?? [];
   return (
-    <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
+    <div className="vita-page w-wide" style={{ background: "var(--vc-canvas)" }}>
       <AppBar title={t("programmes_title")} />
       {list.loading ? (
         <CenterSpinner />
@@ -132,9 +132,11 @@ export function ProgrammesScreen() {
       ) : (
         <div style={{ flex: 1, overflowY: "auto", padding: "8px 16px 28px" }}>
           <p style={{ margin: "4px 2px 16px", fontSize: 14, lineHeight: 1.45, color: navyA(0.6) }}>{t("programmes_intro")}</p>
-          {rows.map((p) => (
-            <ProgrammeCard key={p.code} p={p} onOpen={() => push(p.myEnrolment ? `/programmes/enrolments/${p.myEnrolment.id}` : `/programmes/${p.code}`)} />
-          ))}
+          <div className="vita-flex-list">
+            {rows.map((p) => (
+              <ProgrammeCard key={p.code} p={p} onOpen={() => push(p.myEnrolment ? `/programmes/enrolments/${p.myEnrolment.id}` : `/programmes/${p.code}`)} />
+            ))}
+          </div>
           {rows.some((p) => p.myEnrolment) ? null : <div style={{ height: 8 }} />}
           <button type="button" onClick={() => push("/programmes/mine")} style={{ width: "100%", marginTop: 8, padding: 14, borderRadius: 10, background: "var(--vc-surface)", display: "flex", alignItems: "center", gap: 10, color: "var(--vc-navy)", fontWeight: 700, fontSize: 14 }}>
             <People size={18} color="currentColor" />
@@ -311,7 +313,7 @@ export function EnrolmentScreen({ id }: { id: number }) {
   const open = e ? e.payments.find((p) => p.status === "initiated") : undefined;
 
   return (
-    <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
+    <div className="vita-page w-narrow" style={{ background: "var(--vc-canvas)" }}>
       <AppBar title={e?.programme.name ?? t("my_programmes")} backTo="/programmes/mine" />
       {res.loading ? (
         <CenterSpinner />
@@ -440,7 +442,7 @@ export function PaymentStatusScreen({ id, reference }: { id: number; reference: 
   const settled = payment ? paymentSettled(payment) : false;
   const paid = payment?.status === "paid";
   return (
-    <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
+    <div className="vita-page w-narrow" style={{ background: "var(--vc-canvas)" }}>
       <AppBar title={t("payment_status_title")} backTo={`/programmes/enrolments/${id}`} />
       {!payment && !error ? (
         <CenterSpinner label={t("payment_checking")} />
@@ -515,7 +517,7 @@ export function ReceiptScreen({ id, reference }: { id: number; reference: string
   };
 
   return (
-    <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
+    <div className="vita-page w-narrow" style={{ background: "var(--vc-canvas)" }}>
       <AppBar title={t("receipt_title")} backTo={`/programmes/enrolments/${id}`} />
       {res.loading ? (
         <CenterSpinner />

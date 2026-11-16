@@ -56,7 +56,7 @@ export function ProgressNotesScreen() {
         ) : !notes.length ? (
           <EmptyState title="No visit notes yet" subtitle="Notes from your coach will show up here after a visit." />
         ) : (
-          <div style={{ paddingBottom: 24 }}>
+          <div className="vita-flex-list" style={{ paddingBottom: 24 }}>
             {notes.map((n) => (
               <NoteCard key={n.id} note={n} coachView={coach} onOpen={() => push(`/notes/${n.id}`)} />
             ))}
@@ -74,7 +74,7 @@ export function ProgressNoteScreen({ id }: { id: number }) {
   const coach = note?.coachProfile;
   const coachName = coach ? `${coach.firstName} ${coach.lastName}`.trim() : "";
   return (
-    <div className="vita-page">
+    <div className="vita-page w-narrow">
       <AppBar title={t("progress_notes_title")} />
       <div style={{ flex: 1, overflowY: "auto" }}>
         {loading ? (

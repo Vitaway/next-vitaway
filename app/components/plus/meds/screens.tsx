@@ -61,14 +61,18 @@ export function MedicationsScreen() {
             <EmptyState title={t("no_medications")} subtitle={t("no_medications_body")} />
           ) : (
             <>
-              {meds.list.map((m) => (
-                <MedicationListCard key={m.id} medication={m} onClick={() => push(`/medications/${m.id}`)} />
-              ))}
+              <div className="vita-flex-list">
+                {meds.list.map((m) => (
+                  <MedicationListCard key={m.id} medication={m} onClick={() => push(`/medications/${m.id}`)} />
+                ))}
+              </div>
               <p style={{ margin: "8px 0 0", textAlign: "center", fontSize: 12, fontWeight: 500, color: navyA(0.4) }}>Add only medicines your doctor prescribed. Your care team sees this list.</p>
             </>
           )}
           <div style={{ height: 20 }} />
-          <ActionButton full label={t("add_medication")} icon={plus} onClick={() => push("/medications/add")} />
+          <div className="vita-inline-cta">
+            <ActionButton full label={t("add_medication")} icon={plus} onClick={() => push("/medications/add")} />
+          </div>
         </div>
       )}
     </div>
@@ -91,7 +95,7 @@ export function MedicationDetailScreen({ id }: { id: number }) {
   const meds = useMedications();
   const history = useMedicationHistory(id, 30);
   const med = meds.list.find((m) => m.id === id);
-  if (!med) return <div className="vita-page" style={{ background: "var(--vc-canvas)" }}><AppBar title={t("medications_title")} />{meds.loading ? <CenterSpinner /> : <EmptyState title={t("no_medications")} />}</div>;
+  if (!med) return <div className="vita-page w-narrow" style={{ background: "var(--vc-canvas)" }}><AppBar title={t("medications_title")} />{meds.loading ? <CenterSpinner /> : <EmptyState title={t("no_medications")} />}</div>;
 
   const remove = async () => {
     const ok = await confirm({ title: "Remove medicine", message: `Remove ${med.name} from your list?`, confirmLabel: "Delete", cancelLabel: "Cancel", destructive: true });
@@ -125,7 +129,7 @@ export function MedicationDetailScreen({ id }: { id: number }) {
     return `${["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][d.getDay()]} ${d.getDate()} ${["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][d.getMonth()]}`;
   };
   return (
-    <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
+    <div className="vita-page w-narrow" style={{ background: "var(--vc-canvas)" }}>
       <AppBar title={med.name} actions={<CircleButton label="Delete" onClick={remove}><Trash size={18} color="currentColor" /></CircleButton>} />
       {history.loading && !history.data ? (
         <CenterSpinner />

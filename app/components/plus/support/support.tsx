@@ -67,7 +67,7 @@ function ProviderCard({ coach, isYours, messaging, chatLoading, onOpen, onChat, 
 function YourGroups({ groups, onOpen }: { groups: Room[]; onOpen: (r: Room) => void }) {
   const t = useT();
   return (
-    <div style={{ padding: "12px 14px 10px", borderRadius: 12, background: "var(--vc-surface)", border: `1px solid ${navyA(0.08)}` }}>
+    <div className="vita-span-all" style={{ padding: "12px 14px 10px", borderRadius: 12, background: "var(--vc-surface)", border: `1px solid ${navyA(0.08)}` }}>
       <div style={{ fontSize: 14, fontWeight: 800, color: "var(--vc-navy)", marginBottom: 6 }}>{t("your_groups")}</div>
       {groups.slice(0, 4).map((room) => (
         <button key={room.id} type="button" onClick={() => onOpen(room)} style={{ width: "100%", display: "flex", alignItems: "center", padding: "8px 0", textAlign: "left" }}>
@@ -209,7 +209,7 @@ export function SupportScreen() {
     const list = rooms.rooms.filter((r) => r.type === kind);
     if (!list.length) return <EmptyState title={kind === "community" ? t("community_empty") : t("coaches_empty")} />;
     return (
-      <div style={listStyle}>
+      <div className="vita-flex-list" style={listStyle}>
         {list.map((room) => (
           <RoomCard key={room.id} room={room} preview={room.lastMessage?.preview ? room.lastMessage.preview : t("no_message")} onClick={() => void openExistingRoom(room)} />
         ))}
@@ -223,7 +223,7 @@ export function SupportScreen() {
     const people = directory.data?.community ?? [];
     if (!people.length) return <EmptyState title="No community names yet" />;
     return (
-      <div style={listStyle}>
+      <div className="vita-flex-list" style={listStyle}>
         {people.map((p) => (
           <button key={p.id} type="button" onClick={() => void openCommunityPerson(p.id)} className="vita-tap" style={{ display: "flex", alignItems: "center", padding: "16px", borderRadius: 12, background: "var(--vc-surface)", textAlign: "left" }}>
             <span style={{ flex: 1, fontSize: 15, fontWeight: 800, color: "var(--vc-navy)" }}>{p.handle}</span>
@@ -248,7 +248,7 @@ export function SupportScreen() {
     });
     if (!filtered.length && !groups.length) return <EmptyState title={kind === "coaches" ? t("coaches_empty") : kind === "dietitians" ? t("dietitians_empty") : t("support_team_empty")} />;
     return (
-      <div style={{ ...listStyle, padding: "12px 16px calc(env(safe-area-inset-bottom) + 104px + 20px)", gap: 10 }}>
+      <div className="vita-flex-list" style={{ ...listStyle, padding: "12px 16px calc(env(safe-area-inset-bottom) + 104px + 20px)", gap: 10 }}>
         {!filtered.length ? (
           <p style={{ margin: 0, padding: "28px 0", textAlign: "center", fontSize: 15, fontWeight: 700, color: "var(--vc-navy)" }}>{t("support_filter_empty")}</p>
         ) : (
@@ -310,7 +310,7 @@ export function SupportScreen() {
   }
 
   return (
-    <Page backdrop>
+    <Page backdrop width="wide">
       <AppBar title={t(isPatient ? "support_page_title_normal" : "support_page_title_coach")} back={false} bottom={dietitian ? undefined : <Tabs onBar scrollable={!staff} tabs={tabs} value={tab} onChange={onTab} />} />
       {isPatient ? <SupportUrgentBanner /> : null}
       {body}

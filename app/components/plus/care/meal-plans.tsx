@@ -49,7 +49,7 @@ export function MealPlansScreen() {
         ) : !plans.length ? (
           <EmptyState title="No meal plans yet" subtitle="Your coach has not assigned a meal plan yet. Check back soon." />
         ) : (
-          <div style={{ padding: "8px 20px 32px", display: "flex", flexDirection: "column", gap: 12 }}>
+          <div className="vita-flex-list" style={{ padding: "8px 20px 32px", display: "flex", flexDirection: "column", gap: 12 }}>
             {plans.map((p) => (
               <PlanCard key={p.id} plan={p} onOpen={() => push(`/meal-plans/${p.id}`)} />
             ))}

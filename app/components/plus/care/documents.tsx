@@ -117,7 +117,7 @@ export default function MyDocumentsScreen() {
             <EmptyState title={t("no_documents")} subtitle={t("no_documents_body")} actionLabel={t("upload_document")} actionIcon={<DocumentUpload size={16} color="currentColor" />} onAction={() => setSheet(true)} />
           </div>
         ) : (
-          <div style={{ padding: "8px 18px 108px", display: "flex", flexDirection: "column", gap: 10 }}>
+          <div className="vita-flex-list" style={{ padding: "8px 18px 108px", display: "flex", flexDirection: "column", gap: 10 }}>
             {documents.map((doc) => (
               <div key={doc.id} className="vita-tap" role="button" tabIndex={0} onClick={() => void open(doc)} style={{ padding: 14, borderRadius: 10, background: "var(--vc-surface)", display: "flex", alignItems: "center", color: "var(--vc-navy)" }}>
                 <span style={{ width: 44, height: 44, borderRadius: 8, background: "var(--vc-tile-mint)", display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>

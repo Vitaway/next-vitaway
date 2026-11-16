@@ -62,7 +62,7 @@ export function MealPhotosScreen() {
     load();
   }, []);
   return (
-    <Page>
+    <Page width="wide">
       <AppBar title={t("meal_photos_title")} />
       <div style={{ flex: 1, overflowY: "auto", padding: "12px 16px 96px" }}>
         <button type="button" data-testid="food-reports-link" onClick={() => push("/food-reports")} style={{ width: "100%", textAlign: "left", marginBottom: 12, padding: "12px 14px", borderRadius: 14, border: "1px solid var(--vc-line)", background: "var(--vc-surface)", display: "flex", alignItems: "center", gap: 10, fontSize: 14, fontWeight: 800, color: "var(--vc-teal-ink)" }}>
@@ -72,6 +72,7 @@ export function MealPhotosScreen() {
         {rows == null && !error ? <CenterSpinner /> : null}
         {error ? <EmptyState title={t("meal_photos_load_error")} actionLabel={t("retry")} onAction={load} /> : null}
         {rows && !rows.length ? <EmptyState title={t("meal_photos_empty_title")} subtitle={t("meal_photos_empty_body")} /> : null}
+        <div className="vita-flex-list">
         {rows?.map((photo) => (
           <button
             key={photo.id}
@@ -90,8 +91,9 @@ export function MealPhotosScreen() {
             <ArrowRight3 size={18} color="var(--vc-muted)" />
           </button>
         ))}
+        </div>
       </div>
-      <div style={{ position: "sticky", bottom: 0, padding: "8px 16px calc(12px + env(safe-area-inset-bottom))", background: "var(--vc-canvas)" }}>
+      <div className="vita-bottom-bar" style={{ position: "sticky", bottom: 0, padding: "8px 16px calc(12px + env(safe-area-inset-bottom))", background: "var(--vc-canvas)" }}>
         <ActionButton full label={t("meal_photos_add")} onClick={() => push("/meal-photos/new")} icon={<Camera size={16} color="currentColor" />} />
       </div>
     </Page>
@@ -174,7 +176,7 @@ export function MealPhotoComposeScreen({ retakeOf }: { retakeOf?: number }) {
 
   if (step === "review") {
     return (
-      <Page>
+      <Page width="narrow">
         <AppBar title={t("mr_title")} onBack={() => setStep("photo")} />
         <div style={{ flex: 1, overflowY: "auto", padding: "12px 16px 24px" }}>
           <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
@@ -206,7 +208,7 @@ export function MealPhotoComposeScreen({ retakeOf }: { retakeOf?: number }) {
             />
           </label>
         </div>
-        <div data-testid="submit-bar" style={{ position: "sticky", bottom: 0, zIndex: 5, padding: "10px 16px calc(12px + env(safe-area-inset-bottom))", background: "var(--vc-canvas)", borderTop: "1px solid var(--vc-line)" }}>
+        <div data-testid="submit-bar" style={{ position: "sticky", bottom: 0, zIndex: 5, padding: "10px 16px calc(12px + env(safe-area-inset-bottom))", background: "var(--vc-canvas)", borderTop: "1px solid var(--vc-line)" }} className="vita-bottom-bar">
           <PrimaryButton testId="meal-submit" label={t("mr_submit")} disabled={saving || looking} onClick={() => void send()} />
         </div>
       </Page>
@@ -214,7 +216,7 @@ export function MealPhotoComposeScreen({ retakeOf }: { retakeOf?: number }) {
   }
 
   return (
-    <Page>
+    <Page width="narrow">
       <AppBar title={retakeOf ? t("meal_photos_retake") : t("meal_photos_add")} />
       <div style={{ flex: 1, overflowY: "auto", padding: "16px 20px 24px" }}>
         <p style={{ margin: "0 0 16px", fontSize: 13, lineHeight: 1.4, color: "var(--vc-body)" }}>{t("meal_photos_compose_notice")}</p>
@@ -299,7 +301,7 @@ export function MealPhotoDetailScreen({ id }: { id: number }) {
   }, [id, pollMs]);
   if (!photo && !error) {
     return (
-      <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
+      <div className="vita-page w-narrow" style={{ background: "var(--vc-canvas)" }}>
         <AppBar title={t("meal_photos_title")} />
         <CenterSpinner />
       </div>
@@ -307,14 +309,14 @@ export function MealPhotoDetailScreen({ id }: { id: number }) {
   }
   if (!photo) {
     return (
-      <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
+      <div className="vita-page w-narrow" style={{ background: "var(--vc-canvas)" }}>
         <AppBar title={t("meal_photos_title")} />
         <p style={{ margin: "40px 16px", textAlign: "center" }}>{t("meal_photos_load_error")}</p>
       </div>
     );
   }
   return (
-    <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
+    <div className="vita-page w-narrow" style={{ background: "var(--vc-canvas)" }}>
       <AppBar title={t("meal_photos_title")} />
       <div style={{ flex: 1, overflowY: "auto", padding: "16px 20px 32px" }}>
         <div style={{ aspectRatio: "4 / 3", borderRadius: 14, overflow: "hidden" }}>

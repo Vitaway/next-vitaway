@@ -55,7 +55,7 @@ export default function HealthScoreScreen() {
 
   if (!allowed) {
     return (
-      <div className="vita-page" data-testid="health-score-hidden">
+      <div className="vita-page w-narrow" data-testid="health-score-hidden">
         <AppBar title={t("health_score")} bubbles={false} />
         <div className="vita-scroll" style={{ padding: "28px 22px 32px", textAlign: "center" }}>
           <span style={{ margin: "0 auto", width: 64, height: 64, borderRadius: "50%", background: "var(--vc-mint)", color: "var(--vc-teal)", display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -71,7 +71,7 @@ export default function HealthScoreScreen() {
 
   const updated = updatedAt ? `Last updated ${fmtDMMMHm(updatedAt)}` : "Not logged yet";
   return (
-    <div className="vita-page">
+    <div className="vita-page w-narrow">
       <AppBar
         title={t("health_score")}
         bubbles={false}

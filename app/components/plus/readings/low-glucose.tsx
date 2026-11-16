@@ -19,7 +19,7 @@ export default function LowGlucoseCrisis({ mgDl, title, message, onDone }: { mgD
   const danger = dark ? "#F08A7C" : "#C62828";
   const tint = dark ? "#3A1D19" : "#FCE8E8";
   return (
-    <div className="vita-page" data-testid="low-glucose-warning" style={{ padding: "calc(env(safe-area-inset-top) + 12px) 20px calc(env(safe-area-inset-bottom) + 16px)" }}>
+    <div className="vita-page w-narrow" data-testid="low-glucose-warning" style={{ padding: "calc(env(safe-area-inset-top) + 12px) 20px calc(env(safe-area-inset-bottom) + 16px)" }}>
       <div style={{ flex: 1 }}>
         <div style={{ padding: 18, borderRadius: 8, background: tint, color: danger }}>
           <p style={{ margin: 0, fontWeight: 800, fontSize: 24, lineHeight: 1.15 }}>{title}</p>

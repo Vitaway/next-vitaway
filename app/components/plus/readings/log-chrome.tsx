@@ -32,7 +32,7 @@ export function MetricLogScaffold({
   const { push } = usePlusPaths();
   const t = useT();
   return (
-    <div className="vita-page">
+    <div className="vita-page w-narrow">
       <AppBar
         title={title}
         actions={
@@ -50,7 +50,7 @@ export function MetricLogScaffold({
         ) : null}
         {children}
       </div>
-      <div style={{ position: "sticky", bottom: 0, padding: "8px 20px calc(12px + env(safe-area-inset-bottom))", background: "var(--vc-canvas)" }}>
+      <div className="vita-bottom-bar" style={{ position: "sticky", bottom: 0, padding: "8px 20px calc(12px + env(safe-area-inset-bottom))", background: "var(--vc-canvas)" }}>
         <ActionButton
           full
           label={saveLabel}

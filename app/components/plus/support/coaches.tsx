@@ -294,7 +294,7 @@ export function RequestAppointmentScreen({ id }: { id: number }) {
   const pay = session?.pay;
 
   return (
-    <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
+    <div className="vita-page w-narrow" style={{ background: "var(--vc-canvas)" }}>
       <AppBar title={t("request_appointment")} actions={<Avatar url={coach?.profile.profile_picture} size={38} />} />
       {loading || coachLoading ? (
         <CenterSpinner />

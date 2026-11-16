@@ -58,8 +58,8 @@ export function ReminderPreferencesScreen() {
     void load();
   }, [load]);
 
-  if (error) return <div className="vita-page"><AppBar title={t("rp_title")} bubbles={false} /><ErrorState message={error} onRetry={load} /></div>;
-  if (!s) return <div className="vita-page"><AppBar title={t("rp_title")} bubbles={false} /><CenterSpinner /></div>;
+  if (error) return <div className="vita-page w-narrow"><AppBar title={t("rp_title")} bubbles={false} /><ErrorState message={error} onRetry={load} /></div>;
+  if (!s) return <div className="vita-page w-narrow"><AppBar title={t("rp_title")} bubbles={false} /><CenterSpinner /></div>;
 
   const toggle = async (purpose: ReminderPurpose, channel: ReminderChannel, granted: boolean) => {
     setBusy(true);
@@ -87,7 +87,7 @@ export function ReminderPreferencesScreen() {
   const off = s.preferences.opted_out;
 
   return (
-    <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
+    <div className="vita-page w-narrow" style={{ background: "var(--vc-canvas)" }}>
       <AppBar title={t("rp_title")} bubbles={false} />
       <div style={{ flex: 1, overflowY: "auto", padding: "8px 20px calc(env(safe-area-inset-bottom) + 32px)", maxWidth: 640, width: "100%", margin: "0 auto" }}>
         <div style={{ ...card, borderLeft: "4px solid var(--vc-teal)" }} data-testid="rp-notice">

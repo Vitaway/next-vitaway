@@ -89,7 +89,7 @@ export function AddUserToRoomScreen({ roomId }: { roomId: string }) {
   };
 
   return (
-    <div className="vita-page" style={{ background: "var(--vc-canvas)", minHeight: "100dvh" }}>
+    <div className="vita-page w-narrow" style={{ background: "var(--vc-canvas)", minHeight: "100dvh" }}>
       <AppBar title={t("add_user_title")} />
       <div style={{ padding: "8px 20px 16px" }}>
         <AuthField hint={t("search_user")} icon={<SearchNormal1 size={18} color="currentColor" />} value={query} onChange={setQuery} autoFocus />

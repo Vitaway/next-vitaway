@@ -247,7 +247,7 @@ function MessageRow({
   return (
     <div style={{ padding: `${tight ? 2 : 8}px 14px 2px`, background: flashing ? "color-mix(in srgb, var(--vc-action) 10%, transparent)" : "transparent", transition: "background 500ms", display: "flex", justifyContent: mine ? "flex-end" : "flex-start", alignItems: "flex-end" }} data-mid={message.id}>
       {!mine ? <span style={{ width: 30, marginRight: 4, flex: "none" }}>{showAvatar ? <Avatar url={message.sender.image} size={26} /> : null}</span> : null}
-      <div style={{ maxWidth: "74%", display: "flex", flexDirection: "column", alignItems: mine ? "flex-end" : "flex-start", minWidth: 0 }}>
+      <div className="vita-bubble-col" style={{ maxWidth: "74%", display: "flex", flexDirection: "column", alignItems: mine ? "flex-end" : "flex-start", minWidth: 0 }}>
         {showName ? (
           <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "0 0 4px 2px", maxWidth: "100%" }}>
             <span style={{ fontSize: 11, fontWeight: 700, color: navyA(0.7), whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{senderName(message.sender)}</span>
@@ -507,7 +507,7 @@ export function ChatScreen({ roomId }: { roomId: string }) {
   const mineAction = actionMessage ? isMine(actionMessage) : false;
 
   return (
-    <div className="vita-page" style={{ background: "var(--vc-surface)", height: "100dvh", display: "flex", flexDirection: "column" }}>
+    <div className="vita-page vita-chat" style={{ background: "var(--vc-surface)", height: "100dvh", display: "flex", flexDirection: "column" }}>
       <header className="vita-appbar" style={{ flex: "none" }}>
         <div style={{ height: 64, display: "flex", alignItems: "center", padding: "0 12px 0 8px", gap: 10, position: "relative" }}>
           <CircleButton label="Back" onClick={goBack}>

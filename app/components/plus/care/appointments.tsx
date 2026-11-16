@@ -87,7 +87,7 @@ export function AppointmentsScreen() {
         ) : !list.length ? (
           <EmptyState title={t(emptyKey)} subtitle={t("appointments_empty_body")} />
         ) : (
-          list.map((a) => <AppointmentTile key={appointmentKey(a)} a={a} onOpen={() => push(`/appointments/${appointmentKey(a)}`)} />)
+          <div className="vita-flex-list">{list.map((a) => <AppointmentTile key={appointmentKey(a)} a={a} onOpen={() => push(`/appointments/${appointmentKey(a)}`)} />)}</div>
         )}
       </div>
     </Page>
@@ -116,8 +116,8 @@ export function AppointmentDetailScreen({ appointmentKey: key }: { appointmentKe
   const [cancelOpen, setCancelOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const a = (all as FullAppointment[]).find((x) => appointmentKey(x) === key);
-  if (loading && !a) return <div className="vita-page"><AppBar title={t("appointment_details")} /><CenterSpinner /></div>;
-  if (!a) return <div className="vita-page"><AppBar title={t("appointment_details")} /><EmptyState title={t("appointments_empty")} subtitle={t("appointments_empty_body")} /></div>;
+  if (loading && !a) return <div className="vita-page w-narrow"><AppBar title={t("appointment_details")} /><CenterSpinner /></div>;
+  if (!a) return <div className="vita-page w-narrow"><AppBar title={t("appointment_details")} /><EmptyState title={t("appointments_empty")} subtitle={t("appointments_empty_body")} /></div>;
 
   const premium = async () => {
     const go = await confirm({ title: t("premium_feature"), message: t("premium_text"), confirmLabel: t("choose_plan"), cancelLabel: t("cancel") });
@@ -154,7 +154,7 @@ export function AppointmentDetailScreen({ appointmentKey: key }: { appointmentKe
   const meds = a.medications ?? [];
 
   return (
-    <div className="vita-page" style={{ background: "var(--vc-surface)" }}>
+    <div className="vita-page w-narrow" style={{ background: "var(--vc-surface)" }}>
       <AppBar
         title={t("appointment_details")}
         actions={

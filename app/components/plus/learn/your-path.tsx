@@ -232,7 +232,7 @@ export function PathLessonScreen({ week, lessonId }: { week: number; lessonId: s
 
   if (loading) {
     return (
-      <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
+      <div className="vita-page w-narrow" style={{ background: "var(--vc-canvas)" }}>
         <AppBar title="" />
         <CenterSpinner />
       </div>
@@ -240,7 +240,7 @@ export function PathLessonScreen({ week, lessonId }: { week: number; lessonId: s
   }
   if (!path || !weekRow || !lesson) {
     return (
-      <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
+      <div className="vita-page w-narrow" style={{ background: "var(--vc-canvas)" }}>
         <AppBar title={t("your_path")} />
         <p style={{ margin: "40px 16px", textAlign: "center", color: "var(--vc-ink)" }}>{t("your_path_load_error")}</p>
       </div>
@@ -248,7 +248,7 @@ export function PathLessonScreen({ week, lessonId }: { week: number; lessonId: s
   }
 
   return (
-    <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
+    <div className="vita-page w-narrow" style={{ background: "var(--vc-canvas)" }}>
       <AppBar title={t("your_path_week_title", { week: weekRow.week })} />
       <div style={{ flex: 1, overflowY: "auto", padding: "16px 20px 32px" }}>
         <div style={{ padding: 12, borderRadius: 10, background: "var(--vc-tile-peach)", display: "flex", gap: 8, alignItems: "flex-start" }}>

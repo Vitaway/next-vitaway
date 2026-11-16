@@ -81,7 +81,7 @@ export function RemindersScreen() {
             <div style={{ margin: "6px 16px" }}>
               <BrowserNotificationRow compact />
             </div>
-            {list.map((r) => <ReminderTile key={r.id} reminder={r} onClick={() => push(`/reminders/${encodeURIComponent(r.id)}`)} />)}
+            <div className="vita-flex-list vita-tiles">{list.map((r) => <ReminderTile key={r.id} reminder={r} onClick={() => push(`/reminders/${encodeURIComponent(r.id)}`)} />)}</div>
           </>
         )}
       </div>
@@ -166,7 +166,7 @@ export function AddReminderScreen() {
   };
 
   return (
-    <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
+    <div className="vita-page w-narrow" style={{ background: "var(--vc-canvas)" }}>
       <AppBar title={t("add_reminder_speed")} />
       <div style={{ flex: 1, overflowY: "auto", padding: "20px 20px calc(env(safe-area-inset-bottom) + 28px)", maxWidth: 640, width: "100%", margin: "0 auto" }}>
         <div style={{ border, borderRadius: 10, padding: 20 }}>
@@ -270,7 +270,7 @@ export function ReminderDetailScreen({ id }: { id: string }) {
 
   if (!reminder) {
     return (
-      <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
+      <div className="vita-page w-narrow" style={{ background: "var(--vc-canvas)" }}>
         <AppBar title={t("reminders_title")} />
         {ready ? <p style={{ padding: 32, textAlign: "center", color: navyA(0.55) }}>{t("reminders_empty")}</p> : null}
       </div>
@@ -302,7 +302,7 @@ export function ReminderDetailScreen({ id }: { id: string }) {
   };
 
   return (
-    <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
+    <div className="vita-page w-narrow" style={{ background: "var(--vc-canvas)" }}>
       <AppBar
         title={kindLabel(reminder.type === "bp" ? "other" : reminder.type, t)}
         actions={

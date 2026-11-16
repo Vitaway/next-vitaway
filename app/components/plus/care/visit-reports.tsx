@@ -38,7 +38,7 @@ export function VisitReportsList({ embedded = false }: { embedded?: boolean }) {
   if (!hasPlans && error && !reports.length) return <EmptyState title="Could not load visit reports" subtitle="Check your connection and try again." actionLabel="Try again" onAction={reload} />;
   if (!hasPlans && !reports.length) return <EmptyState title="No visit reports yet" subtitle="After a visit at the Vitaway clinic, your care team can send the summary here." />;
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 12, padding: embedded ? "4px 0 8px" : "8px 20px 24px" }}>
+    <div className="vita-flex-list" style={{ display: "flex", flexDirection: "column", gap: 12, padding: embedded ? "4px 0 8px" : "8px 20px 24px" }}>
       <VisitPlansList />
       {reports.map((r) => (
         <ReportCard key={r.id} report={r} onOpen={() => push(`/visit-reports/${r.id}`)} />
@@ -85,7 +85,7 @@ export function VisitReportScreen({ id }: { id: number }) {
     }
   };
   return (
-    <div className="vita-page">
+    <div className="vita-page w-narrow">
       <AppBar
         title="After-Visit Summary"
         actions={

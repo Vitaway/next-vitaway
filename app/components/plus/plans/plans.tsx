@@ -199,7 +199,7 @@ export function PlansScreen() {
 
   const features = [t("consultation"), t("chat_video"), t("personal_coach"), t("safe_group")];
   return (
-    <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
+    <div className="vita-page w-wide" style={{ background: "var(--vc-canvas)" }}>
       <AppBar title={t("plans")} />
       {loading || sub.loading ? (
         <CenterSpinner />
@@ -237,9 +237,11 @@ export function PlansScreen() {
               ) : null}
               {plans.length > 1 ? <div style={{ marginBottom: 10, fontSize: 15, fontWeight: 800, color: "var(--vc-navy)" }}>{t("plans_how_pay")}</div> : null}
               {!plans.length && orgName ? <p style={{ margin: "0 0 12px", textAlign: "center", fontWeight: 600, color: navyA(0.55) }}>{orgName} has not turned any prices on yet.</p> : null}
-              {plans.map((p, i) => (
-                <PlanCard key={`${p.kind}-${p.refId}`} plan={p} selected={selected === i} onClick={() => setSelected(i)} />
-              ))}
+              <div className="vita-flex-list">
+                {plans.map((p, i) => (
+                  <PlanCard key={`${p.kind}-${p.refId}`} plan={p} selected={selected === i} onClick={() => setSelected(i)} />
+                ))}
+              </div>
             </>
           )}
           <p style={{ margin: "12px 0 16px", textAlign: "center", fontSize: 12, lineHeight: 1.4, color: navyA(0.4) }}>{t("plans_legal_note")}</p>
@@ -396,7 +398,7 @@ export function PaymentScreen() {
     }
   };
 
-  if (!ready) return <div className="vita-page"><AppBar title={t("payment")} /><CenterSpinner /></div>;
+  if (!ready) return <div className="vita-page w-narrow"><AppBar title={t("payment")} /><CenterSpinner /></div>;
   const title = req?.planTitle ?? "Your plan";
   const icon = polling ? (
     <DotSpinner />
@@ -408,7 +410,7 @@ export function PaymentScreen() {
     <Clock size={52} color="var(--vc-navy)" />
   );
   return (
-    <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
+    <div className="vita-page w-narrow" style={{ background: "var(--vc-canvas)" }}>
       <AppBar title={t("payment")} actions={polling ? <span style={{ color: "#fff", display: "inline-flex" }}><DotSpinner /></span> : undefined} />
       {openingHome ? (
         <CenterSpinner />

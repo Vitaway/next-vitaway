@@ -14,7 +14,7 @@ export default function ReadingSaved({ value, status, onDone }: { value: string;
   const { t, language } = useLanguage();
   const fg = !status ? "var(--vc-navy)" : status.tone === "bad" ? "#C62828" : status.tone === "warn" ? "#7A4A00" : "#0B6A4C";
   return (
-    <div className="vita-page" data-testid="reading-saved" style={{ padding: "calc(env(safe-area-inset-top) + 24px) 20px calc(env(safe-area-inset-bottom) + 16px)" }}>
+    <div className="vita-page w-narrow" data-testid="reading-saved" style={{ padding: "calc(env(safe-area-inset-top) + 24px) 20px calc(env(safe-area-inset-bottom) + 16px)" }}>
       <div style={{ flex: 1 }}>
         <span style={{ width: 56, height: 56, borderRadius: "50%", background: "var(--vc-tile-mint)", color: "#0B6A4C", display: "flex", alignItems: "center", justifyContent: "center" }}>
           <TickCircle size={30} variant="Bold" color="currentColor" />

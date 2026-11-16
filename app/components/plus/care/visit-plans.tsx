@@ -60,7 +60,7 @@ export function VisitPlanScreen({ id }: { id: number }) {
   const plan = r.data;
   const body = plan ? planIn(plan, language) : null;
   return (
-    <div className="vita-page">
+    <div className="vita-page w-narrow">
       <AppBar title={t("visit_plan_screen_title", undefined, "Your take-home plan")} />
       <div style={{ flex: 1, overflowY: "auto" }}>
         {r.error && !plan ? (

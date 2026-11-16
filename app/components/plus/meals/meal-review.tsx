@@ -41,7 +41,7 @@ const chip = (on: boolean): React.CSSProperties => ({
 function Sheet({ open, title, onClose, children, footer }: { open: boolean; title: string; onClose: () => void; children: React.ReactNode; footer?: React.ReactNode }) {
   if (!open) return null;
   return (
-    <div role="presentation" onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 70, background: "var(--vc-scrim)", display: "flex", alignItems: "flex-end", justifyContent: "center" }}>
+    <div role="presentation" className="vita-sheet-scrim" onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 70, background: "var(--vc-scrim)", display: "flex", alignItems: "flex-end", justifyContent: "center" }}>
       <div
         role="dialog"
         aria-modal="true"

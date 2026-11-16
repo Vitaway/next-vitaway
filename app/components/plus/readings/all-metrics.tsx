@@ -89,7 +89,7 @@ export default function AllMetricsScreen() {
   const { metrics, loading } = useMetrics();
   const latest = homeMetrics(metrics);
   return (
-    <div className="vita-page">
+    <div className="vita-page w-wide">
       <AppBar
         title={t("health_metrics_title")}
         actions={
@@ -104,7 +104,7 @@ export default function AllMetricsScreen() {
         ) : latest.length === 0 ? (
           <EmptyState title={t("no_health_metrics")} subtitle={t("no_health_metrics_body")} />
         ) : (
-          <div style={{ padding: "8px 16px 24px", display: "flex", flexDirection: "column", gap: 12 }}>
+          <div className="vita-flex-list" style={{ padding: "8px 16px 24px", display: "flex", flexDirection: "column", gap: 12 }}>
             {latest.map((m) => (
               <NumberCard key={m.type} metric={m} history={metrics} onOpen={() => push(`/metrics/${encodeURIComponent(m.type)}`)} />
             ))}

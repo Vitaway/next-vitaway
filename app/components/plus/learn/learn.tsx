@@ -77,7 +77,7 @@ export function LearnScreen() {
     push(`/articles/${a.id}`);
   };
   return (
-    <Page>
+    <Page width="wide">
       <AppBar title={cap(t("learn_title"))} bottom={<Tabs onBar value={tab} onChange={setTab} tabs={[{ value: "1", label: cap(t("informative")) }, { value: "2", label: cap(t("sustaining")) }, { value: "3", label: cap(t("earn_badges")) }]} />} />
       <YourPathBlock />
       <div style={{ flex: 1, overflowY: "auto", paddingBottom: 24 }}>
@@ -90,7 +90,7 @@ export function LearnScreen() {
         ) : !filtered.length ? (
           <EmptyState title={t("no_articles")} subtitle={t("no_articles_body")} />
         ) : (
-          filtered.map((a) => <ArticleTile key={a.id} article={a} onClick={() => void open(a)} />)
+          <div className="vita-flex-list vita-tiles">{filtered.map((a) => <ArticleTile key={a.id} article={a} onClick={() => void open(a)} />)}</div>
         )}
       </div>
     </Page>
@@ -152,7 +152,7 @@ export function ArticleScreen({ id }: { id: number }) {
 
   if (!article)
     return (
-      <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
+      <div className="vita-page w-narrow" style={{ background: "var(--vc-canvas)" }}>
         <AppBar title="" />
         {fetched.loading ? <CenterSpinner /> : <p style={{ margin: "40px 0", textAlign: "center", color: "var(--vc-ink)" }}>Article not found</p>}
       </div>
@@ -173,7 +173,7 @@ export function ArticleScreen({ id }: { id: number }) {
     }
   };
   return (
-    <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
+    <div className="vita-page w-narrow" style={{ background: "var(--vc-canvas)" }}>
       <AppBar title="" />
       {isBadge && completion.loading ? (
         <CenterSpinner />
@@ -280,7 +280,7 @@ export function BadgesScreen() {
   const board = r.data;
   const badges = board?.badges ?? [];
   return (
-    <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
+    <div className="vita-page w-wide" style={{ background: "var(--vc-canvas)" }}>
       <AppBar title={t("my_badges")} />
       {r.loading && !board ? (
         <CenterSpinner />
@@ -317,7 +317,7 @@ export function BadgesScreen() {
               </div>
             ) : null}
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, alignContent: "start" }}>
+          <div className="vita-badge-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, alignContent: "start" }}>
             {badges.map((b, i) => {
               const text = badgeText(t, b);
               const fraction = badgeFraction(b);
@@ -391,7 +391,7 @@ export function BadgeDetailScreen({ index }: { index: number }) {
     }
   }, [index]);
   const badge = r.data?.badges?.[index] ?? stashed;
-  if (!badge) return <div className="vita-page"><AppBar title={t("my_badges")} />{r.loading ? <CenterSpinner /> : <EmptyState title={t("badges_empty_title")} />}</div>;
+  if (!badge) return <div className="vita-page w-narrow"><AppBar title={t("my_badges")} />{r.loading ? <CenterSpinner /> : <EmptyState title={t("badges_empty_title")} />}</div>;
   const text = badgeText(t, badge);
   const status = badge.earned
     ? t("badge_earned")
@@ -402,7 +402,7 @@ export function BadgeDetailScreen({ index }: { index: number }) {
       : t("badge_locked");
   const article = badge.article ?? null;
   return (
-    <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
+    <div className="vita-page w-narrow" style={{ background: "var(--vc-canvas)" }}>
       <AppBar title={text.name} />
       <div style={{ flex: 1, overflowY: "auto", padding: "20px 20px 24px" }}>
         <div style={{ display: "flex", justifyContent: "center" }}>
@@ -424,7 +424,7 @@ export function BadgeDetailScreen({ index }: { index: number }) {
         ) : null}
       </div>
       {article?.id ? (
-        <div style={{ position: "sticky", bottom: 0, padding: "8px 20px calc(12px + env(safe-area-inset-bottom))", background: "var(--vc-canvas)" }}>
+        <div className="vita-bottom-bar" style={{ position: "sticky", bottom: 0, padding: "8px 20px calc(12px + env(safe-area-inset-bottom))", background: "var(--vc-canvas)" }}>
           <ActionButton full label={t("view_article")} onClick={() => push(`/articles/${article.id}`)} />
         </div>
       ) : null}

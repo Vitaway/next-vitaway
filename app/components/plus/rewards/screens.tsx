@@ -183,7 +183,7 @@ export function RewardsScreen() {
   };
 
   return (
-    <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
+    <div className="vita-page w-wide" style={{ background: "var(--vc-canvas)" }}>
       <AppBar title={t("rewards_title")} />
       {summary.loading && !s ? (
         <CenterSpinner />
@@ -192,7 +192,7 @@ export function RewardsScreen() {
           <EmptyState title={t("network_error")} actionLabel={t("retry")} onAction={() => summary.reload()} actionIcon={<Refresh size={16} color="currentColor" />} />
         </div>
       ) : (
-        <div style={{ flex: 1, overflowY: "auto", padding: "8px 16px 28px" }}>
+        <div className="vita-rewards" style={{ flex: 1, overflowY: "auto", padding: "8px 16px 28px" }}>
           {s.proposal || ways.data?.proposal ? <ProposalNote /> : null}
           {!s.eligible ? (
             <Card padding={16} style={{ marginBottom: 12 }}>
@@ -204,7 +204,11 @@ export function RewardsScreen() {
           ) : null}
           <PointsHero s={s} onBadges={() => push("/badges")} />
           <TodayCard s={s} />
-          {ways.data ? <WaysCard w={ways.data} s={s} /> : null}
+          {ways.data ? (
+            <div className="vita-rewards-side">
+              <WaysCard w={ways.data} s={s} />
+            </div>
+          ) : null}
           <HistoryCard entries={[...(history.data?.entries ?? []), ...older]} more={!!nextBefore} loadingMore={loadingMore} onMore={() => void loadMore()} />
         </div>
       )}

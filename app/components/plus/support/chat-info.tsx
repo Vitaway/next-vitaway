@@ -51,7 +51,7 @@ export function ChatInfoScreen({ roomId }: { roomId: string }) {
   const [busy, setBusy] = useState(false);
   const [edit, setEdit] = useState<{ name: string; description: string } | null>(null);
 
-  if (!room) return <div className="vita-page" style={{ background: "var(--vc-canvas)" }}><AppBar title="" /><CenterSpinner /></div>;
+  if (!room) return <div className="vita-page w-narrow" style={{ background: "var(--vc-canvas)" }}><AppBar title="" /><CenterSpinner /></div>;
 
   const type = user?.user_type ?? "normal";
   const staff = type === "coach" || type === "admin";
@@ -116,7 +116,7 @@ export function ChatInfoScreen({ roomId }: { roomId: string }) {
   const inputStyle: React.CSSProperties = { width: "100%", padding: "12px 0", border: 0, borderBottom: `1px solid ${navyA(0.3)}`, outline: "none", fontSize: 16, background: "transparent", color: "var(--vc-ink)" };
 
   return (
-    <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
+    <div className="vita-page w-narrow" style={{ background: "var(--vc-canvas)" }}>
       <AppBar title="" />
       <div style={{ flex: 1, overflowY: "auto", padding: "0 20px calc(env(safe-area-inset-bottom) + 104px)" }}>
         <div style={{ display: "flex", justifyContent: "center", marginTop: 16 }}>
