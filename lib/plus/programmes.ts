@@ -29,7 +29,7 @@ export type Programme = {
   needsTriage: boolean;
   pilot: boolean;
   trialAvailable: boolean;
-  /** W15: the join flow asks "do you use insulin?" only where it changes the rules (diabetes). */
+  /** F04: always true — the five safety questions include insulin. */
   asksInsulin: boolean;
   myEnrolment: Enrolment | null;
 };
@@ -78,6 +78,19 @@ export type Enrolment = {
   reviewDate: string | null;
   price: Money;
   payments: ProgrammePayment[];
+  eligibility: EnrolmentEligibility | null;
+};
+
+export type EligibilityOutcome = "ok" | "stopped" | "needs_approval" | "pending_review";
+
+export type EnrolmentEligibility = {
+  answered: boolean;
+  outcome: EligibilityOutcome | null;
+  flags: string[];
+  paymentAllowed: boolean;
+  leadApprovalNeeded: boolean;
+  message: string | null;
+  referral: string | null;
 };
 
 type Raw = Record<string, unknown>;
@@ -182,6 +195,22 @@ export function normalizeEnrolment(v: unknown): Enrolment {
     reviewDate: strOrNull(e.review_date),
     price: money(e.price),
     payments: Array.isArray(e.payments) ? e.payments.map(normalizePayment) : [],
+    eligibility: normalizeEligibility(e.eligibility),
+  };
+}
+
+function normalizeEligibility(v: unknown): EnrolmentEligibility | null {
+  const el = obj(v);
+  if (!Object.keys(el).length) return null;
+  const outcome = str(el.outcome) as EligibilityOutcome;
+  return {
+    answered: el.answered === true,
+    outcome: outcome === "ok" || outcome === "stopped" || outcome === "needs_approval" || outcome === "pending_review" ? outcome : null,
+    flags: Array.isArray(el.flags) ? el.flags.map(str) : [],
+    paymentAllowed: el.payment_allowed === true,
+    leadApprovalNeeded: el.lead_approval_needed === true || el.doctor_approval_needed === true,
+    message: strOrNull(el.message),
+    referral: strOrNull(el.referral),
   };
 }
 
@@ -198,7 +227,7 @@ export function normalizeProgramme(v: unknown): Programme {
     needsTriage: p.needs_triage === true,
     pilot: p.pilot === true,
     trialAvailable: p.trial_available === true,
-    asksInsulin: p.asks_insulin === true || (p.asks_insulin === undefined && str(p.pathway) === "diabetes"),
+    asksInsulin: true,
     myEnrolment: p.my_enrolment ? normalizeEnrolment(p.my_enrolment) : null,
   };
 }
@@ -206,37 +235,58 @@ export function normalizeProgramme(v: unknown): Programme {
 /* ───────── W15 safety questions (BL-147) ───────── */
 
 export type YesNo = "yes" | "no" | "";
-export type SafetyAnswers = { pregnant: YesNo; eatingDisorder: YesNo; insulin: YesNo };
-export const EMPTY_SAFETY: SafetyAnswers = { pregnant: "", eatingDisorder: "", insulin: "" };
+export type SafetyAnswers = { pregnant: YesNo; under18: YesNo; eatingDisorder: YesNo; kidneyDisease: YesNo; insulin: YesNo };
+export const EMPTY_SAFETY: SafetyAnswers = { pregnant: "", under18: "", eatingDisorder: "", kidneyDisease: "", insulin: "" };
 
-/** The questions to show for one programme, in order (i18n keys). */
-export function safetyQuestions(asksInsulin: boolean): Array<{ field: keyof SafetyAnswers; key: string }> {
-  const qs: Array<{ field: keyof SafetyAnswers; key: string }> = [
+export const STOP_QUESTION_FIELDS: Array<Exclude<keyof SafetyAnswers, "insulin">> = ["pregnant", "under18", "eatingDisorder", "kidneyDisease"];
+const STOP_NOTE: Record<(typeof STOP_QUESTION_FIELDS)[number], string> = {
+  pregnant: "safety_referral_pregnant",
+  under18: "safety_referral_under_18",
+  eatingDisorder: "safety_referral_eating_disorder",
+  kidneyDisease: "safety_referral_kidney",
+};
+
+/** The five questions, in order (i18n keys). `asksInsulin` is ignored — insulin is always asked. */
+export function safetyQuestions(_asksInsulin = true): Array<{ field: keyof SafetyAnswers; key: string }> {
+  return [
     { field: "pregnant", key: "safety_q_pregnant" },
+    { field: "under18", key: "safety_q_under_18" },
     { field: "eatingDisorder", key: "safety_q_eating_disorder" },
+    { field: "kidneyDisease", key: "safety_q_kidney" },
+    { field: "insulin", key: "safety_q_insulin" },
   ];
-  if (asksInsulin) qs.push({ field: "insulin", key: "safety_q_insulin" });
-  return qs;
 }
 
-export function safetyComplete(a: SafetyAnswers, asksInsulin: boolean): boolean {
-  return safetyQuestions(asksInsulin).every((q) => a[q.field] === "yes" || a[q.field] === "no");
+export function safetyComplete(a: SafetyAnswers, _asksInsulin = true): boolean {
+  return safetyQuestions().every((q) => a[q.field] === "yes" || a[q.field] === "no");
 }
 
 /** Body for POST /mobile/programmes/:code/{trial|enrol|redeem}. */
-export function safetyPayload(a: SafetyAnswers, asksInsulin: boolean): Record<string, boolean> {
+export function safetyPayload(a: SafetyAnswers, _asksInsulin = true): Record<string, boolean> {
   return {
     pregnant: a.pregnant === "yes",
+    under_18: a.under18 === "yes",
     eating_disorder_history: a.eatingDisorder === "yes",
-    ...(asksInsulin ? { uses_insulin: a.insulin === "yes" } : {}),
+    kidney_disease: a.kidneyDisease === "yes",
+    uses_insulin: a.insulin === "yes",
   };
 }
 
+export function localSafetyOutcome(a: SafetyAnswers): "ok" | "stopped" | "needs_approval" | "incomplete" {
+  if (!safetyComplete(a)) return "incomplete";
+  if (STOP_QUESTION_FIELDS.some((f) => a[f] === "yes")) return "stopped";
+  if (a.insulin === "yes") return "needs_approval";
+  return "ok";
+}
+
 /** What the member should know after answering (i18n keys), shown before they continue. */
-export function safetyNotes(a: SafetyAnswers, asksInsulin: boolean): string[] {
+export function safetyNotes(a: SafetyAnswers, _asksInsulin = true): string[] {
   const notes: string[] = [];
-  if (a.pregnant === "yes" || a.eatingDisorder === "yes") notes.push("safety_note_no_weight_points");
-  if (asksInsulin && a.insulin === "yes") notes.push("safety_note_doctor");
+  for (const field of STOP_QUESTION_FIELDS) {
+    if (a[field] === "yes") notes.push(STOP_NOTE[field]);
+  }
+  if (notes.length) return notes;
+  if (a.insulin === "yes") notes.push("safety_note_insulin");
   return notes;
 }
 
@@ -287,9 +337,10 @@ export function stageTone(stage: MemberStage): "teal" | "amber" | "orange" | "gr
   }
 }
 
-/** The member can pay from these stages. */
-export function canPay(e: Pick<Enrolment, "stage" | "paymentState">): boolean {
+/** The member can pay from these stages — never when a safety answer has locked payment. */
+export function canPay(e: Pick<Enrolment, "stage" | "paymentState"> & { eligibility?: EnrolmentEligibility | null }): boolean {
   if (["paid", "sponsored", "waived"].includes(e.paymentState)) return false;
+  if (e.eligibility && e.eligibility.answered && e.eligibility.paymentAllowed === false) return false;
   return e.stage === "on_trial" || e.stage === "needs_payment" || e.stage === "payment_processing" || e.stage === "expired";
 }
 
@@ -316,7 +367,14 @@ export function methodLabel(method: string | null, testPayment: boolean): string
   return method.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
-/** The doctor check only means something once payment is done (or during a trial). */
+/** A clinical lead still has to review insulin use or a changed stop answer. */
+export function waitingForLead(e: Enrolment): boolean {
+  if (e.eligibility?.outcome === "stopped") return false;
+  if (e.eligibility?.leadApprovalNeeded) return true;
+  return e.care.waitingFor.includes("doctor_approval");
+}
+
+/** @deprecated F05: clinical lead, not a medical doctor. */
 export function waitingForDoctor(e: Enrolment): boolean {
-  return (e.stage === "waiting_for_care_team" || e.stage === "on_trial") && e.care.waitingFor.includes("doctor_approval");
+  return waitingForLead(e);
 }

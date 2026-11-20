@@ -1,65 +1,96 @@
-// Phase 3 W15 (BL-147): safety questions in the join flow. Run: node --test tests/
+// F04–F06: five safety questions in the join flow. Run: node --test tests/
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import {
   EMPTY_SAFETY,
+  canPay,
+  localSafetyOutcome,
   normalizeEnrolment,
   normalizeProgramme,
   safetyComplete,
   safetyNotes,
   safetyPayload,
   safetyQuestions,
-  waitingForDoctor,
+  waitingForLead,
 } from "../lib/plus/programmes.ts";
 
-test("insulin is asked only where the programme asks it (diabetes)", () => {
-  assert.deepEqual(safetyQuestions(false).map((q) => q.field), ["pregnant", "eatingDisorder"]);
-  assert.deepEqual(safetyQuestions(true).map((q) => q.field), ["pregnant", "eatingDisorder", "insulin"]);
-  assert.equal(normalizeProgramme({ code: "t2", pathway: "diabetes" }).asksInsulin, true);
-  assert.equal(normalizeProgramme({ code: "hw", pathway: "healthy_weight", asks_insulin: false }).asksInsulin, false);
+const CLEAR = { pregnant: "no", under18: "no", eatingDisorder: "no", kidneyDisease: "no", insulin: "no" } as const;
+
+test("all five safety questions are always asked, including insulin", () => {
+  assert.deepEqual(safetyQuestions().map((q) => q.field), ["pregnant", "under18", "eatingDisorder", "kidneyDisease", "insulin"]);
+  assert.deepEqual(safetyQuestions(false).map((q) => q.field), ["pregnant", "under18", "eatingDisorder", "kidneyDisease", "insulin"]);
+  assert.equal(normalizeProgramme({ code: "hw", pathway: "healthy_weight", asks_insulin: false }).asksInsulin, true);
 });
 
-test("continue is allowed only when every shown question has an answer", () => {
-  assert.equal(safetyComplete(EMPTY_SAFETY, false), false);
-  assert.equal(safetyComplete({ pregnant: "no", eatingDisorder: "no", insulin: "" }, false), true);
-  assert.equal(safetyComplete({ pregnant: "no", eatingDisorder: "no", insulin: "" }, true), false);
-  assert.equal(safetyComplete({ pregnant: "no", eatingDisorder: "yes", insulin: "no" }, true), true);
+test("continue is allowed only when every question has an answer", () => {
+  assert.equal(safetyComplete(EMPTY_SAFETY), false);
+  assert.equal(safetyComplete({ ...CLEAR, insulin: "" }), false);
+  assert.equal(safetyComplete({ ...CLEAR }), true);
 });
 
-test("payload sends booleans and leaves insulin out where it is not asked", () => {
-  assert.deepEqual(safetyPayload({ pregnant: "yes", eatingDisorder: "no", insulin: "yes" }, false), { pregnant: true, eating_disorder_history: false });
-  assert.deepEqual(safetyPayload({ pregnant: "no", eatingDisorder: "no", insulin: "yes" }, true), { pregnant: false, eating_disorder_history: false, uses_insulin: true });
+test("payload always sends the five booleans", () => {
+  assert.deepEqual(safetyPayload({ ...CLEAR, pregnant: "yes", insulin: "yes" }), {
+    pregnant: true,
+    under_18: false,
+    eating_disorder_history: false,
+    kidney_disease: false,
+    uses_insulin: true,
+  });
 });
 
-test("notes explain no weight points and the doctor check", () => {
-  assert.deepEqual(safetyNotes({ pregnant: "no", eatingDisorder: "no", insulin: "no" }, true), []);
-  assert.deepEqual(safetyNotes({ pregnant: "yes", eatingDisorder: "no", insulin: "" }, false), ["safety_note_no_weight_points"]);
-  assert.deepEqual(safetyNotes({ pregnant: "no", eatingDisorder: "yes", insulin: "yes" }, true), ["safety_note_no_weight_points", "safety_note_doctor"]);
-  assert.deepEqual(safetyNotes({ pregnant: "no", eatingDisorder: "no", insulin: "yes" }, false), []);
+test("stop answers and insulin produce the right notes; payment is blocked", () => {
+  assert.equal(localSafetyOutcome(CLEAR), "ok");
+  assert.equal(localSafetyOutcome({ ...CLEAR, pregnant: "yes" }), "stopped");
+  assert.equal(localSafetyOutcome({ ...CLEAR, insulin: "yes" }), "needs_approval");
+  assert.deepEqual(safetyNotes({ ...CLEAR, kidneyDisease: "yes" }), ["safety_referral_kidney"]);
+  assert.deepEqual(safetyNotes({ ...CLEAR, insulin: "yes" }), ["safety_note_insulin"]);
+  const stopped = normalizeEnrolment({
+    id: 1,
+    status: "trial",
+    payment_state: "none",
+    eligibility: { answered: true, outcome: "stopped", payment_allowed: false, flags: ["pregnant"], message: "not the right fit" },
+  });
+  assert.equal(canPay(stopped), false);
+  const insulin = normalizeEnrolment({
+    id: 2,
+    status: "trial",
+    payment_state: "none",
+    eligibility: { answered: true, outcome: "needs_approval", payment_allowed: false, lead_approval_needed: true },
+  });
+  assert.equal(canPay(insulin), false);
+  assert.equal(waitingForLead(insulin), true);
+  const clear = normalizeEnrolment({
+    id: 3,
+    status: "trial",
+    payment_state: "none",
+    eligibility: { answered: true, outcome: "ok", payment_allowed: true },
+  });
+  assert.equal(canPay(clear), true);
 });
 
-test("enrolment care block carries doctor wait and safety flag", () => {
-  const e = normalizeEnrolment({ id: 1, status: "enrolled", care: { waiting_for: ["doctor_approval"], safety_questions_answered: true } });
-  assert.deepEqual(e.care.waitingFor, ["doctor_approval"]);
-  assert.equal(e.care.safetyAnswered, true);
-});
-
-test("every W15 string exists in English and Kinyarwanda", () => {
+test("every F04 safety string exists in English and Kinyarwanda", () => {
   const en = JSON.parse(readFileSync("lib/plus/i18n/en.json", "utf8"));
   const rw = JSON.parse(readFileSync("lib/plus/i18n/rw.json", "utf8"));
-  const keys = [...safetyQuestions(true).map((q) => q.key), "safety_title", "safety_intro", "safety_yes", "safety_no", "safety_continue",
-    "safety_note_no_weight_points", "safety_note_doctor", "care_step_doctor", "stage_body_doctor_review"];
+  const keys = [
+    ...safetyQuestions().map((q) => q.key),
+    "safety_title",
+    "safety_intro",
+    "safety_yes",
+    "safety_no",
+    "safety_continue",
+    "safety_continue_referral",
+    "safety_referral_pregnant",
+    "safety_referral_under_18",
+    "safety_referral_eating_disorder",
+    "safety_referral_kidney",
+    "safety_note_insulin",
+    "safety_note_pending",
+    "care_step_lead",
+    "stage_body_lead_review",
+  ];
   for (const k of keys) {
     assert.ok(typeof en[k] === "string" && en[k].length > 0, `en ${k}`);
     assert.ok(typeof rw[k] === "string" && rw[k].length > 0, `rw ${k}`);
   }
-});
-
-test("doctor check is shown only after payment or during a trial", () => {
-  const care = { waiting_for: ["doctor_approval"] };
-  assert.equal(waitingForDoctor(normalizeEnrolment({ id: 1, status: "pending_payment", care })), false);
-  assert.equal(waitingForDoctor(normalizeEnrolment({ id: 1, status: "enrolled", care })), true);
-  assert.equal(waitingForDoctor(normalizeEnrolment({ id: 1, status: "trial", care })), true);
-  assert.equal(waitingForDoctor(normalizeEnrolment({ id: 1, status: "enrolled", care: { waiting_for: ["intake"] } })), false);
 });

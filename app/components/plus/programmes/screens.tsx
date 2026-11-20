@@ -23,7 +23,8 @@ import {
   safetyNotes,
   safetyPayload,
   safetyQuestions,
-  waitingForDoctor,
+  waitingForLead,
+  localSafetyOutcome,
   stageTone,
   EMPTY_SAFETY,
   type SafetyAnswers,
@@ -223,7 +224,7 @@ export function ProgrammeDetailScreen({ code }: { code: string }) {
               <span>{t(k)}</span>
             </div>
           ))}
-          <ActionButton full label={t("safety_continue")} disabled={!safetyComplete(answers, p.asksInsulin) || busy} onClick={() => void start(asking)} />
+          <ActionButton full label={t(localSafetyOutcome(answers) === "stopped" ? "safety_continue_referral" : "safety_continue")} disabled={!safetyComplete(answers, p.asksInsulin) || busy} onClick={() => void start(asking)} />
         </div>
       </div>
     );
@@ -328,9 +329,19 @@ export function EnrolmentScreen({ id }: { id: number }) {
             <p style={{ margin: "12px 0 0", fontSize: 15, lineHeight: 1.45, fontWeight: 600, color: "var(--vc-ink)" }} data-testid="stage-body">
               {stageBody(t, e)}
             </p>
-            {waitingForDoctor(e) ? (
-              <p style={{ margin: "8px 0 0", fontSize: 14, lineHeight: 1.45, color: navyA(0.7) }} data-testid="doctor-review">
-                {t("stage_body_doctor_review")}
+            {e.eligibility?.outcome === "stopped" && (e.eligibility.referral || e.eligibility.message) ? (
+              <p style={{ margin: "8px 0 0", fontSize: 14, lineHeight: 1.45, color: "var(--vc-warn-ink)" }} data-testid="eligibility-referral">
+                {e.eligibility.referral || e.eligibility.message}
+              </p>
+            ) : null}
+            {e.eligibility?.outcome === "pending_review" ? (
+              <p style={{ margin: "8px 0 0", fontSize: 14, lineHeight: 1.45, color: navyA(0.7) }} data-testid="eligibility-pending">
+                {e.eligibility.message || t("safety_note_pending")}
+              </p>
+            ) : null}
+            {waitingForLead(e) ? (
+              <p style={{ margin: "8px 0 0", fontSize: 14, lineHeight: 1.45, color: navyA(0.7) }} data-testid="lead-review">
+                {e.eligibility?.message || t("stage_body_lead_review")}
               </p>
             ) : null}
             {e.stage === "waiting_for_care_team" ? (
@@ -338,7 +349,7 @@ export function EnrolmentScreen({ id }: { id: number }) {
                 <Step done label={t("care_step_paid")} />
                 <Step done={e.care.careTeamAssigned} label={e.care.team?.name ? `${t("care_step_team")}: ${e.care.team.name}` : t("care_step_team")} />
                 <Step done={e.care.intakeDone} label={t("care_step_intake")} />
-                {waitingForDoctor(e) ? <Step done={false} label={t("care_step_doctor")} /> : null}
+                {waitingForLead(e) ? <Step done={false} label={t("care_step_lead")} /> : null}
                 <Step done={false} label={t("care_step_start")} />
               </div>
             ) : null}
