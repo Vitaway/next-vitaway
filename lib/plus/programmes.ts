@@ -256,9 +256,17 @@ export function kigaliDateTime(iso: string | null): string {
   if (!iso) return "";
   const at = new Date(iso);
   if (Number.isNaN(at.getTime())) return "";
-  const k = new Date(at.getTime() + 2 * 3_600_000);
-  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-  return `${k.getUTCDate()} ${months[k.getUTCMonth()]} ${k.getUTCFullYear()}, ${String(k.getUTCHours()).padStart(2, "0")}:${String(k.getUTCMinutes()).padStart(2, "0")}`;
+  const parts = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Africa/Kigali",
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).formatToParts(at);
+  const get = (type: Intl.DateTimeFormatPartTypes) => parts.find((part) => part.type === type)?.value ?? "";
+  return `${get("day")} ${get("month")} ${get("year")}, ${get("hour")}:${get("minute")}`;
 }
 
 /** Stage colour on the member screens. Paid-but-not-started is amber, never green (BL-071). */
