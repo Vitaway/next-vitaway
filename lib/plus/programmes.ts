@@ -247,7 +247,8 @@ const STOP_NOTE: Record<(typeof STOP_QUESTION_FIELDS)[number], string> = {
 };
 
 /** The five questions, in order (i18n keys). `asksInsulin` is ignored — insulin is always asked. */
-export function safetyQuestions(_asksInsulin = true): Array<{ field: keyof SafetyAnswers; key: string }> {
+export function safetyQuestions(asksInsulin = true): Array<{ field: keyof SafetyAnswers; key: string }> {
+  void asksInsulin;
   return [
     { field: "pregnant", key: "safety_q_pregnant" },
     { field: "under18", key: "safety_q_under_18" },
@@ -257,12 +258,14 @@ export function safetyQuestions(_asksInsulin = true): Array<{ field: keyof Safet
   ];
 }
 
-export function safetyComplete(a: SafetyAnswers, _asksInsulin = true): boolean {
+export function safetyComplete(a: SafetyAnswers, asksInsulin = true): boolean {
+  void asksInsulin;
   return safetyQuestions().every((q) => a[q.field] === "yes" || a[q.field] === "no");
 }
 
 /** Body for POST /mobile/programmes/:code/{trial|enrol|redeem}. */
-export function safetyPayload(a: SafetyAnswers, _asksInsulin = true): Record<string, boolean> {
+export function safetyPayload(a: SafetyAnswers, asksInsulin = true): Record<string, boolean> {
+  void asksInsulin;
   return {
     pregnant: a.pregnant === "yes",
     under_18: a.under18 === "yes",
@@ -280,7 +283,8 @@ export function localSafetyOutcome(a: SafetyAnswers): "ok" | "stopped" | "needs_
 }
 
 /** What the member should know after answering (i18n keys), shown before they continue. */
-export function safetyNotes(a: SafetyAnswers, _asksInsulin = true): string[] {
+export function safetyNotes(a: SafetyAnswers, asksInsulin = true): string[] {
+  void asksInsulin;
   const notes: string[] = [];
   for (const field of STOP_QUESTION_FIELDS) {
     if (a[field] === "yes") notes.push(STOP_NOTE[field]);
