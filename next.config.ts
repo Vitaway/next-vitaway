@@ -28,6 +28,13 @@ const nextConfig: NextConfig = {
     return [
       { source: "/api/v1/:path*", destination: `${apiRewriteBase}/api/v1/:path*` },
       { source: "/uploads/:path*", destination: `${apiRewriteBase}/uploads/:path*` },
+      // Legacy Flutter aliases the PWA still calls. Proxy the path as-is so the
+      // backend's alias middleware can rewrite it; needed for cookie sessions
+      // which only work same-origin (apiBase is empty on localhost).
+      { source: "/health-metrics", destination: `${apiRewriteBase}/health-metrics` },
+      { source: "/health-metrics/", destination: `${apiRewriteBase}/health-metrics/` },
+      { source: "/health-goals", destination: `${apiRewriteBase}/health-goals` },
+      { source: "/health-goals/:path*", destination: `${apiRewriteBase}/health-goals/:path*` },
     ];
   },
   async redirects() {

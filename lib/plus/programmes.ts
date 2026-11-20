@@ -12,9 +12,10 @@ export type MemberStage =
   | "paused"
   | "completed"
   | "withdrawn"
-  | "expired";
+  | "expired"
+  | "stopped";
 
-const STAGES: MemberStage[] = ["on_trial", "needs_payment", "payment_processing", "waiting_for_care_team", "active", "paused", "completed", "withdrawn", "expired"];
+const STAGES: MemberStage[] = ["on_trial", "needs_payment", "payment_processing", "waiting_for_care_team", "active", "paused", "completed", "withdrawn", "expired", "stopped"];
 
 export type Money = { amount: number; currency: string };
 
@@ -109,6 +110,8 @@ function money(v: unknown): Money {
 
 /** The server sends `stage` (W12). Older servers do not, so derive it the same way the backend does. */
 export function stageOf(raw: Raw): MemberStage {
+  const eligibility = obj(raw.eligibility);
+  if (str(eligibility.outcome) === "stopped" || str(raw.stage) === "stopped") return "stopped";
   const given = str(raw.stage) as MemberStage;
   if (STAGES.includes(given)) return given;
   const status = str(raw.status);
@@ -336,6 +339,8 @@ export function stageTone(stage: MemberStage): "teal" | "amber" | "orange" | "gr
     case "needs_payment":
     case "expired":
       return "orange";
+    case "stopped":
+      return "grey";
     default:
       return "grey";
   }

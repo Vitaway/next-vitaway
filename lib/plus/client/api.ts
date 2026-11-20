@@ -117,7 +117,7 @@ export async function mobileRequest<T = unknown>(path: string, options: RequestO
   } else {
     parsed = null;
   }
-  if (response.status === 401 && token) {
+  if (response.status === 401 && !options.anonymous) {
     unauthorizedHandler?.();
   }
   if (!response.ok) {

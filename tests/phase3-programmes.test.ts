@@ -58,6 +58,11 @@ test("W12: stage falls back to status + payment_state when an older server sends
   assert.equal(stageOf({ status: "enrolled", payment_state: "sponsored" }), "waiting_for_care_team");
   assert.equal(stageOf({ status: "active_care", payment_state: "paid" }), "active");
   assert.equal(stageOf({ status: "expired", payment_state: "none", stage: "bogus" }), "expired");
+  assert.equal(stageOf({ status: "pending_payment", payment_state: "none", eligibility: { outcome: "stopped" } }), "stopped");
+  assert.equal(stageOf({ status: "pending_payment", payment_state: "none", stage: "needs_payment", eligibility: { outcome: "stopped" } }), "stopped");
+  assert.equal(stageTone("stopped"), "grey");
+  assert.equal(canPay({ stage: "needs_payment", paymentState: "none", eligibility: { answered: true, outcome: "stopped", flags: [], paymentAllowed: false, leadApprovalNeeded: false, message: null, referral: "Refer." } }), false);
+
 });
 
 test("W12: trial and expired enrolments can pay; funded ones cannot", () => {

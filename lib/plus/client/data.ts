@@ -60,7 +60,7 @@ export function displayName(user?: MeUser | null): string {
 /* ───────── Readings ───────── */
 
 export function useMetrics() {
-  const resource = useResource<HealthMetric[]>("/health-metrics/", async () => asList<HealthMetric>(await mobileRequest("/health-metrics/")));
+  const resource = useResource<HealthMetric[]>("/api/v1/mobile/health/metrics", async () => asList<HealthMetric>(await mobileRequest("/api/v1/mobile/health/metrics")));
   return { ...resource, metrics: resource.data ?? [] };
 }
 
