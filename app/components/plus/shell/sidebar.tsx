@@ -32,7 +32,7 @@ export function activeNavPath(path: string, items: string[]): string | null {
   return owner && items.includes(owner[1]) ? owner[1] : null;
 }
 
-/** Desktop (≥1024px) navigation rail: replaces the phone dock and the + dial with a persistent sidebar. */
+/** Navigation rail from 640px (icon-only on tablet, labelled from 1024px). Hidden on phones in CSS. */
 export default function Sidebar({ supportBadge = false }: { supportBadge?: boolean }) {
   const t = useT();
   const path = useAppPath();
@@ -59,6 +59,8 @@ export default function Sidebar({ supportBadge = false }: { supportBadge?: boole
         key={itemPath}
         type="button"
         className={cx("vita-side-link", on && "on")}
+        title={label}
+        aria-label={label}
         aria-current={on ? "page" : undefined}
         onClick={() => push(itemPath)}
       >
@@ -74,7 +76,7 @@ export default function Sidebar({ supportBadge = false }: { supportBadge?: boole
 
   return (
     <aside className="vita-sidebar" aria-label="Main">
-      <button type="button" className="vita-side-brand" onClick={() => push("/home")}>
+      <button type="button" className="vita-side-brand" aria-label="Vitaway Plus home" onClick={() => push("/home")}>
         <span className="logo">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/plus-assets/vitaway-logo.png" alt="" />
@@ -109,7 +111,7 @@ export default function Sidebar({ supportBadge = false }: { supportBadge?: boole
         <div className="vita-side-group">{more.map(link)}</div>
       </nav>
 
-      <button type="button" className={cx("vita-side-me", active === "/profile" && "on")} onClick={() => push("/profile")}>
+      <button type="button" className={cx("vita-side-me", active === "/profile" && "on")} title={t("my_profile")} aria-label={t("my_profile")} onClick={() => push("/profile")}>
         <span className="av">
           <Photo url={user?.profile?.profile_picture} size={36} />
         </span>

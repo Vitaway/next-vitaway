@@ -63,21 +63,6 @@ export default function ClientFrame({ children }: { children: React.ReactNode })
   return <AppShell path={path} showDock={showDock}>{children}</AppShell>;
 }
 
-const DESKTOP_QUERY = "(min-width: 1024px)";
-
-/** True from 1024px: the sidebar replaces the phone dock. */
-function useDesktop(): boolean {
-  const [desktop, setDesktop] = useState(false);
-  useEffect(() => {
-    const query = window.matchMedia(DESKTOP_QUERY);
-    const update = () => setDesktop(query.matches);
-    update();
-    query.addEventListener("change", update);
-    return () => query.removeEventListener("change", update);
-  }, []);
-  return desktop;
-}
-
 /** Tracks navigator.onLine so every screen gets the same offline notice (F23). */
 function useOnline(): boolean {
   const [online, setOnline] = useState(true);
@@ -95,27 +80,26 @@ function useOnline(): boolean {
 }
 
 /**
- * Responsive app shell. Phones and tablets keep the Flutter dock on the tab roots;
- * desktops get a persistent sidebar and a wider content area (see .vita-app in plus.css).
+ * Responsive app shell. The sidebar and dock are toggled in CSS:
+ * phones (<640px) use the bottom dock, 640px+ use the sidebar
+ * (icon rail, then a labelled rail from 1024px). See .vita-app in plus.css.
  * Stays mounted across pages so the Support dot survives leaving the root tabs.
  */
 function AppShell({ path, showDock, children }: { path: string; showDock: boolean; children: React.ReactNode }) {
   const supportBadge = useSupportBadge(path);
-  const desktop = useDesktop();
   const online = useOnline();
   const t = useT();
-  const dock = showDock && !desktop;
   return (
-    <div className={dock ? "vita-app vita-fullbleed has-dock" : "vita-app vita-fullbleed"}>
+    <div className={showDock ? "vita-app vita-fullbleed has-dock" : "vita-app vita-fullbleed"}>
       {online ? null : (
         <div className="vita-offline-banner" role="status">
           {t("offline_banner")}
         </div>
       )}
-      {desktop ? <Sidebar supportBadge={supportBadge} /> : null}
+      <Sidebar supportBadge={supportBadge} />
       <div className="vita-app-main">{children}</div>
       <WebReminderScheduler />
-      {dock ? <Dock supportBadge={supportBadge} /> : null}
+      {showDock ? <Dock supportBadge={supportBadge} /> : null}
     </div>
   );
 }
