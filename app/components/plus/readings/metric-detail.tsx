@@ -12,6 +12,7 @@ import { useClinicalConfig } from "@/lib/plus/client/clinical-config";
 import { fmtLongDay, sameDay } from "@/lib/plus/format";
 import { currentMonth, currentWeek, currentYear, hasMetricReading } from "@/lib/plus/metric-series";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
+import { formatGlucose, formatGlucoseUnitBoth, useGlucoseUnit } from "@/lib/plus/units";
 import { ActionButton, AppBar, CenterSpinner, EmptyState, Modal, Tabs, useFeedback } from "../ui/vita";
 import MetricChart from "./metric-chart";
 
@@ -70,6 +71,7 @@ function Legend({ color, label }: { color: string; label: string }) {
 
 function SummaryHero({ metric, bmi, avg, date }: { metric: HealthMetric; bmi: BmiView; avg: number | null; date: string }) {
   const { t, language } = useLanguage();
+  const [glucoseUnit] = useGlucoseUnit();
   const clinical = useClinicalConfig();
   const status = statusFor(metric, bmi, t, clinical, language);
   const tint = metric.type === "glucose" ? "var(--vc-tile-peach)" : metric.type === "bp" ? "var(--vc-tile-lilac)" : metric.type === "weight" ? "var(--vc-tile-mint)" : "var(--vc-wash)";
@@ -112,6 +114,14 @@ function SummaryHero({ metric, bmi, avg, date }: { metric: HealthMetric; bmi: Bm
               </div>
             </div>
             {avg !== null ? <div style={{ marginTop: 10, ...small(0.55) }}>{t("week_avg_kg", { value: avg.toFixed(1) })}</div> : null}
+          </>
+        ) : metric.type === "glucose" ? (
+          <>
+            <div style={{ display: "flex", alignItems: "flex-end" }}>
+              <span style={{ ...big, color: "var(--vc-navy)" }}>{formatGlucose(Number.parseFloat(metric.latest_value) || 0, glucoseUnit)}</span>
+              <span style={{ marginLeft: 8, paddingBottom: 6, ...small(0.45, 14) }}>{formatGlucoseUnitBoth(Number.parseFloat(metric.latest_value) || 0, glucoseUnit)}</span>
+            </div>
+            {avg !== null ? <div style={{ marginTop: 10, ...small(0.55) }}>Week avg {formatGlucose(avg, glucoseUnit)} {formatGlucoseUnitBoth(avg, glucoseUnit)}</div> : null}
           </>
         ) : (
           <>

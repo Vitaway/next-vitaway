@@ -33,7 +33,14 @@ export function glucoseUnitLabel(unit: GlucoseUnit): string {
 }
 
 export function formatGlucose(mg: number, unit: GlucoseUnit): string {
-  return unit === "mg" ? mg.toFixed(0) : (mg / 18).toFixed(1);
+  return unit === "mg" ? String(Math.round(mg)) : String(Math.round((mg / 18) * 100) / 100);
+}
+
+/** Preferred unit first, the other beside it: "mg/dL (3.44 mmol/L)". */
+export function formatGlucoseUnitBoth(mg: number, unit: GlucoseUnit): string {
+  const mmol = Math.round((mg / 18) * 100) / 100;
+  const mgText = String(Math.round(mg));
+  return unit === "mg" ? `mg/dL (${mmol} mmol/L)` : `mmol/L (${mgText} mg/dL)`;
 }
 
 /* Height, weight and A1c display units (UnitProvider), kept on this device like the app does. */

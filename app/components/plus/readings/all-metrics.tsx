@@ -3,7 +3,7 @@
 import { Activity, ArrowRight3, Drop, Health, Heart, Timer1, Weight } from "iconsax-react";
 import { useT } from "@/lib/plus/i18n";
 import { useMetrics } from "@/lib/plus/client/data";
-import { useGlucoseUnit } from "@/lib/plus/units";
+import { formatGlucose, formatGlucoseUnitBoth, useGlucoseUnit } from "@/lib/plus/units";
 import { parseStamp, type HealthMetric } from "@/lib/plus/health";
 import { fmtLongDay } from "@/lib/plus/format";
 import { currentWeek, homeMetrics, primaryValue } from "@/lib/plus/metric-series";
@@ -57,7 +57,7 @@ function NumberCard({ metric, history, onOpen }: { metric: HealthMetric; history
     );
   } else if (type === "glucose") {
     const mg = Number.parseFloat(metric.latest_value) || 0;
-    values = <Figure label={unit === "mg" ? metric.unit : "mmol/L"} value={(unit === "mg" ? mg : mg / 18).toFixed(0)} />;
+    values = <Figure label={formatGlucoseUnitBoth(mg, unit)} value={formatGlucose(mg, unit)} />;
   } else {
     values = <Figure label="kg" value={(Number.parseFloat(metric.latest_value) || 0).toFixed(1)} />;
   }

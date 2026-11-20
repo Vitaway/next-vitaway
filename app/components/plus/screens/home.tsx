@@ -23,7 +23,7 @@ import { useClinicalConfig } from "@/lib/plus/client/clinical-config";
 import { useReminders } from "@/lib/plus/reminders";
 import { fmtHeaderDate, WEEKDAYS } from "@/lib/plus/format";
 import { appointmentCardText } from "@/lib/plus/appointment-text";
-import { formatGlucose, glucoseUnitLabel, useGlucoseUnit } from "@/lib/plus/units";
+import { formatGlucose, formatGlucoseUnitBoth, useGlucoseUnit } from "@/lib/plus/units";
 import { useProgrammeConfig } from "@/lib/plus/client/programme-config";
 import { dailyQuestionKey, homeSections, metricCardLayout, pick, readingPrompts, tipOfTheDay, type ProgrammeConfig, type ReadingPrompt, type ReadingType } from "@/lib/plus/programme-config";
 import { ActionButton, DotSpinner, Photo, SectionHead } from "../ui/vita";
@@ -504,7 +504,7 @@ export default function HomeScreen() {
           ink="#E85A2E"
           title={t("hm_glucose")}
           value={glucose ? formatGlucose(Number.parseFloat(glucose.latest_value) || 0, glucoseUnit) : "—"}
-          unit={glucose ? glucoseUnitLabel(glucoseUnit) : ""}
+          unit={glucose ? formatGlucoseUnitBoth(Number.parseFloat(glucose.latest_value) || 0, glucoseUnit) : ""}
           status={caption(!!glucose && glucoseMg > 0, glucoseView)}
           series={weekSeries(metrics, "glucose")}
           letters={letters}
