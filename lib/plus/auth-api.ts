@@ -36,7 +36,13 @@ export type VerifyOtpResult =
   | { kind: "staff_setup"; challengeToken: string; message: string };
 
 export function apiBase(): string {
-  return (process.env.NEXT_PUBLIC_PLUS_API_URL || "https://care-api.vitaway.org").replace(/\/$/, "");
+  // TODO staging: revert to care-api.vitaway.org before production
+  const configured = (process.env.NEXT_PUBLIC_PLUS_API_URL || "https://vitaway.keyypress.com").replace(/\/$/, "");
+  if (typeof window !== "undefined") {
+    const host = window.location.hostname;
+    if (host === "localhost" || host === "127.0.0.1") return "";
+  }
+  return configured;
 }
 
 type Envelope<T> = { success?: boolean; data?: T; message?: string; error?: string };
@@ -169,9 +175,11 @@ export async function logoutPlus(token: string): Promise<void> {
           Accept: "application/json",
           Authorization: `Bearer ${token}`,
         },
+        withCredentials: true,
         timeout: 10_000,
       },
     );
+    await fetch(`${apiBase()}/api/v1/mobile/auth/logout`, { method: "POST", credentials: "include", cache: "no-store" }).catch(() => undefined);
   } catch {
     // Local sign-out still proceeds if the server call fails.
   }

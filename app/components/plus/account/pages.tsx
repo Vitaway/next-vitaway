@@ -24,7 +24,7 @@ const filled = (v?: string | null) => {
 
 function BottomSave({ label, loading, onClick }: { label: string; loading: boolean; onClick: () => void }) {
   return (
-    <div style={{ position: "sticky", bottom: 0, padding: "8px 20px calc(12px + env(safe-area-inset-bottom))", background: "var(--vc-canvas)" }}>
+    <div className="vita-bottom-bar" style={{ position: "sticky", bottom: 0, padding: "8px 20px calc(12px + env(safe-area-inset-bottom))", background: "var(--vc-canvas)" }}>
       <ActionButton full label={label} loading={loading} onClick={onClick} icon={<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>} />
     </div>
   );
@@ -55,14 +55,14 @@ export function MyProfileScreen() {
       return false;
     }
   };
-  if (loading && !p.firstName) return <div className="vita-page"><AppBar title={t("my_profile")} /><CenterSpinner /></div>;
+  if (loading && !p.firstName) return <div className="vita-page w-narrow"><AppBar title={t("my_profile")} /><CenterSpinner /></div>;
   const hUnit = heightUnit === "in" ? "In" : "cm";
   const wUnit = weightUnit === "kg" ? "Kg" : "lbs";
   const height = p.height != null ? convertHeight(Number(p.height), heightUnit).toFixed(1) : "N/A";
 
   const stat = (label: string, value: string, known: boolean, onClick: () => void) => (
     <button type="button" onClick={onClick} style={{ flex: 1, padding: "14px 8px", borderRadius: 8, background: "var(--vc-surface)", border: `1px solid ${navyA(0.08)}`, textAlign: "center" }}>
-      <div style={{ fontSize: 12, fontWeight: 600, color: navyA(0.55) }}>{label}</div>
+      <div style={{ fontSize: 13, fontWeight: 600, color: navyA(0.55) }}>{label}</div>
       <div style={{ marginTop: 4, fontSize: 16, fontWeight: 800, color: known ? "var(--vc-navy)" : "var(--vc-action)" }}>{known ? value : t("add")}</div>
     </button>
   );
@@ -75,7 +75,7 @@ export function MyProfileScreen() {
   const fullName = `${p.firstName} ${p.lastName}`.trim();
 
   return (
-    <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
+    <div className="vita-page w-narrow" style={{ background: "var(--vc-canvas)" }}>
       <AppBar title={t("my_profile")} />
       <div style={{ flex: 1, overflowY: "auto", padding: "16px 20px 32px", display: "flex", flexDirection: "column", alignItems: "center" }}>
         <div style={{ padding: 3, borderRadius: "50%", border: "2.5px solid var(--vc-mint)" }}>
@@ -214,7 +214,7 @@ function ProfileField({ label, value, onChange, inputMode, multiline = false, er
     <label style={{ display: "block", padding: "12px 0" }}>
       <span style={{ display: "block", fontSize: 13, fontWeight: 600, color: navyA(0.55) }}>{label}</span>
       {multiline ? <textarea rows={4} value={value} placeholder={label} onChange={(e) => onChange(e.target.value)} style={style} /> : <input value={value} placeholder={label} inputMode={inputMode} onChange={(e) => onChange(e.target.value)} style={style} />}
-      {error ? <span style={{ display: "block", marginTop: 4, fontSize: 12, lineHeight: 1.3, color: "var(--vc-danger)" }}>{error}</span> : null}
+      {error ? <span style={{ display: "block", marginTop: 4, fontSize: 13, lineHeight: 1.3, color: "var(--vc-danger)" }}>{error}</span> : null}
     </label>
   );
 }
@@ -297,7 +297,7 @@ export function EditProfileScreen() {
   const set = (k: keyof typeof form) => (v: string) => setForm((f) => ({ ...f, [k]: v }));
 
   return (
-    <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
+    <div className="vita-page w-narrow" style={{ background: "var(--vc-canvas)" }}>
       <AppBar title={t("edit_account")} />
       <div style={{ flex: 1, overflowY: "auto", padding: "8px 20px 20px" }}>
         <p style={{ margin: "0 0 14px", fontSize: 14, fontWeight: 500, lineHeight: 1.4, color: navyA(0.6) }}>{t("edit_account_body")}</p>
@@ -400,7 +400,7 @@ export function HealthDetailsScreen() {
     </button>
   );
   return (
-    <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
+    <div className="vita-page w-narrow" style={{ background: "var(--vc-canvas)" }}>
       <AppBar title={t("health_details")} />
       <div style={{ flex: 1, overflowY: "auto", padding: "8px 20px 20px", display: "flex", flexDirection: "column", gap: 12 }}>
         <p style={{ margin: "0 0 2px", fontSize: 14, fontWeight: 500, lineHeight: 1.4, color: navyA(0.6) }}>{t("health_details_body")}</p>
@@ -438,6 +438,7 @@ type Txn = { id: number | string; name?: string | null; amount?: unknown; status
 
 /** payments_page.dart: list and receipts. */
 export function PaymentsScreen() {
+  const t = useT();
   const { toast } = useFeedback();
   const rows = useResource<Txn[]>("/transactions/", async () => asList<Txn>(await mobileRequest("/transactions/")));
   const [savingId, setSavingId] = useState<string | null>(null);
@@ -471,8 +472,8 @@ export function PaymentsScreen() {
   };
   const list = rows.data ?? [];
   return (
-    <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
-      <AppBar title="Payments" />
+    <div className="vita-page w-narrow" style={{ background: "var(--vc-canvas)" }}>
+      <AppBar title={t("programme_payments")} />
       {rows.loading && !rows.data ? (
         <CenterSpinner />
       ) : !list.length ? (
@@ -522,7 +523,7 @@ function Toggle({ label, value, onChange }: { label: string; value: boolean; onC
 function SelectBox({ label, value, options, onChange }: { label: string; value: string; options: Array<[string, string]>; onChange: (v: string) => void }) {
   return (
     <label style={{ display: "block", position: "relative", marginBottom: 12, padding: "8px 14px", borderRadius: 8, border: `1px solid ${navyA(0.12)}`, background: "var(--vc-surface)" }}>
-      <span style={{ display: "block", fontSize: 12, fontWeight: 600, color: navyA(0.55) }}>{label}</span>
+      <span style={{ display: "block", fontSize: 13, fontWeight: 600, color: navyA(0.55) }}>{label}</span>
       <select value={value} onChange={(e) => onChange(e.target.value)} style={{ width: "100%", appearance: "none", border: 0, outline: "none", background: "transparent", fontSize: 15, fontWeight: 700, color: "var(--vc-ink)", padding: "4px 0" }}>
         {options.map(([v, l]) => (
           <option key={v} value={v}>
@@ -554,7 +555,7 @@ export function SettingsScreen() {
   const subtitle = p.email.includes("@phone.vitaway.local") ? p.phone ?? "" : p.email;
   const shownCountry = country ?? (p.country && p.country !== "no country" ? p.country : t("select_country"));
   return (
-    <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
+    <div className="vita-page w-narrow" style={{ background: "var(--vc-canvas)" }}>
       <AppBar title={t("settings")} bubbles={false} />
       <div style={{ flex: 1, overflowY: "auto", padding: "8px 20px calc(env(safe-area-inset-bottom) + 32px)" }}>
         <button type="button" onClick={() => push("/account/my-profile")} style={{ width: "100%", display: "flex", alignItems: "center", gap: 12, padding: 14, marginBottom: 14, borderRadius: 10, background: "var(--vc-surface)", textAlign: "left" }}>
@@ -602,6 +603,10 @@ export function SettingsScreen() {
             }}
           />
         </SettingsCard>
+        <button type="button" onClick={() => push("/reminders/preferences")} style={{ width: "100%", display: "flex", alignItems: "center", padding: 16, marginBottom: 14, borderRadius: 10, background: "var(--vc-surface)", textAlign: "left" }}>
+          <span style={{ flex: 1, fontSize: 15, fontWeight: 700, color: "var(--vc-ink)" }}>{t("rp_open")}</span>
+          <ArrowRight3 size={20} color={navyA(0.3)} />
+        </button>
         <ActionButton full label={t("save_changes")} onClick={() => toast(t("settings_saved"))} />
         <button type="button" onClick={() => void deleteAccount()} style={{ display: "block", margin: "16px auto 0", padding: 8, fontSize: 14, fontWeight: 700, color: "var(--vc-danger)" }}>
           {t("delete_account")}
@@ -644,7 +649,7 @@ export function ContactScreen() {
     { icon: <Clock size={20} color="currentColor" />, label: t("contact_hours"), value: VITAWAY_CONTACT.hours },
   ];
   return (
-    <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
+    <div className="vita-page w-narrow" style={{ background: "var(--vc-canvas)" }}>
       <AppBar title={t("contact_us_title")} />
       <div style={{ flex: 1, overflowY: "auto", padding: "8px 20px calc(env(safe-area-inset-bottom) + 32px)" }}>
         <div style={{ display: "flex", justifyContent: "center" }}>
@@ -659,7 +664,7 @@ export function ContactScreen() {
               <>
                 <span style={{ width: 44, height: 44, borderRadius: "50%", flex: "none", display: "flex", alignItems: "center", justifyContent: "center", background: "var(--vc-tile-mint)", color: "var(--vc-navy)" }}>{r.icon}</span>
                 <span style={{ flex: 1, minWidth: 0 }}>
-                  <span style={{ display: "block", fontSize: 12, fontWeight: 600, color: navyA(0.5) }}>{r.label}</span>
+                  <span style={{ display: "block", fontSize: 13, fontWeight: 600, color: navyA(0.5) }}>{r.label}</span>
                   <span style={{ display: "block", marginTop: 2, fontSize: 14, fontWeight: 700, color: "var(--vc-navy)", whiteSpace: "pre-line" }}>{r.value}</span>
                 </span>
               </>
@@ -693,7 +698,7 @@ export function AboutScreen() {
     </div>
   );
   return (
-    <Page backdrop>
+    <Page backdrop width="narrow">
       <AppBar title={t("about_this_app")} />
       <div style={{ flex: 1, overflowY: "auto", padding: "8px 20px calc(env(safe-area-inset-bottom) + 32px)" }}>
         <Card>
@@ -718,7 +723,7 @@ export function AboutScreen() {
               {VITAWAY_CONTACT.phoneDisplay}
             </a>
           </div>
-          <div style={{ margin: "18px 0 10px", textAlign: "center", fontSize: 15, fontWeight: 800, color: "var(--vc-navy)" }}>{t("follow_us", undefined, "Follow Us")}</div>
+          <div style={{ margin: "18px 0 10px", textAlign: "center", fontSize: 15, fontWeight: 800, color: "var(--vc-navy)" }}>{t("follow_us")}</div>
           <SocialRow />
         </Card>
       </div>
@@ -753,7 +758,7 @@ export function CoachAvailabilityScreen() {
     }
   };
   return (
-    <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
+    <div className="vita-page w-narrow" style={{ background: "var(--vc-canvas)" }}>
       <AppBar title={t("set_availability")} />
       <div style={{ flex: 1, overflowY: "auto", padding: "8px 16px 20px" }}>
         <p style={{ margin: "0 4px 12px", fontSize: 14, fontWeight: 600, color: navyA(0.6) }}>{t("choose_availability")}</p>

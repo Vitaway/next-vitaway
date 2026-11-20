@@ -76,19 +76,17 @@ export function loadPlusSession(): PlusSession | null {
     const raw = window.localStorage.getItem(PLUS_SESSION_KEY);
     if (!raw) return null;
     const parsed = JSON.parse(raw) as Partial<PlusSession>;
-    if (!parsed || typeof parsed.token !== "string") return null;
-    // Password sign-in (Flutter /login) only returns the mobile key, so the web token may be empty.
-    if (!parsed.token && !(typeof parsed.mobileToken === "string" && parsed.mobileToken)) return null;
+    if (!parsed) return null;
     if (!parsed.user || typeof parsed.user !== "object" || typeof parsed.user.id !== "string") {
       return null;
     }
-    // Sessions saved before the client app needed the mobile key must sign in again.
-    if (typeof parsed.mobileToken !== "string") return null;
+    // F11: the mobile key lives in an HttpOnly cookie, not localStorage.
+    const token = typeof parsed.token === "string" ? parsed.token : "";
     const doors = Array.isArray(parsed.doors) ? parsed.doors.filter(isDoor) : [];
     const primaryDoor = isDoor(parsed.primaryDoor) ? parsed.primaryDoor : null;
     return {
-      token: parsed.token,
-      mobileToken: parsed.mobileToken,
+      token,
+      mobileToken: "",
       user: {
         id: parsed.user.id,
         email: parsed.user.email ?? null,
@@ -112,10 +110,12 @@ export function loadPlusSession(): PlusSession | null {
 
 export function savePlusSession(session: PlusSession): void {
   if (typeof window === "undefined") return;
-  window.localStorage.setItem(PLUS_SESSION_KEY, JSON.stringify(session));
+  // Keep the profile in localStorage; the mobile API key stays in the HttpOnly cookie.
+  window.localStorage.setItem(PLUS_SESSION_KEY, JSON.stringify({ ...session, mobileToken: "" }));
 }
 
 export function clearPlusSession(): void {
   if (typeof window === "undefined") return;
   window.localStorage.removeItem(PLUS_SESSION_KEY);
+  void fetch("/api/v1/mobile/auth/logout", { method: "POST", credentials: "include", cache: "no-store" }).catch(() => undefined);
 }

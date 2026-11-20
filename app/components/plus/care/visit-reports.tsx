@@ -6,6 +6,7 @@ import { refreshVisitReports, useVisitReport, useVisitReports, visitReportPdf, v
 import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { ActionButton, AppBar, CenterSpinner, CircleButton, DotSpinner, EmptyState, useFeedback } from "../ui/vita";
 import { useDocumentReader } from "../ui/document-reader";
+import { useVisitPlans, VisitPlansList } from "./visit-plans";
 
 function ReportCard({ report, onOpen }: { report: VisitReport; onOpen: () => void }) {
   return (
@@ -15,7 +16,7 @@ function ReportCard({ report, onOpen }: { report: VisitReport; onOpen: () => voi
       </span>
       <span style={{ marginLeft: 14, flex: 1, minWidth: 0 }}>
         <span style={{ display: "block", fontSize: 16, fontWeight: 800 }}>{report.visitType}</span>
-        <span style={{ display: "block", marginTop: 4, fontSize: 12, fontWeight: 600, color: "rgba(var(--vc-navy-rgb),0.5)" }}>
+        <span style={{ display: "block", marginTop: 4, fontSize: 13, fontWeight: 600, color: "rgba(var(--vc-navy-rgb),0.5)" }}>
           {report.clinician ? `${visitWhenLabel(report)} · ${report.clinician}` : visitWhenLabel(report)}
         </span>
       </span>
@@ -30,12 +31,15 @@ function ReportCard({ report, onOpen }: { report: VisitReport; onOpen: () => voi
 /** VisitReportsList — also embedded under My care. */
 export function VisitReportsList({ embedded = false }: { embedded?: boolean }) {
   const { reports, loading, error, reload } = useVisitReports();
+  const plans = useVisitPlans();
+  const hasPlans = (plans.data ?? []).length > 0;
   const { push } = usePlusPaths();
   if (loading) return <div style={{ padding: embedded ? "28px 0" : 0, display: "flex", justifyContent: "center" }}><DotSpinner /></div>;
-  if (error && !reports.length) return <EmptyState title="Could not load visit reports" subtitle="Check your connection and try again." actionLabel="Try again" onAction={reload} />;
-  if (!reports.length) return <EmptyState title="No visit reports yet" subtitle="After a visit at the Vitaway clinic, your care team can send the summary here." />;
+  if (!hasPlans && error && !reports.length) return <EmptyState title="Could not load visit reports" subtitle="Check your connection and try again." actionLabel="Try again" onAction={reload} />;
+  if (!hasPlans && !reports.length) return <EmptyState title="No visit reports yet" subtitle="After a visit at the Vitaway clinic, your care team can send the summary here." />;
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 12, padding: embedded ? "4px 0 8px" : "8px 20px 24px" }}>
+    <div className="vita-flex-list" style={{ display: "flex", flexDirection: "column", gap: 12, padding: embedded ? "4px 0 8px" : "8px 20px 24px" }}>
+      <VisitPlansList />
       {reports.map((r) => (
         <ReportCard key={r.id} report={r} onOpen={() => push(`/visit-reports/${r.id}`)} />
       ))}
@@ -58,7 +62,7 @@ function Section({ title, body, emptyLabel, tint, alwaysShow = false }: { title:
   if (!alwaysShow && body === null) return null;
   return (
     <div style={{ marginBottom: 12, padding: 16, borderRadius: 10, background: tint ?? "var(--vc-surface)", border: tint ? undefined : "1px solid rgba(var(--vc-navy-rgb),0.06)" }}>
-      <div style={{ fontSize: 11, letterSpacing: 0.6, fontWeight: 700, color: "rgba(var(--vc-navy-rgb),0.55)" }}>{title.toUpperCase()}</div>
+      <div style={{ fontSize: 13, letterSpacing: 0.6, fontWeight: 700, color: "rgba(var(--vc-navy-rgb),0.55)" }}>{title.toUpperCase()}</div>
       <div style={{ marginTop: 8, fontSize: 14, lineHeight: 1.5, whiteSpace: "pre-wrap", color: body === null ? "rgba(var(--vc-navy-rgb),0.5)" : "var(--vc-navy)" }}>{body ?? emptyLabel ?? "None this visit"}</div>
     </div>
   );
@@ -81,7 +85,7 @@ export function VisitReportScreen({ id }: { id: number }) {
     }
   };
   return (
-    <div className="vita-page">
+    <div className="vita-page w-narrow">
       <AppBar
         title="After-Visit Summary"
         actions={
@@ -102,7 +106,7 @@ export function VisitReportScreen({ id }: { id: number }) {
             <div style={{ marginBottom: 14, padding: 20, borderRadius: 10, background: "var(--vc-teal)" }}>
               <div style={{ fontSize: 20, fontWeight: 800, color: "#fff" }}>{report.visitType}</div>
               <div style={{ marginTop: 6, fontSize: 13, color: "rgba(255,255,255,0.8)" }}>{report.clinician ? `${visitWhenLabel(report)} · with ${report.clinician}` : visitWhenLabel(report)}</div>
-              {report.fileNumber ? <div style={{ marginTop: 10, fontSize: 12, color: "rgba(255,255,255,0.7)" }}>Patient number {report.fileNumber}</div> : null}
+              {report.fileNumber ? <div style={{ marginTop: 10, fontSize: 13, color: "rgba(255,255,255,0.7)" }}>Patient number {report.fileNumber}</div> : null}
             </div>
             <Section title="Message from your care team" body={report.message} tint="var(--vc-tile-mint)" />
             <Section title="Reason for visit" body={report.reason} />

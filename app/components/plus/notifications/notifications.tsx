@@ -260,7 +260,7 @@ export function NotificationsScreen() {
                     <span style={{ flex: 1, minWidth: 0 }}>
                       <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
                         <span style={{ flex: 1, fontSize: 13, fontWeight: 800, color: "var(--vc-navy)" }}>{title}</span>
-                        <span style={{ fontSize: 11, fontWeight: 600, color: navyA(0.45) }}>{formatDelta(n.date_time, t)}</span>
+                        <span style={{ fontSize: 13, fontWeight: 600, color: navyA(0.45) }}>{formatDelta(n.date_time, t)}</span>
                         {unread ? <span style={{ width: 8, height: 8, borderRadius: "50%", background: "var(--vc-action)" }} /> : null}
                       </span>
                       <span style={{ display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden", marginTop: 3, fontSize: 13, lineHeight: 1.4, fontWeight: unread ? 600 : 400, color: navyA(unread ? 0.85 : 0.6) }}>{body}</span>
@@ -308,7 +308,7 @@ function NotificationSettingsModal({ open, onClose }: { open: boolean; onClose: 
     <button type="button" role="switch" aria-checked={value} onClick={() => onChange(!value)} style={{ width: "100%", display: "flex", alignItems: "center", gap: 12, padding: "10px 0", textAlign: "left" }}>
       <span style={{ flex: 1 }}>
         <span style={{ display: "block", fontSize: 14, fontWeight: 700, color: "var(--vc-navy)" }}>{title}</span>
-        <span style={{ display: "block", fontSize: 12, color: navyA(0.5) }}>{subtitle}</span>
+        <span style={{ display: "block", fontSize: 13, color: navyA(0.5) }}>{subtitle}</span>
       </span>
       <span style={{ width: 50, height: 30, borderRadius: 999, padding: 3, background: value ? "var(--vc-mint)" : navyA(0.12) }}>
         <span style={{ display: "block", width: 24, height: 24, borderRadius: "50%", background: value ? "var(--vc-teal)" : "#fff", transform: `translateX(${value ? 20 : 0}px)`, transition: "transform 160ms", boxShadow: "0 1px 3px rgba(0,0,0,0.2)" }} />
@@ -317,7 +317,7 @@ function NotificationSettingsModal({ open, onClose }: { open: boolean; onClose: 
   );
   const quiet = (label: string, value: number, onClick: () => void) => (
     <button type="button" onClick={onClick} style={{ flex: 1, textAlign: "left", padding: 12, borderRadius: 8, background: "var(--vc-canvas)" }}>
-      <span style={{ display: "block", fontSize: 11, fontWeight: 600, color: navyA(0.45) }}>{label}</span>
+      <span style={{ display: "block", fontSize: 13, fontWeight: 600, color: navyA(0.45) }}>{label}</span>
       <span style={{ display: "block", marginTop: 2, fontSize: 16, fontWeight: 800, color: "var(--vc-navy)" }}>{minutesLabel(value)}</span>
     </button>
   );

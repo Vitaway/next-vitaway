@@ -60,7 +60,7 @@ export function BrowserNotificationRow({ compact = false }: { compact?: boolean 
     <div style={{ marginTop: compact ? 0 : 8, padding: 12, borderRadius: 8, background: state === "granted" ? "var(--vc-wash)" : "var(--vc-tile-peach)", display: "flex", alignItems: "center", gap: 12 }}>
       <span style={{ flex: 1 }}>
         <span style={{ display: "block", fontSize: 14, fontWeight: 800, color: "var(--vc-navy)" }}>Device notifications</span>
-        <span style={{ display: "block", marginTop: 2, fontSize: 12, lineHeight: 1.4, color: navyA(0.6) }}>{state === "granted" && pushOn ? PUSH_ON : COPY[state]}</span>
+        <span style={{ display: "block", marginTop: 2, fontSize: 13, lineHeight: 1.4, color: navyA(0.6) }}>{state === "granted" && pushOn ? PUSH_ON : COPY[state]}</span>
       </span>
       {state === "default" ? (
         <ActionButton

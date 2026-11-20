@@ -67,7 +67,10 @@ async function call<T = Json>(
   }
   let response: Response;
   try {
-    response = await fetch(`${apiBase()}${path}`, { method: "POST", headers, body: payload, signal: controller.signal });
+    const url = path.startsWith("/api/") || path.startsWith("http")
+      ? `${apiBase()}${path}`
+      : `${apiBase()}/api/v1/mobile/auth${path.startsWith("/") ? path : `/${path}`}`;
+    response = await fetch(url, { method: "POST", headers, body: payload, credentials: "include", signal: controller.signal });
   } catch {
     throw new MobileAuthError("network", 0);
   } finally {
@@ -153,13 +156,15 @@ export function applyMobileUserToSession(session: PlusSession, payload: Json): P
  * be dropped; any other failure keeps the local session.
  */
 export async function refreshSessionFromMe(session: PlusSession, timeoutMs = 8_000): Promise<PlusSession | null> {
-  if (!session.mobileToken) return session;
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
-    const response = await fetch(`${apiBase()}/me/`, {
+    const headers: Record<string, string> = { Accept: "application/json" };
+    if (session.mobileToken) headers.Authorization = `Token ${session.mobileToken}`;
+    const response = await fetch(`${apiBase()}/api/v1/mobile/auth/me`, {
       method: "GET",
-      headers: { Accept: "application/json", Authorization: `Token ${session.mobileToken}` },
+      headers,
+      credentials: "include",
       signal: controller.signal,
       cache: "no-store",
     });

@@ -21,7 +21,7 @@ function StatTile({ asset, label, value, tint }: { asset: string; label: string;
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={asset} alt="" width={18} height={18} />
-        <span style={{ fontSize: 12, fontWeight: 600, color: navyA(0.6), whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{label}</span>
+        <span style={{ fontSize: 13, fontWeight: 600, color: navyA(0.6), whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{label}</span>
       </div>
       <div style={{ marginTop: 10, fontSize: 22, fontWeight: 800, color: "var(--vc-navy)" }}>{value}</div>
     </div>
@@ -51,7 +51,7 @@ export function ChatInfoScreen({ roomId }: { roomId: string }) {
   const [busy, setBusy] = useState(false);
   const [edit, setEdit] = useState<{ name: string; description: string } | null>(null);
 
-  if (!room) return <div className="vita-page" style={{ background: "var(--vc-canvas)" }}><AppBar title="" /><CenterSpinner /></div>;
+  if (!room) return <div className="vita-page w-narrow" style={{ background: "var(--vc-canvas)" }}><AppBar title="" /><CenterSpinner /></div>;
 
   const type = user?.user_type ?? "normal";
   const staff = type === "coach" || type === "admin";
@@ -116,7 +116,7 @@ export function ChatInfoScreen({ roomId }: { roomId: string }) {
   const inputStyle: React.CSSProperties = { width: "100%", padding: "12px 0", border: 0, borderBottom: `1px solid ${navyA(0.3)}`, outline: "none", fontSize: 16, background: "transparent", color: "var(--vc-ink)" };
 
   return (
-    <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
+    <div className="vita-page w-narrow" style={{ background: "var(--vc-canvas)" }}>
       <AppBar title="" />
       <div style={{ flex: 1, overflowY: "auto", padding: "0 20px calc(env(safe-area-inset-bottom) + 104px)" }}>
         <div style={{ display: "flex", justifyContent: "center", marginTop: 16 }}>
@@ -176,7 +176,7 @@ export function ChatInfoScreen({ roomId }: { roomId: string }) {
                       <Avatar url={m.profile_picture} size={42} />
                       <div style={{ marginLeft: 12, minWidth: 0 }}>
                         <div style={{ fontSize: 15, fontWeight: 700, color: "var(--vc-navy)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{name || "—"}</div>
-                        <div style={{ marginTop: 2, fontSize: 12, fontWeight: 600, color: navyA(0.45) }}>{m.type === "normal" ? "Member" : "Coach"}</div>
+                        <div style={{ marginTop: 2, fontSize: 13, fontWeight: 600, color: navyA(0.45) }}>{m.type === "normal" ? "Member" : "Coach"}</div>
                       </div>
                     </div>
                   );

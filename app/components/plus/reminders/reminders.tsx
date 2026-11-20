@@ -63,6 +63,10 @@ export function RemindersScreen() {
         }
       />
       <div style={{ flex: 1, overflowY: "auto", paddingBottom: "calc(env(safe-area-inset-bottom) + 24px)", maxWidth: 720, width: "100%", margin: "0 auto" }}>
+        <button type="button" onClick={() => push("/reminders/preferences")} data-testid="rp-link" style={{ display: "flex", alignItems: "center", gap: 10, width: "calc(100% - 32px)", margin: "10px 16px 4px", padding: "12px 14px", borderRadius: 10, background: "var(--vc-sheet, var(--vc-surface))", textAlign: "left", fontSize: 14, fontWeight: 700, color: "var(--vc-teal-ink)" }}>
+          <NotificationIcon size={20} color="currentColor" />
+          <span style={{ flex: 1 }}>{t("rp_open")}</span>
+        </button>
         {list.length === 0 ? (
           <div style={{ padding: "48px 32px", textAlign: "center" }}>
             <Alarm size={42} color={navyA(0.28)} />
@@ -77,7 +81,7 @@ export function RemindersScreen() {
             <div style={{ margin: "6px 16px" }}>
               <BrowserNotificationRow compact />
             </div>
-            {list.map((r) => <ReminderTile key={r.id} reminder={r} onClick={() => push(`/reminders/${encodeURIComponent(r.id)}`)} />)}
+            <div className="vita-flex-list vita-tiles">{list.map((r) => <ReminderTile key={r.id} reminder={r} onClick={() => push(`/reminders/${encodeURIComponent(r.id)}`)} />)}</div>
           </>
         )}
       </div>
@@ -98,7 +102,7 @@ function ReminderTile({ reminder, onClick }: { reminder: Reminder; onClick: () =
       </span>
       <span style={{ flex: 1, minWidth: 0 }}>
         <span style={{ display: "block", fontSize: 15, fontWeight: 700, color: "var(--vc-navy)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{reminder.name || kind}</span>
-        {time ? <span style={{ display: "block", fontSize: 12, color: navyA(0.45) }}>{time}</span> : null}
+        {time ? <span style={{ display: "block", fontSize: 13, color: navyA(0.45) }}>{time}</span> : null}
       </span>
       <span style={{ width: 36, height: 36, borderRadius: "50%", background: color, display: "flex", alignItems: "center", justifyContent: "center" }}>
         <Play size={20} color="var(--vc-navy)" variant="Bold" />
@@ -162,7 +166,7 @@ export function AddReminderScreen() {
   };
 
   return (
-    <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
+    <div className="vita-page w-narrow" style={{ background: "var(--vc-canvas)" }}>
       <AppBar title={t("add_reminder_speed")} />
       <div style={{ flex: 1, overflowY: "auto", padding: "20px 20px calc(env(safe-area-inset-bottom) + 28px)", maxWidth: 640, width: "100%", margin: "0 auto" }}>
         <div style={{ border, borderRadius: 10, padding: 20 }}>
@@ -171,7 +175,7 @@ export function AddReminderScreen() {
             {kinds.map((k) => (
               <button key={k.value} type="button" aria-pressed={type === k.value} onClick={() => setType(k.value)} style={{ flex: 1, padding: 10, borderRadius: 8, border: `1px solid ${type === k.value ? "var(--vc-navy)" : navyA(0.12)}`, display: "flex", flexDirection: "column", alignItems: "center", gap: 5 }}>
                 {k.icon}
-                <span style={{ fontSize: 11, lineHeight: 1.25, textAlign: "center", color: "var(--vc-ink)" }}>
+                <span style={{ fontSize: 13, lineHeight: 1.25, textAlign: "center", color: "var(--vc-ink)" }}>
                   {k.label}
                   <br />
                   {t("reminders_title")}
@@ -217,7 +221,7 @@ export function AddReminderScreen() {
                 const v = d.toLowerCase();
                 const on = days.includes(v);
                 return (
-                  <button key={v} type="button" onClick={() => setDays((all) => (on ? all.filter((x) => x !== v) : [...all, v]))} style={{ width: 40, padding: 10, borderRadius: 6, border, fontSize: 10, background: on ? "var(--vc-teal)" : "var(--vc-surface)", color: on ? "#fff" : undefined }}>
+                  <button key={v} type="button" onClick={() => setDays((all) => (on ? all.filter((x) => x !== v) : [...all, v]))} style={{ width: 40, padding: 10, borderRadius: 6, border, fontSize: 13, background: on ? "var(--vc-teal)" : "var(--vc-surface)", color: on ? "#fff" : undefined }}>
                     {d}
                   </button>
                 );
@@ -266,7 +270,7 @@ export function ReminderDetailScreen({ id }: { id: string }) {
 
   if (!reminder) {
     return (
-      <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
+      <div className="vita-page w-narrow" style={{ background: "var(--vc-canvas)" }}>
         <AppBar title={t("reminders_title")} />
         {ready ? <p style={{ padding: 32, textAlign: "center", color: navyA(0.55) }}>{t("reminders_empty")}</p> : null}
       </div>
@@ -298,7 +302,7 @@ export function ReminderDetailScreen({ id }: { id: string }) {
   };
 
   return (
-    <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
+    <div className="vita-page w-narrow" style={{ background: "var(--vc-canvas)" }}>
       <AppBar
         title={kindLabel(reminder.type === "bp" ? "other" : reminder.type, t)}
         actions={

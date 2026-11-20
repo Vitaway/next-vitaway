@@ -69,7 +69,7 @@ export default function LogWeightScreen() {
   };
 
   return (
-    <MetricLogScaffold title={t("add_weight")} icon={<Weight size={17} color="currentColor" />} saveLabel={t("save")} loading={saving} onSave={kg === null ? undefined : save}>
+    <MetricLogScaffold photoType="weight" title={t("add_weight")} icon={<Weight size={17} color="currentColor" />} saveLabel={t("save")} loading={saving} onSave={kg === null ? undefined : save}>
       <div style={{ padding: "8px 16px 24px" }}>
         <DateLine value={day} onChange={setDay} />
         <div style={{ marginTop: 16, display: "flex", justifyContent: "center" }}>

@@ -6,6 +6,7 @@ import { ArrowDown2, Calendar1, Edit, Health, NoteText, Refresh, Repeat, Trash }
 import { useT } from "@/lib/plus/i18n";
 import { useMe } from "@/lib/plus/client/data";
 import { mobileRequest } from "@/lib/plus/client/api";
+import { duplicateOf } from "@/lib/plus/medicine-duplicate";
 import { markDose, refreshMedications, useAdherence, useMedicationHistory, useMedications } from "@/lib/plus/client/meds";
 import { DOSE_COLORS, canMarkDoseTaken, defaultTimesForFrequency, effectiveSlotStatus, type MedicationSlot } from "@/lib/plus/medication";
 import { useTheme } from "@/lib/plus/theme";
@@ -42,7 +43,7 @@ export function MedicationsScreen() {
   };
   return (
     <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
-      <AppBar title={t("medications_title")} actions={<CircleButton label={t("add_medication")} onClick={() => push("/medications/add")}>{plus}</CircleButton>} />
+      <AppBar title={t("pillbox")} actions={<CircleButton label={t("add_medication")} onClick={() => push("/medications/add")}>{plus}</CircleButton>} />
       {loading ? (
         <CenterSpinner />
       ) : failed ? (
@@ -60,14 +61,18 @@ export function MedicationsScreen() {
             <EmptyState title={t("no_medications")} subtitle={t("no_medications_body")} />
           ) : (
             <>
-              {meds.list.map((m) => (
-                <MedicationListCard key={m.id} medication={m} onClick={() => push(`/medications/${m.id}`)} />
-              ))}
-              <p style={{ margin: "8px 0 0", textAlign: "center", fontSize: 12, fontWeight: 500, color: navyA(0.4) }}>Add only medicines your doctor prescribed. Your care team sees this list.</p>
+              <div className="vita-flex-list">
+                {meds.list.map((m) => (
+                  <MedicationListCard key={m.id} medication={m} onClick={() => push(`/medications/${m.id}`)} />
+                ))}
+              </div>
+              <p style={{ margin: "8px 0 0", textAlign: "center", fontSize: 13, fontWeight: 500, color: navyA(0.4) }}>Add only medicines your doctor prescribed. Your care team sees this list.</p>
             </>
           )}
           <div style={{ height: 20 }} />
-          <ActionButton full label={t("add_medication")} icon={plus} onClick={() => push("/medications/add")} />
+          <div className="vita-inline-cta">
+            <ActionButton full label={t("add_medication")} icon={plus} onClick={() => push("/medications/add")} />
+          </div>
         </div>
       )}
     </div>
@@ -79,7 +84,7 @@ function HistoryBadge({ slot }: { slot: MedicationSlot }) {
   const colors = DOSE_COLORS[slot.status];
   const [bg, fg] = colors ? (dark ? colors.dark : colors.light) : ["var(--vc-surface-muted)", "var(--vc-muted)"];
   const label = slot.status === "taken" ? `${slot.time} taken` : slot.status === "due" || slot.status === "pending" ? `${slot.time} due` : slot.status === "missed" ? `${slot.time} missed` : slot.time;
-  return <span style={{ padding: "6px 10px", borderRadius: 10, background: bg, color: fg, fontWeight: 700, fontSize: 12 }}>{label}</span>;
+  return <span style={{ padding: "6px 10px", borderRadius: 10, background: bg, color: fg, fontWeight: 700, fontSize: 13 }}>{label}</span>;
 }
 
 /** medication_detail_page.dart */
@@ -90,7 +95,7 @@ export function MedicationDetailScreen({ id }: { id: number }) {
   const meds = useMedications();
   const history = useMedicationHistory(id, 30);
   const med = meds.list.find((m) => m.id === id);
-  if (!med) return <div className="vita-page" style={{ background: "var(--vc-canvas)" }}><AppBar title={t("medications_title")} />{meds.loading ? <CenterSpinner /> : <EmptyState title={t("no_medications")} />}</div>;
+  if (!med) return <div className="vita-page w-narrow" style={{ background: "var(--vc-canvas)" }}><AppBar title={t("medications_title")} />{meds.loading ? <CenterSpinner /> : <EmptyState title={t("no_medications")} />}</div>;
 
   const remove = async () => {
     const ok = await confirm({ title: "Remove medicine", message: `Remove ${med.name} from your list?`, confirmLabel: "Delete", cancelLabel: "Cancel", destructive: true });
@@ -124,7 +129,7 @@ export function MedicationDetailScreen({ id }: { id: number }) {
     return `${["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][d.getDay()]} ${d.getDate()} ${["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][d.getMonth()]}`;
   };
   return (
-    <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
+    <div className="vita-page w-narrow" style={{ background: "var(--vc-canvas)" }}>
       <AppBar title={med.name} actions={<CircleButton label="Delete" onClick={remove}><Trash size={18} color="currentColor" /></CircleButton>} />
       {history.loading && !history.data ? (
         <CenterSpinner />
@@ -220,6 +225,9 @@ export function AddMedicationScreen() {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [sheet, setSheet] = useState<null | "unit" | "freq" | "date" | { time: number }>(null);
+  // W7: name of the medicine this looks like, while the warning is open.
+  const [duplicate, setDuplicate] = useState<string | null>(null);
+  const { push } = usePlusPaths();
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -237,12 +245,21 @@ export function AddMedicationScreen() {
   const freqLabel = !hasFreq ? "Select frequency" : custom ? (customText.trim() ? `${customText.trim()} times a day` : "Custom") : PRESETS.find((p) => p[0] === preset)?.[1] ?? "Select frequency";
   const applyDefaults = (f: number) => setTimes(defaultTimesForFrequency(f).map(toHm));
 
-  const save = async () => {
+  const save = async (confirmed = false) => {
     setTouched({ name: true, dose: true, freq: true, custom: custom });
     if (future) return setSubmitError(t("medication_start_date_future"));
     if (!canSave) return;
     setSaving(true);
     setSubmitError(null);
+    if (!confirmed) {
+      // W7: advice only; a failed check never blocks saving.
+      const dup = duplicateOf(await mobileRequest("/medications/check-duplicate/", { method: "POST", body: { name: n } }).catch(() => null));
+      if (dup) {
+        setSaving(false);
+        setDuplicate(dup.name);
+        return;
+      }
+    }
     // Like add_medication.dart scheduling reminders: ask while we still have the tap.
     const permission = requestNotificationPermission();
     try {
@@ -265,7 +282,7 @@ export function AddMedicationScreen() {
   const timeIndex = typeof sheet === "object" && sheet ? sheet.time : -1;
 
   return (
-    <MetricLogScaffold title={t("add_medication")} icon={<Health size={20} color="currentColor" />} saveLabel={t("save_medication")} loading={saving} onSave={saving ? undefined : save}>
+    <MetricLogScaffold title={t("add_medication")} icon={<Health size={20} color="currentColor" />} saveLabel={t("save_medication")} loading={saving} onSave={saving ? undefined : () => void save()}>
       <div style={{ padding: "8px 16px 24px" }}>
         <Card>
           <AuthField label={t("medication_name")} required hint={t("medication_name")} icon={<Health size={20} color="currentColor" />} value={name} onChange={(v) => { setName(v); setSubmitError(null); setTouched((x) => ({ ...x, name: true })); }} error={nameError} />
@@ -280,7 +297,7 @@ export function AddMedicationScreen() {
                 onChange={(e) => { setDose(e.target.value); setSubmitError(null); setTouched((x) => ({ ...x, dose: true })); }}
                 style={{ width: "100%", padding: "14px 0", border: 0, borderBottom: `1px solid ${doseError ? "var(--vc-danger)" : navyA(0.55)}`, outline: "none", background: "transparent", fontSize: 16, fontWeight: 500, color: "var(--vc-ink)" }}
               />
-              {doseError ? <div style={{ marginTop: 6, fontSize: 12, lineHeight: 1.3, color: "var(--vc-danger)" }}>{doseError}</div> : null}
+              {doseError ? <div style={{ marginTop: 6, fontSize: 13, lineHeight: 1.3, color: "var(--vc-danger)" }}>{doseError}</div> : null}
             </div>
             <div style={{ flex: 3, minWidth: 0 }}>
               <UnderlineButton onClick={() => setSheet("unit")}>
@@ -296,7 +313,7 @@ export function AddMedicationScreen() {
             {lineText(freqLabel, !hasFreq)}
             {caret(Boolean(freqError))}
           </UnderlineButton>
-          {freqError ? <div style={{ marginTop: 6, fontSize: 12, color: "var(--vc-danger)" }}>{freqError}</div> : null}
+          {freqError ? <div style={{ marginTop: 6, fontSize: 13, color: "var(--vc-danger)" }}>{freqError}</div> : null}
           {custom ? (
             <>
               <div style={{ height: 14 }} />
@@ -333,6 +350,20 @@ export function AddMedicationScreen() {
           {submitError ? <p style={{ margin: "12px 0 0", color: "var(--vc-danger)", fontSize: 13, fontWeight: 600 }}>{submitError}</p> : null}
         </Card>
       </div>
+      <Modal
+        open={duplicate !== null}
+        compact
+        title={t("duplicate_medicine_title")}
+        onClose={() => setDuplicate(null)}
+        actions={
+          <>
+            <ActionButton small tone="white" label={t("duplicate_medicine_pharmacist")} onClick={() => { setDuplicate(null); push("/support"); }} />
+            <ActionButton small label={t("duplicate_medicine_add_anyway")} onClick={() => { setDuplicate(null); void save(true); }} />
+          </>
+        }
+      >
+        <p data-testid="duplicate-medicine" style={{ margin: 0, fontSize: 15, lineHeight: 1.6, color: "var(--vc-body)" }}>{t("duplicate_medicine_body", { name: duplicate ?? "" })}</p>
+      </Modal>
       <Modal open={sheet === "unit"} title="Unit" onClose={() => setSheet(null)}>
         <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
           {UNITS.map((u) => (

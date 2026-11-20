@@ -77,7 +77,7 @@ export function FindCoachScreen() {
                     <span style={{ display: "block", padding: 8 }}>
                       <span style={{ display: "block", fontSize: 15, fontWeight: 600, color: "var(--vc-navy)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{`${coach.first_name} ${coach.last_name}`.trim()}</span>
                       <span style={{ display: "block", marginTop: 2, fontSize: 14, color: navyA(0.55), whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{coach.profile.speciality || t("health_coach")}</span>
-                      <span style={{ display: "inline-block", marginTop: 4, padding: "2px 6px", borderRadius: 8, background: navyA(0.1), fontSize: 12, fontWeight: 500, color: "var(--vc-navy)" }}>{t("appointments")}</span>
+                      <span style={{ display: "inline-block", marginTop: 4, padding: "2px 6px", borderRadius: 8, background: navyA(0.1), fontSize: 13, fontWeight: 500, color: "var(--vc-navy)" }}>{t("appointments")}</span>
                     </span>
                   </button>
                 ))}

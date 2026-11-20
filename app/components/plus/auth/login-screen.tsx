@@ -197,7 +197,7 @@ export default function LoginScreen() {
         <Gap h={20} />
         <AuthSwitchRow prompt={t("no_account")} action={t("sign_up")} onClick={() => push("/register")} />
         <Gap h={8} />
-        <p style={{ margin: 0, textAlign: "center", fontSize: 12, lineHeight: 1.45, color: "rgba(var(--vc-navy-rgb),0.45)" }}>
+        <p style={{ margin: 0, textAlign: "center", fontSize: 13, lineHeight: 1.45, color: "rgba(var(--vc-navy-rgb),0.45)" }}>
           {t("agreements")}
           <button type="button" className="vita-inline-link" onClick={() => openLegal("terms")}>
             {t("terms_of_use")}
