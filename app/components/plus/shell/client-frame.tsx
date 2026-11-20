@@ -31,9 +31,10 @@ export default function ClientFrame({ children }: { children: React.ReactNode })
     return <PlusLoading label="Opening Vitaway Plus…" />;
   }
 
-  const canUseClient = Boolean(session.mobileToken) && (session.doors.includes("client_app") || !isStaffPrimaryDoor(session.primaryDoor));
+  // F11: the mobile key lives in an HttpOnly cookie, so session.mobileToken may be empty after reload.
+  const canUseClient = session.doors.includes("client_app") || !isStaffPrimaryDoor(session.primaryDoor);
 
-  if ((isStaffPrimaryDoor(session.primaryDoor) && !clientDoor) || !session.mobileToken) {
+  if (isStaffPrimaryDoor(session.primaryDoor) && !clientDoor) {
     return (
       <div style={{ minHeight: "100dvh", padding: "40px 16px", background: "var(--vc-surface-muted)" }}>
         <div style={{ maxWidth: 512, margin: "0 auto" }}>

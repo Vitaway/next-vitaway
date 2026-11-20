@@ -1,7 +1,35 @@
 import type { NextConfig } from "next";
 import { siteRedirects } from "./content/redirect-map";
 
+const apiRewriteBase = (process.env.PLUS_API_REWRITE || process.env.NEXT_PUBLIC_PLUS_API_URL || "")
+  .trim()
+  .replace(/\/$/, "");
+
 const nextConfig: NextConfig = {
+  distDir: process.env.NEXT_DIST_DIR || ".next",
+  poweredByHeader: false,
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: [
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          { key: "X-Frame-Options", value: "SAMEORIGIN" },
+          { key: "X-DNS-Prefetch-Control", value: "off" },
+          { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+          { key: "Strict-Transport-Security", value: "max-age=31536000; includeSubDomains" },
+        ],
+      },
+    ];
+  },
+  async rewrites() {
+    if (!apiRewriteBase) return [];
+    return [
+      { source: "/api/v1/:path*", destination: `${apiRewriteBase}/api/v1/:path*` },
+      { source: "/uploads/:path*", destination: `${apiRewriteBase}/uploads/:path*` },
+    ];
+  },
   async redirects() {
     return siteRedirects.map(({ source, destination, permanent }) => ({
       source,

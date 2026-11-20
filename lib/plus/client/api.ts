@@ -70,8 +70,15 @@ type RequestOptions = {
   anonymous?: boolean;
 };
 
+function requestUrl(path: string): URL {
+  const raw = apiUrl(path);
+  if (/^https?:\/\//i.test(raw)) return new URL(raw);
+  const origin = typeof window !== "undefined" ? window.location.origin : "http://127.0.0.1";
+  return new URL(raw, origin);
+}
+
 export async function mobileRequest<T = unknown>(path: string, options: RequestOptions = {}): Promise<T> {
-  const url = new URL(apiUrl(path));
+  const url = requestUrl(path);
   for (const [key, value] of Object.entries(options.query ?? {})) {
     if (value !== null && value !== undefined && value !== "") url.searchParams.set(key, String(value));
   }
@@ -91,6 +98,7 @@ export async function mobileRequest<T = unknown>(path: string, options: RequestO
       method: options.method ?? (body ? "POST" : "GET"),
       headers,
       body,
+      credentials: options.anonymous ? "omit" : "include",
       signal: options.signal,
       cache: "no-store",
     });
@@ -129,7 +137,7 @@ export async function openProtectedFile(path: string, filename: string): Promise
   if (token) headers.Authorization = `Token ${token}`;
   const popup = typeof window !== "undefined" ? window.open("", "_blank") : null;
   try {
-    const response = await fetch(apiUrl(path), { headers, cache: "no-store" });
+    const response = await fetch(apiUrl(path), { headers, credentials: "include", cache: "no-store" });
     if (!response.ok) {
       const text = await response.text().catch(() => "");
       let parsed: unknown = text;
@@ -193,7 +201,7 @@ export async function fetchProtectedBlob(paths: string[]): Promise<Blob> {
 export async function fetchUrlBlob(url: string): Promise<Blob> {
   const token = mobileToken();
   const sameApi = url.startsWith(apiBase());
-  const response = await fetch(url, { headers: sameApi && token ? { Authorization: `Token ${token}` } : {}, cache: "no-store" });
+  const response = await fetch(url, { headers: sameApi && token ? { Authorization: `Token ${token}` } : {}, credentials: "include", cache: "no-store" });
   if (!response.ok) throw new MobileApiError("Could not open the file.", response.status, null);
   return response.blob();
 }
