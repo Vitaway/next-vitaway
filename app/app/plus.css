@@ -6,6 +6,24 @@
 @font-face { font-family: "PlusJakartaSans"; src: url("/plus-assets/fonts/PlusJakartaSans-Bold.ttf") format("truetype"); font-weight: 700; font-display: swap; }
 @font-face { font-family: "PlusJakartaSans"; src: url("/plus-assets/fonts/PlusJakartaSans-ExtraBold.ttf") format("truetype"); font-weight: 800; font-display: swap; }
 
+/* Plus production documents often load only this file (not marketing
+   Tailwind preflight). The browser's default 8px body margin then shows as
+   a thin white frame around the whole app. Paint the existing canvas colour
+   on html/body and pin the shell edge-to-edge. */
+html:has(.vita-root),
+html:has(.vita-root) body {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-height: 100dvh;
+  background: #fff4ee;
+  overflow-x: clip;
+}
+html:has(.vita-root[data-theme="dark"]),
+html:has(.vita-root[data-theme="dark"]) body {
+  background: #0f1918;
+}
+
 .vita-root {
   --vc-canvas: #fff4ee;
   --vc-surface: #ffffff;
@@ -57,7 +75,12 @@
   font-family: "PlusJakartaSans", ui-sans-serif, system-ui, sans-serif;
   color: var(--vc-ink);
   background: var(--vc-canvas);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  width: 100%;
   min-height: 100dvh;
+  overflow-x: clip;
   -webkit-tap-highlight-color: transparent;
 }
 
