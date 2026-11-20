@@ -195,6 +195,7 @@
  "trial_already_used": "Wamaze gukoresha igerageza ry'ubuntu. Hitamo pack ukomeze.",
  "plans_legal_note": "Ikomeza kugeza uyihagaritse. Ushobora guhagarika igihe icyo ari cyo cyose.",
  "home_trial_active": "Igerageza",
+  "home_trial_days_left": "Igerageza ubuntu: iminsi {days} isigaye",
  "home_sub_active": "Pack ya Premium",
  "home_days_left": "{days} bisigaye",
  "home_plan_checking": "Turareba pack yawe",

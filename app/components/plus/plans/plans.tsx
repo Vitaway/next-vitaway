@@ -7,6 +7,7 @@ import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { useBack } from "@/lib/plus/nav";
 import { asList, mobileRequest, MobileApiError } from "@/lib/plus/client/api";
 import { useMe, useSubscription } from "@/lib/plus/client/data";
+import { useCarePlan, useMembershipPackages, type MembershipPackage } from "@/lib/plus/client/care-plan";
 import { invalidate } from "@/lib/plus/client/use-resource";
 import { ActionButton, AppBar, Card, CenterSpinner, DotSpinner, Modal, useFeedback } from "../ui/vita";
 
@@ -122,6 +123,66 @@ function PlanCard({ plan, selected, onClick }: { plan: PlanOption; selected: boo
   );
 }
 
+function billingSuffix(pack: MembershipPackage) {
+  if (pack.billing === "free") return "";
+  if (pack.billing === "monthly") return " / month";
+  return "";
+}
+
+function MembershipPlans({ packages, onOpenProgrammes }: { packages: MembershipPackage[]; onOpenProgrammes: () => void }) {
+  const t = useT();
+  const care = useCarePlan();
+  const [selected, setSelected] = useState(0);
+  const ordered = [...packages].sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0));
+  const current = ordered[Math.min(selected, Math.max(0, ordered.length - 1))] ?? null;
+  const onTrial = care.onTrial;
+  const cta = !current
+    ? t("choose_plan")
+    : current.billing === "free"
+      ? onTrial
+        ? t("home_trial_days_left", { days: `${care.daysLeft}` })
+        : t("plans_start_trial")
+      : t("plans_continue", { plan: current.name, price: priceLabel(current.price_rwf) });
+  return (
+    <div className="vita-page w-wide" style={{ background: "var(--vc-canvas)" }}>
+      <AppBar title={t("plans")} />
+      <div style={{ flex: 1, overflowY: "auto", padding: "12px 20px calc(env(safe-area-inset-bottom) + 28px)", maxWidth: 640, width: "100%", margin: "0 auto" }}>
+        {onTrial ? (
+          <p style={{ margin: "0 0 16px", textAlign: "center", fontSize: 15, fontWeight: 800, color: "var(--vc-navy)" }} data-testid="free-trial-days">
+            {t("home_trial_days_left", { days: `${care.daysLeft}` })}
+          </p>
+        ) : (
+          <h2 style={{ margin: "0 0 16px", textAlign: "center", fontSize: 24, fontWeight: 800, letterSpacing: -0.6, color: "var(--vc-navy)" }}>{t("plans_elevate_title")}</h2>
+        )}
+        <div className="vita-flex-list">
+          {ordered.map((pack, i) => (
+            <button
+              key={pack.code}
+              type="button"
+              onClick={() => setSelected(i)}
+              data-testid={`package-${pack.code}`}
+              style={{ width: "100%", marginBottom: 12, padding: 14, borderRadius: 10, textAlign: "left", border: selected === i ? `1.8px solid ${ACCENT}` : `1px solid ${navyA(0.08)}`, background: selected === i ? "color-mix(in srgb, #2BB3A3 6%, var(--vc-surface))" : "var(--vc-surface)" }}
+            >
+              <span style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "flex-start" }}>
+                <span>
+                  <span style={{ display: "block", fontSize: 16, fontWeight: 800, color: "var(--vc-ink)" }}>{pack.name}</span>
+                  <span style={{ display: "block", marginTop: 4, fontSize: 13, fontWeight: 600, color: navyA(0.55) }}>{pack.tagline || pack.who_it_is_for}</span>
+                </span>
+                <span style={{ textAlign: "right", flex: "none" }}>
+                  <span style={{ display: "block", fontSize: 18, fontWeight: 800, color: "var(--vc-ink)" }}>{pack.billing === "free" ? "Free" : priceLabel(pack.price_rwf)}</span>
+                  <span style={{ display: "block", fontSize: 13, fontWeight: 600, color: navyA(0.45) }}>{pack.billing === "free" ? `${pack.duration_days} days` : `RWF${billingSuffix(pack)}`}</span>
+                </span>
+              </span>
+            </button>
+          ))}
+        </div>
+        <p style={{ margin: "12px 0 16px", textAlign: "center", fontSize: 13, lineHeight: 1.4, color: navyA(0.4) }}>{t("plans_legal_note")}</p>
+        <ActionButton full label={cta} disabled={onTrial && current?.billing === "free"} onClick={onOpenProgrammes} style={{ background: ACCENT }} />
+      </div>
+    </div>
+  );
+}
+
 /** pricing.dart PlansPage (web: IremboPay only, no App Store). */
 export function PlansScreen() {
   const t = useT();
@@ -129,6 +190,7 @@ export function PlansScreen() {
   const { toast } = useFeedback();
   const { user } = useMe();
   const sub = useSubscription();
+  const packages = useMembershipPackages();
   const [plans, setPlans] = useState<PlanOption[]>([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState(0);
@@ -198,6 +260,9 @@ export function PlansScreen() {
   };
 
   const features = [t("consultation"), t("chat_video"), t("personal_coach"), t("safe_group")];
+  if (!packages.loading && (packages.data?.length ?? 0) > 0) {
+    return <MembershipPlans packages={packages.data ?? []} onOpenProgrammes={() => push("/programmes")} />;
+  }
   return (
     <div className="vita-page w-wide" style={{ background: "var(--vc-canvas)" }}>
       <AppBar title={t("plans")} />

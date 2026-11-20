@@ -194,6 +194,7 @@
  "trial_already_used": "You've already used your free trial. Choose a plan to continue.",
  "plans_legal_note": "Renews until you cancel. Cancel anytime.",
  "home_trial_active": "Free trial",
+  "home_trial_days_left": "Free trial: {days} days left",
  "home_sub_active": "Premium plan",
  "home_days_left": "{days} left",
  "home_plan_checking": "Checking your plan",

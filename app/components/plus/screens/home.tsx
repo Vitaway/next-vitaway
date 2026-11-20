@@ -16,6 +16,7 @@ import {
   useSubscription,
   type Article,
 } from "@/lib/plus/client/data";
+import { useCarePlan } from "@/lib/plus/client/care-plan";
 import { useTodayMedications } from "@/lib/plus/client/meds";
 import { glucoseContextFromFullness, latestByType, parseStamp, type HealthMetric } from "@/lib/plus/health";
 import { bpStatus, gatedHealthScore, glucoseStatus, healthScoreAllowed } from "@/lib/plus/clinical-rules";
@@ -240,21 +241,38 @@ function BannerShell({
 function SubscriptionBanner({ onClick }: { onClick: () => void }) {
   const { t } = useLanguage();
   const sub = useSubscription();
+  const care = useCarePlan();
   const mintInk = "#2BB3A3";
-  if (sub.loading) {
+  if (sub.loading || care.loading) {
     return <BannerShell loading tint="var(--vc-tile-mint)" ink={mintInk} icon={<Crown1 size={22} color="currentColor" />} title={t("home_plan_checking")} subtitle={t("home_plan_checking_body")} />;
   }
-  if (sub.active) {
-    const unit = sub.daysLeft === 1 ? t("day_one") : t("days");
+  // F07: a care-programme trial wins over the older MiraFood subscription banner.
+  if (care.onTrial) {
+    const unit = care.daysLeft === 1 ? t("day_one") : t("days");
     return (
       <BannerShell
         onClick={onClick}
         tint="var(--vc-tile-mint)"
         ink={mintInk}
         icon={<Crown1 size={22} color="currentColor" />}
-        title={sub.onTrial ? t("home_trial_active") : t("home_sub_active")}
-        subtitle={t("home_days_left", { days: `${sub.daysLeft} ${unit}` })}
-        trailing={`${sub.daysLeft}`}
+        title={t("home_trial_days_left", { days: `${care.daysLeft}` })}
+        subtitle={t("home_days_left", { days: `${care.daysLeft} ${unit}` })}
+        trailing={`${care.daysLeft}`}
+      />
+    );
+  }
+  if (care.active || sub.active) {
+    const days = care.active ? care.daysLeft || sub.daysLeft : sub.daysLeft;
+    const unit = days === 1 ? t("day_one") : t("days");
+    return (
+      <BannerShell
+        onClick={onClick}
+        tint="var(--vc-tile-mint)"
+        ink={mintInk}
+        icon={<Crown1 size={22} color="currentColor" />}
+        title={sub.onTrial ? t("home_trial_days_left", { days: `${days}` }) : t("home_sub_active")}
+        subtitle={t("home_days_left", { days: `${days} ${unit}` })}
+        trailing={days ? `${days}` : undefined}
       />
     );
   }
