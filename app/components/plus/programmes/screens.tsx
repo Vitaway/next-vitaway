@@ -336,12 +336,13 @@ export function EnrolmentScreen({ id }: { id: number }) {
             {e.stage === "waiting_for_care_team" ? (
               <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 6 }}>
                 <Step done label={t("care_step_paid")} />
-                <Step done={e.care.careTeamAssigned} label={t("care_step_team")} />
+                <Step done={e.care.careTeamAssigned} label={e.care.team?.name ? `${t("care_step_team")}: ${e.care.team.name}` : t("care_step_team")} />
                 <Step done={e.care.intakeDone} label={t("care_step_intake")} />
                 {waitingForDoctor(e) ? <Step done={false} label={t("care_step_doctor")} /> : null}
                 <Step done={false} label={t("care_step_start")} />
               </div>
             ) : null}
+            {e.care.team ? <Row label={t("nav_care_team")} value={e.care.team.name} /> : null}
             {e.stage === "active" && e.reviewDate ? <Row label={t("programme_review_date")} value={e.reviewDate} /> : null}
           </Card>
 

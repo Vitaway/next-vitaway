@@ -66,7 +66,14 @@ export type Enrolment = {
   paymentState: string;
   stage: MemberStage;
   trial: { startedAt: string; endsAt: string; daysLeft: number } | null;
-  care: { active: boolean; careTeamAssigned: boolean; intakeDone: boolean; waitingFor: string[]; safetyAnswered: boolean };
+  care: {
+    active: boolean;
+    careTeamAssigned: boolean;
+    intakeDone: boolean;
+    waitingFor: string[];
+    safetyAnswered: boolean;
+    team: { userId: string; name: string; jobRole: string | null } | null;
+  };
   startDate: string | null;
   reviewDate: string | null;
   price: Money;
@@ -160,10 +167,16 @@ export function normalizeEnrolment(v: unknown): Enrolment {
     trial: trial.ends_at ? { startedAt: str(trial.started_at), endsAt: str(trial.ends_at), daysLeft: Math.max(0, Math.round(num(trial.days_left))) } : null,
     care: {
       active: care.active === true,
-      careTeamAssigned: care.care_team_assigned === true,
+      careTeamAssigned: care.care_team_assigned === true || Boolean(obj(care.team).name),
       intakeDone: care.intake_done === true,
       waitingFor: Array.isArray(care.waiting_for) ? care.waiting_for.map(str) : [],
       safetyAnswered: care.safety_questions_answered === true,
+      team: (() => {
+        const team = obj(care.team);
+        const name = str(team.name).trim();
+        if (!name) return null;
+        return { userId: str(team.user_id), name, jobRole: strOrNull(team.job_role) };
+      })(),
     },
     startDate: strOrNull(e.start_date),
     reviewDate: strOrNull(e.review_date),
