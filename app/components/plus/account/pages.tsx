@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { Select } from "../ui/select";
 import { ArrowDown2, ArrowRight3, Call, Camera, Clock, DocumentDownload, Edit2, FolderOpen, Location, Sms, Weight } from "iconsax-react";
 import { useT } from "@/lib/plus/i18n";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
@@ -505,10 +506,6 @@ export function PaymentsScreen() {
   );
 }
 
-function SettingsCard({ children }: { children: React.ReactNode }) {
-  return <div style={{ marginBottom: 14, padding: 16, borderRadius: 10, background: "var(--vc-surface)" }}>{children}</div>;
-}
-
 function Toggle({ label, value, onChange }: { label: string; value: boolean; onChange: (v: boolean) => void }) {
   return (
     <button type="button" role="switch" aria-checked={value} onClick={() => onChange(!value)} style={{ width: "100%", display: "flex", alignItems: "center", padding: "10px 0", textAlign: "left" }}>
@@ -522,17 +519,18 @@ function Toggle({ label, value, onChange }: { label: string; value: boolean; onC
 
 function SelectBox({ label, value, options, onChange }: { label: string; value: string; options: Array<[string, string]>; onChange: (v: string) => void }) {
   return (
-    <label style={{ display: "block", position: "relative", marginBottom: 12, padding: "8px 14px", borderRadius: 8, border: `1px solid ${navyA(0.12)}`, background: "var(--vc-surface)" }}>
-      <span style={{ display: "block", fontSize: 13, fontWeight: 600, color: navyA(0.55) }}>{label}</span>
-      <select value={value} onChange={(e) => onChange(e.target.value)} style={{ width: "100%", appearance: "none", border: 0, outline: "none", background: "transparent", fontSize: 15, fontWeight: 700, color: "var(--vc-ink)", padding: "4px 0" }}>
-        {options.map(([v, l]) => (
-          <option key={v} value={v}>
-            {l}
-          </option>
-        ))}
-      </select>
-      <ArrowDown2 size={18} color={navyA(0.55)} style={{ position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }} />
-    </label>
+    <div style={{ marginBottom: 6 }}>
+      <Select label={label} value={value} options={options.map(([v, l]) => ({ value: v, label: l }))} onChange={onChange} />
+    </div>
+  );
+}
+
+function SettingsSection({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <section className="vita-settings-sec" style={{ marginBottom: 14, padding: 16, borderRadius: 10, background: "var(--vc-surface)" }}>
+      <h2 className="vita-web-only vita-settings-head">{title}</h2>
+      {children}
+    </section>
   );
 }
 
@@ -555,10 +553,10 @@ export function SettingsScreen() {
   const subtitle = p.email.includes("@phone.vitaway.local") ? p.phone ?? "" : p.email;
   const shownCountry = country ?? (p.country && p.country !== "no country" ? p.country : t("select_country"));
   return (
-    <div className="vita-page w-narrow" style={{ background: "var(--vc-canvas)" }}>
+    <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
       <AppBar title={t("settings")} bubbles={false} />
-      <div style={{ flex: 1, overflowY: "auto", padding: "8px 20px calc(env(safe-area-inset-bottom) + 32px)" }}>
-        <button type="button" onClick={() => push("/account/my-profile")} style={{ width: "100%", display: "flex", alignItems: "center", gap: 12, padding: 14, marginBottom: 14, borderRadius: 10, background: "var(--vc-surface)", textAlign: "left" }}>
+      <div className="vita-settings" style={{ flex: 1, overflowY: "auto", padding: "8px 20px calc(env(safe-area-inset-bottom) + 32px)" }}>
+        <button type="button" className="vita-settings-profile vita-tap" onClick={() => push("/account/my-profile")} style={{ width: "100%", display: "flex", alignItems: "center", gap: 12, padding: 14, marginBottom: 14, borderRadius: 10, background: "var(--vc-surface)", textAlign: "left" }}>
           <Avatar url={p.photo} size={48} />
           <span style={{ flex: 1, minWidth: 0 }}>
             <span style={{ display: "block", fontSize: 16, fontWeight: 800, color: "var(--vc-ink)" }}>{name || t("account_menu")}</span>
@@ -566,51 +564,61 @@ export function SettingsScreen() {
           </span>
           <ArrowRight3 size={20} color={navyA(0.3)} />
         </button>
-        <SettingsCard>
-          <div style={{ fontSize: 16, fontWeight: 800, color: "var(--vc-navy)" }}>{t("language")}</div>
-          <p style={{ margin: "6px 0 12px", fontSize: 13, color: navyA(0.55) }}>{t("select_language")}</p>
-          <LanguageOptions />
-        </SettingsCard>
-        <SettingsCard>
-          <div style={{ fontSize: 14, fontWeight: 700, color: navyA(0.7), marginBottom: 8 }}>{t("Country")}</div>
-          <button type="button" onClick={() => setPicking(true)} style={{ width: "100%", display: "flex", alignItems: "center", padding: 16, borderRadius: 8, border: `1px solid ${navyA(0.12)}`, textAlign: "left" }}>
-            <span style={{ flex: 1, fontSize: 15, fontWeight: 700, color: "var(--vc-ink)" }}>{shownCountry}</span>
-            <ArrowDown2 size={18} color={navyA(0.55)} />
-          </button>
-        </SettingsCard>
-        <SettingsCard>
-          <SelectBox label="Glucose" value={glucose === "mg" ? "mg/dL" : "mmol/L"} options={[["mmol/L", "mmol/L"], ["mg/dL", "mg/dL"]]} onChange={(v) => setGlucose(v === "mmol/L" ? "mmol" : "mg")} />
-          <SelectBox label={t("ap_height")} value={heightUnit === "cm" ? "Cm" : "In"} options={[["Cm", "Cm"], ["In", "In"]]} onChange={(v) => setHeightUnit(v === "In" ? "in" : "cm")} />
-          <SelectBox label={t("hm_weight")} value={weightUnit === "kg" ? "Kg" : "lbs"} options={[["Kg", "Kg"], ["lbs", "lbs"]]} onChange={(v) => setWeightUnit(v === "lbs" ? "lbs" : "kg")} />
-          <SelectBox label="A1c" value={a1c === "percent" ? "Percent" : "Ac1 unit"} options={[["Percent", "Percent"], ["Ac1 unit", "Ac1 unit"]]} onChange={(v) => setA1c(v === "Percent" ? "percent" : "mmol")} />
-        </SettingsCard>
-        <SettingsCard>
-          <Toggle
-            label={t("message_notifications")}
-            value={messages}
-            onChange={(v) => {
-              setMessages(v);
-              toast(`${t("message_notifications")}: ${v}`);
-            }}
-          />
-          <div style={{ height: 1, marginLeft: 0, background: navyA(0.06) }} />
-          <Toggle
-            label={t("health_reports")}
-            value={reports}
-            onChange={(v) => {
-              setReports(v);
-              toast(`${t("health_reports")}: ${v}`);
-            }}
-          />
-        </SettingsCard>
-        <button type="button" onClick={() => push("/reminders/preferences")} style={{ width: "100%", display: "flex", alignItems: "center", padding: 16, marginBottom: 14, borderRadius: 10, background: "var(--vc-surface)", textAlign: "left" }}>
-          <span style={{ flex: 1, fontSize: 15, fontWeight: 700, color: "var(--vc-ink)" }}>{t("rp_open")}</span>
-          <ArrowRight3 size={20} color={navyA(0.3)} />
-        </button>
-        <ActionButton full label={t("save_changes")} onClick={() => toast(t("settings_saved"))} />
-        <button type="button" onClick={() => void deleteAccount()} style={{ display: "block", margin: "16px auto 0", padding: 8, fontSize: 14, fontWeight: 700, color: "var(--vc-danger)" }}>
-          {t("delete_account")}
-        </button>
+        <div className="vita-settings-grid">
+          <div className="vita-settings-col">
+            <SettingsSection title={t("settings_region")}>
+              <div style={{ fontSize: 16, fontWeight: 800, color: "var(--vc-navy)" }}>{t("language")}</div>
+              <p style={{ margin: "6px 0 12px", fontSize: 13, color: navyA(0.55) }}>{t("select_language")}</p>
+              <LanguageOptions />
+              <div style={{ height: 14 }} />
+              <button type="button" className="vita-select-field" aria-haspopup="dialog" onClick={() => setPicking(true)}>
+                <span className="vita-select-text">
+                  <span className="vita-select-label">{t("Country")}</span>
+                  <span className="vita-select-value">{shownCountry}</span>
+                </span>
+                <ArrowDown2 size={18} color="currentColor" className="vita-select-chev" />
+              </button>
+            </SettingsSection>
+            <SettingsSection title={t("settings_notifications")}>
+              <Toggle
+                label={t("message_notifications")}
+                value={messages}
+                onChange={(v) => {
+                  setMessages(v);
+                  toast(`${t("message_notifications")}: ${v}`);
+                }}
+              />
+              <div style={{ height: 1, marginLeft: 0, background: navyA(0.06) }} />
+              <Toggle
+                label={t("health_reports")}
+                value={reports}
+                onChange={(v) => {
+                  setReports(v);
+                  toast(`${t("health_reports")}: ${v}`);
+                }}
+              />
+              <div style={{ height: 1, marginLeft: 0, background: navyA(0.06) }} />
+              <button type="button" onClick={() => push("/reminders/preferences")} style={{ width: "100%", minHeight: 48, display: "flex", alignItems: "center", padding: "10px 0", textAlign: "left" }}>
+                <span style={{ flex: 1, fontSize: 15, fontWeight: 700, color: "var(--vc-ink)" }}>{t("rp_open")}</span>
+                <ArrowRight3 size={20} color={navyA(0.3)} />
+              </button>
+            </SettingsSection>
+          </div>
+          <div className="vita-settings-col">
+            <SettingsSection title={t("settings_units")}>
+              <SelectBox label={t("settings_glucose")} value={glucose === "mg" ? "mg/dL" : "mmol/L"} options={[["mmol/L", "mmol/L"], ["mg/dL", "mg/dL"]]} onChange={(v) => setGlucose(v === "mmol/L" ? "mmol" : "mg")} />
+              <SelectBox label={t("ap_height")} value={heightUnit === "cm" ? "Cm" : "In"} options={[["Cm", "cm"], ["In", "in"]]} onChange={(v) => setHeightUnit(v === "In" ? "in" : "cm")} />
+              <SelectBox label={t("hm_weight")} value={weightUnit === "kg" ? "Kg" : "lbs"} options={[["Kg", "kg"], ["lbs", "lbs"]]} onChange={(v) => setWeightUnit(v === "lbs" ? "lbs" : "kg")} />
+              <SelectBox label="A1c" value={a1c === "percent" ? "Percent" : "Ac1 unit"} options={[["Percent", "%"], ["Ac1 unit", "mmol/mol"]]} onChange={(v) => setA1c(v === "Percent" ? "percent" : "mmol")} />
+            </SettingsSection>
+            <div className="vita-settings-actions">
+              <ActionButton full label={t("save_changes")} onClick={() => toast(t("settings_saved"))} />
+              <button type="button" onClick={() => void deleteAccount()} style={{ display: "block", margin: "16px auto 0", padding: 8, minHeight: 44, fontSize: 14, fontWeight: 700, color: "var(--vc-danger)" }}>
+                {t("delete_account")}
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
       <CountryPicker
         open={picking}

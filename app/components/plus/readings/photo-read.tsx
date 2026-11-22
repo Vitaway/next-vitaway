@@ -1,5 +1,7 @@
 "use client";
 
+import { Select } from "../ui/select";
+
 import { useEffect, useRef, useState } from "react";
 import { Camera, TickCircle } from "iconsax-react";
 import { useT } from "@/lib/plus/i18n";
@@ -137,10 +139,7 @@ export function PhotoReadScreen({ initialType }: { initialType: string | null })
               <div style={{ display: "flex", gap: 10, alignItems: "flex-end" }}>
                 <Field testId="pr-value" label={t(TYPE_KEY[read.type])} value={draft.value} onChange={set("value")} suffix={read.type === "weight" ? "kg" : undefined} />
                 {read.type === "glucose" ? (
-                  <select className="vita-input" value={draft.unit} onChange={(e) => set("unit")(e.target.value)} style={{ width: 120 }}>
-                    <option value="mmol/L">mmol/L</option>
-                    <option value="mg/dL">mg/dL</option>
-                  </select>
+                  <Select compact label={t("settings_units")} value={draft.unit} onChange={(v) => set("unit")(v)} options={[{ value: "mmol/L", label: "mmol/L" }, { value: "mg/dL", label: "mg/dL" }]} style={{ width: 130 }} />
                 ) : null}
               </div>
             )}

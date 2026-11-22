@@ -1,5 +1,7 @@
 "use client";
 
+import { Select } from "../ui/select";
+
 import { useRef, useState } from "react";
 import { DocumentText1, DocumentUpload, Trash } from "iconsax-react";
 import { useT } from "@/lib/plus/i18n";
@@ -30,17 +32,17 @@ function UploadSheet({ isPatient, onClose, onPick }: { isPatient: boolean; onClo
     >
       <label style={{ display: "block" }}>
         <span className="vita-label">{t("document_type")}</span>
-        <select className="vita-input" value={documentType} onChange={(e) => setType(e.target.value)} style={field}>
-          {isPatient ? <option value="medical_record">{t("medical_record")}</option> : null}
-          {!isPatient ? (
-            <>
-              <option value="certification">{t("certification")}</option>
-              <option value="cv">CV/Resume</option>
-              <option value="license">{t("professional_license")}</option>
-            </>
-          ) : null}
-          <option value="other">{t("other")}</option>
-        </select>
+        <Select
+          label={t("document_type")}
+          compact
+          value={documentType}
+          onChange={setType}
+          options={[
+            ...(isPatient ? [{ value: "medical_record", label: t("medical_record") }] : []),
+            ...(!isPatient ? [{ value: "certification", label: t("certification") }, { value: "cv", label: "CV/Resume" }, { value: "license", label: t("professional_license") }] : []),
+            { value: "other", label: t("other") },
+          ]}
+        />
       </label>
       <label style={{ display: "block", marginTop: 12 }}>
         <span className="vita-label">{t("document_name")}</span>

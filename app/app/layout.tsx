@@ -1,9 +1,14 @@
 import type { Metadata, Viewport } from "next";
 import { headers } from "next/headers";
+import { League_Spartan, Manrope } from "next/font/google";
 import PlusAppProviders from "@/app/components/plus/plus-app-providers";
 import { appBasePathFromHost, appManifestPath } from "@/lib/plus/host";
 import { PLUS_APPLE_TOUCH_ICON, PLUS_ICON_192 } from "@/lib/plus/manifest";
 import "./plus.css";
+
+/** F23 web type: League Spartan headings, Manrope body (applied from 768px in plus.css; phones keep the Flutter font). */
+const leagueSpartan = League_Spartan({ subsets: ["latin"], weight: ["600", "700", "800"], variable: "--font-league-spartan", display: "swap" });
+const manrope = Manrope({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"], variable: "--font-manrope", display: "swap" });
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -48,5 +53,9 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function PlusLayout({ children }: { children: React.ReactNode }) {
   const host = (await headers()).get("host");
-  return <PlusAppProviders basePath={appBasePathFromHost(host)}>{children}</PlusAppProviders>;
+  return (
+    <div className={`${leagueSpartan.variable} ${manrope.variable}`} style={{ display: "contents" }}>
+      <PlusAppProviders basePath={appBasePathFromHost(host)}>{children}</PlusAppProviders>
+    </div>
+  );
 }

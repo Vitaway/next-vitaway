@@ -2,13 +2,13 @@
 
 import { requestNotificationPermission } from "@/lib/plus/web-notifications";
 import { useState } from "react";
-import { ArrowDown2, Calendar1, Edit, Health, NoteText, Refresh, Repeat, Trash } from "iconsax-react";
+import { Alarm, ArrowDown2, Calendar1, Edit, Health, NoteText, Refresh, Repeat, Trash } from "iconsax-react";
 import { useT } from "@/lib/plus/i18n";
 import { useMe } from "@/lib/plus/client/data";
 import { mobileRequest } from "@/lib/plus/client/api";
 import { duplicateOf } from "@/lib/plus/medicine-duplicate";
 import { markDose, refreshMedications, useAdherence, useMedicationHistory, useMedications } from "@/lib/plus/client/meds";
-import { DOSE_COLORS, canMarkDoseTaken, defaultTimesForFrequency, effectiveSlotStatus, type MedicationSlot } from "@/lib/plus/medication";
+import { DOSE_COLORS, canMarkDoseTaken, defaultTimesForFrequency, effectiveSlotStatus, joinTimes, medicineReminderSummary, type Medication, type MedicationSlot } from "@/lib/plus/medication";
 import { useTheme } from "@/lib/plus/theme";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { useBack } from "@/lib/plus/nav";
@@ -139,6 +139,7 @@ export function MedicationDetailScreen({ id }: { id: number }) {
         </div>
       ) : (
         <div style={{ flex: 1, overflowY: "auto", padding: "8px 16px 28px" }}>
+          <MedicineRemindersCard med={med} />
           <MedicationListCard medication={med} onClick={() => undefined} />
           <h3 style={{ margin: "8px 0 0", fontSize: 18, fontWeight: 800, color: "var(--vc-navy)" }}>Dose history</h3>
           <p style={{ margin: "4px 0 12px", fontSize: 13, fontWeight: 500, color: navyA(0.5) }}>Every day you took — or missed — this medicine.</p>
@@ -263,13 +264,13 @@ export function AddMedicationScreen() {
     // Like add_medication.dart scheduling reminders: ask while we still have the tap.
     const permission = requestNotificationPermission();
     try {
-      await mobileRequest("/medications/", {
-        method: "POST",
-        body: { user: user?.id ?? null, name: n, date_added: ymdOf(start), dosage, frequency: resolvedFreq, unit, times: times.map(fmt), instructions: instructions.trim() || null, reminders_enabled: true },
-      });
+      const body = { user: user?.id ?? null, name: n, date_added: ymdOf(start), dosage, frequency: resolvedFreq, unit, times: times.map(fmt), instructions: instructions.trim() || null, reminders_enabled: true };
+      const saved = await mobileRequest<Record<string, unknown>>("/medications/", { method: "POST", body });
       refreshMedications();
       await permission;
-      toast(t("medication_saved"));
+      // The medicine's own reminders are on from the start: say when they will ring.
+      const reminders = medicineReminderSummary(saved && typeof saved === "object" ? saved : body);
+      toast(reminders.enabled ? `${t("medication_saved")} · ${t("med_reminders_set", { times: joinTimes(reminders.times, t("list_and")) })}` : t("medication_saved"));
       goBack();
     } catch {
       setSaving(false);
@@ -419,5 +420,50 @@ export function AddMedicationScreen() {
         onPick={(v) => setTimes((list) => list.map((x, i) => (i === timeIndex ? v : x)).sort((a, b) => a.hour * 60 + a.minute - (b.hour * 60 + b.minute)))}
       />
     </MetricLogScaffold>
+  );
+}
+
+/** The reminders this medicine sets by itself, with an on/off switch (times follow the medicine). */
+function MedicineRemindersCard({ med }: { med: Medication }) {
+  const t = useT();
+  const { toast } = useFeedback();
+  const { push } = usePlusPaths();
+  const [busy, setBusy] = useState(false);
+  const summary = medicineReminderSummary(med);
+  const toggle = async () => {
+    if (busy) return;
+    setBusy(true);
+    try {
+      await mobileRequest(`/medications/${med.id}/`, { method: "PATCH", body: { reminders_enabled: !med.reminders_enabled } });
+      refreshMedications();
+    } catch {
+      toast(t("failed_to_save_metric"), { error: true });
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <div data-testid="med-reminders" style={{ display: "flex", alignItems: "center", gap: 12, margin: "4px 0 14px", padding: "12px 14px", borderRadius: 10, background: "var(--vc-surface)" }}>
+      <span style={{ width: 40, height: 40, borderRadius: "50%", flex: "none", display: "flex", alignItems: "center", justifyContent: "center", background: "var(--vc-tile-peach)", color: "var(--vc-navy)" }}>
+        <Alarm size={20} color="currentColor" />
+      </span>
+      <button type="button" onClick={() => push("/reminders")} style={{ flex: 1, minWidth: 0, textAlign: "left", minHeight: 44 }}>
+        <span style={{ display: "block", fontSize: 15, fontWeight: 800, color: "var(--vc-ink)" }}>
+          {summary.enabled ? t("med_reminders_set", { times: joinTimes(summary.times, t("list_and")) }) : t("med_reminders_off")}
+        </span>
+        <span style={{ display: "block", marginTop: 2, fontSize: 13, color: "var(--vc-muted)" }}>{t("med_reminders_section_body")}</span>
+      </button>
+      <button
+        type="button"
+        role="switch"
+        aria-checked={med.reminders_enabled}
+        aria-label={t("med_reminders_toggle")}
+        disabled={busy}
+        onClick={() => void toggle()}
+        style={{ width: 50, height: 30, borderRadius: 999, padding: 3, flex: "none", background: med.reminders_enabled ? "var(--vc-mint)" : "rgba(var(--vc-navy-rgb),0.12)" }}
+      >
+        <span style={{ display: "block", width: 24, height: 24, borderRadius: "50%", background: med.reminders_enabled ? "var(--vc-teal)" : "#fff", transform: `translateX(${med.reminders_enabled ? 20 : 0}px)`, transition: "transform 160ms", boxShadow: "0 1px 3px rgba(0,0,0,0.2)" }} />
+      </button>
+    </div>
   );
 }

@@ -35,6 +35,12 @@ const nextConfig: NextConfig = {
       { source: "/health-metrics/", destination: `${apiRewriteBase}/health-metrics/` },
       { source: "/health-goals", destination: `${apiRewriteBase}/health-goals` },
       { source: "/health-goals/:path*", destination: `${apiRewriteBase}/health-goals/:path*` },
+      // More legacy aliases the client screens call (local dev only: rewrites are off without PLUS_API_REWRITE /
+      // NEXT_PUBLIC_PLUS_API_URL). Pages win over these (afterFiles), so /app routes are unaffected.
+      ...["/me", "/medications", "/notifications", "/subscriptions", "/api/articles", "/api/rooms", "/api/user-reservations"].flatMap((p) => [
+        { source: p, destination: `${apiRewriteBase}${p}` },
+        { source: `${p}/:path*`, destination: `${apiRewriteBase}${p}/:path*` },
+      ]),
     ];
   },
   async redirects() {

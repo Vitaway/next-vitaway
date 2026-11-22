@@ -8,7 +8,7 @@ import { useAuthGate } from "@/lib/plus/use-auth-gate";
 import PlusLoading from "../plus-loading";
 import StaffDoor from "../staff-door";
 import Dock, { DOCK_SCREENS, useAppPath } from "./dock";
-import Sidebar from "./sidebar";
+import TopBar from "./topbar";
 import { useSupportBadge } from "@/lib/plus/client/support-badge";
 import { WebReminderScheduler } from "../reminders/web-reminder-scheduler";
 import { useT } from "@/lib/plus/i18n";
@@ -81,9 +81,9 @@ function useOnline(): boolean {
 }
 
 /**
- * Responsive app shell. The sidebar and dock are toggled in CSS:
- * phones (<640px) use the bottom dock, 640px+ use the sidebar
- * (icon rail, then a labelled rail from 1024px). See .vita-app in plus.css.
+ * Responsive app shell. The top bar and dock are toggled in CSS:
+ * phones (<768px) use the Flutter bottom dock, 768px+ use the sticky top bar
+ * (icon + label tabs on tablet, labelled with brand and name from 1024px). See .vita-app in plus.css.
  * Stays mounted across pages so the Support dot survives leaving the root tabs.
  */
 function AppShell({ path, showDock, children }: { path: string; showDock: boolean; children: React.ReactNode }) {
@@ -97,7 +97,7 @@ function AppShell({ path, showDock, children }: { path: string; showDock: boolea
           {t("offline_banner")}
         </div>
       )}
-      <Sidebar supportBadge={supportBadge} />
+      <TopBar supportBadge={supportBadge} />
       <div className="vita-app-main">{children}</div>
       <WebReminderScheduler />
       {showDock ? <Dock supportBadge={supportBadge} /> : null}

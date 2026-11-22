@@ -190,3 +190,24 @@ export const DOSE_COLORS: Record<string, { light: [string, string]; dark: [strin
   pending: { light: ["#FFE8D6", "#C45C12"], dark: ["#3A2219", "#F2A272"] },
   missed: { light: ["#FFF0C2", "#9A7300"], dark: ["#3D3419", "#E8C547"] },
 };
+
+/**
+ * Medicine reminders follow the medicine (22 Nov 2026): every saved medicine reminds at its dose times
+ * until its reminders are turned off. Uses the server's `reminders` summary when sent, else the medicine's times.
+ */
+export function medicineReminderSummary(raw: { times?: unknown; frequency?: unknown; reminders_enabled?: unknown; reminders?: unknown }): { enabled: boolean; times: string[] } {
+  const server = raw.reminders as { enabled?: unknown; times?: unknown } | null | undefined;
+  if (server && typeof server === "object" && Array.isArray(server.times)) {
+    return { enabled: server.enabled === true, times: server.times.filter((t): t is string => typeof t === "string") };
+  }
+  if (raw.reminders_enabled === false) return { enabled: false, times: [] };
+  const list = Array.isArray(raw.times) && raw.times.length ? raw.times : defaultTimesForFrequency(Number(raw.frequency) || 1);
+  const times = [...new Set(list.filter((t): t is string => typeof t === "string" && /^\d{1,2}:\d{2}$/.test(t.trim())).map((t) => t.trim().padStart(5, "0")))].sort();
+  return { enabled: times.length > 0, times };
+}
+
+/** "08:00", "08:00 and 20:00", "08:00, 14:00 and 20:00" (the joining word comes from i18n). */
+export function joinTimes(times: string[], and: string): string {
+  if (times.length <= 1) return times[0] ?? "";
+  return `${times.slice(0, -1).join(", ")} ${and} ${times[times.length - 1]}`;
+}

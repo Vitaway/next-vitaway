@@ -8,6 +8,8 @@ import { useT } from "@/lib/plus/i18n";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { useBack } from "@/lib/plus/nav";
 import { useReminders, type Reminder } from "@/lib/plus/reminders";
+import { useMedications } from "@/lib/plus/client/meds";
+import { joinTimes, medicineReminderSummary } from "@/lib/plus/medication";
 import { TimePickerModal } from "../readings/log-chrome";
 import { ActionButton, AppBar, CircleButton, Page, useFeedback } from "../ui/vita";
 
@@ -53,7 +55,7 @@ export function RemindersScreen() {
   const { push } = usePlusPaths();
   const { list } = useReminders();
   return (
-    <Page backdrop>
+    <Page backdrop width="narrow">
       <AppBar
         title={t("reminders_title")}
         actions={
@@ -62,7 +64,8 @@ export function RemindersScreen() {
           </CircleButton>
         }
       />
-      <div style={{ flex: 1, overflowY: "auto", paddingBottom: "calc(env(safe-area-inset-bottom) + 24px)", maxWidth: 720, width: "100%", margin: "0 auto" }}>
+      <div style={{ flex: 1, overflowY: "auto", paddingBottom: "calc(env(safe-area-inset-bottom) + 24px)", width: "100%" }}>
+        <MedicineReminders />
         <button type="button" onClick={() => push("/reminders/preferences")} data-testid="rp-link" style={{ display: "flex", alignItems: "center", gap: 10, width: "calc(100% - 32px)", margin: "10px 16px 4px", padding: "12px 14px", borderRadius: 10, background: "var(--vc-sheet, var(--vc-surface))", textAlign: "left", fontSize: 14, fontWeight: 700, color: "var(--vc-teal-ink)" }}>
           <NotificationIcon size={20} color="currentColor" />
           <span style={{ flex: 1 }}>{t("rp_open")}</span>
@@ -345,3 +348,30 @@ export function ReminderDetailScreen({ id }: { id: string }) {
   );
 }
 
+/** Medicine reminders come from the Pillbox by themselves (one per dose time); tap a medicine to turn them off. */
+function MedicineReminders() {
+  const t = useT();
+  const { push } = usePlusPaths();
+  const meds = useMedications();
+  if (!meds.list.length) return null;
+  return (
+    <section data-testid="med-reminders-list" style={{ margin: "10px 16px 4px", padding: "12px 14px", borderRadius: 10, background: "var(--vc-sheet, var(--vc-surface))" }}>
+      <p style={{ margin: 0, fontSize: 15, fontWeight: 800, color: "var(--vc-ink)" }}>{t("med_reminders_section")}</p>
+      <p style={{ margin: "2px 0 6px", fontSize: 13, color: navyA(0.55) }}>{t("med_reminders_section_body")}</p>
+      {meds.list.map((med) => {
+        const summary = medicineReminderSummary(med);
+        return (
+          <button key={med.id} type="button" onClick={() => push(`/medications/${med.id}`)} style={{ width: "100%", minHeight: 52, display: "flex", alignItems: "center", gap: 12, padding: "8px 0", textAlign: "left", borderTop: `1px solid ${navyA(0.06)}` }}>
+            <Health size={20} color="var(--vc-teal-ink)" />
+            <span style={{ flex: 1, minWidth: 0 }}>
+              <span style={{ display: "block", fontSize: 15, fontWeight: 700, color: "var(--vc-ink)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{med.name}</span>
+              <span style={{ display: "block", fontSize: 13, color: summary.enabled ? "var(--vc-teal-ink)" : navyA(0.5) }}>
+                {summary.enabled ? t("med_reminders_set", { times: joinTimes(summary.times, t("list_and")) }) : t("med_reminders_off")}
+              </span>
+            </span>
+          </button>
+        );
+      })}
+    </section>
+  );
+}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { cloneElement, isValidElement, useEffect, useMemo, useState } from "react";
 import { Activity, Add, ArrowRight3, Book1, Calendar1, Call, Crown1, Drop, Flash, Health, Heart, MessageQuestion, Notification, Reserve, TickCircle, Weight } from "iconsax-react";
 import { useLanguage, type Translate } from "@/lib/plus/i18n";
 import { BMI_HOME_CAPTION_KEY, bmiViewFor } from "@/lib/plus/bmi";
@@ -492,7 +492,6 @@ export default function HomeScreen() {
   const scorePoints = gatedHealthScore(clinical, { bp: bpView, glucose: glucoseView, weightLogged: !!weight && (Number.parseFloat(weight.latest_value) || 0) > 0 });
   const caption = (logged: boolean, view: { label: string } | null) => (!logged ? t("no_reading_yet") : view ? view.label : t("reading_care_team_review"));
   const first = (user?.first_name ?? "").trim();
-  const name = first || t("hello");
   const mrn = (user?.profile?.medical_record_number ?? "").trim();
   const org = user?.organization?.name?.trim() ?? "";
   const orgName = org.toLowerCase().replace(/[\s_-]+/g, "") === "mirafood" ? "MiraFood" : org;
@@ -562,100 +561,8 @@ export default function HomeScreen() {
     );
   };
 
-  return (
-    <div className="vita-home" style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 104px)" }}>
-      {/* Dashboard header */}
-      <div className="vita-home-top" style={{ position: "relative", paddingBottom: 12 }}>
-        <div className="vita-home-hero" style={{ background: "#003E48", borderRadius: "0 0 24px 24px", padding: "calc(env(safe-area-inset-top) + 14px) 20px 86px" }}>
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <span className="vita-home-logo" style={{ width: 52, height: 52, borderRadius: "50%", background: "#fff", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/plus-assets/vitaway-logo.png" alt="Vitaway" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
-            </span>
-            <span style={{ marginLeft: 10, padding: "8px 12px", borderRadius: 10, background: "rgba(255,255,255,0.18)", color: "#fff", fontWeight: 700, fontSize: 13 }}>{fmtHeaderDate(new Date())}</span>
-            <span style={{ flex: 1 }} />
-            <button type="button" aria-label="Notifications" onClick={() => push("/notifications")} style={{ width: 40, height: 40, borderRadius: "50%", background: "rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center", position: "relative", color: "#fff" }}>
-              <Notification size={20} variant="Bold" color="currentColor" />
-              {unread > 0 ? (
-                <span style={{ position: "absolute", top: 4, right: 4, width: 14, height: 14, borderRadius: "50%", background: "#003E48", border: "1.2px solid #fff", color: "#fff", fontSize: 8, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", lineHeight: 1 }}>
-                  {unread > 9 ? "9" : unread}
-                </span>
-              ) : null}
-            </button>
-            <button type="button" aria-label="Account" onClick={() => push("/profile")} style={{ marginLeft: 10, width: 44, height: 44, borderRadius: "50%", background: "#fff", padding: 2 }}>
-              <span style={{ display: "block", width: 40, height: 40, borderRadius: "50%", overflow: "hidden" }}>
-                <Photo url={user?.profile?.profile_picture} size={40} />
-              </span>
-            </button>
-          </div>
-          <p className="vita-home-hello" style={{ margin: "22px 0 0", color: "#fff", fontSize: 30, lineHeight: 1.05, fontWeight: 800, letterSpacing: -0.6 }}>Hello, {name}!</p>
-        </div>
-{showScore ? (
-        <button
-          type="button"
-          onClick={() => push("/health-score")}
-          className="vita-tap vita-home-score" style={{ position: "relative", width: "calc(100% - 36px)", margin: "-66px 18px 0", display: "flex", alignItems: "center", gap: 14, textAlign: "left", background: "var(--vc-surface)", borderRadius: 10, padding: "12px 14px", boxShadow: "var(--vc-card-shadow)" }}
-        >
-          {/* Wellness score ring (boss review F20 reference): orange arc on a soft track. */}
-          <span
-            className="vita-score-ring"
-            aria-hidden
-            style={{ ["--pct" as string]: `${scorePoints === null ? 0 : Math.max(0, Math.min(100, scorePoints))}%` } as React.CSSProperties}
-          >
-            <span>{scorePoints === null ? "—" : scorePoints}</span>
-          </span>
-          <span style={{ flex: 1 }}>
-            <span style={{ display: "block", fontSize: 16, fontWeight: 800, color: "var(--vc-ink)" }}>{t("health_score")}</span>
-            <span style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 6 }}>
-              {scorePoints !== null && bpView?.tone !== "bad" && glucoseView?.tone !== "bad" && (bpView?.tone === "ok" || glucoseView?.tone === "ok") ? (
-                <span style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "4px 8px", borderRadius: 10, background: "var(--vc-tile-mint)", color: "var(--vc-navy)", fontSize: 13, fontWeight: 800 }}>
-                  <Heart size={12} variant="Bold" color="currentColor" /> {t("home_in_range")}
-                </span>
-              ) : null}
-              <span style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "4px 8px", borderRadius: 10, background: "var(--vc-tile-peach)", color: "var(--vc-navy)", fontSize: 13, fontWeight: 800 }}>
-                {mrn ? <TickCircle size={12} color="currentColor" /> : <Add size={12} color="currentColor" />} {mrn ? t("home_record_linked") : t("home_add_reading")}
-              </span>
-            </span>
-          </span>
-          {ARROW}
-        </button>
-        ) : (
-        <button
-          type="button"
-          onClick={() => push("/emergency")}
-          data-testid="home-emergency-card"
-          className="vita-tap vita-home-score" style={{ position: "relative", width: "calc(100% - 36px)", margin: "-66px 18px 0", display: "flex", alignItems: "center", gap: 14, textAlign: "left", background: "var(--vc-surface)", borderRadius: 10, padding: "12px 14px", boxShadow: "var(--vc-card-shadow)" }}
-        >
-          <span style={{ width: 64, height: 64, borderRadius: "50%", background: dark ? "#3A1D19" : "#FCE8E8", color: dark ? "#F08A7C" : "#C62828", display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
-            <Call size={28} variant="Bold" color="currentColor" />
-          </span>
-          <span style={{ flex: 1 }}>
-            <span style={{ display: "block", fontSize: 16, fontWeight: 800, color: "var(--vc-ink)" }}>{t("emergency_card_title")}</span>
-            <span style={{ display: "block", marginTop: 4, fontSize: 13, fontWeight: 600, color: "rgba(var(--vc-navy-rgb),0.62)" }}>{t("emergency_card_sub")}</span>
-            <span style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 6 }}>
-              <span style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "4px 8px", borderRadius: 10, background: "var(--vc-tile-peach)", color: "var(--vc-navy)", fontSize: 13, fontWeight: 800 }}>
-                {mrn ? <TickCircle size={12} color="currentColor" /> : <Add size={12} color="currentColor" />} {mrn ? t("home_record_linked") : t("home_add_reading")}
-              </span>
-            </span>
-          </span>
-          {ARROW}
-        </button>
-        )}
-      </div>
-
-      {orgName ? (
-        <p className="vita-home-pad" style={{ margin: "0 18px 8px", fontSize: 14, fontWeight: 800, color: "var(--vc-navy)" }}>
-          {discount > 0 ? t("org_discount", { name: orgName, percent: discount }) : t("org_with", { name: orgName })}
-        </p>
-      ) : null}
-
-      <div className="vita-home-pad" style={{ padding: "0 18px 4px" }}>
-        <SubscriptionBanner onClick={() => push("/plans")} />
-      </div>
-
-      <div className="vita-home-sections" style={pad}>
-        {sections.map((section) => {
-          switch (section) {
+  const renderSection = (section: string): React.ReactNode => {
+    switch (section) {
             case "metrics":
               return (
                 <div key="metrics" data-sec="metrics">
@@ -757,9 +664,122 @@ export default function HomeScreen() {
               );
             default:
               return null;
-          }
-        })}
+    }
+  };
+  // Web: some sections move to the right rail. Phones keep the programme's order through CSS `order`.
+  const sectionNodes = sections.map((section, index) => {
+    const node = renderSection(section);
+    const el = isValidElement(node) ? (node as React.ReactElement<{ style?: React.CSSProperties }>) : null;
+    return { rail: RAIL_SECTIONS.includes(section), node: el ? cloneElement(el, { style: { ...(el.props.style ?? {}), order: index } }) : node };
+  });
+  const weekCutoff = Date.now() - 7 * 86_400_000;
+  const weekCount = metrics.filter((m) => (parseStamp(m.last_updated)?.getTime() ?? 0) >= weekCutoff).length;
+  const weekLine = weekCount === 0 ? t("home_week_none") : weekCount === 1 ? t("home_week_one") : t("home_week_many", { count: weekCount });
+
+  const healthScoreCard = () => (
+        <button
+          type="button"
+          onClick={() => push("/health-score")}
+          className="vita-tap vita-home-score" style={{ position: "relative", width: "calc(100% - 36px)", margin: "-66px 18px 0", display: "flex", alignItems: "center", gap: 14, textAlign: "left", background: "var(--vc-surface)", borderRadius: 10, padding: "12px 14px", boxShadow: "var(--vc-card-shadow)" }}
+        >
+          {/* Wellness score ring (boss review F20 reference): orange arc on a soft track. */}
+          <span
+            className="vita-score-ring"
+            aria-hidden
+            style={{ ["--pct" as string]: `${scorePoints === null ? 0 : Math.max(0, Math.min(100, scorePoints))}%` } as React.CSSProperties}
+          >
+            <span>{scorePoints === null ? "—" : scorePoints}</span>
+          </span>
+          <span style={{ flex: 1 }}>
+            <span style={{ display: "block", fontSize: 16, fontWeight: 800, color: "var(--vc-ink)" }}>{t("health_score")}</span>
+            <span style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 6 }}>
+              {scorePoints !== null && bpView?.tone !== "bad" && glucoseView?.tone !== "bad" && (bpView?.tone === "ok" || glucoseView?.tone === "ok") ? (
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "4px 8px", borderRadius: 10, background: "var(--vc-tile-mint)", color: "var(--vc-navy)", fontSize: 13, fontWeight: 800 }}>
+                  <Heart size={12} variant="Bold" color="currentColor" /> {t("home_in_range")}
+                </span>
+              ) : null}
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "4px 8px", borderRadius: 10, background: "var(--vc-tile-peach)", color: "var(--vc-navy)", fontSize: 13, fontWeight: 800 }}>
+                {mrn ? <TickCircle size={12} color="currentColor" /> : <Add size={12} color="currentColor" />} {mrn ? t("home_record_linked") : t("home_add_reading")}
+              </span>
+            </span>
+          </span>
+          {ARROW}
+        </button>
+  );
+  const emergencyCard = (rail: boolean) => (
+        <button
+          type="button"
+          onClick={() => push("/emergency")}
+          data-testid={rail ? "home-emergency-card-rail" : "home-emergency-card"}
+          className="vita-tap vita-home-score" style={{ position: "relative", width: "calc(100% - 36px)", margin: "-66px 18px 0", display: "flex", alignItems: "center", gap: 14, textAlign: "left", background: "var(--vc-surface)", borderRadius: 10, padding: "12px 14px", boxShadow: "var(--vc-card-shadow)" }}
+        >
+          <span style={{ width: 64, height: 64, borderRadius: "50%", background: dark ? "#3A1D19" : "#FCE8E8", color: dark ? "#F08A7C" : "#C62828", display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
+            <Call size={28} variant="Bold" color="currentColor" />
+          </span>
+          <span style={{ flex: 1 }}>
+            <span style={{ display: "block", fontSize: 16, fontWeight: 800, color: "var(--vc-ink)" }}>{t("emergency_card_title")}</span>
+            <span style={{ display: "block", marginTop: 4, fontSize: 13, fontWeight: 600, color: "rgba(var(--vc-navy-rgb),0.62)" }}>{t("emergency_card_sub")}</span>
+            <span style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 6 }}>
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "4px 8px", borderRadius: 10, background: "var(--vc-tile-peach)", color: "var(--vc-navy)", fontSize: 13, fontWeight: 800 }}>
+                {mrn ? <TickCircle size={12} color="currentColor" /> : <Add size={12} color="currentColor" />} {mrn ? t("home_record_linked") : t("home_add_reading")}
+              </span>
+            </span>
+          </span>
+          {ARROW}
+        </button>
+  );
+
+  return (
+    <div className="vita-home" style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 104px)" }}>
+      {/* Dashboard header */}
+      <div className="vita-home-top" style={{ position: "relative", paddingBottom: 12 }}>
+        <div className="vita-home-hero" style={{ background: "#003E48", borderRadius: "0 0 24px 24px", padding: "calc(env(safe-area-inset-top) + 14px) 20px 86px" }}>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <span className="vita-home-logo" style={{ width: 52, height: 52, borderRadius: "50%", background: "#fff", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/plus-assets/vitaway-logo.png" alt="Vitaway" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+            </span>
+            <span className="vita-home-date" style={{ marginLeft: 10, padding: "8px 12px", borderRadius: 10, background: "rgba(255,255,255,0.18)", color: "#fff", fontWeight: 700, fontSize: 13 }}>{fmtHeaderDate(new Date())}</span>
+            <span style={{ flex: 1 }} />
+            <button type="button" className="vita-home-hero-btn" aria-label="Notifications" onClick={() => push("/notifications")} style={{ width: 40, height: 40, borderRadius: "50%", background: "rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center", position: "relative", color: "#fff" }}>
+              <Notification size={20} variant="Bold" color="currentColor" />
+              {unread > 0 ? (
+                <span style={{ position: "absolute", top: 4, right: 4, width: 14, height: 14, borderRadius: "50%", background: "#003E48", border: "1.2px solid #fff", color: "#fff", fontSize: 8, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", lineHeight: 1 }}>
+                  {unread > 9 ? "9" : unread}
+                </span>
+              ) : null}
+            </button>
+            <button type="button" className="vita-home-hero-btn" aria-label="Account" onClick={() => push("/profile")} style={{ marginLeft: 10, width: 44, height: 44, borderRadius: "50%", background: "#fff", padding: 2 }}>
+              <span style={{ display: "block", width: 40, height: 40, borderRadius: "50%", overflow: "hidden" }}>
+                <Photo url={user?.profile?.profile_picture} size={40} />
+              </span>
+            </button>
+          </div>
+          <p className="vita-home-hello" style={{ margin: "22px 0 0", color: "#fff", fontSize: 30, lineHeight: 1.05, fontWeight: 800, letterSpacing: -0.6 }}>{first ? `${t("hello")}, ${first}!` : `${t("hello")}!`}</p>
+          <p className="vita-home-weekline">{weekLine}</p>
+        </div>
+{showScore ? healthScoreCard() : emergencyCard(false)}
+      </div>
+
+      <div className="vita-home-sections vita-home-body" style={pad}>
+        <div className="vita-home-main">{sectionNodes.filter((n) => !n.rail).map((n) => n.node)}</div>
+        <aside className="vita-home-rail" aria-label={t("home_side_panel")}>
+          <div className="vita-home-rail-only">{showScore ? healthScoreCard() : null}</div>
+          <div className="vita-home-rail-only">{emergencyCard(true)}</div>
+          {orgName ? (
+            <p className="vita-home-pad" style={{ order: -2, margin: "0 0 8px", fontSize: 14, fontWeight: 800, color: "var(--vc-navy)" }}>
+              {discount > 0 ? t("org_discount", { name: orgName, percent: discount }) : t("org_with", { name: orgName })}
+            </p>
+          ) : null}
+          <div className="vita-home-pad" style={{ order: -1, padding: "0 0 4px" }}>
+            <SubscriptionBanner onClick={() => push("/plans")} />
+          </div>
+          {sectionNodes.filter((n) => n.rail).map((n) => n.node)}
+        </aside>
       </div>
     </div>
   );
 }
+
+const RAIL_SECTIONS = ["daily_question", "meal_tips", "visit"];
+
