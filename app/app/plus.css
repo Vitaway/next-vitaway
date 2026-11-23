@@ -1908,3 +1908,51 @@ button.vita-quiz-input { text-align: left; cursor: pointer; }
   .vita-med-form { padding: 16px 0 32px; gap: 16px; }
   .vita-med-section { padding: 20px 22px; }
 }
+
+/* ── Home "This week" reading cards v2 (23 Nov 2026): one layout, equal heights, nothing cut off ─────────── */
+.vita-root .vita-ins {
+  width: 100%; height: 100%; display: grid; grid-template-areas: "head" "body" "chart"; grid-template-rows: auto 1fr auto; gap: 10px;
+  text-align: left; padding: 14px 14px 12px; border-radius: 16px; background: var(--vc-surface); color: var(--vc-ink);
+  border: 1px solid rgba(var(--vc-navy-rgb), 0.06); position: relative; overflow: hidden;
+}
+.vita-root .vita-ins::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 3px; background: var(--ins-ink); opacity: 0.85; }
+.vita-ins-head { grid-area: head; display: flex; align-items: center; gap: 8px; color: rgba(var(--vc-navy-rgb), 0.35); }
+.vita-ins-ic { width: 30px; height: 30px; border-radius: 9px; flex: none; display: flex; align-items: center; justify-content: center; background: var(--ins-tint); color: var(--ins-ink); }
+.vita-ins-title { flex: 1; min-width: 0; font-size: 13.5px; font-weight: 800; color: var(--vc-ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.vita-ins-body { grid-area: body; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.vita-ins-val { display: flex; align-items: baseline; flex-wrap: wrap; column-gap: 6px; }
+.vita-ins-val b { font-size: 28px; line-height: 1.1; font-weight: 800; letter-spacing: -0.5px; color: var(--vc-ink); font-variant-numeric: tabular-nums; }
+.vita-ins-val small { font-size: 13px; font-weight: 800; color: rgba(var(--vc-navy-rgb), 0.55); }
+.vita-ins-alt { font-size: 12px; font-weight: 700; color: rgba(var(--vc-navy-rgb), 0.45); }
+.vita-ins-status {
+  margin-top: 4px; font-size: 12.5px; line-height: 1.4; font-weight: 600; color: rgba(var(--vc-navy-rgb), 0.62);
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.vita-ins.is-empty .vita-ins-val b { color: rgba(var(--vc-navy-rgb), 0.3); }
+.vita-ins-chart { grid-area: chart; display: block; min-width: 0; padding: 8px 8px 0; margin: 0 -4px; border-radius: 12px; background: linear-gradient(180deg, transparent, rgba(var(--vc-navy-rgb), 0.035)); }
+.vita-ins-days { display: flex; margin-top: 2px; padding-bottom: 6px; }
+.vita-ins-days span { flex: 1; text-align: center; font-size: 10px; font-weight: 800; color: rgba(var(--vc-navy-rgb), 0.38); }
+.vita-ins-days span.today { color: var(--ins-ink); }
+/* Phone, full-width card: text left, chart right. */
+.vita-root .vita-ins.is-wide { grid-template-areas: "head head" "body chart"; grid-template-columns: minmax(0, 1fr) 132px; grid-template-rows: auto auto; align-items: end; }
+.vita-ins.is-wide .vita-ins-chart { align-self: end; }
+.vita-root[data-theme="dark"] .vita-ins { border-color: rgba(255, 255, 255, 0.06); }
+.vita-root[data-theme="dark"] .vita-ins-chart { background: linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.03)); }
+
+@media (min-width: 768px) {
+  .vita-home-metrics { align-items: stretch !important; }
+  .vita-home-metrics > div { display: flex; }
+  .vita-root .vita-ins, .vita-root .vita-ins.is-wide { grid-template-areas: "head" "body" "chart"; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 1fr auto; align-items: stretch; padding: 16px 16px 12px; min-height: 236px; }
+  .vita-root .vita-home-body .vita-ins { border-radius: 18px !important; }
+  .vita-ins-val b { font-size: 30px; }
+
+  /* Lead row: the two cards share one look and one height. */
+  .vita-home-lead { align-items: stretch; }
+  .vita-root .vita-home-lead .vita-home-score, .vita-root .vita-home-lead-plan > button {
+    min-height: 112px; background: var(--vc-surface) !important; border: 1px solid rgba(var(--vc-navy-rgb), 0.06); border-radius: 20px !important; padding: 18px 20px !important; gap: 16px !important;
+  }
+  .vita-root .vita-home-lead-plan > button > span:first-child { width: 56px !important; height: 56px !important; border-radius: 50% !important; background: var(--vc-tile-mint) !important; }
+  .vita-root .vita-home-lead-plan > button > span:nth-child(2) > span:first-child { font-size: 16px !important; }
+  .vita-root .vita-home-lead-plan > button > span:nth-child(3) { min-width: 52px !important; height: 52px; padding: 0 !important; border-radius: 50% !important; display: flex; align-items: center; justify-content: center; background: var(--vc-tile-mint) !important; box-shadow: inset 0 0 0 3px rgba(43, 179, 163, 0.35); }
+  .vita-root[data-theme="dark"] .vita-home-lead .vita-home-score, .vita-root[data-theme="dark"] .vita-home-lead-plan > button { border-color: rgba(255, 255, 255, 0.07); }
+}

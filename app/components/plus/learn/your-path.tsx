@@ -102,7 +102,7 @@ function PathCard({
   return (
     <div>
       <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
-        <div style={{ flex: 1, fontSize: 16, fontWeight: 800, color: "var(--vc-teal)", letterSpacing: -0.2 }}>{t("your_path")}</div>
+        <div style={{ flex: 1, fontSize: 16, fontWeight: 800, color: "var(--vc-ink)", letterSpacing: -0.2 }}>{t("your_path")}</div>
         <div style={{ fontSize: 13, fontWeight: 600, color: "var(--vc-muted)" }}>{progress}</div>
       </div>
       <div style={{ marginTop: 2, fontSize: 13, color: "var(--vc-body)" }}>{subtitle}</div>

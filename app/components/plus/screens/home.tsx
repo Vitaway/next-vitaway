@@ -133,51 +133,35 @@ function InsightCard({
   onClick: () => void;
   compact?: boolean;
 }) {
-  const valueText = unit ? `${value} ${unit}` : value;
-  const ellipsis: React.CSSProperties = { whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" };
-  const letterRow = (size: number) => (
-    <span style={{ display: "flex" }}>
-      {letters.map((letter, i) => (
-        <span key={i} style={{ flex: 1, textAlign: "center", fontSize: size, fontWeight: 700, color: "rgba(var(--vc-navy-rgb),0.4)" }}>
-          {letter}
-        </span>
-      ))}
-    </span>
-  );
-  if (compact) {
-    return (
-      <button type="button" onClick={onClick} className="vita-tap" style={{ width: "100%", display: "flex", gap: 12, textAlign: "left", background: "var(--vc-surface)", borderRadius: 10, padding: "12px 14px 10px" }}>
-        <span style={{ flex: 1, minWidth: 0 }}>
-          <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <span style={{ width: 26, height: 26, borderRadius: 8, background: tint, color: ink, display: "flex", alignItems: "center", justifyContent: "center" }}>{icon}</span>
-            <span style={{ fontWeight: 800, fontSize: 13, color: "var(--vc-ink)", ...ellipsis }}>{title}</span>
-          </span>
-          <span style={{ display: "block", marginTop: 8, fontSize: 22, fontWeight: 800, color: "var(--vc-ink)", ...ellipsis }}>{valueText}</span>
-          <span style={{ display: "block", fontSize: 13, fontWeight: 600, color: "rgba(var(--vc-navy-rgb),0.55)", ...ellipsis }}>{status}</span>
-        </span>
-        <span style={{ width: 120, flex: "none", display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
-          <ArrowRight3 size={18} color="rgba(var(--vc-navy-rgb),0.35)" />
-          <span style={{ display: "block", width: "100%", marginTop: 6 }}>
-            <WeekChart series={series} color={ink} height={36} />
-          </span>
-          <span style={{ display: "block", width: "100%", marginTop: 2 }}>{letterRow(9)}</span>
-        </span>
-      </button>
-    );
-  }
+  // One card for every reading: header, value (unit can wrap under it), a two-line status, then the week chart
+  // pinned to the bottom so cards in a row line up. `compact` = the phone's full-width card (chart on the right).
+  const parts = unit.match(/^(\S+)\s*\((.+)\)$/);
+  const unitMain = parts ? parts[1] : unit;
+  const unitAlt = parts ? parts[2] : "";
+  const empty = value === "—";
   return (
-    <button type="button" onClick={onClick} className="vita-tap" style={{ width: "100%", display: "block", textAlign: "left", background: "var(--vc-surface)", borderRadius: 10, padding: "14px 14px 12px" }}>
-      <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
-        <span style={{ width: 28, height: 28, borderRadius: 6, background: tint, color: ink, display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>{icon}</span>
-        <span style={{ flex: 1, fontWeight: 800, fontSize: 13, color: "var(--vc-ink)", ...ellipsis }}>{title}</span>
-        <ArrowRight3 size={18} color="rgba(var(--vc-navy-rgb),0.35)" />
+    <button type="button" onClick={onClick} className={`vita-tap vita-ins ${compact ? "is-wide" : ""} ${empty ? "is-empty" : ""}`} style={{ ["--ins-ink" as string]: ink, ["--ins-tint" as string]: tint }}>
+      <span className="vita-ins-head">
+        <span className="vita-ins-ic">{icon}</span>
+        <span className="vita-ins-title">{title}</span>
+        <ArrowRight3 size={18} color="currentColor" />
       </span>
-      <span style={{ display: "block", marginTop: 12, fontSize: 20, fontWeight: 800, color: "var(--vc-ink)", ...ellipsis }}>{valueText}</span>
-      <span style={{ display: "block", fontSize: 13, fontWeight: 600, color: "rgba(var(--vc-navy-rgb),0.55)", ...ellipsis }}>{status}</span>
-      <span style={{ display: "block", marginTop: 10 }}>
-        <WeekChart series={series} color={ink} height={44} />
+      <span className="vita-ins-body">
+        <span className="vita-ins-val">
+          <b>{value}</b>
+          {unitMain ? <small>{unitMain}</small> : null}
+        </span>
+        {unitAlt ? <span className="vita-ins-alt">{unitAlt}</span> : null}
+        <span className="vita-ins-status">{status}</span>
       </span>
-      <span style={{ display: "block", marginTop: 4 }}>{letterRow(10)}</span>
+      <span className="vita-ins-chart">
+        <WeekChart series={series} color={ink} height={compact ? 40 : 52} />
+        <span className="vita-ins-days">
+          {letters.map((letter, i) => (
+            <span key={i} className={i === letters.length - 1 ? "today" : ""}>{letter}</span>
+          ))}
+        </span>
+      </span>
     </button>
   );
 }
@@ -249,7 +233,6 @@ function SubscriptionBanner({ onClick }: { onClick: () => void }) {
   }
   // F07: a care-programme trial wins over the older MiraFood subscription banner.
   if (care.onTrial) {
-    const unit = care.daysLeft === 1 ? t("day_one") : t("days");
     return (
       <BannerShell
         onClick={onClick}
@@ -257,7 +240,7 @@ function SubscriptionBanner({ onClick }: { onClick: () => void }) {
         ink={mintInk}
         icon={<Illu name="plan" size={30} />}
         title={t("home_trial_days_left", { days: `${care.daysLeft}` })}
-        subtitle={t("home_days_left", { days: `${care.daysLeft} ${unit}` })}
+        subtitle={t("home_trial_keep")}
         trailing={`${care.daysLeft}`}
       />
     );
@@ -272,7 +255,7 @@ function SubscriptionBanner({ onClick }: { onClick: () => void }) {
         ink={mintInk}
         icon={<Illu name="plan" size={30} />}
         title={sub.onTrial ? t("home_trial_days_left", { days: `${days}` }) : t("home_sub_active")}
-        subtitle={t("home_days_left", { days: `${days} ${unit}` })}
+        subtitle={sub.onTrial ? t("home_trial_keep") : t("home_days_left", { days: `${days} ${unit}` })}
         trailing={days ? `${days}` : undefined}
       />
     );
