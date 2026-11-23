@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowRight3, Calendar1, DocumentText1, InfoCircle, NoteText, Reserve } from "iconsax-react";
+import { ArrowRight3, Calendar1, DocumentText1, InfoCircle, NoteText, Reserve } from "@/lib/plus/icons";
 import { MEAL_DAY_NAMES, MEAL_SLOT_LABELS, mealPlanPdf, mealPlanUploaded, useMealPlans, type MealPlan } from "@/lib/plus/client/care";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { ActionButton, AppBar, Card, CenterSpinner, EmptyState } from "../ui/vita";

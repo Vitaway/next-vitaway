@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ArrowRight3, Camera, DocumentText, Gallery, MessageText1 } from "iconsax-react";
+import { Camera, Gallery, Message } from "@/lib/plus/icons";
+import { parseStamp } from "@/lib/plus/health";
+import { fmtLongDay } from "@/lib/plus/format";
 import {
   MEAL_TYPES,
   getMealPhoto,
@@ -12,17 +14,12 @@ import {
 } from "@/lib/plus/meal-photos";
 import { useLanguage, useT } from "@/lib/plus/i18n";
 import { useProgrammeConfig } from "@/lib/plus/client/programme-config";
+import { MobileApiError } from "@/lib/plus/client/api";
 import { changeLine, getFood, mealPollMs, itemFromRecognised, recognizeMeal, toSubmission, type Recognition, type ReviewItem } from "@/lib/plus/meal-review";
 import { MealReviewItems, PrimaryButton } from "./meal-review";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { ActionButton, AppBar, CenterSpinner, EmptyState, HubLinks, Page, useFeedback } from "../ui/vita";
-
-function statusColor(status: string) {
-  if (status === "reviewed") return "#0B6A4C";
-  if (status === "needs_retake") return "var(--vc-danger)";
-  if (status === "in_review") return "var(--vc-action, #E85A2E)";
-  return "var(--vc-muted)";
-}
+import { ILLU_TINT, Illu } from "../ui/vita-icons";
 
 function AuthImage({ id, thumb, alt }: { id: number; thumb?: boolean; alt: string }) {
   const [src, setSrc] = useState<string | null>(null);
@@ -46,7 +43,14 @@ function AuthImage({ id, thumb, alt }: { id: number; thumb?: boolean; alt: strin
   return <img src={src} alt={alt} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />;
 }
 
-/** History of meal photos sent for a care-team check — Flutter MealPhotosPage. */
+function statusTone(status: string) {
+  if (status === "reviewed") return "ok";
+  if (status === "needs_retake") return "bad";
+  if (status === "in_review") return "warn";
+  return "neutral";
+}
+
+/** History of meal photos sent for a care-team check — Flutter MealPhotosPage (23 Nov: hero + photo gallery). */
 export function MealPhotosScreen() {
   const t = useT();
   const { push } = usePlusPaths();
@@ -61,43 +65,78 @@ export function MealPhotosScreen() {
   useEffect(() => {
     load();
   }, []);
+  const steps = [t("meal_step_1"), t("meal_step_2"), t("meal_step_3")];
   return (
     <Page width="wide">
       <AppBar title={t("nav_nutrition")} back={false} profile />
-      <div style={{ flex: 1, overflowY: "auto", padding: "12px 16px 96px" }}>
+      <div className="vita-nu" style={{ flex: 1, overflowY: "auto" }}>
         <HubLinks
           links={[
-            { label: t("meal_plans_title"), icon: <DocumentText size={20} color="currentColor" />, onClick: () => push("/meal-plans") },
-            { label: t("fr_open"), icon: <MessageText1 size={20} color="currentColor" />, onClick: () => push("/food-reports"), testId: "food-reports-link" },
+            { label: t("meal_plans_title"), icon: <Illu name="meal-plans" size={30} />, tint: ILLU_TINT["meal-plans"], onClick: () => push("/meal-plans") },
+            { label: t("fr_open"), icon: <Illu name="food-reports" size={30} />, tint: ILLU_TINT["food-reports"], onClick: () => push("/food-reports"), testId: "food-reports-link" },
           ]}
         />
-        <div style={{ height: 12 }} />
+
+        <section className="vita-nu-hero">
+          <span className="art" style={{ background: ILLU_TINT["meal-photo"] }}>
+            <Illu name="meal-photo" size={72} />
+          </span>
+          <div className="tx">
+            <h2>{t("meal_hero_title")}</h2>
+            <p>{t("meal_photos_empty_body")}</p>
+          </div>
+          <div className="cta">
+            <ActionButton full label={t("meal_photos_add")} onClick={() => push("/meal-photos/new")} icon={<Camera size={16} color="currentColor" />} />
+          </div>
+        </section>
+
         {rows == null && !error ? <CenterSpinner /> : null}
         {error ? <EmptyState title={t("meal_photos_load_error")} actionLabel={t("retry")} onAction={load} /> : null}
-        {rows && !rows.length ? <EmptyState title={t("meal_photos_empty_title")} subtitle={t("meal_photos_empty_body")} /> : null}
-        <div className="vita-flex-list">
-        {rows?.map((photo) => (
-          <button
-            key={photo.id}
-            type="button"
-            onClick={() => push(`/meal-photos/${photo.id}`)}
-            style={{ width: "100%", textAlign: "left", marginBottom: 10, padding: 12, borderRadius: 14, border: "1px solid var(--vc-line)", background: "var(--vc-surface)", display: "flex", alignItems: "center", gap: 12 }}
-          >
-            <span style={{ width: 64, height: 64, borderRadius: 10, overflow: "hidden", flex: "none" }}>
-              <AuthImage id={photo.id} thumb alt="" />
-            </span>
-            <span style={{ flex: 1, minWidth: 0 }}>
-              <span style={{ display: "block", fontSize: 15, fontWeight: 800, color: "var(--vc-teal-ink)" }}>{t(`meal_type_${photo.meal_type}`)}</span>
-              <span style={{ display: "block", marginTop: 4, fontSize: 13, fontWeight: 600, color: statusColor(photo.status) }}>{photo.status_label}</span>
-              {photo.review?.note ? <span style={{ display: "block", marginTop: 4, fontSize: 13, color: "var(--vc-muted)" }}>{t("meal_photos_has_feedback")}</span> : null}
-            </span>
-            <ArrowRight3 size={18} color="var(--vc-muted)" />
-          </button>
-        ))}
-        </div>
-      </div>
-      <div className="vita-bottom-bar" style={{ position: "sticky", bottom: 0, padding: "8px 16px calc(12px + env(safe-area-inset-bottom))", background: "var(--vc-canvas)" }}>
-        <ActionButton full label={t("meal_photos_add")} onClick={() => push("/meal-photos/new")} icon={<Camera size={16} color="currentColor" />} />
+
+        {rows && !rows.length ? (
+          <section className="vita-nu-steps" aria-label={t("meal_steps_title")}>
+            <h2 className="vita-nu-title">{t("meal_steps_title")}</h2>
+            <ol>
+              {steps.map((step, i) => (
+                <li key={step}>
+                  <span className="n">{i + 1}</span>
+                  <span>{step}</span>
+                </li>
+              ))}
+            </ol>
+            <p className="empty">{t("meal_photos_empty_title")}</p>
+          </section>
+        ) : null}
+
+        {rows?.length ? (
+          <section aria-label={t("meal_section_title")}>
+            <h2 className="vita-nu-title">
+              {t("meal_section_title")} <span className="ct">{rows.length}</span>
+            </h2>
+            <div className="vita-nu-grid">
+              {rows.map((photo) => {
+                const when = parseStamp(photo.eaten_at || photo.created_at);
+                return (
+                  <button key={photo.id} type="button" className="vita-nu-card" onClick={() => push(`/meal-photos/${photo.id}`)}>
+                    <span className="ph">
+                      <AuthImage id={photo.id} thumb alt="" />
+                      <span className={`vita-mc-chip tone-${statusTone(photo.status)}`}>{photo.status_label}</span>
+                    </span>
+                    <span className="bd">
+                      <b>{t(`meal_type_${photo.meal_type}`)}</b>
+                      <span>{when ? fmtLongDay(when) : ""}</span>
+                      {photo.review?.note ? (
+                        <span className="fb">
+                          <Message size={14} color="currentColor" /> {t("meal_photos_has_feedback")}
+                        </span>
+                      ) : null}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </section>
+        ) : null}
       </div>
     </Page>
   );
@@ -171,8 +210,10 @@ export function MealPhotoComposeScreen({ retakeOf }: { retakeOf?: number }) {
       });
       toast(photo.points?.awarded ? t("meal_photos_saved_points", { points: photo.points.points }) : t("meal_photos_saved"));
       replace(`/meal-photos/${photo.id}`);
-    } catch {
-      toast(t("meal_photos_save_error"), { error: true });
+    } catch (error) {
+      // A 400 carries the server's own reason (photo too big, unreadable, wrong type); say that, not a generic retry.
+      const reason = error instanceof MobileApiError && error.status === 400 ? error.message : "";
+      toast(reason || t("meal_photos_save_error"), { error: true });
       setSaving(false);
     }
   };
@@ -227,7 +268,7 @@ export function MealPhotoComposeScreen({ retakeOf }: { retakeOf?: number }) {
         <button
           type="button"
           onClick={() => inputRef.current?.click()}
-          style={{ width: "100%", aspectRatio: "4 / 3", borderRadius: 14, border: "1px solid var(--vc-line)", background: "var(--vc-surface)", overflow: "hidden", padding: 0 }}
+          style={{ width: "100%", height: "clamp(180px, 32vh, 280px)", borderRadius: 16, border: preview ? "1px solid var(--vc-line)" : "2px dashed rgba(var(--vc-navy-rgb), 0.18)", background: preview ? "var(--vc-surface)" : "color-mix(in srgb, var(--vc-tile-mint) 45%, var(--vc-surface))", overflow: "hidden", padding: 0 }}
         >
           {preview ? (
             // eslint-disable-next-line @next/next/no-img-element

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ArrowRight3 } from "iconsax-react";
+import { ArrowRight3 } from "@/lib/plus/icons";
 import { useLanguage, useT } from "@/lib/plus/i18n";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { checkpointKey, formatChange, formatValue, getFoodReport, listFoodReports, periodLabel, type FoodReport } from "@/lib/plus/food-report";

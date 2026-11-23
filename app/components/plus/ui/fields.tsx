@@ -1,7 +1,7 @@
 "use client";
 
 import { useId } from "react";
-import { ArrowDown2 } from "iconsax-react";
+import { ArrowDown2 } from "@/lib/plus/icons";
 
 const navyA = (a: number) => `rgba(var(--vc-navy-rgb),${a})`;
 

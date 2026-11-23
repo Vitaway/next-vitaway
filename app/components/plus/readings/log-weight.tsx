@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Weight } from "iconsax-react";
+import { Weight } from "@/lib/plus/icons";
 import { useT } from "@/lib/plus/i18n";
 import { useBack } from "@/lib/plus/nav";
 import { latestByType } from "@/lib/plus/health";
@@ -9,7 +9,7 @@ import { useMetrics } from "@/lib/plus/client/data";
 import { saveReading } from "@/lib/plus/client/readings";
 import { MobileApiError } from "@/lib/plus/client/api";
 import { useFeedback } from "../ui/vita";
-import { DateLine, FUTURE_TIME_MESSAGE, MetricLogScaffold, TimeChip, TimePickerModal } from "./log-chrome";
+import { DateLine, FUTURE_TIME_MESSAGE, LastReadingLine, MetricLogScaffold, TimeChip, TimePickerModal } from "./log-chrome";
 
 function StepButton({ label, onClick, children }: { label: string; onClick: () => void; children: React.ReactNode }) {
   return (
@@ -69,7 +69,7 @@ export default function LogWeightScreen() {
   };
 
   return (
-    <MetricLogScaffold photoType="weight" title={t("add_weight")} icon={<Weight size={17} color="currentColor" />} saveLabel={t("save")} loading={saving} onSave={kg === null ? undefined : save}>
+    <MetricLogScaffold photoType="weight" metricType="weight" title={t("add_weight")} icon={<Weight size={17} color="currentColor" />} saveLabel={t("save")} loading={saving} onSave={kg === null ? undefined : save}>
       <div style={{ padding: "8px 16px 24px" }}>
         <DateLine value={day} onChange={setDay} />
         <div style={{ marginTop: 16, display: "flex", justifyContent: "center" }}>
@@ -77,8 +77,10 @@ export default function LogWeightScreen() {
         </div>
         <p style={{ margin: "28px 0 0", textAlign: "center", fontSize: 22, fontWeight: 800, color: "var(--vc-ink)" }}>
           {t("your_weight")}
-          <span style={{ color: "#D64545", fontWeight: 700 }}> *</span>
         </p>
+        <div style={{ textAlign: "center" }}>
+          <LastReadingLine type="weight" />
+        </div>
         <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 8 }}>
           <StepButton label="Less" onClick={() => step(-0.5)}>
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M5 12h14" /></svg>

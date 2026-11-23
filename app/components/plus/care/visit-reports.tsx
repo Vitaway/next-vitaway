@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowRight3, ClipboardText, DocumentDownload } from "iconsax-react";
+import { ArrowRight3, ClipboardText, DocumentDownload } from "@/lib/plus/icons";
 import { refreshVisitReports, useVisitReport, useVisitReports, visitReportPdf, visitWhenLabel, type VisitReport } from "@/lib/plus/client/care";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { ActionButton, AppBar, CenterSpinner, CircleButton, DotSpinner, EmptyState, useFeedback } from "../ui/vita";

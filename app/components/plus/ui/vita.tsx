@@ -1,12 +1,15 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft } from "iconsax-react";
-import { MdArrowForward } from "react-icons/md";
+import { createContext, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+import { ArrowLeft } from "@/lib/plus/icons";
+import { MdArrowForward } from "@/lib/plus/icons";
 import { useBack } from "@/lib/plus/nav";
 import { mediaUrl } from "@/lib/plus/client/api";
 import { useMe } from "@/lib/plus/client/data";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
+import { Illu, NAV_ILLU } from "./vita-icons";
+import { tabFor, useAppPath } from "../shell/dock";
 
 export function cx(...parts: Array<string | false | null | undefined>): string {
   return parts.filter(Boolean).join(" ");
@@ -53,12 +56,12 @@ export function CircleButton({
 }
 
 /** Shortcut tiles at the top of a tab screen (F16: each tab groups its related screens). */
-export function HubLinks({ links }: { links: Array<{ label: string; icon: React.ReactNode; onClick: () => void; testId?: string }> }) {
+export function HubLinks({ links }: { links: Array<{ label: string; icon: React.ReactNode; onClick: () => void; testId?: string; tint?: string }> }) {
   return (
     <div className="vita-hub-links">
       {links.map((link) => (
         <button key={link.label} type="button" className="vita-hub-link vita-tap" data-testid={link.testId} onClick={link.onClick}>
-          <span className="ic">{link.icon}</span>
+          <span className="ic" style={link.tint ? { background: link.tint } : undefined}>{link.icon}</span>
           <span className="lb">{link.label}</span>
         </button>
       ))}
@@ -98,6 +101,9 @@ export function AppBar({
   profile?: boolean;
 }) {
   const goBack = useBack(backTo);
+  // The section's illustrated icon (same as the web top bar) sits left of the title, on every width.
+  const section = tabFor(useAppPath());
+  const sectionIcon = section ? NAV_ILLU[section] : undefined;
   return (
     <header className="vita-appbar">
       {bubbles ? <AppBarBubbles /> : null}
@@ -109,7 +115,14 @@ export function AppBar({
             </CircleButton>
           </div>
         ) : null}
-        <h1 className="vita-appbar-title">{title}</h1>
+        <h1 className="vita-appbar-title">
+          {sectionIcon ? (
+            <span className="vita-appbar-ic" aria-hidden>
+              <Illu name={sectionIcon} size={26} />
+            </span>
+          ) : null}
+          <span className="vita-appbar-tx">{title}</span>
+        </h1>
         {actions || profile ? (
           <div className="vita-appbar-trail">
             {actions}
@@ -491,6 +504,7 @@ export function Modal({
   }, [open, onClose]);
   if (!open) return null;
   return (
+    <RootPortal>
     <div className="vita-modal-scrim" onClick={onClose} role="presentation">
       <div
         className={cx("vita-modal", compact && "compact")}
@@ -513,7 +527,21 @@ export function Modal({
         {actions ? <div className="vita-modal-foot">{actions}</div> : null}
       </div>
     </div>
+    </RootPortal>
   );
+}
+
+/**
+ * Renders overlays (modals, pickers, full-screen viewers) at the top of the app, inside `.vita-root`.
+ * Inside a screen they could be trapped in that screen's stacking context, so the phone tab bar and the
+ * Log button sat on top of them. `.vita-root` (not document.body) keeps the theme colour tokens.
+ */
+export function RootPortal({ children }: { children: React.ReactNode }) {
+  const [host, setHost] = useState<Element | null>(null);
+  useLayoutEffect(() => {
+    setHost(document.querySelector(".vita-root"));
+  }, []);
+  return host ? createPortal(children, host) : <>{children}</>;
 }
 
 /* ───────── Toasts and confirm ───────── */

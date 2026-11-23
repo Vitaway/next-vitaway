@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { UserSearch } from "iconsax-react";
+import { UserSearch } from "@/lib/plus/icons";
 import { useT } from "@/lib/plus/i18n";
 import { asList, mobileRequest } from "@/lib/plus/client/api";
 import { parseCoach, type Coach } from "@/lib/plus/client/chat";

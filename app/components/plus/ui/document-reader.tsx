@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { DocumentDownload } from "iconsax-react";
+import { DocumentDownload } from "@/lib/plus/icons";
 import { AppBar, CenterSpinner, EmptyState } from "./vita";
 
 type OpenArgs = { title: string; load: () => Promise<Blob>; filename?: string };

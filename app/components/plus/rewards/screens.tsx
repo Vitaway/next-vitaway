@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Cup, Flash, Refresh, ShieldTick, Star1 } from "iconsax-react";
+import { Cup, Flash, Refresh, ShieldTick, Star1 } from "@/lib/plus/icons";
 import { useLanguage } from "@/lib/plus/i18n";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { mobileRequest } from "@/lib/plus/client/api";

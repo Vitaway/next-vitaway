@@ -2,7 +2,7 @@
 
 import { requestNotificationPermission } from "@/lib/plus/web-notifications";
 import { useState } from "react";
-import { Alarm, ArrowDown2, Calendar1, Edit, Health, NoteText, Refresh, Repeat, Trash } from "iconsax-react";
+import { Alarm, Calendar1, Health, NoteText, Refresh, Trash } from "@/lib/plus/icons";
 import { useT } from "@/lib/plus/i18n";
 import { useMe } from "@/lib/plus/client/data";
 import { mobileRequest } from "@/lib/plus/client/api";
@@ -12,8 +12,7 @@ import { DOSE_COLORS, canMarkDoseTaken, defaultTimesForFrequency, effectiveSlotS
 import { useTheme } from "@/lib/plus/theme";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { useBack } from "@/lib/plus/nav";
-import { ActionButton, AppBar, Card, CenterSpinner, CircleButton, EmptyState, Modal, useFeedback } from "../ui/vita";
-import { AuthField, FieldCaption, SelectRow } from "../ui/fields";
+import { ActionButton, AppBar, CenterSpinner, CircleButton, EmptyState, Modal, useFeedback } from "../ui/vita";
 import { MetricLogScaffold, TimePickerModal } from "../readings/log-chrome";
 import { AdherenceSummaryCard, MedicationListCard } from "./cards";
 
@@ -177,15 +176,6 @@ export function MedicationDetailScreen({ id }: { id: number }) {
 }
 
 const UNITS = ["mg", "ml", "tablet", "drops", "capsule", "IU"];
-const PRESETS: Array<[number | null, string]> = [
-  [1, "Once a day"],
-  [2, "Twice a day"],
-  [3, "3 times a day"],
-  [4, "4 times a day"],
-  [5, "5 times a day"],
-  [6, "6 times a day"],
-  [null, "Custom"],
-];
 type Hm = { hour: number; minute: number };
 const toHm = (s: string): Hm => {
   const [h, m] = s.split(":");
@@ -195,26 +185,55 @@ const fmt = (t: Hm) => `${String(t.hour).padStart(2, "0")}:${String(t.minute).pa
 const fmtLong = (d: Date) => `${["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][d.getDay()]} ${d.getDate()} ${["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][d.getMonth()]} ${d.getFullYear()}`;
 const ymdOf = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 
-function UnderlineButton({ children, onClick, error = false, width }: { children: React.ReactNode; onClick: () => void; error?: boolean; width?: number }) {
+
+/** Common long-term medicines, offered as one-tap names (the member can still type any name). */
+const COMMON_MEDS = ["Metformin", "Amlodipine", "Losartan", "Atorvastatin", "Hydrochlorothiazide", "Gliclazide", "Insulin", "Aspirin"];
+const QUICK_FREQ: Array<[number, string]> = [[1, "med_freq_1"], [2, "med_freq_2"], [3, "med_freq_3"], [4, "med_freq_4"]];
+const INSTRUCTION_CHIPS = ["med_instr_with_food", "med_instr_before_food", "med_instr_bedtime", "med_instr_empty_stomach", "med_instr_water"];
+const COUNTABLE_UNITS = new Set(["tablet", "capsule", "drops"]);
+const INSTRUCTIONS_MAX = 200;
+
+function partOfDay(t: Hm): string {
+  const m = t.hour * 60 + t.minute;
+  if (m < 4 * 60) return "med_time_night";
+  if (m < 12 * 60) return "med_time_morning";
+  if (m < 17 * 60) return "med_time_afternoon";
+  if (m < 21 * 60) return "med_time_evening";
+  return "med_time_night";
+}
+
+function MedSection({ step, title, done, children, optional }: { step: number; title: string; done: boolean; optional?: string; children: React.ReactNode }) {
   return (
-    <button type="button" onClick={onClick} style={{ width: width ?? "100%", display: "flex", alignItems: "center", gap: 12, padding: "14px 0", borderBottom: `1px solid ${error ? "var(--vc-danger)" : navyA(0.55)}`, textAlign: "left" }}>
+    <section className={`vita-med-section${done ? " done" : ""}`}>
+      <header>
+        <span className="num" aria-hidden>{done ? "✓" : step}</span>
+        <h2>{title}</h2>
+        {optional ? <span className="opt">{optional}</span> : null}
+      </header>
       {children}
-    </button>
+    </section>
   );
 }
 
-/** add_medication.dart */
+function FieldNote({ error, warn, ok }: { error?: string | null; warn?: string | null; ok?: string | null }) {
+  if (error) return <p className="vita-med-note error" role="alert">{error}</p>;
+  if (warn) return <p className="vita-med-note warn">{warn}</p>;
+  if (ok) return <p className="vita-med-note ok">{ok}</p>;
+  return null;
+}
+
+/** add_medication.dart, redesigned (24 Nov 2026): numbered sections, chips instead of dropdowns, live checks. */
 export function AddMedicationScreen() {
   const t = useT();
   const goBack = useBack("/medications");
   const { toast } = useFeedback();
   const { user } = useMe();
+  const { push } = usePlusPaths();
   const [name, setName] = useState("");
   const [dose, setDose] = useState("");
   const [unit, setUnit] = useState("mg");
-  const [preset, setPreset] = useState<number | null>(2);
+  const [freq, setFreq] = useState<number>(2);
   const [custom, setCustom] = useState(false);
-  const [customText, setCustomText] = useState("");
   const [times, setTimes] = useState<Hm[]>([{ hour: 8, minute: 0 }, { hour: 20, minute: 0 }]);
   const [start, setStart] = useState(() => {
     const d = new Date();
@@ -222,34 +241,67 @@ export function AddMedicationScreen() {
     return d;
   });
   const [instructions, setInstructions] = useState("");
-  const [touched, setTouched] = useState({ name: false, dose: false, freq: false, custom: false });
+  const [attempted, setAttempted] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
-  const [sheet, setSheet] = useState<null | "unit" | "freq" | "date" | { time: number }>(null);
+  const [sheet, setSheet] = useState<null | "date" | { time: number }>(null);
   // W7: name of the medicine this looks like, while the warning is open.
   const [duplicate, setDuplicate] = useState<string | null>(null);
-  const { push } = usePlusPaths();
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
+  const yesterday = new Date(today.getTime() - 86_400_000);
   const n = name.trim();
-  const dosage = dose.trim() ? (/^\d+$/.test(dose.trim()) ? Number.parseInt(dose.trim(), 10) : null) : null;
-  const resolvedFreq = custom ? (customText.trim() && /^\d+$/.test(customText.trim()) ? Number.parseInt(customText.trim(), 10) : null) : preset;
-  const hasFreq = custom || preset !== null;
-  const future = start.getTime() > today.getTime();
-  const nameError = !touched.name && !n ? null : !n ? "Enter the medication name" : n.length < 2 ? "Name should be at least 2 characters" : null;
   const doseRaw = dose.trim();
-  const doseError = !touched.dose && !doseRaw ? null : !doseRaw ? "Enter the dose" : dosage === null ? "Dose must be a whole number" : dosage < 1 ? "Dose must be at least 1" : dosage > 100000 ? "That dose looks too high" : null;
-  const customError = !custom ? null : !touched.custom && !customText.trim() ? null : !customText.trim() ? "Enter times per day" : resolvedFreq === null ? "Use a whole number" : resolvedFreq < 1 || resolvedFreq > 24 ? "Choose between 1 and 24 times a day" : null;
-  const freqError = touched.freq && !hasFreq ? "Choose how often to take it" : null;
-  const canSave = !saving && !future && n.length >= 2 && dosage !== null && dosage >= 1 && dosage <= 100000 && hasFreq && resolvedFreq !== null && resolvedFreq >= 1 && resolvedFreq <= 24;
-  const freqLabel = !hasFreq ? "Select frequency" : custom ? (customText.trim() ? `${customText.trim()} times a day` : "Custom") : PRESETS.find((p) => p[0] === preset)?.[1] ?? "Select frequency";
-  const applyDefaults = (f: number) => setTimes(defaultTimesForFrequency(f).map(toHm));
+  const dosage = /^\d+$/.test(doseRaw) ? Number.parseInt(doseRaw, 10) : null;
+
+  // ── live checks: shown as soon as something is typed, or for everything after a save attempt ──
+  const nameError = !n ? (attempted ? t("med_err_name_empty") : null) : n.length < 2 ? t("med_err_name_short") : !/\p{L}/u.test(n) ? t("med_err_name_letters") : n.length > 60 ? t("med_err_name_long") : null;
+  const doseError = !doseRaw
+    ? attempted ? t("med_err_dose_empty") : null
+    : /[.,]/.test(doseRaw) ? t("med_err_dose_whole") : dosage === null ? t("med_err_dose_number") : dosage < 1 ? t("med_err_dose_min") : dosage > 100000 ? t("med_err_dose_max") : null;
+  const doseWarn = !doseError && dosage !== null && COUNTABLE_UNITS.has(unit) && dosage > 10 ? t("med_warn_dose_many", { n: dosage, unit: t(`med_unit_${unit}`) }) : null;
+  const freqError = freq < 1 || freq > 24 ? t("med_err_freq") : null;
+  const sorted = [...times].sort((a, b) => a.hour * 60 + a.minute - (b.hour * 60 + b.minute));
+  const dupTime = sorted.some((x, i) => i > 0 && fmt(x) === fmt(sorted[i - 1]));
+  const timesError = dupTime ? t("med_err_times_same") : null;
+  const future = start.getTime() > today.getTime();
+  const startError = future ? t("medication_start_date_future") : null;
+  const instrError = instructions.length > INSTRUCTIONS_MAX ? t("med_err_instructions_long", { max: INSTRUCTIONS_MAX }) : null;
+
+  const nameOk = Boolean(n) && !nameError;
+  const doseOk = dosage !== null && !doseError;
+  const valid = nameOk && doseOk && !freqError && !timesError && !startError && !instrError;
+  const missing = !nameOk ? (n ? t("med_hint_fix_name") : t("med_hint_add_name")) : !doseOk ? (doseRaw ? t("med_hint_fix_dose") : t("med_hint_add_dose")) : timesError ? t("med_hint_fix_times") : instrError ? t("med_hint_fix_instructions") : startError ? startError : null;
+
+  const setFrequency = (f: number) => {
+    const k = Math.max(1, Math.min(24, f));
+    setFreq(k);
+    setTimes(defaultTimesForFrequency(k).map(toHm));
+    setSubmitError(null);
+  };
+  const stepDose = (d: number) => {
+    const cur = dosage ?? 0;
+    setDose(String(Math.max(1, cur + d)));
+    setSubmitError(null);
+  };
+  const addInstruction = (key: string) => {
+    const text = t(key);
+    setInstructions((cur) => {
+      if (cur.toLowerCase().includes(text.toLowerCase())) return cur;
+      return cur.trim() ? `${cur.trim().replace(/[.,;]$/, "")}, ${text.toLowerCase()}` : text;
+    });
+  };
+
+  const startLabel = start.getTime() === today.getTime() ? t("med_start_today") : start.getTime() === yesterday.getTime() ? t("med_start_yesterday") : fmtLong(start);
+  const freqWords = freq === 1 ? t("med_freq_1") : freq === 2 ? t("med_freq_2") : t("med_freq_n", { n: freq });
+  const summary = nameOk && doseOk
+    ? t("med_summary", { name: n, dose: `${dosage} ${t(`med_unit_${unit}`)}`, freq: freqWords.toLowerCase(), times: joinTimes(sorted.map(fmt), t("list_and")), start: startLabel.toLowerCase() })
+    : null;
 
   const save = async (confirmed = false) => {
-    setTouched({ name: true, dose: true, freq: true, custom: custom });
-    if (future) return setSubmitError(t("medication_start_date_future"));
-    if (!canSave) return;
+    setAttempted(true);
+    if (!valid || saving) return;
     setSaving(true);
     setSubmitError(null);
     if (!confirmed) {
@@ -264,7 +316,7 @@ export function AddMedicationScreen() {
     // Like add_medication.dart scheduling reminders: ask while we still have the tap.
     const permission = requestNotificationPermission();
     try {
-      const body = { user: user?.id ?? null, name: n, date_added: ymdOf(start), dosage, frequency: resolvedFreq, unit, times: times.map(fmt), instructions: instructions.trim() || null, reminders_enabled: true };
+      const body = { user: user?.id ?? null, name: n, date_added: ymdOf(start), dosage, frequency: freq, unit, times: sorted.map(fmt), instructions: instructions.trim() || null, reminders_enabled: true };
       const saved = await mobileRequest<Record<string, unknown>>("/medications/", { method: "POST", body });
       refreshMedications();
       await permission;
@@ -278,78 +330,143 @@ export function AddMedicationScreen() {
     }
   };
 
-  const lineText = (s: string, muted = false) => <span style={{ flex: 1, fontSize: 16, fontWeight: 500, color: muted ? navyA(0.32) : "var(--vc-ink)" }}>{s}</span>;
-  const caret = (error = false) => <ArrowDown2 size={20} color={error ? "var(--vc-danger)" : navyA(0.55)} />;
   const timeIndex = typeof sheet === "object" && sheet ? sheet.time : -1;
+  const showSuggestions = !n || (n.length < 12 && !COMMON_MEDS.some((m) => m.toLowerCase() === n.toLowerCase()));
+  const suggestions = COMMON_MEDS.filter((m) => !n || m.toLowerCase().startsWith(n.toLowerCase())).slice(0, 6);
 
   return (
-    <MetricLogScaffold title={t("add_medication")} icon={<Health size={20} color="currentColor" />} saveLabel={t("save_medication")} loading={saving} onSave={saving ? undefined : () => void save()}>
-      <div style={{ padding: "8px 16px 24px" }}>
-        <Card>
-          <AuthField label={t("medication_name")} required hint={t("medication_name")} icon={<Health size={20} color="currentColor" />} value={name} onChange={(v) => { setName(v); setSubmitError(null); setTouched((x) => ({ ...x, name: true })); }} error={nameError} />
-          <div style={{ height: 14 }} />
-          <FieldCaption text="Dose" required />
-          <div style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
-            <div style={{ flex: 2, minWidth: 0 }}>
+    <MetricLogScaffold
+      title={t("add_medication")}
+      icon={<Health size={20} color="currentColor" />}
+      saveLabel={t("save_medication")}
+      loading={saving}
+      onSave={valid && !saving ? () => void save() : undefined}
+      saveHint={missing}
+    >
+      <div className="vita-med-form">
+        <MedSection step={1} title={t("med_section_name")} done={nameOk}>
+          <label className={`vita-med-input${nameError ? " bad" : nameOk ? " good" : ""}`}>
+            <Health size={22} color="currentColor" />
+            <input
+              value={name}
+              autoComplete="off"
+              autoCapitalize="words"
+              placeholder={t("med_name_placeholder")}
+              aria-label={t("medication_name")}
+              aria-invalid={Boolean(nameError)}
+              maxLength={80}
+              onChange={(e) => { setName(e.target.value); setSubmitError(null); }}
+              onKeyDown={(e) => { if (e.key === "Enter") (document.getElementById("med-dose") as HTMLInputElement | null)?.focus(); }}
+            />
+            {nameOk ? <span className="tick" aria-hidden>✓</span> : null}
+          </label>
+          <FieldNote error={nameError} />
+          {showSuggestions && suggestions.length ? (
+            <div className="vita-med-chips" aria-label={t("med_common")}>
+              {suggestions.map((m) => (
+                <button key={m} type="button" className="vita-med-chip" onClick={() => { setName(m); setSubmitError(null); }}>
+                  {m}
+                </button>
+              ))}
+            </div>
+          ) : null}
+        </MedSection>
+
+        <MedSection step={2} title={t("med_section_dose")} done={doseOk}>
+          <div className="vita-med-dose">
+            <button type="button" className="step" aria-label={t("med_less")} onClick={() => stepDose(COUNTABLE_UNITS.has(unit) ? -1 : -50)} disabled={!dosage || dosage <= 1}>−</button>
+            <label className={`vita-med-input center${doseError ? " bad" : doseOk ? " good" : ""}`}>
               <input
+                id="med-dose"
                 inputMode="numeric"
                 value={dose}
-                placeholder="250"
-                onChange={(e) => { setDose(e.target.value); setSubmitError(null); setTouched((x) => ({ ...x, dose: true })); }}
-                style={{ width: "100%", padding: "14px 0", border: 0, borderBottom: `1px solid ${doseError ? "var(--vc-danger)" : navyA(0.55)}`, outline: "none", background: "transparent", fontSize: 16, fontWeight: 500, color: "var(--vc-ink)" }}
+                placeholder={COUNTABLE_UNITS.has(unit) ? "1" : "500"}
+                aria-label={t("med_section_dose")}
+                aria-invalid={Boolean(doseError)}
+                maxLength={6}
+                onChange={(e) => { setDose(e.target.value.replace(/[^\d.,]/g, "")); setSubmitError(null); }}
               />
-              {doseError ? <div style={{ marginTop: 6, fontSize: 13, lineHeight: 1.3, color: "var(--vc-danger)" }}>{doseError}</div> : null}
-            </div>
-            <div style={{ flex: 3, minWidth: 0 }}>
-              <UnderlineButton onClick={() => setSheet("unit")}>
-                {lineText(unit)}
-                {caret()}
-              </UnderlineButton>
-            </div>
+              <span className="unit">{t(`med_unit_${unit}`)}</span>
+            </label>
+            <button type="button" className="step" aria-label={t("med_more")} onClick={() => stepDose(COUNTABLE_UNITS.has(unit) ? 1 : 50)}>+</button>
           </div>
-          <div style={{ height: 14 }} />
-          <div style={{ fontSize: 13, fontWeight: 600, color: freqError ? "var(--vc-danger)" : navyA(0.7), marginBottom: 8 }}>How often<span style={{ color: "var(--vc-danger)" }}> *</span></div>
-          <UnderlineButton onClick={() => setSheet("freq")} error={Boolean(freqError)}>
-            <Repeat size={22} color={freqError ? "var(--vc-danger)" : navyA(0.55)} />
-            {lineText(freqLabel, !hasFreq)}
-            {caret(Boolean(freqError))}
-          </UnderlineButton>
-          {freqError ? <div style={{ marginTop: 6, fontSize: 13, color: "var(--vc-danger)" }}>{freqError}</div> : null}
-          {custom ? (
-            <>
-              <div style={{ height: 14 }} />
-              <AuthField
-                label={t("frequency_per_day")}
-                required
-                hint="e.g. 8"
-                icon={<Edit size={20} color="currentColor" />}
-                inputMode="numeric"
-                value={customText}
-                error={customError}
-                onChange={(v) => {
-                  setCustomText(v);
-                  setTouched((x) => ({ ...x, custom: true }));
-                  const k = Number.parseInt(v.trim(), 10);
-                  if (k >= 1 && k <= 12) applyDefaults(k);
-                }}
-              />
-            </>
-          ) : null}
-          <div style={{ height: 14 }} />
-          <FieldCaption text="Reminder times" required />
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "8px 16px" }}>
-            {times.map((tm, i) => (
-              <UnderlineButton key={i} width={72} onClick={() => setSheet({ time: i })}>
-                <span style={{ flex: 1, textAlign: "center", fontWeight: 600, fontSize: 16, color: "var(--vc-ink)" }}>{fmt(tm)}</span>
-              </UnderlineButton>
+          <FieldNote error={doseError} warn={doseWarn} />
+          <div className="vita-med-chips" role="radiogroup" aria-label={t("med_unit")}>
+            {UNITS.map((u) => (
+              <button key={u} type="button" role="radio" aria-checked={unit === u} className={`vita-med-chip${unit === u ? " on" : ""}`} onClick={() => setUnit(u)}>
+                {t(`med_unit_${u}`)}
+              </button>
             ))}
           </div>
-          <div style={{ height: 14 }} />
-          <AuthField label={t("start_date")} required hint={t("start_date")} icon={<Calendar1 size={20} color="currentColor" />} value={fmtLong(start)} onClick={() => setSheet("date")} readOnly error={future ? t("medication_start_date_future") : null} />
-          <div style={{ height: 14 }} />
-          <AuthField label="Instructions (optional)" hint="e.g. Take with food" icon={<NoteText size={20} color="currentColor" />} value={instructions} onChange={setInstructions} />
-          {submitError ? <p style={{ margin: "12px 0 0", color: "var(--vc-danger)", fontSize: 13, fontWeight: 600 }}>{submitError}</p> : null}
-        </Card>
+        </MedSection>
+
+        <MedSection step={3} title={t("med_section_often")} done={!freqError}>
+          <div className="vita-med-chips" role="radiogroup" aria-label={t("med_section_often")}>
+            {QUICK_FREQ.map(([f, key]) => (
+              <button key={f} type="button" role="radio" aria-checked={!custom && freq === f} className={`vita-med-chip big${!custom && freq === f ? " on" : ""}`} onClick={() => { setCustom(false); setFrequency(f); }}>
+                {t(key)}
+              </button>
+            ))}
+            <button type="button" role="radio" aria-checked={custom} className={`vita-med-chip big${custom ? " on" : ""}`} onClick={() => { setCustom(true); if (freq < 5) setFrequency(5); }}>
+              {t("med_freq_other")}
+            </button>
+          </div>
+          {custom ? (
+            <div className="vita-med-dose small">
+              <button type="button" className="step" aria-label={t("med_less")} onClick={() => setFrequency(freq - 1)} disabled={freq <= 1}>−</button>
+              <span className="count">{t("med_freq_n", { n: freq })}</span>
+              <button type="button" className="step" aria-label={t("med_more")} onClick={() => setFrequency(freq + 1)} disabled={freq >= 24}>+</button>
+            </div>
+          ) : null}
+          <FieldNote error={freqError} />
+        </MedSection>
+
+        <MedSection step={4} title={t("med_section_times")} done={!timesError}>
+          <div className="vita-med-times">
+            {times.map((tm, i) => (
+              <button key={i} type="button" className={`vita-med-time${timesError && sorted.filter((x) => fmt(x) === fmt(tm)).length > 1 ? " bad" : ""}`} onClick={() => setSheet({ time: i })} aria-label={`${t(partOfDay(tm))} ${fmt(tm)}`}>
+                <Alarm size={18} color="currentColor" />
+                <b>{fmt(tm)}</b>
+                <small>{t(partOfDay(tm))}</small>
+              </button>
+            ))}
+          </div>
+          <FieldNote error={timesError} ok={!timesError ? t("med_times_note") : null} />
+        </MedSection>
+
+        <MedSection step={5} title={t("med_section_start")} done={!startError}>
+          <div className="vita-med-chips" role="radiogroup" aria-label={t("start_date")}>
+            <button type="button" role="radio" aria-checked={start.getTime() === today.getTime()} className={`vita-med-chip big${start.getTime() === today.getTime() ? " on" : ""}`} onClick={() => setStart(today)}>{t("med_start_today")}</button>
+            <button type="button" role="radio" aria-checked={start.getTime() === yesterday.getTime()} className={`vita-med-chip big${start.getTime() === yesterday.getTime() ? " on" : ""}`} onClick={() => setStart(yesterday)}>{t("med_start_yesterday")}</button>
+            <button type="button" role="radio" aria-checked={start.getTime() < yesterday.getTime()} className={`vita-med-chip big${start.getTime() < yesterday.getTime() ? " on" : ""}`} onClick={() => setSheet("date")}>
+              <Calendar1 size={16} color="currentColor" />
+              {start.getTime() < yesterday.getTime() ? fmtLong(start) : t("med_start_pick")}
+            </button>
+          </div>
+          <FieldNote error={startError} />
+        </MedSection>
+
+        <MedSection step={6} title={t("med_section_instructions")} done={Boolean(instructions.trim()) && !instrError} optional={t("med_optional")}>
+          <div className="vita-med-chips">
+            {INSTRUCTION_CHIPS.map((key) => (
+              <button key={key} type="button" className={`vita-med-chip${instructions.toLowerCase().includes(t(key).toLowerCase()) ? " on" : ""}`} onClick={() => addInstruction(key)}>
+                {t(key)}
+              </button>
+            ))}
+          </div>
+          <label className={`vita-med-input area${instrError ? " bad" : ""}`}>
+            <NoteText size={20} color="currentColor" />
+            <textarea value={instructions} rows={2} placeholder={t("med_instructions_placeholder")} aria-label={t("med_section_instructions")} onChange={(e) => setInstructions(e.target.value)} />
+          </label>
+          <p className={`vita-med-count${instrError ? " bad" : ""}`}>{instructions.length}/{INSTRUCTIONS_MAX}</p>
+          <FieldNote error={instrError} />
+        </MedSection>
+
+        <div className={`vita-med-summary${summary ? " ready" : ""}`} aria-live="polite">
+          <b>{t("med_summary_title")}</b>
+          <p>{summary ?? t("med_summary_empty")}</p>
+        </div>
+        {submitError ? <p className="vita-med-note error" role="alert">{submitError}</p> : null}
       </div>
       <Modal
         open={duplicate !== null}
@@ -365,36 +482,6 @@ export function AddMedicationScreen() {
       >
         <p data-testid="duplicate-medicine" style={{ margin: 0, fontSize: 15, lineHeight: 1.6, color: "var(--vc-body)" }}>{t("duplicate_medicine_body", { name: duplicate ?? "" })}</p>
       </Modal>
-      <Modal open={sheet === "unit"} title="Unit" onClose={() => setSheet(null)}>
-        <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-          {UNITS.map((u) => (
-            <SelectRow key={u} label={u} selected={unit === u} onClick={() => { setUnit(u); setSheet(null); }} />
-          ))}
-        </div>
-      </Modal>
-      <Modal open={sheet === "freq"} title="How often" onClose={() => setSheet(null)}>
-        <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-          {PRESETS.map(([v, label]) => (
-            <SelectRow
-              key={label}
-              label={label}
-              selected={v === null ? custom : !custom && preset === v}
-              onClick={() => {
-                setTouched((x) => ({ ...x, freq: true }));
-                setCustom(v === null);
-                setPreset(v);
-                setSubmitError(null);
-                if (v !== null) {
-                  setCustomText("");
-                  setTouched((x) => ({ ...x, custom: false }));
-                  applyDefaults(v);
-                }
-                setSheet(null);
-              }}
-            />
-          ))}
-        </div>
-      </Modal>
       <Modal open={sheet === "date"} compact title={t("start_date")} onClose={() => setSheet(null)}>
         <input
           type="date"
@@ -409,6 +496,7 @@ export function AddMedicationScreen() {
             if (d.getTime() > today.getTime()) return;
             setStart(d);
             setSubmitError(null);
+            setSheet(null);
           }}
           style={{ fontSize: 18, fontWeight: 700, textAlign: "center" }}
         />

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { MdCheck } from "react-icons/md";
+import { MdCheck } from "@/lib/plus/icons";
 import { useLanguage, type AppLanguageCode } from "@/lib/plus/i18n";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { ActionButton } from "../ui/vita";

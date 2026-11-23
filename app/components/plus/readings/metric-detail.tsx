@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Activity, Add, Alarm, Drop, Flag, Heart, Weight } from "iconsax-react";
+import { Activity, Add, Alarm, Drop, Flag, Heart, Weight } from "@/lib/plus/icons";
 import { useLanguage, useT, type Translate } from "@/lib/plus/i18n";
 import { BMI_BAND_LABEL_KEY, bmiViewFor, type BmiView } from "@/lib/plus/bmi";
 import { useMe, useMetrics } from "@/lib/plus/client/data";

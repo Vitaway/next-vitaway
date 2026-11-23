@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useMemo, useState } from "react";
-import { Activity, Heart } from "iconsax-react";
+import { Activity, Heart } from "@/lib/plus/icons";
 import { useLanguage } from "@/lib/plus/i18n";
 import { useBack } from "@/lib/plus/nav";
 import { BP_PULSE_MAX, BP_PULSE_MIN, bpFieldComplete, bpFieldMax, bpKeypadAppend, bpValidationErrorText } from "@/lib/plus/health";
@@ -12,15 +12,17 @@ import { EmergencyLink } from "../safety/emergency-link";
 import { saveReading } from "@/lib/plus/client/readings";
 import { MobileApiError } from "@/lib/plus/client/api";
 import { useFeedback } from "../ui/vita";
-import { FUTURE_TIME_MESSAGE, MetricFeedbackBox, MetricLogScaffold, NumericKeypad, TimePickerModal, fmtTimeOfDay, type FeedbackKind } from "./log-chrome";
+import { FUTURE_TIME_MESSAGE, LastReadingLine, MetricFeedbackBox, MetricLogScaffold, NumericKeypad, TimePickerModal, fmtTimeOfDay, useRecentReadings, type FeedbackKind } from "./log-chrome";
 
 type Field = "top" | "bottom" | "pulse";
 
-function FieldTile({ value, placeholder, label, required, selected, onClick }: { value: string; placeholder: string; label: string; required?: boolean; selected: boolean; onClick: () => void }) {
+function FieldTile({ value, placeholder, label, unit, selected, onClick }: { value: string; placeholder: string; label: string; unit: string; selected: boolean; onClick: () => void }) {
   return (
     <button
       type="button"
       onClick={onClick}
+      aria-label={`${label}${value ? `: ${value} ${unit}` : ""}`}
+      aria-pressed={selected}
       style={{
         width: "100%",
         padding: "10px 4px 12px",
@@ -35,10 +37,8 @@ function FieldTile({ value, placeholder, label, required, selected, onClick }: {
       }}
     >
       <span style={{ fontSize: 32, fontWeight: 800, lineHeight: 1, letterSpacing: -0.8, color: value ? "var(--vc-ink)" : "rgba(var(--vc-navy-rgb),0.2)" }}>{value || placeholder}</span>
-      <span style={{ marginTop: 6, fontSize: 13, fontWeight: 800, letterSpacing: 0.6, color: "rgba(var(--vc-navy-rgb),0.45)" }}>
-        {label.toUpperCase()}
-        {required ? <span style={{ color: "#D64545" }}> *</span> : null}
-      </span>
+      <span style={{ marginTop: 7, fontSize: 13.5, fontWeight: 800, color: selected ? "var(--vc-navy)" : "rgba(var(--vc-navy-rgb),0.6)" }}>{label}</span>
+      <span style={{ marginTop: 1, fontSize: 12, fontWeight: 600, color: "rgba(var(--vc-navy-rgb),0.42)" }}>{unit}</span>
     </button>
   );
 }
@@ -82,9 +82,15 @@ export default function LogBpScreen() {
   const feedback = ((): { kind: FeedbackKind; title: string; body: string } => {
     if (validationError) return { kind: "bad", title: t("check_the_numbers"), body: validationError };
     if (!top || !bottom) return { kind: "info", title: "", body: t("bp_empty_tip") };
+
     if (!status) return { kind: "info", title: t("reading_review_title"), body: t("reading_no_interpretation") };
     return { kind: status.tone, title: status.chip, body: status.label };
   })();
+
+  const nextField = useCallback(() => setFocus((f) => (f === "top" ? "bottom" : f === "bottom" ? "pulse" : "top")), []);
+  // After a few readings the measuring tip folds into a "How to measure" link.
+  const seenEnough = useRecentReadings("bp", 3).length >= 3;
+  const [showTip, setShowTip] = useState(false);
 
   const onKey = useCallback(
     (key: string) => {
@@ -119,36 +125,55 @@ export default function LogBpScreen() {
   if (saved) return <ReadingSaved value={saved.value} status={saved.status} onDone={back} />;
 
   return (
-    <MetricLogScaffold photoType="blood_pressure" title={t("add_blood_pressure")} icon={<Activity size={17} color="currentColor" />} saveLabel={t("save_reading")} loading={saving} onSave={canSave ? save : undefined}>
+    <MetricLogScaffold
+      photoType="blood_pressure"
+      metricType="bp"
+      title={t("add_blood_pressure")}
+      icon={<Activity size={17} color="currentColor" />}
+      saveLabel={t("save_reading")}
+      loading={saving}
+      onSave={canSave ? save : undefined}
+      saveHint={!top || !bottom ? t("bp_save_hint") : null}
+    >
       <div style={{ padding: "8px 0 12px" }}>
         <div style={{ display: "flex", alignItems: "flex-end", padding: "0 18px" }}>
           <div style={{ flex: 1 }}>
-            <FieldTile value={top} placeholder="---" label={t("bp_top")} required selected={focus === "top"} onClick={() => setFocus("top")} />
+            <FieldTile value={top} placeholder="---" label={t("bp_top_number")} unit="mmHg" selected={focus === "top"} onClick={() => setFocus("top")} />
           </div>
           <span style={{ padding: "0 4px 28px", fontSize: 28, fontWeight: 800, color: "var(--vc-navy)" }}>/</span>
           <div style={{ flex: 1 }}>
-            <FieldTile value={bottom} placeholder="---" label={t("bp_bottom")} required selected={focus === "bottom"} onClick={() => setFocus("bottom")} />
+            <FieldTile value={bottom} placeholder="---" label={t("bp_bottom_number")} unit="mmHg" selected={focus === "bottom"} onClick={() => setFocus("bottom")} />
           </div>
           <span style={{ padding: "0 4px 30px", color: "#E85A2E", display: "inline-flex" }}>
             <Heart size={16} variant="Bold" color="currentColor" />
           </span>
           <div style={{ flex: 1 }}>
-            <FieldTile value={pulse} placeholder="--" label={t("bp_pulse")} selected={focus === "pulse"} onClick={() => setFocus("pulse")} />
+            <FieldTile value={pulse} placeholder="--" label={t("bp_pulse_optional")} unit="bpm" selected={focus === "pulse"} onClick={() => setFocus("pulse")} />
           </div>
         </div>
-        <div style={{ padding: "14px 18px 0" }}>
-          <MetricFeedbackBox {...feedback} />
-          <EmergencyLink style={{ marginTop: 10 }} />
+        <div style={{ padding: "0 18px" }}>
+          <LastReadingLine type="bp" />
         </div>
-        <div style={{ display: "flex", alignItems: "center", padding: "14px 18px 0", fontSize: 13 }}>
+        <div style={{ padding: "12px 18px 0" }}>
+          {!top && !bottom && seenEnough && !showTip ? (
+            <button type="button" className="vita-howto" onClick={() => setShowTip(true)}>
+              {t("log_how_to_measure")}
+            </button>
+          ) : (
+            <MetricFeedbackBox {...feedback} />
+          )}
+        </div>
+        <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: "6px 0", padding: "12px 18px 0", fontSize: 13 }}>
           <span style={{ fontWeight: 700, color: "rgba(var(--vc-navy-rgb),0.55)" }}>{t("hm_today")} · {fmtTimeOfDay(time)}</span>
           <span style={{ color: "rgba(var(--vc-navy-rgb),0.35)" }}>&nbsp;·&nbsp;</span>
           <button type="button" onClick={() => setPicking(true)} style={{ fontWeight: 800, color: "var(--vc-navy)", textDecoration: "underline", textDecorationThickness: 1.5 }}>
             {t("change_time")}
           </button>
+          <span style={{ flex: 1 }} />
+          <EmergencyLink />
         </div>
         <div style={{ height: 12 }} />
-        <NumericKeypad onKey={onKey} />
+        <NumericKeypad onKey={onKey} onNext={nextField} onSubmit={canSave ? () => void save() : undefined} />
       </div>
       <TimePickerModal open={picking} value={time} onClose={() => setPicking(false)} onPick={setTime} />
     </MetricLogScaffold>

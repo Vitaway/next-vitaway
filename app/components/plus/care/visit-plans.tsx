@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight3, Printer, TaskSquare } from "iconsax-react";
+import { ArrowRight3, Printer, TaskSquare } from "@/lib/plus/icons";
 import { useLanguage } from "@/lib/plus/i18n";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { mobileRequest } from "@/lib/plus/client/api";

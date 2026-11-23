@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Call, CalendarTick, Drop, Heart, Message, PlayCircle, Refresh, Ruler, Weight } from "iconsax-react";
+import { Call, CalendarTick, Drop, Heart, Message, PlayCircle, Refresh, Ruler, Weight } from "@/lib/plus/icons";
 import { useT } from "@/lib/plus/i18n";
 import { useAppointments, useSubscription } from "@/lib/plus/client/data";
 import { appointmentKey, fmtClock, fmtMMMddY, isClinic, isClosed, isMissed, isUpcoming, type FullAppointment } from "@/lib/plus/client/appointments";

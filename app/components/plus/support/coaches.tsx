@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Calendar1, CalendarRemove, Call, Clock, Message, User, UserAdd, Video } from "iconsax-react";
+import { Calendar1, CalendarRemove, Call, Clock, Message, User, UserAdd, Video } from "@/lib/plus/icons";
 import { useT } from "@/lib/plus/i18n";
 import { useMe, useSubscription } from "@/lib/plus/client/data";
 import { MobileApiError, asList, mobileRequest } from "@/lib/plus/client/api";

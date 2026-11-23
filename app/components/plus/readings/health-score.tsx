@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Heart, MessageQuestion } from "iconsax-react";
+import { Heart, MessageQuestion } from "@/lib/plus/icons";
 import { useMetrics } from "@/lib/plus/client/data";
 import { glucoseContextFromFullness, latestByType, parseStamp } from "@/lib/plus/health";
 import { bpStatus, gatedHealthScore, glucoseStatus, healthScoreAllowed, pick } from "@/lib/plus/clinical-rules";

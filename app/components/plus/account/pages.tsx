@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Select } from "../ui/select";
-import { ArrowDown2, ArrowRight3, Call, Camera, Clock, DocumentDownload, Edit2, FolderOpen, Location, Sms, Weight } from "iconsax-react";
+import { ArrowDown2, ArrowRight3, Call, Camera, Clock, DocumentDownload, Edit2, FolderOpen, Location, Sms, Weight } from "@/lib/plus/icons";
 import { useT } from "@/lib/plus/i18n";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { useBack } from "@/lib/plus/nav";

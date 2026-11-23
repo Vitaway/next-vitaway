@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Add, ArrowRight3, Message, Refresh } from "iconsax-react";
+import { Add, ArrowRight3, Message, Refresh } from "@/lib/plus/icons";
 import { useT } from "@/lib/plus/i18n";
+import { useCareTeam } from "@/lib/plus/client/care-team";
 import { useMe, useSubscription } from "@/lib/plus/client/data";
 import { mobileRequest } from "@/lib/plus/client/api";
 import { invalidate } from "@/lib/plus/client/use-resource";
@@ -11,6 +12,7 @@ import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { ActionButton, AppBar, Avatar, CenterSpinner, DotSpinner, EmptyState, Modal, Page, Tabs, useFeedback } from "../ui/vita";
 import { SupportUrgentBanner } from "../safety/safety-banners";
 import { useChatGate } from "./sheets";
+import { ProviderCard, ProviderSheet } from "./provider";
 
 type Kind = "coaches" | "dietitians" | "admins";
 const navyA = (a: number) => `rgba(var(--vc-navy-rgb),${a})`;
@@ -30,38 +32,6 @@ export function stashCoach(coach: Coach) {
   } catch {
     /* private mode */
   }
-}
-
-function ProviderCard({ coach, isYours, messaging, chatLoading, onOpen, onChat, onBook }: { coach: Coach; isYours: boolean; messaging: boolean; chatLoading: boolean; onOpen: () => void; onChat: () => void; onBook: () => void }) {
-  const t = useT();
-  const name = `${coach.first_name} ${coach.last_name}`.trim();
-  const subtitle = [(coach.profile.speciality ?? "").trim(), (coach.profile.bio ?? "").trim()].filter(Boolean).join(" · ");
-  const verified = Boolean((coach.profile.medicaldoc ?? "").trim());
-  return (
-    <div role="button" tabIndex={0} onClick={onOpen} className="vita-tap" style={{ display: "flex", alignItems: "center", padding: 14, borderRadius: 12, background: "var(--vc-surface)", border: isYours ? "1.4px solid color-mix(in srgb, var(--vc-teal) 55%, transparent)" : `1px solid ${navyA(0.08)}`, cursor: "pointer" }}>
-      <Avatar url={coach.profile.profile_picture} size={48} />
-      <div style={{ flex: 1, minWidth: 0, marginLeft: 12 }}>
-        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "4px 6px" }}>
-          <span style={{ fontSize: 15, fontWeight: 800, color: "var(--vc-navy)" }}>{name || "—"}</span>
-          {isYours ? <span style={{ padding: "2px 8px", borderRadius: 999, background: "#FFE8D6", fontSize: 13, fontWeight: 700, color: "#9A3D14" }}>{t("your_coach")}</span> : null}
-        </div>
-        {subtitle ? <div style={{ marginTop: 4, fontSize: 13, lineHeight: 1.35, fontWeight: 500, color: navyA(0.55), display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{subtitle}</div> : null}
-        {verified ? <span style={{ display: "inline-block", marginTop: 6, padding: "2px 8px", borderRadius: 999, background: "#DFF5E6", fontSize: 13, fontWeight: 700, color: "#1F6B3A" }}>{t("verified_registration")}</span> : null}
-      </div>
-      <button
-        type="button"
-        disabled={messaging && chatLoading}
-        onClick={(e) => {
-          e.stopPropagation();
-          if (messaging) onChat();
-          else onBook();
-        }}
-        style={{ marginLeft: 10, minWidth: 64, padding: "10px 14px", borderRadius: 8, background: "var(--vc-surface)", border: "1px solid color-mix(in srgb, var(--vc-teal) 55%, transparent)", fontSize: 13, fontWeight: 800, color: "var(--vc-teal-ink)", display: "flex", justifyContent: "center" }}
-      >
-        {messaging && chatLoading ? <DotSpinner small color="var(--vc-teal)" /> : messaging ? t("chat") : t("book_cta")}
-      </button>
-    </div>
-  );
 }
 
 function YourGroups({ groups, onOpen }: { groups: Room[]; onOpen: (r: Room) => void }) {
@@ -122,6 +92,8 @@ export function SupportScreen() {
   const gate = useChatGate();
   const [tab, setTab] = useState<string>(staff ? "chats" : "coaches");
   const [openingFor, setOpeningFor] = useState<number | null>(null);
+  const careTeam = useCareTeam();
+  const [sheet, setSheet] = useState<{ coach: Coach; kind: Kind } | null>(null);
   const [newCommunity, setNewCommunity] = useState<{ name: string; description: string } | null>(null);
 
   const refresh = async () => {
@@ -248,7 +220,7 @@ export function SupportScreen() {
     });
     if (!filtered.length && !groups.length) return <EmptyState title={kind === "coaches" ? t("coaches_empty") : kind === "dietitians" ? t("dietitians_empty") : t("support_team_empty")} />;
     return (
-      <div className="vita-flex-list" style={{ ...listStyle, padding: "12px 16px calc(env(safe-area-inset-bottom) + 104px + 20px)", gap: 10 }}>
+      <div className="vita-pro-grid" style={{ ...listStyle, padding: "12px 16px calc(env(safe-area-inset-bottom) + 104px + 20px)" }}>
         {!filtered.length ? (
           <p style={{ margin: 0, padding: "28px 0", textAlign: "center", fontSize: 15, fontWeight: 700, color: "var(--vc-navy)" }}>{t("support_filter_empty")}</p>
         ) : (
@@ -256,15 +228,10 @@ export function SupportScreen() {
             <ProviderCard
               key={coach.id}
               coach={coach}
+              kind={kind}
+              pro={careTeam.byAccount.get(coach.id)}
               isYours={coach.id === data.assignedCoachId}
-              messaging={sub.active}
-              chatLoading={openingFor === coach.id}
-              onOpen={() => openCoach(coach)}
-              onChat={() => void openChat(coach)}
-              onBook={() => {
-                stashCoach(coach);
-                push(`/coaches/${coach.id}/book`);
-              }}
+              onOpen={() => setSheet({ coach, kind })}
             />
           ))
         )}
@@ -315,6 +282,27 @@ export function SupportScreen() {
       {isPatient ? <SupportUrgentBanner /> : null}
       {body}
       {gate.element}
+      {sheet ? (
+        <ProviderSheet
+          coach={sheet.coach}
+          kind={sheet.kind}
+          pro={careTeam.byAccount.get(sheet.coach.id)}
+          isYours={sheet.coach.id === directory.data?.assignedCoachId}
+          subscribed={sub.active}
+          chatLoading={openingFor === sheet.coach.id}
+          onClose={() => setSheet(null)}
+          onMessage={() => {
+            const coach = sheet.coach;
+            setSheet(null);
+            void openChat(coach);
+          }}
+          onBook={() => {
+            stashCoach(sheet.coach);
+            push(`/coaches/${sheet.coach.id}/book`);
+          }}
+          onProfile={() => openCoach(sheet.coach)}
+        />
+      ) : null}
       <Modal
         open={newCommunity !== null}
         compact

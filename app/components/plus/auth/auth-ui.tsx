@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ArrowDown2, ArrowLeft, Eye, EyeSlash, InfoCircle } from "iconsax-react";
+import { ArrowDown2, ArrowLeft, Eye, EyeSlash, InfoCircle } from "@/lib/plus/icons";
 import { useT } from "@/lib/plus/i18n";
 import { DIAL_COUNTRIES, type DialCountry } from "@/lib/plus/dial-countries";
 import { ActionButton, BubbleBackdrop, DotSpinner, Modal } from "../ui/vita";
-import { MdCheck, MdClose } from "react-icons/md";
+import { MdCheck, MdClose } from "@/lib/plus/icons";
 
 const navyA = (a: number) => `rgba(var(--vc-navy-rgb),${a})`;
 

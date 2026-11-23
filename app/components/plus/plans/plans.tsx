@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Clock, Crown1, ReceiptItem, TickCircle, Warning2 } from "iconsax-react";
+import { ArrowRight3, Clock, Crown1, ReceiptItem, TickCircle, Warning2 } from "@/lib/plus/icons";
 import { useT } from "@/lib/plus/i18n";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { useBack } from "@/lib/plus/nav";
@@ -9,7 +9,8 @@ import { asList, mobileRequest, MobileApiError } from "@/lib/plus/client/api";
 import { useMe, useSubscription } from "@/lib/plus/client/data";
 import { useCarePlan, useMembershipPackages, type MembershipPackage } from "@/lib/plus/client/care-plan";
 import { invalidate } from "@/lib/plus/client/use-resource";
-import { ActionButton, AppBar, Card, CenterSpinner, DotSpinner, Modal, useFeedback } from "../ui/vita";
+import { ActionButton, AppBar, Card, CenterSpinner, DotSpinner, Modal, cx, useFeedback } from "../ui/vita";
+import { CheckoutPanel } from "./checkout";
 
 const navyA = (a: number) => `rgba(var(--vc-navy-rgb),${a})`;
 const ACCENT = "#2BB3A3";
@@ -123,10 +124,66 @@ function PlanCard({ plan, selected, onClick }: { plan: PlanOption; selected: boo
   );
 }
 
-function billingSuffix(pack: MembershipPackage) {
-  if (pack.billing === "free") return "";
-  if (pack.billing === "monthly") return " / month";
-  return "";
+const INCLUSION_ORDER = ["nutritionist", "check_ins", "weekly_lessons", "daily_tasks", "progress_reports", "tracking_and_meal_logging"];
+
+/** "Best value": the paid one-payment package with the lowest price per day (a fact we can show). */
+function bestValueCode(packs: MembershipPackage[]): string | null {
+  const paid = packs.filter((p) => p.billing === "one_payment" && p.price_rwf > 0 && p.duration_days > 0);
+  if (paid.length < 2) return null;
+  return paid.reduce((best, p) => (p.price_rwf / p.duration_days < best.price_rwf / best.duration_days ? p : best)).code;
+}
+
+function PriceCard({ pack, selected, best, onSelect }: { pack: MembershipPackage; selected: boolean; best: boolean; onSelect: () => void }) {
+  const t = useT();
+  const free = pack.billing === "free";
+  const per = free ? t("pricing_free_days", { days: pack.duration_days }) : pack.billing === "monthly" ? t("pricing_per_month") : t("pricing_one_payment", { days: pack.duration_days });
+  const inclusions = INCLUSION_ORDER.filter((k) => k in (pack.inclusions ?? {})).map((k) => {
+    const raw = String((pack.inclusions as Record<string, unknown>)[k] ?? "").trim();
+    const off = !raw || raw === "\u2014" || raw === "-" || raw.toLowerCase() === "no";
+    return { key: k, label: t(`incl_${k}`), detail: off || raw.toLowerCase() === "yes" ? "" : raw, off };
+  });
+  return (
+    <div
+      role="radio"
+      aria-checked={selected}
+      tabIndex={0}
+      className={cx("vita-price-card", selected && "on", best && "best")}
+      data-testid={`package-${pack.code}`}
+      onClick={onSelect}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          onSelect();
+        }
+      }}
+    >
+      {best ? <span className="vita-price-badge">{t("plans_best_value")}</span> : null}
+      <p className="nm">{pack.name}</p>
+      <p className="who">{pack.tagline || pack.who_it_is_for}</p>
+      <p className="price">
+        <b>{free ? t("pricing_free") : priceLabel(pack.price_rwf)}</b>
+        {free ? null : <span className="cur">RWF</span>}
+      </p>
+      <p className="per">{per}</p>
+      <span className="pick" aria-hidden>
+        {selected ? <TickCircle size={18} color="currentColor" variant="Bold" /> : null}
+        {selected ? t("pricing_selected") : t("pricing_choose")}
+      </span>
+      {inclusions.length ? (
+        <ul className="feat" aria-label={t("programme_whats_included")}>
+          {inclusions.map((item) => (
+            <li key={item.key} className={item.off ? "off" : undefined}>
+              <span className="tk" aria-hidden>{item.off ? "–" : <TickCircle size={18} color="currentColor" variant="Bold" />}</span>
+              <span>
+                {item.label}
+                {item.detail ? <small>{item.detail}</small> : null}
+              </span>
+            </li>
+          ))}
+        </ul>
+      ) : null}
+    </div>
+  );
 }
 
 function MembershipPlans({ packages, onOpenProgrammes }: { packages: MembershipPackage[]; onOpenProgrammes: () => void }) {
@@ -136,6 +193,7 @@ function MembershipPlans({ packages, onOpenProgrammes }: { packages: MembershipP
   const ordered = [...packages].sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0));
   const current = ordered[Math.min(selected, Math.max(0, ordered.length - 1))] ?? null;
   const onTrial = care.onTrial;
+  const best = bestValueCode(ordered);
   const cta = !current
     ? t("choose_plan")
     : current.billing === "free"
@@ -146,38 +204,25 @@ function MembershipPlans({ packages, onOpenProgrammes }: { packages: MembershipP
   return (
     <div className="vita-page w-wide" style={{ background: "var(--vc-canvas)" }}>
       <AppBar title={t("plans")} />
-      <div style={{ flex: 1, overflowY: "auto", padding: "12px 20px calc(env(safe-area-inset-bottom) + 28px)", maxWidth: 640, width: "100%", margin: "0 auto" }}>
-        {onTrial ? (
-          <p style={{ margin: "0 0 16px", textAlign: "center", fontSize: 15, fontWeight: 800, color: "var(--vc-navy)" }} data-testid="free-trial-days">
-            {t("home_trial_days_left", { days: `${care.daysLeft}` })}
-          </p>
-        ) : (
-          <h2 style={{ margin: "0 0 16px", textAlign: "center", fontSize: 24, fontWeight: 800, letterSpacing: -0.6, color: "var(--vc-navy)" }}>{t("plans_elevate_title")}</h2>
-        )}
-        <div className="vita-flex-list">
+      <div className="vita-pricing">
+        <div className="vita-pricing-intro">
+          {onTrial ? (
+            <p className="trial" data-testid="free-trial-days">
+              {t("home_trial_days_left", { days: `${care.daysLeft}` })}
+            </p>
+          ) : (
+            <h2>{t("plans_elevate_title")}</h2>
+          )}
+          <p>{t("plans_legal_note")}</p>
+        </div>
+        <div className="vita-price-grid" role="radiogroup" aria-label={t("plans_elevate_title")}>
           {ordered.map((pack, i) => (
-            <button
-              key={pack.code}
-              type="button"
-              onClick={() => setSelected(i)}
-              data-testid={`package-${pack.code}`}
-              style={{ width: "100%", marginBottom: 12, padding: 14, borderRadius: 10, textAlign: "left", border: selected === i ? `1.8px solid ${ACCENT}` : `1px solid ${navyA(0.08)}`, background: selected === i ? "color-mix(in srgb, #2BB3A3 6%, var(--vc-surface))" : "var(--vc-surface)" }}
-            >
-              <span style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "flex-start" }}>
-                <span>
-                  <span style={{ display: "block", fontSize: 16, fontWeight: 800, color: "var(--vc-ink)" }}>{pack.name}</span>
-                  <span style={{ display: "block", marginTop: 4, fontSize: 13, fontWeight: 600, color: navyA(0.55) }}>{pack.tagline || pack.who_it_is_for}</span>
-                </span>
-                <span style={{ textAlign: "right", flex: "none" }}>
-                  <span style={{ display: "block", fontSize: 18, fontWeight: 800, color: "var(--vc-ink)" }}>{pack.billing === "free" ? "Free" : priceLabel(pack.price_rwf)}</span>
-                  <span style={{ display: "block", fontSize: 13, fontWeight: 600, color: navyA(0.45) }}>{pack.billing === "free" ? `${pack.duration_days} days` : `RWF${billingSuffix(pack)}`}</span>
-                </span>
-              </span>
-            </button>
+            <PriceCard key={pack.code} pack={pack} selected={selected === i} best={pack.code === best} onSelect={() => setSelected(i)} />
           ))}
         </div>
-        <p style={{ margin: "12px 0 16px", textAlign: "center", fontSize: 13, lineHeight: 1.4, color: navyA(0.4) }}>{t("plans_legal_note")}</p>
-        <ActionButton full label={cta} disabled={onTrial && current?.billing === "free"} onClick={onOpenProgrammes} style={{ background: ACCENT }} />
+        <div className="vita-pricing-cta">
+          <ActionButton full label={cta} disabled={onTrial && current?.billing === "free"} icon={<ArrowRight3 size={18} color="currentColor" />} onClick={onOpenProgrammes} />
+        </div>
       </div>
     </div>
   );
@@ -475,7 +520,7 @@ export function PaymentScreen() {
     <Clock size={52} color="var(--vc-navy)" />
   );
   return (
-    <div className="vita-page w-narrow" style={{ background: "var(--vc-canvas)" }}>
+    <div className="vita-page w-wide" style={{ background: "var(--vc-canvas)" }}>
       <AppBar title={t("payment")} actions={polling ? <span style={{ color: "#fff", display: "inline-flex" }}><DotSpinner /></span> : undefined} />
       {openingHome ? (
         <CenterSpinner />
@@ -485,16 +530,13 @@ export function PaymentScreen() {
           <ActionButton label={t("plans")} onClick={() => replace("/plans")} />
         </div>
       ) : !launched ? (
-        <div style={{ flex: 1, overflowY: "auto", padding: "16px 20px 24px" }}>
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <span style={{ flex: 1, fontSize: 13, fontWeight: 700, color: navyA(0.55) }}>Your plan</span>
-            <button type="button" onClick={goBack} style={{ fontSize: 14, fontWeight: 700, color: ACCENT }}>Change</button>
-          </div>
-          <div style={{ marginTop: 6, fontSize: 22, fontWeight: 800, color: "var(--vc-navy)" }}>{title}</div>
-          <div style={{ marginTop: 4, fontSize: 18, fontWeight: 800, color: "var(--vc-navy)" }}>{req.price} RWF</div>
-          {req.renews ? <div style={{ marginTop: 4, fontSize: 13, color: navyA(0.55) }}>{req.renews}. Cancel anytime.</div> : null}
-          <p style={{ margin: "28px 0 12px", textAlign: "center", fontSize: 13, fontWeight: 600, color: navyA(0.45) }}>Secure payment by IremboPay</p>
-          <ActionButton full label={`Pay ${req.price} RWF`} onClick={() => void launch()} />
+        <div className="vita-checkout-wrap">
+          <CheckoutPanel
+            total={priceLabel(req.price)}
+            lines={[{ label: title, amount: `${priceLabel(req.price)} RWF`, note: req.renews ? `${req.renews}. ${t("pay_cancel_anytime")}` : null }]}
+            onChange={goBack}
+            onContinue={() => void launch()}
+          />
         </div>
       ) : (
         <div style={{ flex: 1, overflowY: "auto", padding: "24px 20px", display: "flex", flexDirection: "column", alignItems: "center", maxWidth: 640, width: "100%", margin: "0 auto" }}>

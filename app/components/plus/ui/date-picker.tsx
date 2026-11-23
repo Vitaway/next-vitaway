@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { MdChevronLeft, MdChevronRight } from "react-icons/md";
+import { MdChevronLeft, MdChevronRight } from "@/lib/plus/icons";
+import { RootPortal } from "./vita";
 
 /** widgets/vita_pickers.dart showVitaDatePicker: day, month and year boxes plus a calendar, month or year grid. */
 export type VitaDateMode = "day" | "month" | "year";
@@ -172,6 +173,7 @@ export function DatePickerModal({
   };
 
   return (
+    <RootPortal>
     <div className="vita-modal-scrim" onClick={onClose} role="presentation">
       <div
         role="dialog"
@@ -249,6 +251,7 @@ export function DatePickerModal({
         </div>
       </div>
     </div>
+    </RootPortal>
   );
 }
 

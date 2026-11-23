@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useMemo, useState } from "react";
-import { MdClose } from "react-icons/md";
+import { MdClose } from "@/lib/plus/icons";
 import { useT } from "@/lib/plus/i18n";
 import { ActionButton, CenterSpinner, Modal } from "../ui/vita";
 import { Markdown, splitMarkdownTitle } from "./markdown";

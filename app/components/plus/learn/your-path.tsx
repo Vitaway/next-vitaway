@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { CloudCross, InfoCircle, Lock, TickCircle } from "iconsax-react";
+import { CloudCross, InfoCircle, Lock, TickCircle } from "@/lib/plus/icons";
 import {
   canOpenWeek,
   completeAcademyLesson,

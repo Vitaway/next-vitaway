@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { CalendarTick, Clock, Cup, Notification as NotificationIcon, TickCircle } from "iconsax-react";
-import { MdArrowBack, MdArrowForward, MdCheck } from "react-icons/md";
+import { CalendarTick, Clock, Cup, Notification as NotificationIcon, TickCircle } from "@/lib/plus/icons";
+import { MdArrowBack, MdArrowForward, MdCheck } from "@/lib/plus/icons";
 import { usePlusAuth } from "@/lib/plus/auth-context";
 import { useAuthGate } from "@/lib/plus/use-auth-gate";
 import { usePlusPaths } from "@/lib/plus/plus-paths";

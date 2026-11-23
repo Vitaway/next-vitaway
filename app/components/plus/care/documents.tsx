@@ -3,7 +3,7 @@
 import { Select } from "../ui/select";
 
 import { useRef, useState } from "react";
-import { DocumentText1, DocumentUpload, Trash } from "iconsax-react";
+import { DocumentText1, DocumentUpload, Trash } from "@/lib/plus/icons";
 import { useT } from "@/lib/plus/i18n";
 import { useMe } from "@/lib/plus/client/data";
 import { deleteDocument, documentTypeName, fmtMMMdY, openUserDocumentBlob, uploadDocument, useDocuments, type UserDocument } from "@/lib/plus/client/care";

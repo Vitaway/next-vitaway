@@ -1,6 +1,6 @@
 "use client";
 
-import { Call } from "iconsax-react";
+import { Call } from "@/lib/plus/icons";
 import { useT } from "@/lib/plus/i18n";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
 

@@ -3,7 +3,7 @@
 import { Select } from "../ui/select";
 
 import { useEffect, useRef, useState } from "react";
-import { Camera, TickCircle } from "iconsax-react";
+import { Camera, TickCircle } from "@/lib/plus/icons";
 import { useT } from "@/lib/plus/i18n";
 import { useBack } from "@/lib/plus/nav";
 import { MobileApiError } from "@/lib/plus/client/api";

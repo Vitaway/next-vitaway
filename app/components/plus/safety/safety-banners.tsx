@@ -1,6 +1,6 @@
 "use client";
 
-import { Call, Danger } from "iconsax-react";
+import { Call, Danger } from "@/lib/plus/icons";
 import { useLanguage } from "@/lib/plus/i18n";
 import { emergencyView } from "@/lib/plus/clinical-rules";
 import { useClinicalConfig } from "@/lib/plus/client/clinical-config";

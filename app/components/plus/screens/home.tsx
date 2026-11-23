@@ -1,7 +1,7 @@
 "use client";
 
 import { cloneElement, isValidElement, useEffect, useMemo, useState } from "react";
-import { Activity, Add, ArrowRight3, Book1, Calendar1, Call, Crown1, Drop, Flash, Health, Heart, MessageQuestion, Notification, Reserve, TickCircle, Weight } from "iconsax-react";
+import { Activity, Add, ArrowRight3, Book1, Call, Drop, Flash, Heart, MessageQuestion, Notification, Reserve, TickCircle, Weight } from "@/lib/plus/icons";
 import { useLanguage, type Translate } from "@/lib/plus/i18n";
 import { BMI_HOME_CAPTION_KEY, bmiViewFor } from "@/lib/plus/bmi";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
@@ -28,6 +28,7 @@ import { formatGlucose, formatGlucoseUnitBoth, useGlucoseUnit } from "@/lib/plus
 import { useProgrammeConfig } from "@/lib/plus/client/programme-config";
 import { dailyQuestionKey, homeSections, metricCardLayout, pick, readingPrompts, tipOfTheDay, type ProgrammeConfig, type ReadingPrompt, type ReadingType } from "@/lib/plus/programme-config";
 import { ActionButton, DotSpinner, Photo, SectionHead } from "../ui/vita";
+import { ILLU_TINT, Illu } from "../ui/vita-icons";
 import { TodayMedicineCard } from "../meds/cards";
 
 const ARROW = <ArrowRight3 size={22} color="rgba(var(--vc-navy-rgb),0.35)" />;
@@ -244,7 +245,7 @@ function SubscriptionBanner({ onClick }: { onClick: () => void }) {
   const care = useCarePlan();
   const mintInk = "#2BB3A3";
   if (sub.loading || care.loading) {
-    return <BannerShell loading tint="var(--vc-tile-mint)" ink={mintInk} icon={<Crown1 size={22} color="currentColor" />} title={t("home_plan_checking")} subtitle={t("home_plan_checking_body")} />;
+    return <BannerShell loading tint="var(--vc-tile-mint)" ink={mintInk} icon={<Illu name="plan" size={30} />} title={t("home_plan_checking")} subtitle={t("home_plan_checking_body")} />;
   }
   // F07: a care-programme trial wins over the older MiraFood subscription banner.
   if (care.onTrial) {
@@ -254,7 +255,7 @@ function SubscriptionBanner({ onClick }: { onClick: () => void }) {
         onClick={onClick}
         tint="var(--vc-tile-mint)"
         ink={mintInk}
-        icon={<Crown1 size={22} color="currentColor" />}
+        icon={<Illu name="plan" size={30} />}
         title={t("home_trial_days_left", { days: `${care.daysLeft}` })}
         subtitle={t("home_days_left", { days: `${care.daysLeft} ${unit}` })}
         trailing={`${care.daysLeft}`}
@@ -269,7 +270,7 @@ function SubscriptionBanner({ onClick }: { onClick: () => void }) {
         onClick={onClick}
         tint="var(--vc-tile-mint)"
         ink={mintInk}
-        icon={<Crown1 size={22} color="currentColor" />}
+        icon={<Illu name="plan" size={30} />}
         title={sub.onTrial ? t("home_trial_days_left", { days: `${days}` }) : t("home_sub_active")}
         subtitle={t("home_days_left", { days: `${days} ${unit}` })}
         trailing={days ? `${days}` : undefined}
@@ -279,7 +280,7 @@ function SubscriptionBanner({ onClick }: { onClick: () => void }) {
   if (sub.canTrial) {
     return <BannerShell onClick={onClick} tint="var(--vc-tile-mint)" ink={mintInk} icon={<Flash size={22} color="currentColor" />} title={t("home_start_trial_cta")} subtitle={t("plans_trial_included")} />;
   }
-  return <BannerShell onClick={onClick} tint="var(--vc-tile-peach)" ink="#E85A2E" icon={<Crown1 size={22} color="currentColor" />} title={t("home_subscribe_cta")} subtitle={t("choose_plan")} />;
+  return <BannerShell onClick={onClick} tint="var(--vc-tile-peach)" ink="#E85A2E" icon={<Illu name="plan" size={30} />} title={t("home_subscribe_cta")} subtitle={t("choose_plan")} />;
 }
 
 function MedicinesToday({ onAdd, onOpenPillBox, onOpen }: { onAdd: () => void; onOpenPillBox: () => void; onOpen: (id: number) => void }) {
@@ -322,7 +323,7 @@ function LearnSection({ onOpenLearn, onOpenArticle }: { onOpenLearn: () => void;
     <div>
       <button type="button" onClick={onOpenLearn} className="vita-tap" style={{ width: "100%", display: "flex", alignItems: "center", gap: 12, textAlign: "left", background: "var(--vc-tile-mint)", borderRadius: 10, padding: 14 }}>
         <span style={{ width: 42, height: 42, borderRadius: 8, background: "var(--vc-surface)", color: "var(--vc-navy)", display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
-          <Crown1 size={22} color="currentColor" />
+          <Illu name="badge" size={34} />
         </span>
         <span style={{ flex: 1 }}>
           <span style={{ display: "block", fontSize: 15, fontWeight: 800, color: "var(--vc-ink)" }}>{t("earn_badges")}</span>
@@ -369,9 +370,9 @@ function LearnSection({ onOpenLearn, onOpenArticle }: { onOpenLearn: () => void;
 }
 
 const READING_ICON: Record<ReadingType, React.ReactNode> = {
-  glucose: <Drop size={22} variant="Bold" color="currentColor" />,
-  bp: <Activity size={22} color="currentColor" />,
-  weight: <Weight size={22} color="currentColor" />,
+  glucose: <Illu name="glucose" size={34} />,
+  bp: <Illu name="bp" size={34} />,
+  weight: <Illu name="weight" size={34} />,
 };
 
 /** W13: readings the member's programme asks for today, from GET /mobile/programme-config. */
@@ -396,7 +397,7 @@ function ReadingPrompts({ prompts, onOpen }: { prompts: ReadingPrompt[]; onOpen:
         const tod = p.timeOfDay.map((x) => t(`tod_${x}`)).join(", ");
         return (
           <button key={p.type} type="button" onClick={() => onOpen(p.type)} className="vita-tap" style={{ width: "100%", display: "flex", alignItems: "center", gap: 12, textAlign: "left", background: "var(--vc-surface)", borderRadius: 10, padding: 14 }}>
-            <span style={{ width: 44, height: 44, borderRadius: "50%", background: "var(--vc-tile-peach)", color: "#E85A2E", display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>{READING_ICON[p.type]}</span>
+            <span style={{ width: 48, height: 48, borderRadius: 14, background: ILLU_TINT[p.type], display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>{READING_ICON[p.type]}</span>
             <span style={{ flex: 1, minWidth: 0 }}>
               <span style={{ display: "block", fontSize: 15, fontWeight: 800, color: "var(--vc-ink)" }}>{title}</span>
               <span style={{ display: "block", marginTop: 3, fontSize: 13, fontWeight: 600, color: "rgba(var(--vc-navy-rgb),0.58)" }}>{tod ? `${when} · ${tod}` : when}</span>
@@ -611,8 +612,8 @@ export default function HomeScreen() {
                     }}
                     style={{ width: "100%", display: "flex", alignItems: "center", gap: 14, textAlign: "left", background: "var(--vc-surface)", borderRadius: 10, padding: 16 }}
                   >
-                    <span style={{ width: 52, height: 52, borderRadius: "50%", background: "var(--vc-tile-peach)", color: "#E85A2E", display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
-                      {!next ? <Add size={24} color="currentColor" /> : next.type === "med" ? <Health size={24} color="currentColor" /> : next.type === "bp" ? <Activity size={24} color="currentColor" /> : <Drop size={24} variant="Bold" color="currentColor" />}
+                    <span style={{ width: 52, height: 52, borderRadius: 14, background: ILLU_TINT[!next ? "today" : next.type === "med" ? "pillbox" : next.type === "bp" ? "bp" : "glucose"], display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
+                      <Illu name={!next ? "today" : next.type === "med" ? "pillbox" : next.type === "bp" ? "bp" : "glucose"} size={36} />
                     </span>
                     <span style={{ flex: 1, minWidth: 0 }}>
                       <span style={{ display: "block", fontSize: 16, fontWeight: 800, color: "var(--vc-ink)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{next ? next.name : t("home_nothing_due")}</span>
@@ -640,8 +641,8 @@ export default function HomeScreen() {
                     onClick={() => push(upcoming.length ? "/appointments" : "/book-visit")}
                     style={{ width: "100%", display: "flex", alignItems: "center", gap: 12, textAlign: "left", background: "var(--vc-wash)", borderRadius: 10, padding: 14 }}
                   >
-                    <span style={{ width: 40, height: 40, borderRadius: 8, background: "#E85A2E", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
-                      <Calendar1 size={22} color="currentColor" />
+                    <span style={{ width: 44, height: 44, borderRadius: 12, background: "var(--vc-surface)", display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
+                      <Illu name="book-visit" size={32} />
                     </span>
                     <span style={{ flex: 1 }}>
                       <span style={{ display: "block", fontWeight: 800, fontSize: 15, color: "var(--vc-ink)" }}>
@@ -755,23 +756,33 @@ export default function HomeScreen() {
               </span>
             </button>
           </div>
-          <p className="vita-home-hello" style={{ margin: "22px 0 0", color: "#fff", fontSize: 30, lineHeight: 1.05, fontWeight: 800, letterSpacing: -0.6 }}>{first ? `${t("hello")}, ${first}!` : `${t("hello")}!`}</p>
+          <p className="vita-home-hello" style={{ margin: "22px 0 0", color: "#fff", fontSize: 30, lineHeight: 1.05, fontWeight: 800, letterSpacing: -0.6 }}>{first ? `${t("hello")}, ${first}!` : `${t("hello")}!`} <span className="vita-wave" aria-hidden>👋</span></p>
           <p className="vita-home-weekline">{weekLine}</p>
+          {orgName ? (
+            <p className="vita-home-org">{discount > 0 ? t("org_discount", { name: orgName, percent: discount }) : t("org_with", { name: orgName })}</p>
+          ) : null}
         </div>
 {showScore ? healthScoreCard() : emergencyCard(false)}
+      </div>
+
+      {/* Tablet and web: summary cards that overlap the bottom of the teal greeting band. */}
+      <div className="vita-home-lead">
+        {showScore ? healthScoreCard() : null}
+        {emergencyCard(true)}
+        <div className="vita-home-lead-plan">
+          <SubscriptionBanner onClick={() => push("/plans")} />
+        </div>
       </div>
 
       <div className="vita-home-sections vita-home-body" style={pad}>
         <div className="vita-home-main">{sectionNodes.filter((n) => !n.rail).map((n) => n.node)}</div>
         <aside className="vita-home-rail" aria-label={t("home_side_panel")}>
-          <div className="vita-home-rail-only">{showScore ? healthScoreCard() : null}</div>
-          <div className="vita-home-rail-only">{emergencyCard(true)}</div>
           {orgName ? (
-            <p className="vita-home-pad" style={{ order: -2, margin: "0 0 8px", fontSize: 14, fontWeight: 800, color: "var(--vc-navy)" }}>
+            <p className="vita-home-pad vita-home-sub-m" style={{ order: -2, margin: "0 0 8px", fontSize: 14, fontWeight: 800, color: "var(--vc-navy)" }}>
               {discount > 0 ? t("org_discount", { name: orgName, percent: discount }) : t("org_with", { name: orgName })}
             </p>
           ) : null}
-          <div className="vita-home-pad" style={{ order: -1, padding: "0 0 4px" }}>
+          <div className="vita-home-pad vita-home-sub-m" style={{ order: -1, padding: "0 0 4px" }}>
             <SubscriptionBanner onClick={() => push("/plans")} />
           </div>
           {sectionNodes.filter((n) => n.rail).map((n) => n.node)}

@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { Activity, Add, Book1, CalendarTick, Camera, Drop, Health, Home2, People, Reserve, Weight } from "iconsax-react";
+import { Add } from "@/lib/plus/icons";
+import { ILLU_TINT, Illu, NavCare, NavHealth, NavHome, NavLearn, NavNutrition } from "../ui/vita-icons";
 import { useT } from "@/lib/plus/i18n";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { cx } from "../ui/vita";
@@ -15,11 +16,11 @@ export const DOCK_SCREENS = [...ROOT_TABS, "/support", "/profile"] as const;
 export function useMainTabs(supportBadge = false) {
   const t = useT();
   return [
-    { path: "/home", label: t("home_menu"), Icon: Home2, badge: false },
-    { path: "/metrics", label: t("nav_my_health"), Icon: Activity, badge: false },
-    { path: "/meal-photos", label: t("nav_nutrition"), Icon: Reserve, badge: false },
-    { path: "/articles", label: t("learn_title"), Icon: Book1, badge: false },
-    { path: "/care", label: t("nav_care_team"), Icon: People, badge: supportBadge },
+    { path: "/home", label: t("home_menu"), Icon: NavHome, badge: false },
+    { path: "/metrics", label: t("nav_my_health"), Icon: NavHealth, badge: false },
+    { path: "/meal-photos", label: t("nav_nutrition"), Icon: NavNutrition, badge: false },
+    { path: "/articles", label: t("learn_title"), Icon: NavLearn, badge: false },
+    { path: "/care", label: t("nav_care_team"), Icon: NavCare, badge: supportBadge },
   ];
 }
 
@@ -29,7 +30,7 @@ export const TAB_OWNERS: Array<[string, string]> = [
   ["/documents", "/care"], ["/book-visit", "/care"], ["/appointments", "/care"],
   ["/health-score", "/metrics"], ["/log", "/metrics"], ["/medications", "/metrics"], ["/reminders", "/metrics"],
   ["/food-reports", "/meal-photos"], ["/meal-plans", "/meal-photos"],
-  ["/academy", "/articles"], ["/badges", "/articles"], ["/today", "/home"], ["/emergency", "/home"],
+  ["/academy", "/articles"], ["/learn", "/articles"], ["/badges", "/articles"], ["/today", "/home"], ["/emergency", "/home"],
 ];
 
 export function tabFor(path: string): string | null {
@@ -51,13 +52,13 @@ export function useAppPath(): string {
 type QuickAction = { label: string; path: string; tint: string; icon: React.ReactNode };
 
 export const QUICK_ACTIONS: QuickAction[] = [
-  { label: "quick_blood_glucose", path: "/log/glucose", tint: "var(--vc-tile-sky)", icon: <Drop size={22} variant="Bold" color="#003E48" /> },
-  { label: "quick_blood_pressure", path: "/log/bp", tint: "var(--vc-tile-peach)", icon: <Activity size={22} color="#003E48" /> },
-  { label: "quick_weight", path: "/log/weight", tint: "var(--vc-tile-lilac)", icon: <Weight size={22} color="#003E48" /> },
-  { label: "quick_meal_photo", path: "/meal-photos/new", tint: "var(--vc-tile-sage)", icon: <Camera size={22} color="#003E48" /> },
+  { label: "quick_blood_glucose", path: "/log/glucose", tint: ILLU_TINT.glucose, icon: <Illu name="glucose" size={30} /> },
+  { label: "quick_blood_pressure", path: "/log/bp", tint: ILLU_TINT.bp, icon: <Illu name="bp" size={30} /> },
+  { label: "quick_weight", path: "/log/weight", tint: ILLU_TINT.weight, icon: <Illu name="weight" size={30} /> },
+  { label: "quick_meal_photo", path: "/meal-photos/new", tint: ILLU_TINT["meal-photo"], icon: <Illu name="meal-photo" size={30} /> },
   // BL-122: the + menu reaches the Pillbox (add a medicine from there), as in Flutter.
-  { label: "pillbox", path: "/medications", tint: "var(--vc-tile-mint)", icon: <Health size={22} color="#003E48" /> },
-  { label: "quick_book_visit", path: "/book-visit", tint: "var(--vc-tile-sage)", icon: <CalendarTick size={22} color="#003E48" /> },
+  { label: "pillbox", path: "/medications", tint: ILLU_TINT.pillbox, icon: <Illu name="pillbox" size={30} /> },
+  { label: "quick_book_visit", path: "/book-visit", tint: ILLU_TINT["book-visit"], icon: <Illu name="book-visit" size={30} /> },
 ];
 
 export default function Dock({ supportBadge = false }: { supportBadge?: boolean }) {

@@ -9,27 +9,9 @@ import PressButton from './buttons/press-button';
 import PreRegisterButton from './booking/pre-register-button';
 import { GroupIcon, PersonIcon, ShopIcon } from './icons/omada-icons';
 import { useBooking } from './booking/booking-context';
-import {
-    Activity,
-    Building2,
-    CalendarDays,
-    CalendarRange,
-    CircleHelp,
-    Droplets,
-    GraduationCap,
-    Handshake,
-    HeartHandshake,
-    HeartPulse,
-    HelpingHand,
-    Landmark,
-    LayoutGrid,
-    MessageCircleQuestion,
-    MoreHorizontal,
-    Scale,
-    Users,
-    UsersRound,
-    type LucideIcon,
-} from 'lucide-react';
+import { Activity, Building as Building2, Calendar1 as CalendarDays, CalendarTick as CalendarRange, QuestionCircle as CircleHelp, Drop as Droplets, Graduation as GraduationCap, Handshake, HeartHand as HeartHandshake, Health as HeartPulse, HeartHand as HelpingHand, Bank as Landmark, Grid as LayoutGrid, MessageQuestion as MessageCircleQuestion, More as MoreHorizontal, Weight as Scale, People as Users, People as UsersRound, type IconProps } from "@/lib/plus/icons";
+
+type LucideIcon = React.ComponentType<IconProps>;
 import {
     defaultTealLinks,
     individualLinks,

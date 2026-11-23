@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { AiOutlineCheckCircle, AiOutlineCloseCircle, AiOutlineClose } from 'react-icons/ai';
+import { TickCircle as AiOutlineCheckCircle, CloseCircle as AiOutlineCloseCircle, MdClose as AiOutlineClose } from "@/lib/plus/icons";
 
 interface AlertMessageProps {
     message: string;

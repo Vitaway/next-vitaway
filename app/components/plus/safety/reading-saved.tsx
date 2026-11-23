@@ -1,6 +1,6 @@
 "use client";
 
-import { TickCircle } from "iconsax-react";
+import { TickCircle } from "@/lib/plus/icons";
 import { useLanguage } from "@/lib/plus/i18n";
 import { CARE_TEAM_WILL_REVIEW, pick, type ReadingStatus } from "@/lib/plus/clinical-rules";
 import { ActionButton } from "../ui/vita";

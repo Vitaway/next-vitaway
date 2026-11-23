@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useMemo, useState } from "react";
-import { Bluetooth } from "iconsax-react";
+import { Bluetooth } from "@/lib/plus/icons";
 import { useLanguage } from "@/lib/plus/i18n";
 import { useBack } from "@/lib/plus/nav";
 import { glucoseUnitLabel, useGlucoseUnit } from "@/lib/plus/units";
@@ -26,6 +26,7 @@ import {
   TimePickerModal,
   fmtTimeOfDay,
   type FeedbackKind,
+  LastReadingLine,
 } from "./log-chrome";
 import LowGlucoseCrisis from "./low-glucose";
 import { glucoseStatus, lowGlucoseWarning, type ReadingStatus } from "@/lib/plus/clinical-rules";
@@ -140,7 +141,16 @@ export default function LogGlucoseScreen() {
 
 
   return (
-    <MetricLogScaffold photoType="glucose" title={t("add_blood_glucose")} icon={<Bluetooth size={17} color="currentColor" />} saveLabel="Save reading" loading={saving} onSave={canSave ? save : undefined}>
+    <MetricLogScaffold
+      photoType="glucose"
+      metricType="glucose"
+      title={t("add_blood_glucose")}
+      icon={<Bluetooth size={17} color="currentColor" />}
+      saveLabel={t("save_reading")}
+      loading={saving}
+      onSave={canSave ? save : undefined}
+      saveHint={!digits ? t("glucose_save_hint") : null}
+    >
       <div style={{ padding: "4px 0 12px" }}>
         <div className="vita-hide-scroll" style={{ display: "flex", gap: 8, overflowX: "auto", padding: "0 18px", height: 44, alignItems: "center" }}>
           {GLUCOSE_CONTEXTS.map((value) => {
@@ -171,7 +181,7 @@ export default function LogGlucoseScreen() {
           })}
         </div>
         <p style={{ margin: "10px 18px 0", fontSize: 13, fontWeight: 600, color: "rgba(var(--vc-navy-rgb),0.7)" }}>
-          Reading<span style={{ color: "#D64545", fontWeight: 700 }}> *</span>
+          {t("glucose_reading_label")}
         </p>
         <div style={{ marginTop: 4, display: "flex", flexDirection: "column", alignItems: "center" }}>
           <div style={{ display: "flex", alignItems: "center" }}>
@@ -181,6 +191,9 @@ export default function LogGlucoseScreen() {
           <button type="button" onClick={toggleUnit} style={{ marginTop: 8, padding: "6px 12px", borderRadius: 6, background: "var(--vc-tile-sky)", fontSize: 13, fontWeight: 800, color: "var(--vc-navy)" }}>
             {glucoseUnitLabel(unit)} ⇄
           </button>
+        </div>
+        <div style={{ padding: "4px 18px 0", textAlign: "center" }}>
+          <LastReadingLine type="glucose" />
         </div>
         <div style={{ padding: "12px 18px 0" }}>
           <MetricFeedbackBox {...feedback} />
@@ -196,7 +209,7 @@ export default function LogGlucoseScreen() {
           </button>
         </div>
         <div style={{ height: 10 }} />
-        <NumericKeypad showDecimal={isMmol} onKey={onKey} />
+        <NumericKeypad showDecimal={isMmol} onKey={onKey} onSubmit={canSave ? () => void save() : undefined} />
       </div>
       <TimePickerModal open={picking} value={time} onClose={() => setPicking(false)} onPick={setTime} />
     </MetricLogScaffold>

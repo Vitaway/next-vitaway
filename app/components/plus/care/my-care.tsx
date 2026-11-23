@@ -1,9 +1,10 @@
 "use client";
 
-import { ArrowRight3, Calendar1, CalendarAdd, Health, Messages2 } from "iconsax-react";
+import { ArrowRight3, Calendar1, Health } from "@/lib/plus/icons";
 import { useT } from "@/lib/plus/i18n";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { AppBar, HubLinks, Page } from "../ui/vita";
+import { ILLU_TINT, Illu } from "../ui/vita-icons";
 import { VisitReportsList } from "./visit-reports";
 import { EmergencyLink } from "../safety/emergency-link";
 
@@ -43,9 +44,9 @@ export default function MyCareScreen() {
         <div style={{ marginTop: 12 }}>
           <HubLinks
             links={[
-              { label: t("nav_messages"), icon: <Messages2 size={20} color="currentColor" />, onClick: () => push("/support") },
-              { label: t("quick_book_visit"), icon: <CalendarAdd size={20} color="currentColor" />, onClick: () => push("/book-visit") },
-              { label: t("appointments_title"), icon: <Calendar1 size={20} color="currentColor" />, onClick: () => push("/appointments") },
+              { label: t("nav_messages"), icon: <Illu name="messages" size={30} />, tint: ILLU_TINT.messages, onClick: () => push("/support") },
+              { label: t("quick_book_visit"), icon: <Illu name="book-visit" size={30} />, tint: ILLU_TINT["book-visit"], onClick: () => push("/book-visit") },
+              { label: t("appointments_title"), icon: <Illu name="appointments" size={30} />, tint: ILLU_TINT.appointments, onClick: () => push("/appointments") },
             ]}
           />
         </div>

@@ -8,6 +8,7 @@ import { useAuthGate } from "@/lib/plus/use-auth-gate";
 import PlusLoading from "../plus-loading";
 import StaffDoor from "../staff-door";
 import Dock, { DOCK_SCREENS, useAppPath } from "./dock";
+import WebFooter from "./web-footer";
 import TopBar from "./topbar";
 import { useSupportBadge } from "@/lib/plus/client/support-badge";
 import { WebReminderScheduler } from "../reminders/web-reminder-scheduler";
@@ -99,6 +100,7 @@ function AppShell({ path, showDock, children }: { path: string; showDock: boolea
       )}
       <TopBar supportBadge={supportBadge} />
       <div className="vita-app-main">{children}</div>
+      <WebFooter />
       <WebReminderScheduler />
       {showDock ? <Dock supportBadge={supportBadge} /> : null}
     </div>

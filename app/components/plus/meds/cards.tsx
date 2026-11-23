@@ -1,6 +1,6 @@
 "use client";
 
-import { Clock, Health, TickSquare } from "iconsax-react";
+import { Clock, Health, TickSquare } from "@/lib/plus/icons";
 import { useTheme } from "@/lib/plus/theme";
 import { useLanguage } from "@/lib/plus/i18n";
 import {

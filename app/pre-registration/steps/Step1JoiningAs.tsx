@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { User, Dumbbell, Briefcase } from 'lucide-react';
+import { User, Dumbbell, Briefcase } from "@/lib/plus/icons";
 import { PreRegistrationPayload } from '@/lib/api/types';
 import { RequiredMark } from '@/app/components/inputs/FormLabel';
 

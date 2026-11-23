@@ -1,85 +1,119 @@
 "use client";
 
-import { Activity, ArrowRight3, Drop, Health, Heart, Timer1, Weight } from "iconsax-react";
-import { useT } from "@/lib/plus/i18n";
+import { Add, ArrowRight3, Heart } from "@/lib/plus/icons";
+import { useLanguage, useT } from "@/lib/plus/i18n";
 import { useMetrics } from "@/lib/plus/client/data";
 import { formatGlucose, formatGlucoseUnitBoth, useGlucoseUnit } from "@/lib/plus/units";
-import { parseStamp, type HealthMetric } from "@/lib/plus/health";
+import { glucoseContextFromFullness, parseStamp, type HealthMetric } from "@/lib/plus/health";
+import { bpStatus, glucoseStatus, type ReadingStatus } from "@/lib/plus/clinical-rules";
+import { useClinicalConfig } from "@/lib/plus/client/clinical-config";
 import { fmtLongDay } from "@/lib/plus/format";
 import { currentWeek, homeMetrics, primaryValue } from "@/lib/plus/metric-series";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
-import { AppBar, CenterSpinner, CircleButton, EmptyState, HubLinks } from "../ui/vita";
+import { AppBar, CenterSpinner, CircleButton, EmptyState, HubLinks, cx } from "../ui/vita";
+import { ILLU_TINT, Illu, type IlluName } from "../ui/vita-icons";
 
 const LABELS = ["M", "T", "W", "T", "F", "S", "S"];
 
+/** This week's readings as rounded bars (Mon–Sun); today is orange, days without a reading are a soft dot. */
 export function WeekStrip({ days }: { days: number[] }) {
   const peak = days.reduce((m, v) => (v > m ? v : m), 0);
-  const track = 48;
   const today = (new Date().getDay() + 6) % 7;
   return (
-    <div style={{ display: "flex" }}>
+    <div className="vita-mc-week" aria-hidden>
       {days.map((v, i) => (
-        <div key={i} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center" }}>
-          <div style={{ height: track, display: "flex", alignItems: "flex-end" }}>
-            <span style={{ width: 8, borderRadius: 8, height: v <= 0 ? 8 : 8 + (track - 8) * (v / (peak || 1)), background: v <= 0 ? "rgba(var(--vc-navy-rgb),0.1)" : i === today ? "var(--vc-action)" : "var(--vc-teal-ink)" }} />
-          </div>
-          <span style={{ marginTop: 6, fontSize: 13, fontWeight: 700, color: "rgba(var(--vc-navy-rgb),0.4)" }}>{LABELS[i]}</span>
+        <div key={i} className={cx("d", i === today && "today", v > 0 && "has")}>
+          <span className="bar-track">
+            <span className="bar" style={{ height: v > 0 ? `${Math.max(18, Math.round((v / (peak || 1)) * 100))}%` : undefined }} />
+          </span>
+          <span className="lb">{LABELS[i]}</span>
         </div>
       ))}
     </div>
   );
 }
 
-function Figure({ label, value }: { label: string; value: string }) {
-  return (
-    <div>
-      <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: 0.4, color: "rgba(var(--vc-navy-rgb),0.4)" }}>{label}</div>
-      <div style={{ fontSize: 32, lineHeight: 1.05, fontWeight: 800, color: "var(--vc-navy)" }}>{value}</div>
-    </div>
-  );
-}
+type Meta = { illu: IlluName; titleKey: string; logPath: string };
+const META: Record<string, Meta> = {
+  weight: { illu: "weight", titleKey: "hm_weight", logPath: "/log/weight" },
+  glucose: { illu: "glucose", titleKey: "hm_glucose", logPath: "/log/glucose" },
+  bp: { illu: "bp", titleKey: "hm_blood_pressure", logPath: "/log/bp" },
+};
 
-function NumberCard({ metric, history, onOpen }: { metric: HealthMetric; history: HealthMetric[]; onOpen: () => void }) {
+function MetricCard({ metric, history, onOpen, onLog }: { metric: HealthMetric; history: HealthMetric[]; onOpen: () => void; onLog: (path: string) => void }) {
+  const t = useT();
+  const { language } = useLanguage();
+  const clinical = useClinicalConfig();
   const [unit] = useGlucoseUnit();
   const type = metric.type.toLowerCase();
+  const meta = META[type];
   const week = currentWeek(history, type).map((m) => (m ? primaryValue(m) : 0));
+  const weekCount = week.filter((v) => v > 0).length;
   const at = parseStamp(metric.last_updated);
-  const Icon = type === "glucose" ? Drop : type === "bp" ? Heart : type === "weight" ? Weight : Activity;
-  let values: React.ReactNode;
+
+  // Value, unit and (where a clinical rule is approved) the status chip; otherwise "care team will review".
+  let value: string;
+  let unitText: string;
+  let status: ReadingStatus | null = null;
+  let neutral: string | null = null;
   if (type === "bp") {
-    values = (
-      <div style={{ display: "flex", alignItems: "flex-end", gap: 22 }}>
-        <Figure label="SYS" value={String(metric.systolic ?? "—")} />
-        <Figure label="DIA" value={String(metric.diastolic ?? "—")} />
-        <span style={{ flex: 1 }} />
-        <span style={{ paddingBottom: 6, fontSize: 13, fontWeight: 600, color: "rgba(var(--vc-navy-rgb),0.4)" }}>{metric.unit}</span>
-      </div>
-    );
+    value = `${metric.systolic ?? "—"}/${metric.diastolic ?? "—"}`;
+    unitText = metric.unit || "mmHg";
+    status = bpStatus(clinical, metric.systolic, metric.diastolic, language);
+    if (!status) neutral = t("reading_care_team_review");
   } else if (type === "glucose") {
     const mg = Number.parseFloat(metric.latest_value) || 0;
-    values = <Figure label={formatGlucoseUnitBoth(mg, unit)} value={formatGlucose(mg, unit)} />;
+    value = formatGlucose(mg, unit);
+    unitText = formatGlucoseUnitBoth(mg, unit);
+    status = glucoseStatus(clinical, mg, glucoseContextFromFullness(metric.fullness), language);
+    if (!status) neutral = t("reading_care_team_review");
   } else {
-    values = <Figure label="kg" value={(Number.parseFloat(metric.latest_value) || 0).toFixed(1)} />;
+    value = (Number.parseFloat(metric.latest_value) || 0).toFixed(1);
+    unitText = metric.unit || "kg";
+    neutral = t("latest_weigh_in");
   }
+  const title = meta ? t(meta.titleKey) : metric.name;
+  const weekText = weekCount === 0 ? t("metric_week_none") : weekCount === 1 ? t("metric_week_one") : t("metric_week_many", { count: weekCount });
+
   return (
-    <button type="button" onClick={onOpen} className="vita-tap" style={{ width: "100%", textAlign: "left", padding: "16px 16px 14px", borderRadius: 10, background: "var(--vc-surface)", border: "1px solid rgba(var(--vc-navy-rgb),0.08)" }}>
-      <div style={{ display: "flex", alignItems: "center" }}>
-        <span style={{ width: 40, height: 40, borderRadius: "50%", background: "var(--vc-tile-mint)", color: "var(--vc-navy)", display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
-          <Icon size={20} color="currentColor" />
+    <article className={cx("vita-mc", `t-${type}`)} onClick={onOpen}>
+      <header className="vita-mc-head">
+        <span className="ic" style={{ background: meta ? ILLU_TINT[meta.illu] : "var(--vc-tile-mint)" }}>
+          {meta ? <Illu name={meta.illu} size={34} /> : <Heart size={22} color="var(--vc-navy)" />}
         </span>
-        <div style={{ marginLeft: 12, flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 16, fontWeight: 800, color: "var(--vc-navy)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{metric.name}</div>
-          <div style={{ marginTop: 2, fontSize: 13, fontWeight: 600, color: "rgba(var(--vc-navy-rgb),0.45)" }}>{at ? fmtLongDay(at) : metric.last_updated}</div>
-        </div>
-        <span style={{ color: "rgba(var(--vc-navy-rgb),0.3)" }}>
-          <ArrowRight3 size={22} color="currentColor" />
+        <span className="tt">
+          <h3>{title}</h3>
+          <span>
+            {t("metric_last_reading")} · {at ? fmtLongDay(at) : metric.last_updated}
+          </span>
         </span>
+      </header>
+
+      <div className="vita-mc-value">
+        <b>{value}</b>
+        <span className="u">{unitText}</span>
       </div>
-      <div style={{ marginTop: 16 }}>{values}</div>
-      <div style={{ marginTop: 16 }}>
+      {status ? <span className={cx("vita-mc-chip", `tone-${status.tone}`)}>{status.chip || status.label}</span> : neutral ? <span className="vita-mc-chip tone-neutral">{neutral}</span> : null}
+
+      <div className={cx("vita-mc-chart", weekCount === 0 && "empty")}>
+        <div className="top">
+          <span>{t("home_this_week")}</span>
+          <span>{weekText}</span>
+        </div>
         <WeekStrip days={week} />
       </div>
-    </button>
+
+      <footer className="vita-mc-foot" onClick={(event) => event.stopPropagation()}>
+        {meta ? (
+          <button type="button" className="log" onClick={() => onLog(meta.logPath)}>
+            <Add size={16} color="currentColor" /> {t("metric_log_new")}
+          </button>
+        ) : null}
+        <button type="button" className="hist" onClick={onOpen} aria-label={`${title}: ${t("metric_history")}`}>
+          {t("metric_history")} <ArrowRight3 size={16} color="currentColor" />
+        </button>
+      </footer>
+    </article>
   );
 }
 
@@ -100,13 +134,13 @@ export default function AllMetricsScreen() {
           </CircleButton>
         }
       />
-      <div className="vita-scroll" style={{ padding: 0 }}>
-        <div style={{ padding: "12px 16px 0" }}>
+      <div className="vita-scroll vita-mh" style={{ padding: 0 }}>
+        <div className="vita-mh-hub">
           <HubLinks
             links={[
-              { label: t("pillbox"), icon: <Health size={20} color="currentColor" />, onClick: () => push("/medications") },
-              { label: t("health_score"), icon: <Heart size={20} color="currentColor" />, onClick: () => push("/health-score") },
-              { label: t("reminders_title"), icon: <Timer1 size={20} color="currentColor" />, onClick: () => push("/reminders") },
+              { label: t("pillbox"), icon: <Illu name="pillbox" size={30} />, tint: ILLU_TINT.pillbox, onClick: () => push("/medications") },
+              { label: t("health_score"), icon: <Illu name="health-score" size={30} />, tint: ILLU_TINT["health-score"], onClick: () => push("/health-score") },
+              { label: t("reminders_title"), icon: <Illu name="reminders" size={30} />, tint: ILLU_TINT.reminders, onClick: () => push("/reminders") },
             ]}
           />
         </div>
@@ -115,11 +149,14 @@ export default function AllMetricsScreen() {
         ) : latest.length === 0 ? (
           <EmptyState title={t("no_health_metrics")} subtitle={t("no_health_metrics_body")} />
         ) : (
-          <div className="vita-flex-list" style={{ padding: "8px 16px 24px", display: "flex", flexDirection: "column", gap: 12 }}>
-            {latest.map((m) => (
-              <NumberCard key={m.type} metric={m} history={metrics} onOpen={() => push(`/metrics/${encodeURIComponent(m.type)}`)} />
-            ))}
-          </div>
+          <section className="vita-mh-section" aria-label={t("metric_section_title")}>
+            <h2 className="vita-mh-title">{t("metric_section_title")}</h2>
+            <div className="vita-mc-grid">
+              {latest.map((m) => (
+                <MetricCard key={m.type} metric={m} history={metrics} onOpen={() => push(`/metrics/${encodeURIComponent(m.type)}`)} onLog={push} />
+              ))}
+            </div>
+          </section>
         )}
       </div>
     </div>

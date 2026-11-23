@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Activity, Award, Book1, Calendar1, Call, CloudCross, Crown1, Cup, Edit2, Flash, Gallery, Lock, MessageFavorite, People, Reserve, ShieldTick, Star1, TickCircle } from "iconsax-react";
+import { Activity, Award, Book1, Calendar1, Call, CloudCross, Crown1, Cup, Edit2, Flash, Gallery, Lock, MessageFavorite, People, Reserve, ShieldTick, Star1, TickCircle } from "@/lib/plus/icons";
 import { badgeFraction, badgeText, fetchBadgeBoard, type BadgeBoard, type BadgeItem } from "@/lib/plus/badge-board";
 import { useLanguage, useT } from "@/lib/plus/i18n";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
@@ -10,6 +10,7 @@ import { useArticles, useSubscription, type Article } from "@/lib/plus/client/da
 import { invalidate, useResource } from "@/lib/plus/client/use-resource";
 import { ActionButton, AppBar, CenterSpinner, EmptyState, Modal, Page, SectionLabel, Tabs, useFeedback } from "../ui/vita";
 import { YourPathBlock } from "./your-path";
+import { MyProgrammeBlock, useAcademyHome } from "../academy/my-programme";
 
 const navyA = (a: number) => `rgba(var(--vc-navy-rgb),${a})`;
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -67,6 +68,8 @@ export function LearnScreen() {
   const { articles, loading, error, reload } = useArticles(language);
   const [tab, setTab] = useState<"1" | "2" | "3">("1");
   const filtered = articles.filter((a) => String(a.category) === tab);
+  const academy = useAcademyHome();
+  const hasProgramme = Boolean(academy.data?.programme && academy.data.programme.live_items > 0);
   const open = async (a: Article) => {
     if (tab === "3" && !active) {
       const go = await confirm({ title: t("premium_feature"), message: t("premium_text"), confirmLabel: t("choose_plan"), cancelLabel: t("cancel") });
@@ -79,8 +82,10 @@ export function LearnScreen() {
   return (
     <Page width="wide">
       <AppBar title={cap(t("learn_title"))} back={false} profile bottom={<Tabs onBar value={tab} onChange={setTab} tabs={[{ value: "1", label: cap(t("informative")) }, { value: "2", label: cap(t("sustaining")) }, { value: "3", label: cap(t("earn_badges")) }]} />} />
-      <YourPathBlock />
+      {/* Vitaway Academy: My programme once the member's course has published lessons; otherwise the BL-154 path. */}
+      {hasProgramme ? null : <YourPathBlock />}
       <div style={{ flex: 1, overflowY: "auto", paddingBottom: 24 }}>
+        {hasProgramme && academy.data ? <MyProgrammeBlock home={academy.data} /> : null}
         {loading ? (
           <CenterSpinner />
         ) : error && !articles.length ? (

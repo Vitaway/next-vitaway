@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useId, useRef, useState } from "react";
-import { ArrowDown2, TickCircle } from "iconsax-react";
+import { ArrowDown2, TickCircle } from "@/lib/plus/icons";
 import { cx } from "./vita";
 
 export type SelectOption<T extends string> = { value: T; label: string };

@@ -4,6 +4,7 @@
  */
 import { apiUrl, mobileRequest } from "./client/api";
 import { loadPlusSession } from "./session";
+import { prepareImageForUpload } from "./upload-image";
 
 export const MEAL_PHOTOS_PATH = "/api/v1/mobile/meal-photos";
 export const MEAL_TYPES = ["breakfast", "lunch", "dinner", "snack", "other"] as const;
@@ -139,7 +140,7 @@ export async function uploadMealPhoto(input: {
   datasetVersion?: string | null;
 }): Promise<MealPhoto> {
   const form = new FormData();
-  form.append("image", input.file);
+  form.append("image", await prepareImageForUpload(input.file));
   form.append("meal_type", input.mealType);
   form.append("eaten_at", new Date().toISOString());
   if (input.note?.trim()) form.append("note", input.note.trim());

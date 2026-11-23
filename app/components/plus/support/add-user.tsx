@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { SearchNormal1 } from "iconsax-react";
+import { SearchNormal1 } from "@/lib/plus/icons";
 import { useT } from "@/lib/plus/i18n";
 import { MobileApiError, asList, errorMessage, mobileRequest } from "@/lib/plus/client/api";
 import { invalidate } from "@/lib/plus/client/use-resource";

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Calendar1, ClipboardText, DocumentText, Message, Notification, Reserve, Setting2, Stickynote, TickCircle, Trash, Warning2 } from "iconsax-react";
+import { Calendar1, ClipboardText, DocumentText, Message, Notification, Reserve, Setting2, Stickynote, TickCircle, Trash, Warning2 } from "@/lib/plus/icons";
 import { useT } from "@/lib/plus/i18n";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { mobileRequest } from "@/lib/plus/client/api";

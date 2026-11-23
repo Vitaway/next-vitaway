@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Scale, Utensils, BatteryFull, Bike, Brain, Moon, Sparkles, Check } from 'lucide-react';
+import { Weight as Scale, Utensils, Battery as BatteryFull, Bike, Brain, Moon, Sparkles, MdCheck as Check } from "@/lib/plus/icons";
 import { PreRegistrationPayload } from '@/lib/api/types';
 
 interface Props {

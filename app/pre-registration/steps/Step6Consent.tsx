@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Check } from 'lucide-react';
+import { MdCheck as Check } from "@/lib/plus/icons";
 import { PreRegistrationPayload } from '@/lib/api/types';
 import { RequiredMark } from '@/app/components/inputs/FormLabel';
 

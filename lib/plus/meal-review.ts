@@ -1,6 +1,7 @@
 /** W23 API calls for the meal review screen. The pure helpers are in meal-review-logic.ts (node --test). */
 import { mobileRequest } from "./client/api";
 import { parseFood, type FoodOption, type Recognition } from "./meal-review-logic";
+import { prepareImageForUpload } from "./upload-image";
 
 export * from "./meal-review-logic";
 
@@ -17,7 +18,7 @@ export async function getFood(key: string): Promise<FoodOption> {
 
 export async function recognizeMeal(file: File): Promise<Recognition> {
   const form = new FormData();
-  form.append("image", file);
+  form.append("image", await prepareImageForUpload(file));
   const o = obj(await mobileRequest(`/api/v1/mobile/foods/recognize`, { method: "POST", form }));
   return {
     available: o.available === true,

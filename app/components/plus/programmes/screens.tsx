@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Clock, DocumentDownload, Health, People, ReceiptItem, Refresh, TickCircle, Warning2 } from "iconsax-react";
+import { Clock, DocumentDownload, Health, People, ReceiptItem, Refresh, TickCircle, Warning2 } from "@/lib/plus/icons";
 import { useT } from "@/lib/plus/i18n";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { fetchProtectedBlob, mobileRequest, MobileApiError } from "@/lib/plus/client/api";
@@ -34,6 +34,7 @@ import {
   type ProgrammePayment,
 } from "@/lib/plus/programmes";
 import { ActionButton, AppBar, Card, CenterSpinner, EmptyState, useFeedback } from "../ui/vita";
+import { CheckoutPanel } from "../plans/checkout";
 
 const navyA = (a: number) => `rgba(var(--vc-navy-rgb),${a})`;
 const PROGRAMMES_KEY = "/api/v1/mobile/programmes";
@@ -362,7 +363,13 @@ export function EnrolmentScreen({ id }: { id: number }) {
               {open ? (
                 <ActionButton full tone="teal" label={t("payment_continue")} icon={<Clock size={16} color="currentColor" />} onClick={() => push(`/programmes/enrolments/${e.id}/pay/${encodeURIComponent(open.reference)}`)} />
               ) : (
-                <ActionButton full label={t("programme_pay_now", { price: formatMoney(e.price) })} onClick={pay} />
+                <CheckoutPanel
+                  total={formatMoney(e.price).replace(/\s*[A-Z]{3}$/, "")}
+                  currency={e.price.currency || "RWF"}
+                  lines={[{ label: e.programme.name, amount: formatMoney(e.price) }]}
+                  continueLabel={t("programme_pay_now", { price: formatMoney(e.price) })}
+                  onContinue={() => void pay()}
+                />
               )}
             </div>
           ) : null}

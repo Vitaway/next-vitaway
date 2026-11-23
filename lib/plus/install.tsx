@@ -91,6 +91,13 @@ function dismissedRecently(): boolean {
   }
 }
 
+/** Install scrim covers the tab bar; auto-popup on localhost made dev feel “stuck”. */
+function skipAutoInstallPopup(): boolean {
+  if (process.env.NODE_ENV !== "production") return true;
+  const host = window.location.hostname;
+  return host === "localhost" || host === "127.0.0.1" || host === "[::1]";
+}
+
 type InstallValue = {
   /** False once running as an installed app (or after a confirmed install). */
   available: boolean;
@@ -138,7 +145,7 @@ export function InstallProvider({ children }: { children: React.ReactNode }) {
 
     let timer: number | undefined;
     const showSoon = () => {
-      if (dismissedRecently()) return;
+      if (dismissedRecently() || skipAutoInstallPopup()) return;
       window.clearTimeout(timer);
       timer = window.setTimeout(() => setCardOpen(true), 1200);
     };

@@ -6,7 +6,7 @@ import { useCart } from '@/context/CartContext';
 import { Products } from '@/types/products';
 import AlertMessage from '../alerts/alert-message';
 import ShopCartItem from '@/app/shop/shop-cart-item';
-import { Truck, Store } from 'lucide-react';
+import { Truck, Store } from "@/lib/plus/icons";
 import rwandaData from '@/data/rwanda_geo.json';
 import AlertModal from '../alerts/alert-modal';
 import { ButtonSpinner } from '../spinners/Spinner';

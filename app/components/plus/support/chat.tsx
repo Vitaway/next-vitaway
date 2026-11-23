@@ -1,14 +1,14 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { ArrowLeft, Camera, Copy, DocumentText, Flag, Forbidden, Gallery, GallerySlash, Message, Paperclip2, Refresh, Slash, Trash, Warning2 } from "iconsax-react";
+import { ArrowLeft, Camera, Copy, DocumentText, Flag, Forbidden, Gallery, GallerySlash, Message, Paperclip2, Refresh, Slash, Trash, Warning2 } from "@/lib/plus/icons";
 import { useT } from "@/lib/plus/i18n";
 import { useMe } from "@/lib/plus/client/data";
 import { fetchUrlBlob, mediaUrl } from "@/lib/plus/client/api";
 import { hasText, messagePreview, roomPicture, senderName, stillDeletable, useChatRoom, useRoom, type ChatMessage, type ChatSender, type Room } from "@/lib/plus/client/chat";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { useBack } from "@/lib/plus/nav";
-import { ActionButton, Avatar, CircleButton, DotSpinner, Modal, useFeedback } from "../ui/vita";
+import { ActionButton, Avatar, CircleButton, DotSpinner, Modal, RootPortal, useFeedback } from "../ui/vita";
 import { ChatSafetyBanner, useEmergencyDial } from "../safety/safety-banners";
 import { matchSafetyWords } from "@/lib/plus/safety-words";
 
@@ -705,6 +705,7 @@ export function ChatScreen({ roomId }: { roomId: string }) {
       </Modal>
 
       {viewer ? (
+        <RootPortal>
         <div style={{ position: "fixed", inset: 0, zIndex: 80, background: "#000", display: "flex", flexDirection: "column" }}>
           <div style={{ height: 56, display: "flex", alignItems: "center", gap: 12, padding: "env(safe-area-inset-top) 12px 0", color: "#fff" }}>
             <button type="button" aria-label="Back" onClick={() => setViewer(null)} style={{ padding: 8, color: "#fff" }}>
@@ -716,6 +717,7 @@ export function ChatScreen({ roomId }: { roomId: string }) {
             <AuthImage url={viewer.url} mine contain />
           </div>
         </div>
+        </RootPortal>
       ) : null}
     </div>
   );

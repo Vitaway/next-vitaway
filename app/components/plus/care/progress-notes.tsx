@@ -1,6 +1,6 @@
 "use client";
 
-import { Calendar1, Refresh, Stickynote, TaskSquare } from "iconsax-react";
+import { Calendar1, Refresh, Stickynote, TaskSquare } from "@/lib/plus/icons";
 import { useT } from "@/lib/plus/i18n";
 import { useMe } from "@/lib/plus/client/data";
 import { relativeDayLabel, useProgressNotes, type CoachNote } from "@/lib/plus/client/care";

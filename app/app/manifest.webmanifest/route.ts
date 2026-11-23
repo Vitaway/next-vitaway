@@ -6,7 +6,7 @@ export async function GET(request: NextRequest) {
   return NextResponse.json(plusManifest(host), {
     headers: {
       "Content-Type": "application/manifest+json",
-      "Cache-Control": "no-cache, no-store, must-revalidate",
+      "Cache-Control": process.env.NODE_ENV === "development" ? "public, max-age=300" : "no-cache, no-store, must-revalidate",
     },
   });
 }

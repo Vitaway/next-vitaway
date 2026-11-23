@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { requestNotificationPermission } from "@/lib/plus/web-notifications";
 import { BrowserNotificationRow } from "./notification-permission";
-import { Add, Alarm, Clock, CloseCircle, Drop, Health, Heart, Notification as NotificationIcon, Play, Save2, Trash } from "iconsax-react";
+import { Add, Alarm, Clock, CloseCircle, Drop, Health, Heart, Notification as NotificationIcon, Play, Save2, Trash } from "@/lib/plus/icons";
 import { useT } from "@/lib/plus/i18n";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { useBack } from "@/lib/plus/nav";

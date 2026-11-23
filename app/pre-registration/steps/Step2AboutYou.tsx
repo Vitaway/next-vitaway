@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { Building2 } from 'lucide-react';
+import { Building as Building2 } from "@/lib/plus/icons";
 import { PreRegistrationPayload, Organization, VisitQuote } from '@/lib/api/types';
 import { organizationService } from '@/lib/api/services/organizations';
 import TextInput from '@/app/components/inputs/TextInput';

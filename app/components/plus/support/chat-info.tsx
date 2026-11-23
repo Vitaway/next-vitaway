@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Calendar1, Edit2, InfoCircle, Logout, NoteText, People, Ruler, Trash, User, UserAdd } from "iconsax-react";
+import { Calendar1, Edit2, InfoCircle, Logout, NoteText, People, Ruler, Trash, User, UserAdd } from "@/lib/plus/icons";
 import { useT } from "@/lib/plus/i18n";
 import { useMe } from "@/lib/plus/client/data";
 import { asList, mobileRequest } from "@/lib/plus/client/api";

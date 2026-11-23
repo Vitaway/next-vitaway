@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { Copy, Flash, ImportCurve, Notification, Mobile } from "iconsax-react";
+import { Copy, Flash, ImportCurve, Notification, Mobile } from "@/lib/plus/icons";
 import { useT } from "@/lib/plus/i18n";
 import { PLUS_ICON_192 } from "@/lib/plus/manifest";
 import { useInstall, type InstallInfo } from "@/lib/plus/install";

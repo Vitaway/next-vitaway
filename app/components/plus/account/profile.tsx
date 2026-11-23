@@ -30,7 +30,7 @@ import {
   User,
   UserTag,
   Star1,
-} from "iconsax-react";
+} from "@/lib/plus/icons";
 import { useT, useLanguage, languageDisplayName } from "@/lib/plus/i18n";
 import { useTheme } from "@/lib/plus/theme";
 import { useInstall } from "@/lib/plus/install";

@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Call, Lock, Mobile, Sms } from "iconsax-react";
-import { MdCheck, MdSend } from "react-icons/md";
+import { Call, Lock, Mobile, Sms } from "@/lib/plus/icons";
+import { MdCheck, MdSend } from "@/lib/plus/icons";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { useT } from "@/lib/plus/i18n";
 import { DIAL_COUNTRIES, dialCountryByIso, isValidNationalNumber, phoneE164, type DialCountry } from "@/lib/plus/dial-countries";

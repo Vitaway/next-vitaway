@@ -1,13 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Add, ArrowDown2, Calendar1, Card, Crown1, LogoutCurve, Messages2, Notification, Profile, Setting2, Timer1 } from "iconsax-react";
+import { Add, ArrowDown2, Calendar1, Card, Crown1, LogoutCurve, Messages2, Notification, Profile, Setting2, Timer1 } from "@/lib/plus/icons";
 import { useLanguage } from "@/lib/plus/i18n";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { displayName, useMe, useNotifications } from "@/lib/plus/client/data";
 import { useAccountActions } from "../account/shared";
 import { Photo, cx } from "../ui/vita";
 import { QUICK_ACTIONS, tabFor, useAppPath, useMainTabs } from "./dock";
+import { Illu, NAV_ILLU } from "../ui/vita-icons";
 
 /** Closes a popover on outside click, Escape and route change. */
 function usePopover(path: string) {
@@ -33,8 +34,9 @@ function usePopover(path: string) {
 }
 
 /**
- * Tablet and desktop navigation (768px and up): one full-width sticky bar with the five Flutter tabs,
- * the orange Log button (same quick-log list as the phone + dial) and the account menu.
+ * Tablet and desktop navigation (768px and up): a floating orange pill pinned to the top of the teal
+ * header band, with the five Flutter tabs as text links, a white Log pill (same quick-log list as the
+ * phone + dial), notifications and the account menu.
  * Phones keep the bottom dock; the bar is hidden there in CSS.
  */
 export default function TopBar({ supportBadge = false }: { supportBadge?: boolean }) {
@@ -80,7 +82,7 @@ export default function TopBar({ supportBadge = false }: { supportBadge?: boolea
             return (
               <button key={tabPath} type="button" className={cx("vita-top-link", on && "on")} aria-current={on ? "page" : undefined} onClick={() => push(tabPath)}>
                 <span className="ic">
-                  <Icon size={20} color="currentColor" variant={on ? "Bold" : "Linear"} />
+                  {NAV_ILLU[tabPath] ? <Illu name={NAV_ILLU[tabPath]} size={24} /> : <Icon size={20} color="currentColor" variant={on ? "Bold" : "Linear"} />}
                   {badge ? <i className="vita-dock-badge" /> : null}
                 </span>
                 <span className="tx">{label}</span>

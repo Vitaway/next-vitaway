@@ -6,7 +6,8 @@
  * Dashed outline + "~" = estimate (MiraFood visual grammar). Totals update live. Submit stays visible at 360 px.
  */
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Add, Edit2, SearchNormal1, Trash } from "iconsax-react";
+import { Add, Edit2, SearchNormal1, Trash } from "@/lib/plus/icons";
+import { RootPortal } from "../ui/vita";
 import { useLanguage, useT } from "@/lib/plus/i18n";
 import {
   PREPARATIONS,
@@ -41,6 +42,7 @@ const chip = (on: boolean): React.CSSProperties => ({
 function Sheet({ open, title, onClose, children, footer }: { open: boolean; title: string; onClose: () => void; children: React.ReactNode; footer?: React.ReactNode }) {
   if (!open) return null;
   return (
+    <RootPortal>
     <div role="presentation" className="vita-sheet-scrim" onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 70, background: "var(--vc-scrim)", display: "flex", alignItems: "flex-end", justifyContent: "center" }}>
       <div
         role="dialog"
@@ -55,6 +57,7 @@ function Sheet({ open, title, onClose, children, footer }: { open: boolean; titl
         {footer ? <div style={{ padding: "10px 20px calc(14px + env(safe-area-inset-bottom))", borderTop: "1px solid var(--vc-line)" }}>{footer}</div> : null}
       </div>
     </div>
+    </RootPortal>
   );
 }
 
