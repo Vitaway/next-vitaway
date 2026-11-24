@@ -124,7 +124,23 @@ export type IlluName =
   | "nav-health"
   | "nav-nutrition"
   | "nav-learn"
-  | "nav-care";
+  | "nav-care"
+  | "profile"
+  | "documents"
+  | "payments"
+  | "rewards"
+  | "community"
+  | "language"
+  | "appearance"
+  | "settings"
+  | "install"
+  | "share"
+  | "about"
+  | "privacy"
+  | "terms"
+  | "disclaimer"
+  | "delete"
+  | "logout";
 
 const S = { stroke: ICON_INK, strokeWidth: 2.5, strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
 const T = { ...S, strokeWidth: 2 };
@@ -330,6 +346,139 @@ function art(name: IlluName): ReactNode {
           <circle cx="16" cy="50" r="2" fill={MINT} />
         </>
       );
+    case "profile":
+      return (
+        <>
+          <circle cx="32" cy="22" r="11" fill={PEACH} {...S} />
+          <path d="M11 54c0-11 9-18 21-18s21 7 21 18Z" fill={PAPER} {...S} />
+          <path d="M26 46h12" stroke={MINT} strokeWidth={4} strokeLinecap="round" />
+        </>
+      );
+    case "documents":
+      return (
+        <>
+          <path d="M6 20a4 4 0 0 1 4-4h14l5 6h25a4 4 0 0 1 4 4v24a4 4 0 0 1-4 4H10a4 4 0 0 1-4-4Z" fill={CREAM} {...S} />
+          <rect x="16" y="26" width="30" height="22" rx="3" fill={PAPER} {...T} />
+          <path d="M22 33h18M22 39h12" stroke={MINT} strokeWidth={3} strokeLinecap="round" />
+        </>
+      );
+    case "payments":
+      return (
+        <>
+          <path d="M14 8h36v48l-6-4-6 4-6-4-6 4-6-4-6 4Z" fill={PAPER} {...S} />
+          <path d="M22 20h20M22 28h20" {...T} />
+          <circle cx="40" cy="40" r="6" fill={MINT} {...T} />
+          <path d="M22 40h8" {...T} />
+        </>
+      );
+    case "rewards":
+      return (
+        <>
+          <path d="M32 6l7.4 15 16.6 2.4-12 11.7 2.8 16.5L32 43.8 17.2 51.6 20 35.1 8 23.4 24.6 21Z" fill={CREAM} {...S} />
+          <circle cx="32" cy="29" r="5" fill={PAPER} {...T} />
+          <circle cx="52" cy="52" r="2" fill={MINT} />
+        </>
+      );
+    case "community":
+      return (
+        <>
+          <circle cx="22" cy="24" r="8" fill={PEACH} {...S} />
+          <circle cx="44" cy="24" r="8" fill={MINT_SOFT} {...S} />
+          <path d="M6 52c0-9 7-15 16-15s16 6 16 15Z" fill={PAPER} {...S} />
+          <path d="M40 38c9 0 18 5 18 14H44" fill={PAPER} {...S} />
+        </>
+      );
+    case "language":
+      return (
+        <>
+          <circle cx="32" cy="32" r="22" fill={PAPER} {...S} />
+          <path d="M10 32h44M32 10c-9 8-9 36 0 44M32 10c9 8 9 36 0 44" fill="none" {...T} />
+          <circle cx="50" cy="14" r="6" fill={MINT} {...T} />
+        </>
+      );
+    case "appearance":
+      return (
+        <>
+          <circle cx="32" cy="32" r="20" fill={PAPER} {...S} />
+          <path d="M32 12a20 20 0 0 1 0 40Z" fill={ICON_INK} />
+          <circle cx="32" cy="32" r="20" fill="none" {...S} />
+          <path d="M32 4v4M32 56v4M4 32h4M56 32h4" {...T} />
+        </>
+      );
+    case "settings":
+      return (
+        <>
+          <path d="M8 18h48M8 32h48M8 46h48" {...S} />
+          <circle cx="22" cy="18" r="6" fill={MINT} {...S} />
+          <circle cx="42" cy="32" r="6" fill={PEACH} {...S} />
+          <circle cx="26" cy="46" r="6" fill={CREAM} {...S} />
+        </>
+      );
+    case "install":
+      return (
+        <>
+          <rect x="18" y="6" width="28" height="52" rx="7" fill={PAPER} {...S} />
+          <path d="M32 18v18M24 29l8 8 8-8" fill="none" {...S} />
+          <path d="M25 46h14" stroke={MINT} strokeWidth={4} strokeLinecap="round" />
+        </>
+      );
+    case "share":
+      return (
+        <>
+          <circle cx="46" cy="14" r="7" fill={MINT} {...S} />
+          <circle cx="16" cy="32" r="7" fill={PEACH} {...S} />
+          <circle cx="46" cy="50" r="7" fill={CREAM} {...S} />
+          <path d="M22 29l18-12M22 35l18 12" {...S} />
+        </>
+      );
+    case "about":
+      return (
+        <>
+          <circle cx="32" cy="32" r="23" fill={MINT_SOFT} {...S} />
+          <circle cx="32" cy="21" r="3" fill={ICON_INK} />
+          <path d="M32 30v16" {...S} />
+        </>
+      );
+    case "privacy":
+      return (
+        <>
+          <path d="M32 6l20 7v17c0 12-8 21-20 26C20 51 12 42 12 30V13Z" fill={PAPER} {...S} />
+          <path d="M22 31l7 7 13-14" fill="none" stroke={MINT} strokeWidth={5} strokeLinecap="round" strokeLinejoin="round" />
+        </>
+      );
+    case "terms":
+      return (
+        <>
+          <path d="M14 6h26l12 12v40H14Z" fill={PAPER} {...S} />
+          <path d="M40 6v12h12" fill={CREAM} {...T} />
+          <path d="M22 28h22M22 36h22M22 44h12" {...T} />
+        </>
+      );
+    case "disclaimer":
+      return (
+        <>
+          <rect x="6" y="22" width="40" height="18" rx="9" transform="rotate(-40 26 31)" fill={PEACH} {...S} />
+          <path d="M20 35l14-14" {...T} />
+          <circle cx="48" cy="48" r="9" fill={PAPER} {...S} />
+          <path d="M48 44v5M48 52.5v.5" {...S} />
+        </>
+      );
+    case "delete":
+      return (
+        <>
+          <path d="M12 16h40M26 16V9h12v7" {...S} />
+          <path d="M16 16l3 40h26l3-40Z" fill={PAPER} {...S} />
+          <path d="M27 26v22M37 26v22" stroke={ORANGE} strokeWidth={3} strokeLinecap="round" />
+        </>
+      );
+    case "logout":
+      return (
+        <>
+          <path d="M30 8H14a4 4 0 0 0-4 4v40a4 4 0 0 0 4 4h16" fill={PAPER} {...S} />
+          <path d="M24 32h30M44 21l11 11-11 11" fill="none" {...S} />
+          <circle cx="24" cy="32" r="2.4" fill={MINT} />
+        </>
+      );
   }
 }
 
@@ -356,6 +505,22 @@ export const ILLU_TINT: Record<IlluName, string> = {
   "nav-nutrition": "#FFFFFF",
   "nav-learn": "#FFFFFF",
   "nav-care": "#FFFFFF",
+  profile: "#EAF7F3",
+  documents: "#FFF4DC",
+  payments: "#E4F4F8",
+  rewards: "#FFF4DC",
+  community: "#EAF7F3",
+  language: "#E4F4F8",
+  appearance: "#EEF0F8",
+  settings: "#FDEBDD",
+  install: "#EAF7F3",
+  share: "#E4F4F8",
+  about: "#EAF7F3",
+  privacy: "#EAF7F3",
+  terms: "#FFF4DC",
+  disclaimer: "#FDEBDD",
+  delete: "#FDECEA",
+  logout: "#F1F3F4",
 };
 
 /** Illustrated icon for each main tab (web top bar). */

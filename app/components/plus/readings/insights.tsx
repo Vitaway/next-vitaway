@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLanguage, type Translate } from "@/lib/plus/i18n";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { formatGlucose, formatGlucoseUnitBoth, useGlucoseUnit } from "@/lib/plus/units";
@@ -40,6 +40,23 @@ function shortDay(iso: string, lang: string): string {
 
 /* ───────── small charts (plain SVG) ───────── */
 
+/**
+ * Charts are drawn at the real width of their card (1 unit = 1 px), so text, dots and bars keep their size on a
+ * phone, a tablet and a wide desktop. A fixed viewBox stretched to the card made everything balloon.
+ */
+function useChartWidth(): [React.RefObject<HTMLDivElement | null>, number] {
+  const ref = useRef<HTMLDivElement>(null);
+  const [w, setW] = useState(340);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver(([entry]) => setW(Math.max(260, Math.round(entry.contentRect.width))));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+  return [ref, w];
+}
+
 type Pt = { x: number; y: number; c?: string; tip?: string };
 type Series = { pts: Pt[]; color: string; line?: boolean; dots?: boolean; width?: number };
 
@@ -47,12 +64,13 @@ function LineChart({ x0, x1, y0, y1, series, band, refs = [], ticks = [], labels
   x0: number; x1: number; y0: number; y1: number; series: Series[]; band?: [number, number] | null; refs?: Array<{ y: number; label?: string; color?: string }>;
   ticks?: number[]; labels: [string, string]; aria: string; h?: number;
 }) {
-  const w = 340, ml = 34, mr = 10, mt = 10, mb = 22;
+  const [box, w] = useChartWidth();
+  const ml = 34, mr = 10, mt = 10, mb = 22;
   const X = (x: number) => ml + ((x - x0) / (x1 - x0 || 1)) * (w - ml - mr);
   const Y = (y: number) => mt + (1 - (Math.min(Math.max(y, y0), y1) - y0) / (y1 - y0 || 1)) * (h - mt - mb);
   const [tip, setTip] = useState<string | null>(null);
   return (
-    <div className="vita-ins-chart">
+    <div className="vita-ins-chart" ref={box}>
       <svg viewBox={`0 0 ${w} ${h}`} role="img" aria-label={aria}>
         {band ? <rect x={ml} y={Y(band[1])} width={w - ml - mr} height={Math.max(0, Y(band[0]) - Y(band[1]))} fill={C.band} /> : null}
         {ticks.filter((v) => v >= y0 && v <= y1).map((v) => (
@@ -86,16 +104,19 @@ function LineChart({ x0, x1, y0, y1, series, band, refs = [], ticks = [], labels
 }
 
 function BarChart({ bars, goal, goalLabel, band, max, aria, every = 1 }: { bars: Array<{ v: number | null; label: string; c: string }>; goal?: number; goalLabel?: string; band?: [number, number]; max: number; aria: string; every?: number }) {
-  const w = 340, h = 150, ml = 8, mr = 8, mt = 10, mb = 20;
+  const [box, w] = useChartWidth();
+  const h = 150, ml = 8, mr = 8, mt = 10, mb = 20;
   const n = Math.max(1, bars.length), bw = (w - ml - mr) / n;
+  // A bar never gets wider than 34 px, so two bars do not turn into two big blocks.
+  const barW = Math.min(34, bw * 0.68);
   const Y = (v: number) => mt + (1 - Math.min(v, max) / (max || 1)) * (h - mt - mb);
   return (
-    <div className="vita-ins-chart">
+    <div className="vita-ins-chart" ref={box}>
       <svg viewBox={`0 0 ${w} ${h}`} role="img" aria-label={aria}>
         {band ? <rect x={ml} y={Y(band[1])} width={w - ml - mr} height={Y(band[0]) - Y(band[1])} fill={C.band} /> : null}
         {bars.map((b, i) => (
           <g key={i}>
-            {b.v ? <rect x={ml + i * bw + bw * 0.16} y={Y(b.v)} width={bw * 0.68} height={Math.max(0, Y(0) - Y(b.v))} rx={2} fill={b.c} /> : <circle cx={ml + i * bw + bw / 2} cy={Y(0) - 2} r={1.6} fill={C.faint} />}
+            {b.v ? <rect x={ml + i * bw + (bw - barW) / 2} y={Y(b.v)} width={barW} height={Math.max(0, Y(0) - Y(b.v))} rx={2} fill={b.c} /> : <circle cx={ml + i * bw + bw / 2} cy={Y(0) - 2} r={1.6} fill={C.faint} />}
             {i % every === 0 || i === n - 1 ? <text x={ml + i * bw + bw / 2} y={h - 5} fontSize="9.5" textAnchor="middle" fill="rgba(var(--vc-navy-rgb),0.55)">{b.label}</text> : null}
           </g>
         ))}
