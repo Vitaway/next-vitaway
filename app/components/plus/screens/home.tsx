@@ -401,10 +401,20 @@ function GlanceRing({ done, total, label, color, center, onClick }: { done: numb
 type PlanRow = { key: string; icon: React.ReactNode; tint: string; title: string; sub: string; done: boolean; action: string; onClick: () => void };
 
 /** W13 + pillbox: everything due today in one checklist (programme readings, medicine doses, the next reminder). */
+const PLAN_SHOWN = 4;
+
+/** "8:0" → "08:00". */
+const hhmm = (v: string) => v.replace(/^(\d{1,2}):(\d{1,2})$/, (_, h: string, m: string) => `${h.padStart(2, "0")}:${m.padStart(2, "0")}`);
+
 function TodayPlan({ rows, emptyAction, onSeeAll }: { rows: PlanRow[]; emptyAction: () => void; onSeeAll: () => void }) {
   const { t } = useLanguage();
+  const [more, setMore] = useState(false);
   const done = rows.filter((r) => r.done).length;
   const total = rows.length;
+  // What is still to do comes first; finished rows sink to the bottom.
+  const ordered = [...rows.filter((r) => !r.done), ...rows.filter((r) => r.done)];
+  const shown = more ? ordered : ordered.slice(0, PLAN_SHOWN);
+  const hidden = ordered.length - shown.length;
   return (
     <div className="vh-card vh-plan" data-testid="home-reading-prompts">
       <div className="vh-plan-head">
@@ -420,7 +430,7 @@ function TodayPlan({ rows, emptyAction, onSeeAll }: { rows: PlanRow[]; emptyActi
             <span style={{ width: `${Math.round((done / total) * 100)}%` }} />
           </span>
           <ul className="vh-plan-list">
-            {rows.map((row) => (
+            {shown.map((row) => (
               <li key={row.key}>
                 <button type="button" className={`vh-plan-row ${row.done ? "is-done" : ""}`} onClick={row.onClick}>
                   <span className="vh-plan-ic" style={{ background: row.tint }}>{row.icon}</span>
@@ -439,6 +449,11 @@ function TodayPlan({ rows, emptyAction, onSeeAll }: { rows: PlanRow[]; emptyActi
               </li>
             ))}
           </ul>
+          {hidden > 0 || more ? (
+            <button type="button" className="vh-plan-more" aria-expanded={more} onClick={() => setMore((m) => !m)}>
+              {more ? t("home_plan_less") : t("home_plan_more", { n: hidden })}
+            </button>
+          ) : null}
         </>
       ) : (
         <button type="button" className="vh-plan-row" onClick={emptyAction}>
@@ -596,7 +611,7 @@ export default function HomeScreen() {
       icon: <Illu name={next.type === "bp" ? "bp" : "glucose"} size={28} />,
       tint: ILLU_TINT[next.type === "bp" ? "bp" : "glucose"],
       title: next.name,
-      sub: next.times[0] ?? t("home_scheduled_today"),
+      sub: next.times[0] ? hhmm(next.times[0]) : t("home_scheduled_today"),
       done: false,
       action: t("home_log"),
       onClick: () => push(next.type === "bp" ? "/log/bp" : "/log/glucose"),
@@ -605,22 +620,33 @@ export default function HomeScreen() {
   let dosesDue = 0;
   let dosesTaken = 0;
   if (sections.includes("medicines") && !meds.error) {
+    // One row per medicine (its next dose), not one per dose: four medicines can be fifteen doses a day.
+    const nowMin = new Date().getHours() * 60 + new Date().getMinutes();
+    const mins = (hm: string) => {
+      const [h, m] = hm.split(":").map(Number);
+      return (h || 0) * 60 + (m || 0);
+    };
     for (const med of meds.list) {
-      for (const slot of med.slots) {
-        const taken = slot.status === "taken";
-        dosesDue += 1;
-        if (taken) dosesTaken += 1;
-        planRows.push({
-          key: `m-${med.id}-${slot.time}`,
-          icon: <Illu name="pillbox" size={28} />,
-          tint: ILLU_TINT.pillbox,
-          title: med.name,
-          sub: `${doseLabel(med)} · ${slot.time}`,
-          done: taken,
-          action: t("home_take"),
-          onClick: () => push("/medications"),
-        });
-      }
+      if (!med.slots.length) continue;
+      const taken = med.slots.filter((x) => x.status === "taken").length;
+      dosesDue += med.slots.length;
+      dosesTaken += taken;
+      // A dose marked missed can still be taken late; only taken or skipped doses are finished.
+      const open = med.slots.filter((x) => x.status !== "taken" && x.status !== "skipped");
+      const next = open.find((x) => mins(x.time) >= nowMin - 60) ?? open[open.length - 1];
+      const parts = [doseLabel(med)];
+      if (next) parts.push(t("home_med_next", { time: hhmm(next.time) }));
+      if (med.slots.length > 1) parts.push(t("home_med_taken", { done: taken, total: med.slots.length }));
+      planRows.push({
+        key: `m-${med.id}`,
+        icon: <Illu name="pillbox" size={28} />,
+        tint: ILLU_TINT.pillbox,
+        title: med.name,
+        sub: parts.filter(Boolean).join(" · "),
+        done: !next,
+        action: t("home_take"),
+        onClick: () => push("/medications"),
+      });
     }
   }
   const planDone = planRows.filter((r) => r.done).length;

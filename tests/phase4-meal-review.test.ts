@@ -104,3 +104,46 @@ test("W24: 'What changed' lines map to translation keys", async () => {
   assert.deepEqual(changeLine({ kind: "removed", name: "Avocado", from: "50 g", to: null }), { key: "mr_change_removed", vars: { name: "Avocado" } });
   assert.deepEqual(changeLine({ kind: "changed", name: "Rice", from: "1 cup · 160 g", to: "240 g" }), { key: "mr_change_changed", vars: { name: "Rice", from: "1 cup · 160 g", to: "240 g" } });
 });
+
+// ---- 24 Nov 2026: MiraFood master food database in the picker
+import { defaultPortionText, groupQuickPicks, parseFood, saltGrams } from "../lib/plus/meal-review-logic.ts";
+
+test("parseFood reads the database fields: group, trust, source, portions with status, sodium and sugars", () => {
+  const f = parseFood({
+    food_key: "mf:MF-03-0001-BO", name: "Beans, boiled", name_rw: "Ibishyimbo", category: "Beans & pulses", group_code: "03", preparation: "Boiled",
+    per_100g: { kcal: 117, protein_g: 7.6, carbs_g: 15, fat_g: 0.5, fibre_g: 6.4, sodium_mg: 2, sugars_g: null },
+    source: "mirafood", verified: true, label: null, trust: "source", source_name: "Kenya FCT 2018", is_core: true, image_url: null, dataset_version: "v1.0",
+    portions: [{ unit_key: "mf-ladle", label: "Ladle", label_rw: "akayiko k'isupu", grams: 150, status: "draft" }, { unit_key: "100g", label: "100 g", label_rw: null, grams: 100, status: "standard" }],
+  });
+  assert.equal(f.group_code, "03");
+  assert.equal(f.trust, "source");
+  assert.equal(f.source_name, "Kenya FCT 2018");
+  assert.equal(f.is_core, true);
+  assert.equal(f.per_100g.sodium_mg, 2);
+  assert.equal(f.per_100g.sugars_g, null);
+  assert.equal(f.portions?.[0].status, "draft");
+  assert.equal(defaultPortionText(f, "en"), "1 Ladle · 150 g · ~176 kcal");
+  assert.equal(defaultPortionText(f, "rw"), "1 akayiko k'isupu · 150 g · ~176 kcal");
+  const proxy = parseFood({ food_key: "mf:MF-15-0003-MX", name: "Isombe (dish)", per_100g: {}, source: "mirafood", verified: false, label: "provisional", trust: "proxy" });
+  assert.equal(proxy.label, "provisional");
+  assert.equal(itemFromFood(proxy).label, "provisional");
+});
+
+test("totals carry fibre and salt (sodium × 2.5 ÷ 1000); salt is null when no food reports sodium", () => {
+  const beans = itemFromFood(parseFood({ food_key: "mf:B", name: "Beans", per_100g: { kcal: 117, protein_g: 7.6, carbs_g: 15, fat_g: 0.5, fibre_g: 6.4, sodium_mg: 400 }, source: "mirafood", verified: true, label: null, portions: [{ unit_key: "100g", label: "100 g", label_rw: null, grams: 100 }] }));
+  const totals = reviewTotals([beans, itemFromTyped("Sauce")]);
+  assert.equal(totals.fibre_g, 6.4);
+  assert.equal(totals.sodium_mg, 400);
+  assert.equal(totals.salt_g, 1);
+  assert.equal(totals.partial, true);
+  assert.equal(saltGrams(null), null);
+  assert.equal(saltGrams(2300), 5.8);
+  assert.equal(reviewTotals([itemFromTyped("Sauce")]).salt_g, null);
+});
+
+test("quick picks are grouped in plate order and empty groups are left out", () => {
+  const mk = (key: string, group: string) => parseFood({ food_key: key, name: key, group_code: group, per_100g: {}, source: "mirafood", verified: true, label: null });
+  const sections = groupQuickPicks([mk("a", "05"), mk("b", "01"), mk("c", "03"), mk("d", "01")]);
+  assert.deepEqual(sections.map((s) => s.code), ["01", "03", "05"]);
+  assert.deepEqual(sections[0].foods.map((f) => f.food_key), ["b", "d"]);
+});

@@ -3,14 +3,14 @@
 import { useEffect, useMemo, useState } from "react";
 import { Activity, ArrowRight3, Award, Book1, Calendar1, Call, CloudCross, Crown1, Cup, Edit2, Flash, Gallery, Lock, MessageFavorite, People, Reserve, ShieldTick, Star1, TickCircle } from "@/lib/plus/icons";
 import { badgeFraction, badgeText, fetchBadgeBoard, type BadgeBoard, type BadgeItem } from "@/lib/plus/badge-board";
-import { useLanguage, useT } from "@/lib/plus/i18n";
+import { useT } from "@/lib/plus/i18n";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { mobileRequest, mediaUrl } from "@/lib/plus/client/api";
-import { useArticles, useSubscription, type Article } from "@/lib/plus/client/data";
+import { type Article } from "@/lib/plus/client/data";
 import { invalidate, useResource } from "@/lib/plus/client/use-resource";
-import { ActionButton, AppBar, CenterSpinner, EmptyState, Modal, Page, SectionLabel, useFeedback } from "../ui/vita";
+import { ActionButton, AppBar, CenterSpinner, EmptyState, Modal, Page, SectionLabel } from "../ui/vita";
 import { YourPathBlock } from "./your-path";
-import { MyProgrammeBlock, useAcademyHome } from "../academy/my-programme";
+import { MyProgrammeBlock, RecommendedBlock, useAcademyHome } from "../academy/my-programme";
 
 const navyA = (a: number) => `rgba(var(--vc-navy-rgb),${a})`;
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -39,45 +39,12 @@ function ArticleImage({ src, height, radius = 8 }: { src?: string | null; height
   return <img src={url} alt="" onError={() => setFailed(true)} style={{ width: "100%", height, objectFit: "cover", borderRadius: radius, display: "block" }} />;
 }
 
-/** article_vertical_list_tile.dart */
-function ArticleTile({ article, onClick }: { article: Article; onClick: () => void }) {
-  const d = article.created_at ? new Date(article.created_at) : null;
-  const date = d && !Number.isNaN(d.getTime()) ? `${DAYS[d.getDay()]}, ${d.getDate()}, ${MONTHS[d.getMonth()]} ${d.getFullYear()}` : "";
-  return (
-    <div style={{ padding: 10 }}>
-      <button type="button" onClick={onClick} style={{ width: "100%", height: 120, padding: 10, display: "flex", alignItems: "center", gap: 14, borderRadius: 10, border: `1px solid ${navyA(0.08)}`, textAlign: "left", background: "transparent" }}>
-        <div style={{ height: "100%", aspectRatio: "16 / 9", flex: "none", borderRadius: 8, boxShadow: "0 3px 12px color-mix(in srgb, var(--vc-teal) 50%, transparent)" }}>
-          <ArticleImage src={article.image} height="100%" />
-        </div>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 13, fontWeight: 800, color: "var(--vc-navy)", display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{article.title}</div>
-          <div style={{ marginTop: 10, fontSize: 13, color: navyA(0.55), whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{date}</div>
-        </div>
-      </button>
-    </div>
-  );
-}
-
-/** Learn: the Academy (programme or library), then every care-team article in one list (no category tabs). */
+/** Learn: the Academy (programme or the path), then a few recommendations from the library. */
 export function LearnScreen() {
   const t = useT();
-  const { language } = useLanguage();
   const { push } = usePlusPaths();
-  const { confirm } = useFeedback();
-  const { active } = useSubscription();
-  const { articles, loading, error, reload } = useArticles(language);
   const academy = useAcademyHome();
   const hasProgramme = Boolean(academy.data?.programme && academy.data.programme.live_items > 0);
-  const open = async (a: Article) => {
-    // "Earn badges" articles (category 3) still need a plan, as when they had their own tab.
-    if (String(a.category) === "3" && !active) {
-      const go = await confirm({ title: t("premium_feature"), message: t("premium_text"), confirmLabel: t("choose_plan"), cancelLabel: t("cancel") });
-      if (go) push("/plans");
-      return;
-    }
-    stashArticle(a);
-    push(`/articles/${a.id}`);
-  };
   return (
     <Page width="wide">
       <AppBar title={cap(t("learn_title"))} back={false} profile />
@@ -95,20 +62,7 @@ export function LearnScreen() {
       ) : null}
       <div style={{ flex: 1, overflowY: "auto", paddingBottom: 24 }}>
         {hasProgramme && academy.data ? <MyProgrammeBlock home={academy.data} /> : null}
-        {loading ? (
-          <CenterSpinner />
-        ) : error && !articles.length ? (
-          <EmptyState title="Could not load articles" subtitle="Check your connection and try again." actionLabel={t("retry")} onAction={() => void reload()} />
-        ) : !articles.length ? (
-          <EmptyState title="Nothing to read yet" subtitle="Articles from the care team will show up here." />
-        ) : (
-          <>
-            <div className="vita-learn-articles-head">
-              <SectionLabel icon={<Book1 size={18} color="currentColor" />} label={t("learn_articles")} />
-            </div>
-            <div className="vita-flex-list vita-tiles">{articles.map((a) => <ArticleTile key={a.id} article={a} onClick={() => void open(a)} />)}</div>
-          </>
-        )}
+        {academy.loading && !academy.data ? <CenterSpinner /> : <RecommendedBlock courseId={academy.data?.programme?.course_id} />}
       </div>
     </Page>
   );

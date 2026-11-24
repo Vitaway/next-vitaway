@@ -251,6 +251,15 @@
 .ac-plan-shop { margin: 0; padding-left: 20px; }
 .ac-plan-shop li { margin-bottom: 6px; font-size: 14.5px; line-height: 1.45; color: var(--vc-ink); }
 
+/* Learn: recommended from the library */
+.ac-rec { padding: 8px 16px 8px; }
+.ac-rec-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.ac-rec-head > span { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.ac-rec-head .ac-sec { margin: 0; }
+.ac-rec-head small { font-size: 13px; color: rgba(var(--vc-navy-rgb), 0.55); }
+.vita-root .ac-rec-all { flex: none; display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 999px; border: 0; background: var(--vc-tile-peach, #fde8df); color: var(--ac-or, #e85a2e); font-weight: 800; font-size: 13.5px; }
+.ac-rec-grid .ac-ccard:nth-child(n + 5) { display: none; }
+
 /* ── Tablet and web ── */
 @media (min-width: 640px) {
   .ac-cgrid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
@@ -268,6 +277,9 @@
   .ac-lib { padding: 8px 24px 56px; }
   .ac-cgrid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
   .ac-ccard-art { height: 120px; }
+  .ac-rec { padding: 12px 24px 8px; }
+  .ac-rec-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .ac-rec-grid .ac-ccard:nth-child(n + 5) { display: flex; }
 
   /* Player: menu column + reading column */
   .ac-player-page .vita-appbar { margin-bottom: 0 !important; }
@@ -295,6 +307,8 @@
   .ac-home { padding: 4px 0 8px; }
   .ac-lib { padding: 8px 0 72px; }
   .ac-plan-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .ac-rec { padding: 12px 0 8px; }
+  .ac-rec-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
 }
 @media (prefers-reduced-motion: reduce) {
   .ac-menu, .ac-bar i, .ac-pbar i, .ac-acc > button > svg:last-child { transition: none; }

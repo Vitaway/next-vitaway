@@ -1,23 +1,34 @@
 /**
  * W23 (BL-106/110/130/133/135): the member's meal review after a photo. Pure helpers (run under node --test)
  * plus the API calls live in meal-review.ts. Nutrient figures shown here are estimates; the server stores its own snapshot on submit.
+ * 24 Nov 2026: the MiraFood master food database (1,108 foods, household portions, trust per food) feeds the picker.
  */
 
-export type Per100g = { kcal: number | null; protein_g: number | null; carbs_g: number | null; fat_g: number | null; fibre_g: number | null };
-export type PortionUnit = { unit_key: string; label: string; label_rw: string | null; grams: number };
+export type Per100g = { kcal: number | null; protein_g: number | null; carbs_g: number | null; fat_g: number | null; fibre_g: number | null; sodium_mg?: number | null; sugars_g?: number | null };
+export type PortionStatus = "standard" | "draft" | "tanzania" | "usa" | "label" | "weighed";
+export type PortionUnit = { unit_key: string; label: string; label_rw: string | null; grams: number; status?: PortionStatus };
+export type FoodTrust = "source" | "close" | "label" | "provisional" | "proxy" | "flagged" | "none";
+export type FoodLabel = "unverified" | "provisional" | null;
 export type FoodOption = {
   food_key: string;
   name: string;
   name_rw: string | null;
   category: string | null;
+  group_code?: string | null;
   preparation: string | null;
   per_100g: Per100g;
   source: "mirafood" | "fallback";
   verified: boolean;
-  label: "unverified" | null;
+  label: FoodLabel;
+  trust?: FoodTrust | null;
+  source_name?: string | null;
+  is_core?: boolean;
+  image_url?: string | null;
+  image_attribution?: string | null;
   dataset_version: string | null;
   portions?: PortionUnit[];
 };
+export type FoodGroup = { code: string; name: string; name_rw: string | null; foods: number };
 export type Recognised = { food_key: string; name: string; name_rw: string | null; confidence: number; grams: number | null; preparation: string | null; portion: { unit_key: string; quantity: number } | null };
 export type Recognition = { available: boolean; reason: string | null; request_id: string | null; model_version: string | null; dataset_version: string | null; items: Recognised[] };
 
@@ -34,6 +45,10 @@ export type ReviewItem = {
   preparation: string | null;
   per_100g: Per100g | null;
   verified: boolean;
+  label: FoodLabel;
+  source_name: string | null;
+  group_code: string | null;
+  image_url: string | null;
   portions: PortionUnit[];
   member_changed: boolean;
 };
@@ -44,6 +59,27 @@ export const GRAM_STEP = 10;
 export const MIN_GRAMS = 10;
 export const MAX_GRAMS = 2000;
 export const DEFAULT_CONFIDENCE_PERCENT = 60;
+
+/** The master database's 15 food groups (Kenya 2018 groups): copy key and a colour for the picker. */
+export const FOOD_GROUPS: Record<string, { key: string; color: string; emoji: string }> = {
+  "01": { key: "fg_01", color: "#e9c46a", emoji: "🌾" },
+  "02": { key: "fg_02", color: "#d9a066", emoji: "🍠" },
+  "03": { key: "fg_03", color: "#b5651d", emoji: "🫘" },
+  "04": { key: "fg_04", color: "#5ca84d", emoji: "🥬" },
+  "05": { key: "fg_05", color: "#f08a4b", emoji: "🍍" },
+  "06": { key: "fg_06", color: "#9ec5e8", emoji: "🥛" },
+  "07": { key: "fg_07", color: "#c9655a", emoji: "🍗" },
+  "08": { key: "fg_08", color: "#4e8fb8", emoji: "🐟" },
+  "09": { key: "fg_09", color: "#f2c14e", emoji: "🫒" },
+  "10": { key: "fg_10", color: "#a67c52", emoji: "🥜" },
+  "11": { key: "fg_11", color: "#e38fb0", emoji: "🍬" },
+  "12": { key: "fg_12", color: "#6fc3c0", emoji: "🥤" },
+  "13": { key: "fg_13", color: "#b58de0", emoji: "🧂" },
+  "14": { key: "fg_14", color: "#8c8c6a", emoji: "🦗" },
+  "15": { key: "fg_15", color: "#e85a2e", emoji: "🍲" },
+};
+/** Groups shown as quick-pick sections, in the order a Rwandan plate is built: starch, beans, vegetables, protein, fruit, drinks. */
+export const QUICK_GROUP_ORDER = ["01", "02", "03", "04", "07", "08", "15", "05", "06", "12", "10", "11", "09", "13", "14"];
 
 let seq = 0;
 const uid = () => `i${Date.now().toString(36)}${(seq++).toString(36)}`;
@@ -92,25 +128,50 @@ export function setPreparation(item: ReviewItem, preparation: string): ReviewIte
   return { ...item, preparation, member_changed: item.member_changed || item.origin === "recognised" };
 }
 
-export function itemNutrients(item: ReviewItem) {
+export type ItemNutrients = { kcal: number | null; protein_g: number | null; carbs_g: number | null; fat_g: number | null; fibre_g: number | null; sodium_mg: number | null };
+
+export function itemNutrients(item: Pick<ReviewItem, "per_100g" | "grams">): ItemNutrients {
   const per = item.per_100g;
   const s = (v: number | null | undefined, dp: number) => (per && v != null ? Math.round(((v * item.grams) / 100) * 10 ** dp) / 10 ** dp : null);
-  return { kcal: s(per?.kcal, 0), protein_g: s(per?.protein_g, 1), carbs_g: s(per?.carbs_g, 1), fat_g: s(per?.fat_g, 1) };
+  return { kcal: s(per?.kcal, 0), protein_g: s(per?.protein_g, 1), carbs_g: s(per?.carbs_g, 1), fat_g: s(per?.fat_g, 1), fibre_g: s(per?.fibre_g, 1), sodium_mg: s(per?.sodium_mg, 0) };
 }
+
+/** Salt in grams from sodium (sodium × 2.5 ÷ 1000, as in the MiraFood database). */
+export const saltGrams = (sodiumMg: number | null) => (sodiumMg == null ? null : Math.round((sodiumMg * 2.5) / 100) / 10);
 
 /** Live totals while the member edits. `partial` when a food has no figures. */
 export function reviewTotals(items: ReviewItem[]) {
   const parts = items.map(itemNutrients);
-  const sum = (key: "kcal" | "protein_g" | "carbs_g" | "fat_g", dp: number) => {
+  const sum = (key: keyof ItemNutrients, dp: number) => {
     const vals = parts.map((p) => p[key]).filter((v): v is number => typeof v === "number");
     return vals.length ? Math.round(vals.reduce((a, b) => a + b, 0) * 10 ** dp) / 10 ** dp : null;
   };
-  return { kcal: sum("kcal", 0), protein_g: sum("protein_g", 1), carbs_g: sum("carbs_g", 1), fat_g: sum("fat_g", 1), partial: parts.some((p) => p.kcal == null), count: items.length };
+  const sodium = sum("sodium_mg", 0);
+  return {
+    kcal: sum("kcal", 0),
+    protein_g: sum("protein_g", 1),
+    carbs_g: sum("carbs_g", 1),
+    fat_g: sum("fat_g", 1),
+    fibre_g: sum("fibre_g", 1),
+    sodium_mg: sodium,
+    salt_g: saltGrams(sodium),
+    partial: parts.some((p) => p.kcal == null),
+    count: items.length,
+  };
 }
 
 function defaultPortion(portions: PortionUnit[]): { unit_key: string | null; quantity: number | null; grams: number } {
   const first = portions[0];
   return first ? { unit_key: first.unit_key, quantity: 1, grams: clampGrams(first.grams) } : { unit_key: null, quantity: null, grams: 100 };
+}
+
+/** "1 ladle · 150 g · ~190 kcal": the line under a food in the picker, from its first (household) portion. */
+export function defaultPortionText(food: FoodOption, lang = "en"): string {
+  const first = food.portions?.[0];
+  const grams = first ? first.grams : 100;
+  const kcal = food.per_100g.kcal == null ? null : Math.round((food.per_100g.kcal * grams) / 100);
+  const head = first ? `1 ${unitLabel(first, lang)} · ${grams} g` : `100 g`;
+  return kcal == null ? head : `${head} · ~${kcal} kcal`;
 }
 
 export function itemFromFood(food: FoodOption): ReviewItem {
@@ -126,13 +187,17 @@ export function itemFromFood(food: FoodOption): ReviewItem {
     preparation: (PREPARATIONS as readonly string[]).includes(food.preparation ?? "") ? food.preparation : null,
     per_100g: food.per_100g,
     verified: food.verified,
+    label: food.label ?? (food.verified ? null : "unverified"),
+    source_name: food.source_name ?? null,
+    group_code: food.group_code ?? null,
+    image_url: food.image_url ?? null,
     portions,
     member_changed: false,
   };
 }
 
 export function itemFromTyped(name: string): ReviewItem {
-  return { uid: uid(), food_key: null, name: name.trim().slice(0, 120), name_rw: null, origin: "manual", confidence: null, grams: 100, unit_key: null, quantity: null, preparation: null, per_100g: null, verified: false, portions: [], member_changed: false };
+  return { uid: uid(), food_key: null, name: name.trim().slice(0, 120), name_rw: null, origin: "manual", confidence: null, grams: 100, unit_key: null, quantity: null, preparation: null, per_100g: null, verified: false, label: "unverified", source_name: null, group_code: null, image_url: null, portions: [], member_changed: false };
 }
 
 /** A photo suggestion, with the food's figures and units when the detail call worked. */
@@ -153,6 +218,10 @@ export function itemFromRecognised(rec: Recognised, food: FoodOption | null): Re
     preparation: (PREPARATIONS as readonly string[]).includes(rec.preparation ?? "") ? rec.preparation : null,
     per_100g: food?.per_100g ?? null,
     verified: food?.verified ?? false,
+    label: food ? (food.label ?? (food.verified ? null : "unverified")) : "unverified",
+    source_name: food?.source_name ?? null,
+    group_code: food?.group_code ?? null,
+    image_url: food?.image_url ?? null,
     portions,
     member_changed: false,
   };
@@ -175,30 +244,55 @@ export function toSubmission(items: ReviewItem[], lang = "en") {
   }));
 }
 
-
 const obj = (v: unknown): Record<string, unknown> => (v && typeof v === "object" && !Array.isArray(v) ? (v as Record<string, unknown>) : {});
+const PORTION_STATUSES: readonly string[] = ["standard", "draft", "tanzania", "usa", "label", "weighed"];
+const TRUSTS: readonly string[] = ["source", "close", "label", "provisional", "proxy", "flagged", "none"];
 
 export function parseFood(raw: unknown): FoodOption {
   const o = obj(raw);
   const per = obj(o.per_100g);
   const n = (v: unknown) => (v == null || !Number.isFinite(Number(v)) ? null : Number(v));
+  const str = (v: unknown) => (v == null ? null : String(v));
   return {
     food_key: String(o.food_key ?? ""),
     name: String(o.name ?? ""),
-    name_rw: o.name_rw == null ? null : String(o.name_rw),
-    category: o.category == null ? null : String(o.category),
-    preparation: o.preparation == null ? null : String(o.preparation),
-    per_100g: { kcal: n(per.kcal), protein_g: n(per.protein_g), carbs_g: n(per.carbs_g), fat_g: n(per.fat_g), fibre_g: n(per.fibre_g) },
+    name_rw: str(o.name_rw),
+    category: str(o.category),
+    group_code: str(o.group_code),
+    preparation: str(o.preparation),
+    per_100g: { kcal: n(per.kcal), protein_g: n(per.protein_g), carbs_g: n(per.carbs_g), fat_g: n(per.fat_g), fibre_g: n(per.fibre_g), sodium_mg: n(per.sodium_mg), sugars_g: n(per.sugars_g) },
     source: o.source === "mirafood" ? "mirafood" : "fallback",
     verified: o.verified === true,
-    label: o.label === "unverified" ? "unverified" : null,
-    dataset_version: o.dataset_version == null ? null : String(o.dataset_version),
+    label: o.label === "unverified" || o.label === "provisional" ? o.label : null,
+    trust: TRUSTS.includes(String(o.trust)) ? (o.trust as FoodTrust) : null,
+    source_name: str(o.source_name),
+    is_core: o.is_core === true,
+    image_url: str(o.image_url),
+    image_attribution: str(o.image_attribution),
+    dataset_version: str(o.dataset_version),
     portions: Array.isArray(o.portions)
-      ? o.portions.map(obj).filter((p) => Number(p.grams) > 0).map((p) => ({ unit_key: String(p.unit_key), label: String(p.label ?? p.unit_key), label_rw: p.label_rw == null ? null : String(p.label_rw), grams: Number(p.grams) }))
+      ? o.portions
+          .map(obj)
+          .filter((p) => Number(p.grams) > 0)
+          .map((p) => ({ unit_key: String(p.unit_key), label: String(p.label ?? p.unit_key), label_rw: str(p.label_rw), grams: Number(p.grams), status: PORTION_STATUSES.includes(String(p.status)) ? (p.status as PortionStatus) : undefined }))
       : undefined,
   };
 }
 
+export function parseGroup(raw: unknown): FoodGroup {
+  const o = obj(raw);
+  return { code: String(o.code ?? ""), name: String(o.name ?? ""), name_rw: o.name_rw == null ? null : String(o.name_rw), foods: Number(o.foods ?? 0) };
+}
+
+/** Quick picks grouped for the picker, in plate order; groups with nothing are left out. */
+export function groupQuickPicks(foods: FoodOption[]): Array<{ code: string; foods: FoodOption[] }> {
+  const byCode = new Map<string, FoodOption[]>();
+  for (const f of foods) {
+    const code = f.group_code ?? "15";
+    byCode.set(code, [...(byCode.get(code) ?? []), f]);
+  }
+  return QUICK_GROUP_ORDER.filter((c) => byCode.has(c)).map((code) => ({ code, foods: byCode.get(code)! }));
+}
 
 // ---------------------------------------------------------------- W24 detail page
 

@@ -107,6 +107,55 @@ export function MyProgrammeBlock({ home }: { home: AcademyHome }) {
   );
 }
 
+/** Video briefs that fit each programme, best first (the rest of the library follows). */
+const BRIEFS_FOR: Record<string, string[]> = {
+  DC: ["SH-01", "SH-04", "SH-02", "SH-03"],
+  HH: ["SH-05", "SH-02", "SH-09", "SH-12"],
+  HW: ["SH-06", "SH-02", "SH-08", "SH-04"],
+  HL: ["SH-02", "SH-03", "SH-09", "SH-08"],
+};
+
+/** Learn page, below the programme: a few library picks (video briefs for the member's programme, then recipes). */
+export function RecommendedBlock({ courseId }: { courseId?: string | null }) {
+  const T = useAcademyText();
+  const { push } = usePlusPaths();
+  const lib = useResource<LibraryCourse[]>(academyKeys.library, fetchLibrary);
+  const recipes = useResource<CourseMenu>(academyKeys.menu("RECIPES"), () => fetchMenu("RECIPES"));
+  const cards = useMemo(() => {
+    const order = BRIEFS_FOR[courseId ?? ""] ?? BRIEFS_FOR.HL;
+    const rank = (id: string) => (order.indexOf(id) + 1 || 99);
+    const briefs = (lib.data ?? [])
+      .filter((c) => c.kind === "briefs" && c.first_item && c.live_items > 0)
+      .sort((a, b) => rank(a.id) - rank(b.id) || a.id.localeCompare(b.id))
+      .slice(0, 4)
+      .map((c) => ({ key: c.id, title: c.short, sub: `${T.briefs} · ${T.itemsN(c.live_items)}`, scene: weekScene(Number(c.id.slice(3)) || 1), play: true, tag: T.briefs, go: () => push(`/learn/${c.id}/${c.first_item}`) }));
+    const live = (recipes.data?.sections ?? []).flatMap((s) => s.items.filter((i) => i.live && !i.done));
+    // A different pair each day, so the row does not go stale.
+    const day = Math.floor(Date.now() / 86_400_000);
+    const picks = live.length ? [live[day % live.length], live[(day + 7) % live.length]].filter((x, i, a) => a.indexOf(x) === i) : [];
+    const art = ["pot", "salad", "snack", "cup", "glass"];
+    const rec = picks.map((i, n) => ({ key: i.id, title: i.title, sub: T.recipes, scene: art[(day + n) % art.length], play: false, tag: T.recipes, go: () => push(`/learn/RECIPES/${i.id}`) }));
+    return [...briefs, ...rec];
+  }, [lib.data, recipes.data, courseId, push, T]);
+  if (!cards.length) return null;
+  return (
+    <section className="ac-rec" aria-label={T.recommended}>
+      <div className="ac-rec-head">
+        <span><h3 className="ac-sec">{T.recommended}</h3><small>{T.recommendedSub}</small></span>
+        <button type="button" className="ac-rec-all" onClick={() => push("/learn/library")}>{T.seeLibrary} <ArrowRight3 size={16} color="currentColor" /></button>
+      </div>
+      <div className="ac-cgrid ac-rec-grid">
+        {cards.map((c) => (
+          <button key={c.key} type="button" className="ac-ccard" onClick={c.go}>
+            <span className="ac-ccard-art"><Art scene={c.scene} play={c.play} label={c.title} /><span className="ac-ccard-tag">{c.tag}</span></span>
+            <span className="ac-ccard-tx"><b>{c.title}</b><small>{c.sub}</small></span>
+          </button>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 export function LibraryScreen({ initialFilter }: { initialFilter?: string }) {
   const T = useAcademyText();
   const { push } = usePlusPaths();
