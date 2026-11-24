@@ -10,8 +10,8 @@ import { useCareTeam, type CareProfessional } from "@/lib/plus/client/care-team"
 import { invalidate } from "@/lib/plus/client/use-resource";
 import { unwrapEnvelope } from "@/lib/plus/client/insights";
 import { AppBar, CenterSpinner, Page, useFeedback } from "../ui/vita";
-import { ILLU_TINT, Illu } from "../ui/vita-icons";
-import { ProviderCard, ProviderRow, ProviderSheet, coachFromPro, kindFromPro } from "../support/provider";
+import { ProviderRow, ProviderSheet, coachFromPro, kindFromPro } from "../support/provider";
+import { VisitsCard } from "./visits-card";
 import { stashCoach } from "../support/support";
 import { useChatGate } from "../support/sheets";
 
@@ -32,15 +32,6 @@ const TOPICS: Array<[string, string, React.ReactNode]> = [
   ["habits", "care_topic_habits", <Flash key="habits" size={20} color="currentColor" />],
   ["other", "care_topic_other", <MessageQuestion key="other" size={20} color="currentColor" />],
 ];
-
-function Tile({ icon, tint, title, onClick }: { icon: React.ReactNode; tint?: string; title: string; onClick: () => void }) {
-  return (
-    <button type="button" className="vita-tap vita-care-tile" onClick={onClick}>
-      <span className="ic" style={tint ? { background: tint } : undefined}>{icon}</span>
-      <b>{title}</b>
-    </button>
-  );
-}
 
 function ActionRow({ icon, tint, title, subtitle, onClick }: { icon: React.ReactNode; tint?: string; title: string; subtitle?: string; onClick: () => void }) {
   return (
@@ -109,14 +100,40 @@ export default function MyCareScreen() {
   const onDuty = inGroup.filter((p) => p.status !== "off");
   const offDuty = inGroup.filter((p) => p.status === "off");
   const dutyTotal = team.onDuty.filter((p) => p.status !== "off").length;
-  const card = (pro: CareProfessional, mine: boolean) => (
-    <ProviderCard key={pro.id} coach={coachFromPro(pro)} kind={kindFromPro(pro)} pro={pro} isYours={mine} onOpen={() => setSheet(pro)} />
+  const connectPro = (p: CareProfessional) => void connect(`pro:${p.id}`, "/api/v1/mobile/care/conversations", { professional_id: p.id });
+  const line = (p: CareProfessional) => (
+    <ProviderRow key={p.id} coach={coachFromPro(p)} kind={kindFromPro(p)} pro={p} busy={busy === `pro:${p.id}`} onOpen={() => setSheet(p)} onMessage={() => connectPro(p)} onBook={() => book(p)} />
   );
 
   return (
     <Page backdrop width="wide">
       <AppBar title={t("nav_care_team")} back={false} profile />
       <div className="vita-scroll with-dock vita-care-page">
+        {/* ── Ask: one strip, topic chips in a row ───────────── */}
+        <section className="vita-care-strip" aria-label={t("care_ask_title")}>
+          <div className="lead">
+            <b>{t("care_ask_title")}</b>
+            {team.onlineCount ? (
+              <span className="live">
+                <i aria-hidden />
+                {t("care_online_count", { n: team.onlineCount })}
+              </span>
+            ) : null}
+          </div>
+          <div className="topics">
+            {TOPICS.map(([topic, key, icon]) => (
+              <button key={topic} type="button" disabled={busy !== null} onClick={() => void connect(`topic:${topic}`, "/api/v1/mobile/care/ask", { topic })}>
+                <span className="ic">{icon}</span>
+                <span>{busy === `topic:${topic}` ? "…" : t(key)}</span>
+              </button>
+            ))}
+          </div>
+          <button type="button" className="sos" data-testid="emergency-link" onClick={() => push("/emergency")}>
+            <Call size={16} variant="Bold" color="currentColor" />
+            <span>{t("emergency_card_title")}</span>
+          </button>
+        </section>
+
         <div className="vita-care-layout">
           {/* ── People ─────────────────────────────────────────── */}
           <section className="vita-care-people" aria-label={t("care_people_title")}>
@@ -124,94 +141,34 @@ export default function MyCareScreen() {
               <h2>{t("care_people_title")}</h2>
               <span className="sub">{t("care_people_sub")}</span>
             </div>
-            {team.loading && !team.data ? (
-              <CenterSpinner />
-            ) : team.mine.length ? (
-              <div className="vita-pro-rows">
-                {team.mine.map((p) => (
-                  <ProviderRow
-                    key={p.id}
-                    coach={coachFromPro(p)}
-                    kind={kindFromPro(p)}
-                    pro={p}
-                    busy={busy === `pro:${p.id}`}
-                    onOpen={() => setSheet(p)}
-                    onMessage={() => void connect(`pro:${p.id}`, "/api/v1/mobile/care/conversations", { professional_id: p.id })}
-                  />
+            {team.loading && !team.data ? <CenterSpinner /> : team.mine.length ? <div className="vita-pro-rows">{team.mine.map(line)}</div> : <p className="vita-care-empty">{t("care_team_empty")}</p>}
+
+            <div className="vita-care-head" style={{ marginTop: 20 }}>
+              <h2>{t("care_on_duty")}</h2>
+              <div className="vita-care-tabs" role="tablist" aria-label={t("care_on_duty")}>
+                {tabs.map(([value, key]) => (
+                  <button key={value} type="button" role="tab" aria-selected={active === value} className={active === value ? "on" : ""} onClick={() => setFilter(value)}>
+                    {t(key)}
+                    <span className="n">{value === "all" ? dutyTotal : counts.get(value)}</span>
+                  </button>
                 ))}
               </div>
-            ) : (
-              <p className="vita-care-empty">{t("care_team_empty")}</p>
-            )}
-
-            <div className="vita-care-head" style={{ marginTop: 22 }}>
-              <h2>{t("care_on_duty")}</h2>
-              {team.onlineCount ? (
-                <span className="vita-care-online">
-                  <i aria-hidden />
-                  {t("care_online_count", { n: team.onlineCount })}
-                </span>
-              ) : null}
             </div>
-            <div className="vita-care-tabs" role="tablist" aria-label={t("care_on_duty")}>
-              {tabs.map(([value, key]) => (
-                <button key={value} type="button" role="tab" aria-selected={active === value} className={active === value ? "on" : ""} onClick={() => setFilter(value)}>
-                  {t(key)}
-                  <span className="n">{value === "all" ? dutyTotal : counts.get(value)}</span>
-                </button>
-              ))}
-            </div>
-            {onDuty.length ? (
-              <div className="vita-pro-grid" style={{ marginTop: 14 }}>{onDuty.map((p) => card(p, false))}</div>
-            ) : (
-              <p className="vita-care-empty">{t("care_on_duty_empty")}</p>
-            )}
+            {onDuty.length ? <div className="vita-pro-rows">{onDuty.map(line)}</div> : <p className="vita-care-empty">{t("care_on_duty_empty")}</p>}
             {offDuty.length ? (
               <details className="vita-care-off">
                 <summary>
                   {t("care_off_duty", { n: offDuty.length })}
                   <ArrowRight3 size={16} color="currentColor" />
                 </summary>
-                <div className="vita-pro-grid" style={{ marginTop: 12 }}>{offDuty.map((p) => card(p, false))}</div>
+                <div className="vita-pro-rows" style={{ marginTop: 12 }}>{offDuty.map(line)}</div>
               </details>
             ) : null}
           </section>
 
-          {/* ── What you can do ────────────────────────────────── */}
+          {/* ── Visits and the clinic record ───────────────────── */}
           <aside className="vita-care-side">
-            <div className="vita-care-ask">
-              <h2>{t("care_ask_title")}</h2>
-              <p>{t("care_ask_body")}</p>
-              {team.onlineCount ? (
-                <span className="live">
-                  <i aria-hidden />
-                  {t("care_online_count", { n: team.onlineCount })}
-                </span>
-              ) : null}
-              <div className="topics">
-                {TOPICS.map(([topic, key, icon]) => (
-                  <button key={topic} type="button" disabled={busy !== null} onClick={() => void connect(`topic:${topic}`, "/api/v1/mobile/care/ask", { topic })}>
-                    <span className="ic">{icon}</span>
-                    <span>{busy === `topic:${topic}` ? "…" : t(key)}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-            <button type="button" className="vita-tap vita-care-sos" data-testid="emergency-link" onClick={() => push("/emergency")}>
-              <span className="ic">
-                <Call size={18} variant="Bold" color="currentColor" />
-              </span>
-              <span className="tx">
-                <b>{t("emergency_card_title")}</b>
-                <small>{t("emergency_card_sub")}</small>
-              </span>
-              <ArrowRight3 size={18} color="currentColor" />
-            </button>
-            <div className="vita-care-quick">
-              <Tile icon={<Illu name="messages" size={30} />} tint={ILLU_TINT.messages} title={t("nav_messages")} onClick={() => push("/support")} />
-              <Tile icon={<Illu name="book-visit" size={30} />} tint={ILLU_TINT["book-visit"]} title={t("quick_book_visit")} onClick={() => push("/book-visit")} />
-              <Tile icon={<Illu name="appointments" size={30} />} tint={ILLU_TINT.appointments} title={t("appointments_title")} onClick={() => push("/appointments")} />
-            </div>
+            <VisitsCard />
             <div className="vita-care-box">
               <div className="vita-care-clinic">
                 <span className="mark" aria-hidden>V</span>

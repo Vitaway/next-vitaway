@@ -690,7 +690,7 @@ export default function HomeScreen() {
       case "visit":
         return (
           <div key="visit" data-sec="visit" style={{ marginTop: 20 }}>
-            <button type="button" className="vita-tap vh-visit" onClick={() => push(upcoming.length ? "/appointments" : "/book-visit")}>
+            <button type="button" className="vita-tap vh-visit" onClick={() => push("/care")}>
               <span className="vh-plan-ic" style={{ background: "var(--vc-surface)" }}>
                 <Illu name="book-visit" size={30} />
               </span>

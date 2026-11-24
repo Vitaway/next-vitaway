@@ -59,7 +59,6 @@ export const QUICK_ACTIONS: QuickAction[] = [
   { label: "quick_meal_photo", path: "/meal-photos/new", tint: ILLU_TINT["meal-photo"], icon: <Illu name="meal-photo" size={30} /> },
   // BL-122: the + menu reaches the Pillbox (add a medicine from there), as in Flutter.
   { label: "pillbox", path: "/medications", tint: ILLU_TINT.pillbox, icon: <Illu name="pillbox" size={30} /> },
-  { label: "quick_book_visit", path: "/book-visit", tint: ILLU_TINT["book-visit"], icon: <Illu name="book-visit" size={30} /> },
 ];
 
 export default function Dock({ supportBadge = false }: { supportBadge?: boolean }) {

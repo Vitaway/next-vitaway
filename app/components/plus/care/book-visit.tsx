@@ -162,7 +162,7 @@ export function BookVisitScreen() {
       });
       toast("Visit requested. The clinic will confirm it.");
       invalidate("appointments:");
-      replace("/appointments");
+      replace("/care");
       return;
     } catch (error) {
       if (!(error instanceof MobileApiError) || !error.status) {
@@ -279,7 +279,7 @@ export function BookVisitScreen() {
             {existingVisit ? (
               <>
                 <p style={{ margin: "16px 0 12px", fontSize: 15, fontWeight: 700, lineHeight: 1.35, color: "var(--vc-navy)" }}>{`You already have a visit on ${existingVisit}.`}</p>
-                <ActionButton full tone="white" label="Reschedule" icon={<Calendar1 size={16} color="currentColor" />} disabled={saving} onClick={() => push("/appointments")} />
+                <ActionButton full tone="white" label="Reschedule" icon={<Calendar1 size={16} color="currentColor" />} disabled={saving} onClick={() => push("/care")} />
                 <div style={{ height: 8 }} />
                 <ActionButton full label="Book this time anyway" disabled={saving} onClick={() => void submit(true)} />
               </>

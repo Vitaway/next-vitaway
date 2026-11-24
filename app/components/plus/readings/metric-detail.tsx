@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Activity, Add, Alarm, Drop, Flag, Heart, Weight } from "@/lib/plus/icons";
 import { useLanguage, useT, type Translate } from "@/lib/plus/i18n";
 import { BMI_BAND_LABEL_KEY, bmiViewFor, type BmiView } from "@/lib/plus/bmi";
@@ -200,6 +200,7 @@ function ReadingDetail({ type }: { type: string }) {
   const { user } = useMe();
   const { goals, weightGoal } = useGoals();
   const [range, setRange] = useState<Range>("week");
+  const [rangeChosen, setRangeChosen] = useState(false);
   const [picked, setPicked] = useState<HealthMetric | null>(null);
   const [goalOpen, setGoalOpen] = useState(false);
   const base = latestByType(metrics)[type] ?? null;
@@ -209,6 +210,14 @@ function ReadingDetail({ type }: { type: string }) {
     if (range === "month") return currentMonth(metrics, type);
     return currentYear(metrics, type);
   }, [metrics, type, range]);
+
+  // Open on the first period that has readings, so the chart is never an empty week when there is history.
+  useEffect(() => {
+    if (rangeChosen || loading) return;
+    const has = (r: Range) => (r === "week" ? currentWeek(metrics, type).some((m) => m !== null && hasMetricReading(m)) : r === "month" ? currentMonth(metrics, type).length > 0 : currentYear(metrics, type).length > 0);
+    const first = (["week", "month", "year"] as Range[]).find(has);
+    if (first && first !== range) setRange(first);
+  }, [metrics, type, loading, rangeChosen, range]);
 
   const titleKey = `hm_${(base?.name ?? (type === "bp" ? "blood pressure" : type)).toLowerCase().replace(/ /g, "_")}`;
   const title = t(titleKey, undefined, base?.name ?? type);
@@ -232,9 +241,10 @@ function ReadingDetail({ type }: { type: string }) {
   return (
     <div className="vita-page">
       <AppBar title={title} />
-      <div className="vita-scroll" style={{ padding: 0 }}>
+      <div className="vita-scroll vita-md" style={{ padding: 0 }}>
+        <div className="vita-md-main">
         <div style={{ padding: "12px 16px 0" }}>
-          <Tabs<Range> tabs={[{ value: "week", label: t("hm_week") }, { value: "month", label: t("hm_month") }, { value: "year", label: t("hm_year") }]} value={range} onChange={setRange} />
+          <Tabs<Range> tabs={[{ value: "week", label: t("hm_week") }, { value: "month", label: t("hm_month") }, { value: "year", label: t("hm_year") }]} value={range} onChange={(v) => { setRangeChosen(true); setRange(v); }} />
         </div>
         <div style={{ padding: "14px 16px 0" }}>
           <SummaryHero metric={selected} bmi={bmi} avg={weekAverage(type, metrics)} date={dateLabel(selected.last_updated, t)} />
@@ -276,6 +286,8 @@ function ReadingDetail({ type }: { type: string }) {
             </button>
           </div>
         ) : null}
+        </div>
+        <div className="vita-md-side">
         {type === "bp" || type === "glucose" || type === "weight" ? (
           <div style={{ padding: "8px 16px 0" }}>
             <InsightsPanel type={type} embedded />
@@ -288,6 +300,7 @@ function ReadingDetail({ type }: { type: string }) {
           <div style={{ flex: 1, minWidth: 0 }}>
             <ActionButton full tone="white" label={t("hm_add_reminder")} icon={<Alarm size={16} color="currentColor" />} onClick={() => push("/reminders/add")} />
           </div>
+        </div>
         </div>
       </div>
       {goalOpen ? <SetGoalModal open current={Number.parseFloat(selected.latest_value) || 0} onClose={() => setGoalOpen(false)} /> : null}

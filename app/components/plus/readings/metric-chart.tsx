@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { parseStamp, type HealthMetric } from "@/lib/plus/health";
 import { MONTHS_SHORT } from "@/lib/plus/format";
 import { hasMetricReading, primaryValue } from "@/lib/plus/metric-series";
@@ -48,6 +48,16 @@ const compact = (v: number) => (Math.abs(v) >= 1000 ? `${(v / 1000).toFixed(1).r
 export default function MetricChart({ metrics, onSelect }: { metrics: HealthMetric[]; onSelect: (m: HealthMetric) => void }) {
   const pts = points(metrics);
   const [tip, setTip] = useState<number | null>(null);
+  // Draw at the real width of the card (a phone is about 360, a desktop column is wider) so wide screens are not left half empty.
+  const box = useRef<HTMLDivElement>(null);
+  const [width, setWidth] = useState(360);
+  useEffect(() => {
+    const el = box.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver(([entry]) => setWidth(Math.max(300, Math.round(entry.contentRect.width))));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [pts.length]);
   if (pts.length === 0) {
     return <div style={{ height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "rgba(var(--vc-navy-rgb),0.5)", fontWeight: 600, fontSize: 13 }}>No readings in this range yet</div>;
   }
@@ -59,7 +69,7 @@ export default function MetricChart({ metrics, onSelect }: { metrics: HealthMetr
   const pad = Math.min(24, Math.max(4, Math.abs(maxV - minV) * 0.18));
   const yMin = Math.max(0, minV - pad);
   const yMax = maxV + pad;
-  const W = 360;
+  const W = width;
   const H = 272;
   const left = 44;
   const right = 12;
@@ -78,6 +88,7 @@ export default function MetricChart({ metrics, onSelect }: { metrics: HealthMetr
   const navy = "var(--vc-navy)";
   const showLabels = pts.length <= 14;
   return (
+    <div ref={box} style={{ width: "100%", height: "100%" }}>
     <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%" style={{ overflow: "visible", fontFamily: "inherit" }}>
       {isBp ? (
         <g fontSize={11} fontWeight={700} fill="rgba(var(--vc-navy-rgb),0.7)">
@@ -124,5 +135,6 @@ export default function MetricChart({ metrics, onSelect }: { metrics: HealthMetr
         </g>
       ) : null}
     </svg>
+    </div>
   );
 }

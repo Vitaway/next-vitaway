@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Add, ArrowDown2, Calendar1, Card, Crown1, LogoutCurve, Messages2, Notification, Profile, Setting2, Timer1 } from "@/lib/plus/icons";
+import { Add, ArrowDown2, Card, Crown1, LogoutCurve, Messages2, Notification, Profile, Setting2, Timer1 } from "@/lib/plus/icons";
 import { useLanguage } from "@/lib/plus/i18n";
 import { useTheme, type ThemeMode } from "@/lib/plus/theme";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
@@ -58,7 +58,6 @@ export default function TopBar({ supportBadge = false }: { supportBadge?: boolea
   const menu: Array<{ path: string; label: string; Icon: typeof Profile; dot?: boolean }> = [
     { path: "/profile", label: t("account_menu"), Icon: Profile },
     { path: "/support", label: t("nav_messages"), Icon: Messages2, dot: supportBadge },
-    { path: "/appointments", label: t("appointments"), Icon: Calendar1 },
     { path: "/plans", label: t("plans"), Icon: Crown1 },
     { path: "/account/payments", label: t("programme_payments"), Icon: Card },
     { path: "/reminders", label: t("reminders_title"), Icon: Timer1 },

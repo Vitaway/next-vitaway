@@ -1745,5 +1745,11 @@
  "chat_q_hello": "Muraho 👋",
  "chat_q_readings": "Mfite ikibazo ku bipimo byanjye",
  "chat_q_visit": "Twahindura igihe cyo gusura?",
- "chat_q_meds": "Mfite ikibazo ku muti"
+ "chat_q_meds": "Mfite ikibazo ku muti",
+ "care_book_short": "Gena",
+ "care_clinic_visit": "Gusura ivuriro",
+ "care_visits_title": "Gusurwa kwawe",
+ "care_visits_empty": "Nta gusurwa kwateguwe. Hitamo umuntu mu itsinda rikwitaho ukande Gena.",
+ "care_visits_past": "Gusurwa gushize ({n})",
+ "care_visits_hide_past": "Hisha gusurwa gushize"
 }

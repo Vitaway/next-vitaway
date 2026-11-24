@@ -195,7 +195,7 @@ export function BlockView({ block, path, ctx }: { block: Block; path: string; ct
           ) : null}
           {!ctx.preview ? (
             <div className="ac-row">
-              <button type="button" className="ac-btn primary" onClick={() => push("/book-visit")}><Calendar1 size={18} color="currentColor" /> {T.bookVisit}</button>
+              <button type="button" className="ac-btn primary" onClick={() => push("/care")}><Calendar1 size={18} color="currentColor" /> {T.bookVisit}</button>
               <button type="button" className="ac-btn" onClick={() => push("/support")}><Message size={18} color="currentColor" /> {T.replyCare}</button>
             </div>
           ) : null}

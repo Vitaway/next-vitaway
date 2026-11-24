@@ -99,12 +99,12 @@ export function ProviderCard({ coach, kind, pro, isYours, onOpen }: Shared & { o
 }
 
 /** A wide card for the client's own care team: photo with status, role, licence check, reply time, Message. */
-export function ProviderRow({ coach, kind, pro, onOpen, onMessage, busy }: Omit<Shared, "isYours"> & { onOpen: () => void; onMessage: () => void; busy: boolean }) {
+export function ProviderRow({ coach, kind, pro, onOpen, onMessage, onBook, busy }: Omit<Shared, "isYours"> & { onOpen: () => void; onMessage: () => void; onBook?: () => void; busy: boolean }) {
   const { t, name, role, verified, eta, status } = useProviderText({ coach, kind, pro });
   return (
     <div className="vita-pro-row" data-status={status ?? undefined}>
       <button type="button" className="vita-pro-row-main" onClick={onOpen} aria-label={`${name}, ${role}${eta ? `, ${eta}` : ""}`}>
-        <ProviderPhoto url={coach.profile.profile_picture || pro?.avatar_url} size={52} status={status} ring={false} />
+        <ProviderPhoto url={coach.profile.profile_picture || pro?.avatar_url} size={46} status={status} ring={false} />
         <span className="tx">
           <b>{name}</b>
           <span className="role">
@@ -123,9 +123,16 @@ export function ProviderRow({ coach, kind, pro, onOpen, onMessage, busy }: Omit<
           ) : null}
         </span>
       </button>
-      <button type="button" className="vita-pro-row-msg" onClick={onMessage} disabled={busy} aria-label={`${t("send_message")}: ${name}`}>
-        {busy ? "…" : <Messages2 size={18} variant="Bold" color="currentColor" />}
-      </button>
+      <span className="vita-pro-row-acts">
+        {onBook ? (
+          <button type="button" className="vita-pro-row-book" onClick={onBook} aria-label={`${t("quick_book_visit")}: ${name}`}>
+            {t("care_book_short")}
+          </button>
+        ) : null}
+        <button type="button" className="vita-pro-row-msg" onClick={onMessage} disabled={busy} aria-label={`${t("send_message")}: ${name}`}>
+          {busy ? "…" : <Messages2 size={18} variant="Bold" color="currentColor" />}
+        </button>
+      </span>
     </div>
   );
 }

@@ -186,7 +186,7 @@ export function NotificationsScreen() {
         return push("/visit-reports");
       case "appointment":
       case "apt":
-        return user?.user_type && user.user_type !== "normal" ? replace("/reminders") : push("/appointments");
+        return user?.user_type && user.user_type !== "normal" ? replace("/reminders") : push("/care");
       case "note":
         return push("/notes");
       case "art":
