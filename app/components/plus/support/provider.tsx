@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { ArrowRight3, Calendar1, Lock, Message, ShieldTick } from "@/lib/plus/icons";
+import { ArrowRight3, Calendar1, Lock, Message, Messages2, ShieldTick } from "@/lib/plus/icons";
 import { useLanguage, useT } from "@/lib/plus/i18n";
 import { specialityLabel } from "@/lib/plus/appointment-text";
 import type { Coach } from "@/lib/plus/client/chat";
@@ -9,6 +9,23 @@ import type { CareProfessional } from "@/lib/plus/client/care-team";
 import { Avatar, DotSpinner, RootPortal } from "../ui/vita";
 
 export type ProviderKind = "coaches" | "dietitians" | "admins";
+
+/** A care-team person (GET /mobile/care-team) shaped like a directory card, so the same card and sheet show them. */
+export function coachFromPro(pro: CareProfessional): Coach {
+  return {
+    id: pro.account_id ?? 0,
+    email: "",
+    first_name: pro.name,
+    last_name: "",
+    user_type: pro.discipline === "coach" ? "coach" : pro.discipline === "nutritionist" ? "dietitian" : "professional",
+    profile: { profile_picture: pro.avatar_url, speciality: pro.discipline, bio: pro.helps_with, medicaldoc: pro.verified ? "licence-verified" : null },
+    raw: {},
+  };
+}
+
+export function kindFromPro(pro: CareProfessional): ProviderKind {
+  return pro.discipline === "nutritionist" ? "dietitians" : "coaches";
+}
 
 const navyA = (a: number) => `rgba(var(--vc-navy-rgb), ${a})`;
 const STATUS_COLOR = { online: "#22B573", busy: "#E8890C", off: "#98A2B3" } as const;
@@ -81,6 +98,38 @@ export function ProviderCard({ coach, kind, pro, isYours, onOpen }: Shared & { o
   );
 }
 
+/** A wide card for the client's own care team: photo with status, role, licence check, reply time, Message. */
+export function ProviderRow({ coach, kind, pro, onOpen, onMessage, busy }: Omit<Shared, "isYours"> & { onOpen: () => void; onMessage: () => void; busy: boolean }) {
+  const { t, name, role, verified, eta, status } = useProviderText({ coach, kind, pro });
+  return (
+    <div className="vita-pro-row" data-status={status ?? undefined}>
+      <button type="button" className="vita-pro-row-main" onClick={onOpen} aria-label={`${name}, ${role}${eta ? `, ${eta}` : ""}`}>
+        <ProviderPhoto url={coach.profile.profile_picture || pro?.avatar_url} size={52} status={status} ring={false} />
+        <span className="tx">
+          <b>{name}</b>
+          <span className="role">
+            {role}
+            {verified ? (
+              <span className="vita-pro-row-ok" title={t("verified_registration")}>
+                <ShieldTick size={13} color="currentColor" />
+              </span>
+            ) : null}
+          </span>
+          {eta && status ? (
+            <span className="eta">
+              <i aria-hidden style={{ background: STATUS_COLOR[status] }} />
+              {eta}
+            </span>
+          ) : null}
+        </span>
+      </button>
+      <button type="button" className="vita-pro-row-msg" onClick={onMessage} disabled={busy} aria-label={`${t("send_message")}: ${name}`}>
+        {busy ? "…" : <Messages2 size={18} variant="Bold" color="currentColor" />}
+      </button>
+    </div>
+  );
+}
+
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <p style={{ margin: "8px 0 0", fontSize: 15, lineHeight: 1.45, color: "var(--vc-ink)" }}>
@@ -105,7 +154,7 @@ export function ProviderSheet({
   onMessage,
   onBook,
   onProfile,
-}: Shared & { subscribed: boolean; chatLoading: boolean; onClose: () => void; onMessage: () => void; onBook: () => void; onProfile: () => void }) {
+}: Shared & { subscribed: boolean; chatLoading: boolean; onClose: () => void; onMessage: () => void; onBook: () => void; onProfile?: () => void }) {
   const { t, name, role, verified, eta, status } = useProviderText({ coach, kind, pro });
   const firstButton = useRef<HTMLButtonElement>(null);
   const bookable = kind !== "admins";
@@ -203,7 +252,7 @@ export function ProviderSheet({
               )}
             </button>
           </div>
-          {kind !== "admins" ? (
+          {kind !== "admins" && onProfile ? (
             <button type="button" onClick={onProfile} style={{ marginTop: 12, width: "100%", minHeight: 44, display: "flex", alignItems: "center", justifyContent: "center", gap: 4, fontSize: 14, fontWeight: 700, color: "var(--vc-teal-ink)", background: "transparent", border: 0 }}>
               {t("pro_view_profile")}
               <ArrowRight3 size={16} color="currentColor" />

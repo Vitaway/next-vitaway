@@ -137,7 +137,7 @@ export default function LogGlucoseScreen() {
   };
 
   if (crisis !== null) return <LowGlucoseCrisis mgDl={crisis.mgDl} title={crisis.title} message={crisis.message} onDone={back} />;
-  if (saved) return <ReadingSaved value={saved.value} status={saved.status} onDone={back} />;
+  if (saved) return <ReadingSaved kind="glucose" value={saved.value} status={saved.status} onDone={back} onMeasureAgain={() => { setSaved(null); setSaving(false); setDigits(""); setYesterday(false); const now = new Date(); setTime({ hour: now.getHours(), minute: now.getMinutes() }); }} />;
 
 
   return (

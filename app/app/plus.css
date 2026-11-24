@@ -1956,3 +1956,343 @@ button.vita-quiz-input { text-align: left; cursor: pointer; }
   .vita-root .vita-home-lead-plan > button > span:nth-child(3) { min-width: 52px !important; height: 52px; padding: 0 !important; border-radius: 50% !important; display: flex; align-items: center; justify-content: center; background: var(--vc-tile-mint) !important; box-shadow: inset 0 0 0 3px rgba(43, 179, 163, 0.35); }
   .vita-root[data-theme="dark"] .vita-home-lead .vita-home-score, .vita-root[data-theme="dark"] .vita-home-lead-plan > button { border-color: rgba(255, 255, 255, 0.07); }
 }
+
+/* ── 24 Nov 2026: Care Team — people first (left), what you can do (right) ─────────────────── */
+.vita-care-page { padding: 16px 16px calc(env(safe-area-inset-bottom) + 104px) !important; }
+.vita-care-layout { display: flex; flex-direction: column; gap: 22px; }
+.vita-care-head { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 4px 12px; margin-bottom: 12px; }
+.vita-care-head h2 { margin: 0; font-family: var(--vf-display); font-size: 21px; font-weight: 700; color: var(--vc-ink); }
+.vita-care-head .sub { flex-basis: 100%; font-size: 13.5px; color: rgba(var(--vc-navy-rgb), 0.6); }
+.vita-care-online { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; color: #1d7a55; }
+.vita-care-online i { width: 8px; height: 8px; border-radius: 50%; background: #22b573; box-shadow: 0 0 0 3px color-mix(in srgb, #22b573 25%, transparent); }
+.vita-care-empty { margin: 4px 0 0; padding: 16px; border-radius: 14px; background: var(--vc-surface); border: 1.5px dashed var(--vc-line); font-size: 14px; color: rgba(var(--vc-navy-rgb), 0.6); }
+.vita-care-side { display: flex; flex-direction: column; gap: 14px; }
+.vita-care-ask { padding: 18px; border-radius: 20px; background: #003e48; color: #fff; }
+.vita-root[data-theme="dark"] .vita-care-ask { background: #00343c; }
+.vita-care-ask h2 { margin: 0; font-family: var(--vf-display); font-size: 20px; font-weight: 700; }
+.vita-care-ask p { margin: 6px 0 12px; font-size: 14px; line-height: 1.45; color: rgba(255, 255, 255, 0.78); }
+.vita-care-ask .topics { display: flex; flex-wrap: wrap; gap: 8px; }
+.vita-care-ask .topics button { min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1.5px solid rgba(255, 255, 255, 0.35); background: transparent; color: #fff; font-size: 14px; font-weight: 700; }
+.vita-care-ask .topics button:hover:not(:disabled) { background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.6); }
+.vita-care-ask .topics button:disabled { opacity: 0.6; }
+.vita-care-box { padding: 6px; border-radius: 18px; background: var(--vc-surface); box-shadow: var(--vc-card-shadow); }
+.vita-care-action { width: 100%; display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: 12px; text-align: left; color: rgba(var(--vc-navy-rgb), 0.4); background: transparent; }
+.vita-care-action:hover { background: rgba(var(--vc-navy-rgb), 0.04); }
+.vita-care-action .ic { width: 42px; height: 42px; flex: none; border-radius: 12px; display: grid; place-items: center; background: var(--vc-tile-mint); color: var(--vc-navy); }
+.vita-care-action .tx { flex: 1; min-width: 0; }
+.vita-care-action .tx b { display: block; font-size: 15px; font-weight: 800; color: var(--vc-ink); }
+.vita-care-action .tx small { display: block; font-size: 12.5px; color: rgba(var(--vc-navy-rgb), 0.55); }
+.vita-care-clinic { display: flex; align-items: center; gap: 12px; padding: 10px 10px 12px; margin-bottom: 4px; border-bottom: 1px solid var(--vc-line); }
+.vita-care-clinic .mark { width: 42px; height: 42px; flex: none; border-radius: 50%; display: grid; place-items: center; background: #003e48; color: #7dd9c4; font-weight: 800; font-size: 17px; }
+.vita-care-clinic b { display: block; font-size: 15px; font-weight: 800; color: var(--vc-ink); }
+.vita-care-clinic small { display: block; font-size: 12.5px; color: rgba(var(--vc-navy-rgb), 0.55); }
+@media (min-width: 1024px) {
+  .vita-care-page { padding: 20px 0 48px !important; }
+  .vita-care-layout { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 28px; align-items: start; }
+  .vita-care-side { position: sticky; top: 112px; }
+  .vita-care-people .vita-pro-grid { grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); }
+}
+
+/* Account menu: the Appearance row sits right under Language, without a second divider. */
+@media (min-width: 768px) {
+  .vita-pop-lang.next { margin-top: 0; padding-top: 4px; box-shadow: none; flex-wrap: wrap; row-gap: 6px; }
+}
+
+/* ───────── Insights (Health Metrics demo): sentence first, picture, what it means, one next step ───────── */
+.vita-ins { display: flex; flex-direction: column; gap: 12px; }
+.vita-ins-title { margin: 6px 0 0; font-size: 18px; font-weight: 800; color: var(--vc-ink); }
+.vita-ins-lead { margin: 2px 2px 0; font-size: 16px; line-height: 1.4; font-weight: 700; color: var(--vc-ink); text-wrap: pretty; }
+.vita-ins-seg { display: inline-flex; align-self: flex-start; gap: 2px; padding: 3px; border-radius: 12px; background: var(--vc-surface-muted); }
+.vita-ins-seg button { border: 0; background: none; border-radius: 10px; padding: 7px 12px; min-height: 36px; font-weight: 700; font-size: 13px; color: rgba(var(--vc-navy-rgb),0.6); cursor: pointer; }
+.vita-ins-seg button[aria-pressed="true"] { background: var(--vc-surface); color: var(--vc-ink); box-shadow: 0 1px 3px rgba(0,0,0,0.12); }
+.vita-ins-card .vita-ins-seg { margin-bottom: 8px; }
+.vita-ins-card { padding: 14px 16px; border-radius: 14px; background: var(--vc-surface); border: 1px solid var(--vc-line); box-shadow: var(--vc-card-shadow); }
+.vita-ins-card h3 { margin: 0 0 6px; font-size: 15px; font-weight: 800; color: var(--vc-ink); }
+.vita-ins-card h4 { margin: 14px 0 4px; font-size: 13px; font-weight: 800; color: var(--vc-ink); }
+.vita-ins-card p { margin: 0; }
+.vita-ins-card.next { border: 2px solid var(--vc-action); }
+.vita-ins-card.next p { font-size: 14px; color: var(--vc-ink); margin-bottom: 10px; }
+.vita-ins-k { font-size: 12px; font-weight: 700; color: rgba(var(--vc-navy-rgb),0.6); }
+.vita-ins-big { margin: 2px 0 4px !important; font-size: 38px; line-height: 1.05; font-weight: 800; color: var(--vc-ink); font-variant-numeric: tabular-nums; }
+.vita-ins-big small { font-size: 14px; font-weight: 600; color: rgba(var(--vc-navy-rgb),0.55); }
+.vita-ins-head { font-size: 18px; line-height: 1.3; font-weight: 800; color: var(--vc-ink); margin-bottom: 4px !important; }
+.vita-ins-delta { display: inline-block; font-size: 13px; font-weight: 700; }
+.vita-ins-delta.up { color: var(--vc-teal); }
+.vita-ins-delta.dn { color: var(--vc-action); }
+.vita-ins-fine { margin: 6px 0 0 !important; font-size: 12.5px; line-height: 1.45; color: rgba(var(--vc-navy-rgb),0.62); }
+.vita-ins-stack { display: flex; height: 16px; border-radius: 99px; overflow: hidden; margin: 10px 0 6px; background: var(--vc-surface-muted); }
+.vita-ins-stack i { display: block; height: 100%; }
+.vita-ins-legend { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 12px; color: rgba(var(--vc-navy-rgb),0.7); }
+.vita-ins-legend span { display: inline-flex; align-items: center; gap: 5px; }
+.vita-ins-legend i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+.vita-ins-row { display: grid; grid-template-columns: minmax(0,1.3fr) 64px minmax(0,1.3fr); align-items: center; gap: 8px; padding: 5px 0; font-size: 13.5px; color: var(--vc-ink); }
+.vita-ins-row .lb { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.vita-ins-row .v { font-weight: 800; text-align: right; font-variant-numeric: tabular-nums; }
+.vita-ins-row .b { height: 10px; background: var(--vc-surface-muted); border-radius: 99px; overflow: hidden; }
+.vita-ins-row .b i { display: block; height: 100%; border-radius: 99px; }
+.vita-ins-chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+.vita-ins-tip { min-height: 18px; margin-top: 2px; font-size: 12px; color: rgba(var(--vc-navy-rgb),0.62); }
+.vita-ins-mean { margin-top: 10px; padding: 10px 12px; border-radius: 12px; background: var(--vc-surface-muted); font-size: 13.5px; color: var(--vc-ink); }
+.vita-ins-mean b { display: block; font-size: 12px; margin-bottom: 2px; color: rgba(var(--vc-navy-rgb),0.7); }
+.vita-ins-mean p { margin: 2px 0 0; }
+.vita-ins-kpis { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 8px; margin-top: 10px; }
+.vita-ins-kpis > div { padding: 10px 12px; border-radius: 12px; background: var(--vc-surface-muted); }
+.vita-ins-kpis b { display: block; font-size: 18px; font-weight: 800; color: var(--vc-ink); font-variant-numeric: tabular-nums; }
+.vita-ins-kpis span { font-size: 12px; color: rgba(var(--vc-navy-rgb),0.62); }
+.vita-ins-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.vita-ins-journey { position: relative; height: 14px; margin: 34px 4px 26px; border-radius: 99px; background: var(--vc-surface-muted); }
+.vita-ins-journey .fill { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 99px; background: var(--vc-teal); }
+.vita-ins-journey .mk { position: absolute; top: 50%; width: 22px; height: 22px; border-radius: 50%; background: var(--vc-navy); border: 3px solid var(--vc-surface); transform: translate(-50%,-50%); }
+.vita-ins-journey .five { position: absolute; top: -4px; bottom: -4px; width: 2px; background: var(--vc-action); }
+.vita-ins-journey .lab { position: absolute; top: -24px; font-size: 12px; font-weight: 700; color: rgba(var(--vc-navy-rgb),0.7); white-space: nowrap; }
+.vita-ins-journey .lab.l { left: 0; }
+.vita-ins-journey .lab.r { right: 0; }
+.vita-ins-pill { margin-top: 8px; }
+.vita-ins-pill b { display: block; font-size: 12.5px; color: var(--vc-ink); margin-bottom: 4px; }
+.vita-ins-heat { display: grid; gap: 2px; }
+.vita-ins-heat i { display: block; aspect-ratio: 1; border-radius: 3px; }
+.vita-ins-heat i.t { background: var(--vc-teal); }
+.vita-ins-heat i.m { background: var(--vc-action); }
+.vita-ins-heat i.n { border: 1.5px dashed rgba(var(--vc-navy-rgb),0.35); }
+@media (min-width: 900px) { .vita-ins:not(.embedded) { max-width: 720px; } }
+
+/* Learn: library entry for members without a programme (same padding as the path card). */
+.vita-learn-lib { padding: 0 16px 4px; }
+.vita-learn-lib .ac-lib-row { margin-top: 8px; }
+
+/* ── 24 Nov 2026: Home redesign. Compact hero with "today at a glance" rings, one Today's plan checklist,
+   compact reading tiles, the insights headline, and a slim emergency strip. Classes are `vh-*`. ─────── */
+.vita-root .vita-home .vh-band.vita-home-hero { text-align: left; }
+.vh-hero { display: flex; flex-direction: column; gap: 18px; margin-top: 14px; }
+.vh-hero-text { min-width: 0; }
+.vh-date { display: inline-block; padding: 5px 10px; border-radius: 999px; background: rgba(255, 255, 255, 0.12); color: rgba(255, 255, 255, 0.86); font-size: 12px; font-weight: 800; letter-spacing: 0.2px; }
+.vh-hello { margin: 10px 0 0; color: #fff; font-family: var(--vf-hand, var(--vf-display)); font-weight: 400; font-size: 40px; line-height: 1.02; letter-spacing: 0.2px; }
+.vh-hello .vita-wave { font-family: initial; font-size: 0.72em; vertical-align: 0.06em; }
+.vh-weekline { margin: 6px 0 0; color: rgba(255, 255, 255, 0.74); font-size: 14px; font-weight: 600; line-height: 1.4; }
+.vh-org { display: inline-flex; margin-top: 10px; padding: 5px 11px; border-radius: 999px; background: rgba(92, 224, 198, 0.16); color: #9ff0df; font-size: 12.5px; font-weight: 800; }
+.vh-glance { background: rgba(255, 255, 255, 0.07); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 22px; padding: 12px 8px 10px; }
+.vh-glance-title { display: block; padding: 0 8px 6px; color: rgba(255, 255, 255, 0.6); font-size: 11.5px; font-weight: 800; letter-spacing: 0.6px; text-transform: uppercase; }
+.vh-rings { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; }
+.vita-root .vh-ring { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 6px 2px; border-radius: 14px; background: transparent; color: #fff; }
+.vh-ring:hover { background: rgba(255, 255, 255, 0.05); }
+.vh-ring-svg { position: relative; width: 64px; height: 64px; display: block; }
+.vh-ring-svg svg { display: block; }
+.vh-ring-svg b { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 800; letter-spacing: -0.2px; }
+.vh-ring-label { font-size: 12px; font-weight: 700; color: rgba(255, 255, 255, 0.8); text-align: center; line-height: 1.2; }
+
+/* Cards */
+.vh-card { background: var(--vc-surface); border-radius: 20px; padding: 16px; box-shadow: var(--vc-card-shadow); border: 1px solid rgba(var(--vc-navy-rgb), 0.05); }
+.vh-card-title { display: block; font-family: var(--vf-display); font-size: 19px; font-weight: 700; color: var(--vc-ink); letter-spacing: -0.2px; }
+.vh-card-sub { display: block; margin-top: 2px; font-size: 13px; font-weight: 600; color: rgba(var(--vc-navy-rgb), 0.58); }
+.vita-root .vh-link { background: none; padding: 4px 0; color: var(--vc-action, #e85a2e); font-size: 14px; font-weight: 800; }
+.vh-plan-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.vh-plan-bar { display: block; height: 6px; margin: 12px 0 6px; border-radius: 99px; background: rgba(var(--vc-navy-rgb), 0.08); overflow: hidden; }
+.vh-plan-bar > span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #2bb3a3, #5ce0c6); transition: width 0.5s ease; }
+.vh-plan-list { list-style: none; margin: 0; padding: 0; }
+.vh-plan-list li + li { border-top: 1px solid rgba(var(--vc-navy-rgb), 0.07); }
+.vita-root .vh-plan-row { width: 100%; display: flex; align-items: center; gap: 12px; padding: 10px 0; background: none; text-align: left; box-shadow: none; }
+.vh-plan-ic { width: 42px; height: 42px; border-radius: 13px; flex: none; display: flex; align-items: center; justify-content: center; }
+.vh-plan-txt { flex: 1; min-width: 0; }
+.vh-plan-kicker { display: block; font-size: 11.5px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; color: rgba(var(--vc-navy-rgb), 0.55); margin-bottom: 2px; }
+.vh-plan-title { display: block; font-size: 14.5px; font-weight: 800; color: var(--vc-ink); line-height: 1.3; }
+.vh-plan-sub { display: block; margin-top: 2px; font-size: 12.5px; font-weight: 600; color: rgba(var(--vc-navy-rgb), 0.55); }
+.vh-plan-go { flex: none; padding: 7px 14px; border-radius: 999px; background: var(--vc-navy); color: var(--vc-surface); font-size: 13px; font-weight: 800; }
+.vh-plan-check { flex: none; color: #2bb3a3; display: flex; }
+.vh-plan-row.is-done .vh-plan-title { color: rgba(var(--vc-navy-rgb), 0.5); text-decoration: line-through; text-decoration-color: rgba(var(--vc-navy-rgb), 0.3); }
+.vh-plan-row.is-done .vh-plan-ic { opacity: 0.55; }
+
+/* Reading tiles */
+.vh-tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.vh-tile-cell { min-width: 0; display: flex; }
+.vh-tiles > .vh-tile-cell:nth-child(3):last-child { grid-column: 1 / -1; }
+.vita-root .vh-tile { width: 100%; display: flex; flex-direction: column; text-align: left; background: var(--vc-surface); border-radius: 18px; padding: 12px 12px 4px; box-shadow: var(--vc-card-shadow); border: 1px solid rgba(var(--vc-navy-rgb), 0.05); border-top: 3px solid var(--t-ink); min-height: 176px; }
+.vh-tile-head { display: flex; align-items: center; gap: 8px; color: rgba(var(--vc-navy-rgb), 0.4); }
+.vh-tile-ic { width: 26px; height: 26px; border-radius: 8px; background: var(--t-tint); color: var(--t-ink); display: flex; align-items: center; justify-content: center; flex: none; }
+.vh-tile-title { flex: 1; min-width: 0; font-size: 14px; font-weight: 800; color: var(--vc-ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.vh-tile-val { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px; margin-top: 10px; }
+.vh-tile-val b { font-size: 26px; font-weight: 800; color: var(--vc-ink); letter-spacing: -0.5px; line-height: 1; }
+.vh-tile-val small { font-size: 12px; font-weight: 700; color: rgba(var(--vc-navy-rgb), 0.55); }
+.vh-tile-val em { flex-basis: 100%; font-style: normal; font-size: 11.5px; font-weight: 600; color: rgba(var(--vc-navy-rgb), 0.45); }
+.vh-tile.is-empty .vh-tile-val b { color: rgba(var(--vc-navy-rgb), 0.3); }
+.vh-tile-status { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-top: 6px; font-size: 12px; font-weight: 600; line-height: 1.35; color: var(--t-ink); }
+.vh-tile-chart { display: block; margin-top: auto; padding-top: 8px; }
+.vh-tile-days { display: flex; margin-top: 2px; padding-bottom: 6px; }
+.vh-tile-days span { flex: 1; text-align: center; font-size: 10px; font-weight: 800; color: rgba(var(--vc-navy-rgb), 0.35); }
+.vh-tile-days span.today { color: var(--t-ink); }
+
+/* What your numbers say */
+.vh-numbers { margin-top: 12px; padding: 14px 16px 6px; background: linear-gradient(135deg, var(--vc-surface), var(--vc-tile-mint)); }
+.vh-numbers-kicker { display: flex; align-items: center; gap: 6px; font-size: 11.5px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; color: rgba(var(--vc-navy-rgb), 0.6); }
+.vita-root .vh-numbers-row { width: 100%; display: flex; align-items: center; gap: 12px; padding: 10px 0; background: none; text-align: left; color: rgba(var(--vc-navy-rgb), 0.4); box-shadow: none; }
+.vh-numbers-row + .vh-numbers-row { border-top: 1px solid rgba(var(--vc-navy-rgb), 0.07); }
+.vh-numbers-text { flex: 1; min-width: 0; font-size: 14px; font-weight: 700; line-height: 1.4; color: var(--vc-ink); }
+
+/* Emergency strip, plan banner, clinic visit */
+.vita-root .vh-sos { width: 100%; display: flex; align-items: center; gap: 12px; padding: 10px 14px 10px 10px; margin-top: 16px; border-radius: 16px; background: #fdeeee; color: #b3261e; text-align: left; border: 1px solid rgba(198, 40, 40, 0.14); box-shadow: none; }
+.vh-sos .vh-plan-title { color: #8c1d18; font-size: 14px; }
+.vh-sos .vh-plan-sub { color: rgba(140, 29, 24, 0.72); }
+.vh-sos-ic { width: 38px; height: 38px; border-radius: 50%; flex: none; display: flex; align-items: center; justify-content: center; background: #c62828; color: #fff; box-shadow: 0 0 0 4px rgba(198, 40, 40, 0.14); }
+.vh-subwrap { margin-top: 10px; }
+.vita-root .vh-subwrap > button { border-radius: 16px !important; }
+.vita-root .vh-visit { width: 100%; display: flex; align-items: center; gap: 12px; text-align: left; background: var(--vc-tile-peach); border-radius: 18px; padding: 14px; }
+.vita-root[data-theme="dark"] .vh-sos { background: #3a1d19; border-color: rgba(240, 138, 124, 0.2); }
+.vita-root[data-theme="dark"] .vh-sos .vh-plan-title { color: #ffd9d3; }
+.vita-root[data-theme="dark"] .vh-sos .vh-plan-sub { color: rgba(255, 217, 211, 0.7); }
+.vita-root[data-theme="dark"] .vh-sos { color: #f08a7c; }
+.vita-root[data-theme="dark"] .vh-card, .vita-root[data-theme="dark"] .vh-tile { border-color: rgba(255, 255, 255, 0.06); }
+
+@media (min-width: 768px) {
+  .vita-root .vita-home .vh-band.vita-home-hero { padding-bottom: 40px !important; }
+  .vh-toprow { display: none !important; }
+  .vh-hero { margin-top: 0; }
+  .vh-hello { font-size: 52px; }
+  .vh-weekline { font-size: 16px; }
+  .vh-tiles { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+  .vh-tiles > .vh-tile-cell:nth-child(3):last-child { grid-column: auto; }
+  .vita-root .vh-tile { min-height: 190px; padding: 14px 14px 4px; }
+  .vh-tile-val b { font-size: 30px; }
+  .vh-sos, .vh-subwrap { margin-top: 0; }
+  .vita-root .vita-home-body.vh-body { margin-top: 28px !important; }
+  .vita-home-body [data-sec="plan"], .vita-home-body [data-sec="metrics"] { grid-column: 1 / -1; }
+}
+@media (min-width: 1024px) {
+  .vh-hero { flex-direction: row; align-items: center; justify-content: space-between; gap: 40px; }
+  .vh-hero-text { flex: 1; }
+  .vh-glance { flex: none; width: 440px; padding: 14px 12px 12px; }
+  .vh-hello { font-size: 60px; }
+  .vh-ring-svg { transform: scale(1.12); margin: 4px 0; }
+  .vita-root .vita-home-rail { gap: 14px; }
+  .vita-home-main > [data-sec="plan"] { margin-top: 0 !important; }
+}
+.vh-tile-head, .vh-tile-val, .vh-tile-status, .vh-tile-chart { width: 100%; align-self: stretch; }
+.vh-tile-chart svg { width: 100%; display: block; }
+.vita-root .vh-tile { align-items: stretch; }
+
+/* Learn: one article list under the Academy, no category tabs. */
+.vita-learn-articles-head { padding: 18px 16px 4px; }
+
+/* My Health: 30-day trend on each reading card, and the "Your week" cards (activity, medicines). */
+.vita-mc-spark { display: block; width: 100%; height: 64px; overflow: visible; }
+.vita-mc-say { margin: 10px 2px 2px; font-size: 13.5px; line-height: 1.45; font-weight: 600; color: rgba(var(--vc-navy-rgb), 0.78); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.vita-mc-none { margin: 6px 2px 4px; font-size: 13px; line-height: 1.45; color: rgba(var(--vc-navy-rgb), 0.55); }
+.vita-mh-week { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
+.vita-mh-wcard { cursor: pointer; padding: 18px; border-radius: 22px; background: var(--vc-surface); border: 1px solid rgba(var(--vc-navy-rgb), 0.06); box-shadow: 0 1px 2px rgba(0, 40, 46, 0.04), 0 10px 26px rgba(0, 40, 46, 0.06); transition: transform 0.15s, box-shadow 0.15s; display: flex; flex-direction: column; }
+@media (hover: hover) { .vita-mh-wcard:hover { transform: translateY(-2px); box-shadow: 0 2px 4px rgba(0, 40, 46, 0.05), 0 16px 34px rgba(0, 40, 46, 0.1); } }
+.vita-mh-wcard .vita-mc-head .go { margin-left: auto; color: rgba(var(--vc-navy-rgb), 0.4); flex: none; }
+.vita-mh-steps { margin-top: 16px; display: flex; gap: 8px; padding: 12px 12px 8px; border-radius: 14px; background: var(--vc-surface-muted); }
+.vita-mh-steps .d { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.vita-mh-steps .track { height: 70px; width: 100%; display: flex; align-items: flex-end; justify-content: center; }
+.vita-mh-steps .bar { width: min(22px, 70%); border-radius: 6px 6px 3px 3px; background: rgba(43, 179, 163, 0.55); }
+.vita-mh-steps .d.goal .bar { background: #2bb3a3; }
+.vita-mh-steps .lb { font-size: 12px; font-weight: 700; color: rgba(var(--vc-navy-rgb), 0.45); }
+.vita-mh-stats { margin-top: 12px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.vita-mh-stats > span { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.vita-mh-stats b { font-size: 18px; font-weight: 800; color: var(--vc-ink); letter-spacing: -0.3px; }
+.vita-mh-stats small { font-size: 11.5px; font-weight: 700; color: rgba(var(--vc-navy-rgb), 0.5); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.vita-mh-meds { margin-top: 16px; display: flex; align-items: center; gap: 18px; padding: 12px 16px; border-radius: 14px; background: var(--vc-surface-muted); }
+.vita-mh-meds .pct { font-size: 17px; font-weight: 800; fill: var(--vc-ink); }
+.vita-mh-meds ul { margin: 0; padding: 0; list-style: none; flex: 1; display: grid; gap: 8px; min-width: 0; }
+.vita-mh-meds li { display: flex; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 700; color: rgba(var(--vc-navy-rgb), 0.75); }
+.vita-mh-meds li b { margin-left: auto; font-size: 15px; color: var(--vc-ink); }
+.vita-mh-meds li i { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+.vita-mh-meds li i.ring { border: 2px solid rgba(var(--vc-navy-rgb), 0.3); }
+.vita-mh-nomeds { margin-top: 16px; padding: 16px; border-radius: 14px; background: var(--vc-surface-muted); }
+.vita-mh-nomeds p { margin: 0; font-size: 14px; line-height: 1.45; color: rgba(var(--vc-navy-rgb), 0.7); }
+.vita-mh-link { margin-top: 10px; display: inline-flex; align-items: center; gap: 4px; font-size: 14px; font-weight: 800; color: var(--vc-teal-ink, #00535f); }
+.vita-mh-section + .vita-mh-section { margin-top: 8px; }
+@media (min-width: 900px) { .vita-mh-week { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; } .vita-mh-wcard { padding: 22px; } }
+
+/* ── 24 Nov 2026: Care Team polish. Wide "your care team" rows, a role tab bar with counts, and a tidier side
+   column (topic tiles, emergency strip, quick actions, clinic-record grid). ─────────────────────────────── */
+.vita-pro-rows { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; }
+@media (min-width: 768px) { .vita-pro-rows { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; } }
+.vita-pro-row { display: flex; align-items: center; gap: 8px; padding: 10px 12px 10px 10px; border-radius: 18px; background: var(--vc-surface); box-shadow: var(--vc-card-shadow); border: 1px solid rgba(var(--vc-navy-rgb), 0.05); }
+.vita-root .vita-pro-row-main { flex: 1; min-width: 0; display: flex; align-items: center; gap: 12px; padding: 0; background: none; text-align: left; }
+.vita-pro-row-main .tx { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.vita-pro-row-main .tx b { font-size: 15.5px; font-weight: 800; color: var(--vc-ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.vita-pro-row-main .role { display: flex; align-items: center; gap: 5px; font-size: 13px; font-weight: 600; color: rgba(var(--vc-navy-rgb), 0.62); white-space: nowrap; overflow: hidden; }
+.vita-pro-row-ok { display: inline-flex; color: #1d7a55; flex: none; }
+.vita-pro-row-main .eta { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: rgba(var(--vc-navy-rgb), 0.55); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.vita-pro-row-main .eta i { width: 7px; height: 7px; border-radius: 50%; flex: none; }
+.vita-root .vita-pro-row-msg { width: 42px; height: 42px; flex: none; border-radius: 50%; display: grid; place-items: center; background: var(--vc-tile-mint); color: var(--vc-navy); font-weight: 800; transition: background 0.15s, color 0.15s; }
+.vita-root .vita-pro-row-msg:hover:not(:disabled) { background: var(--vc-navy); color: var(--vc-surface); }
+.vita-pro-row[data-status="off"] .vita-pro-row-msg { background: rgba(var(--vc-navy-rgb), 0.06); }
+
+.vita-care-tabs { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding: 4px; margin: 0 0 2px; border-radius: 999px; background: rgba(var(--vc-navy-rgb), 0.06); width: fit-content; max-width: 100%; }
+.vita-care-tabs::-webkit-scrollbar { display: none; }
+.vita-root .vita-care-tabs button { flex: none; display: inline-flex; align-items: center; gap: 7px; height: 38px; padding: 0 8px 0 14px; border-radius: 999px; background: transparent; color: rgba(var(--vc-navy-rgb), 0.7); font-size: 14px; font-weight: 700; white-space: nowrap; transition: background 0.15s, color 0.15s; }
+.vita-root .vita-care-tabs button:hover:not(.on) { color: var(--vc-ink); background: rgba(var(--vc-navy-rgb), 0.05); }
+.vita-root .vita-care-tabs button.on { background: var(--vc-surface); color: var(--vc-ink); box-shadow: 0 1px 2px rgba(0, 40, 46, 0.08), 0 4px 12px rgba(0, 40, 46, 0.08); }
+.vita-care-tabs .n { min-width: 22px; height: 22px; padding: 0 6px; border-radius: 999px; display: inline-grid; place-items: center; background: rgba(var(--vc-navy-rgb), 0.08); font-size: 12px; font-weight: 800; }
+.vita-care-tabs button.on .n { background: var(--vc-navy); color: var(--vc-surface); }
+
+.vita-care-ask { position: relative; overflow: hidden; }
+.vita-care-ask::after { content: ""; position: absolute; width: 180px; height: 180px; right: -70px; top: -80px; border-radius: 50%; background: rgba(92, 224, 198, 0.12); pointer-events: none; }
+.vita-care-ask .live { display: inline-flex; align-items: center; gap: 7px; margin: -2px 0 14px; padding: 5px 10px; border-radius: 999px; background: rgba(34, 181, 115, 0.16); color: #9ff0c9; font-size: 12.5px; font-weight: 800; }
+.vita-care-ask .live i { width: 8px; height: 8px; border-radius: 50%; background: #22b573; box-shadow: 0 0 0 3px rgba(34, 181, 115, 0.3); animation: vita-live 1.8s ease-in-out infinite; }
+@keyframes vita-live { 50% { box-shadow: 0 0 0 6px rgba(34, 181, 115, 0); } }
+@media (prefers-reduced-motion: reduce) { .vita-care-ask .live i { animation: none; } }
+.vita-care-ask .topics { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; position: relative; z-index: 1; }
+.vita-root .vita-care-ask .topics button { display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 6px 10px; border-radius: 14px; border: 0; background: rgba(255, 255, 255, 0.08); color: #fff; font-size: 13.5px; font-weight: 700; text-align: left; line-height: 1.2; }
+.vita-root .vita-care-ask .topics button:hover:not(:disabled) { background: rgba(255, 255, 255, 0.16); border-color: transparent; }
+.vita-care-ask .topics .ic { width: 32px; height: 32px; flex: none; border-radius: 10px; display: grid; place-items: center; background: rgba(92, 224, 198, 0.18); color: #9ff0df; }
+
+.vita-root .vita-care-sos { width: 100%; display: flex; align-items: center; gap: 12px; padding: 10px 14px 10px 10px; border-radius: 16px; background: #fdeeee; color: #b3261e; text-align: left; border: 1px solid rgba(198, 40, 40, 0.14); }
+.vita-care-sos .ic { width: 38px; height: 38px; border-radius: 50%; flex: none; display: grid; place-items: center; background: #c62828; color: #fff; box-shadow: 0 0 0 4px rgba(198, 40, 40, 0.14); }
+.vita-care-sos .tx { flex: 1; min-width: 0; }
+.vita-care-sos .tx b { display: block; font-size: 14px; font-weight: 800; color: #8c1d18; }
+.vita-care-sos .tx small { display: block; font-size: 12.5px; font-weight: 600; color: rgba(140, 29, 24, 0.72); }
+.vita-root[data-theme="dark"] .vita-care-sos { background: #3a1d19; border-color: rgba(240, 138, 124, 0.2); color: #f08a7c; }
+.vita-root[data-theme="dark"] .vita-care-sos .tx b { color: #ffd9d3; }
+.vita-root[data-theme="dark"] .vita-care-sos .tx small { color: rgba(255, 217, 211, 0.7); }
+
+.vita-care-quick { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.vita-root .vita-care-tile { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 14px 6px 12px; border-radius: 18px; background: var(--vc-surface); box-shadow: var(--vc-card-shadow); border: 1px solid rgba(var(--vc-navy-rgb), 0.05); text-align: center; }
+.vita-care-tile .ic { width: 48px; height: 48px; border-radius: 14px; display: grid; place-items: center; }
+.vita-care-tile b { font-size: 13px; font-weight: 800; color: var(--vc-ink); line-height: 1.2; }
+
+.vita-care-box { padding: 6px 6px 8px; border: 1px solid rgba(var(--vc-navy-rgb), 0.05); }
+.vita-care-record { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; padding-top: 4px; }
+.vita-root .vita-care-record .vita-care-action { gap: 10px; padding: 8px; }
+.vita-care-record .vita-care-action > svg { display: none; }
+.vita-care-record .vita-care-action .ic { width: 36px; height: 36px; border-radius: 11px; }
+.vita-care-record .vita-care-action .tx b { font-size: 13.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.vita-root[data-theme="dark"] .vita-pro-row, .vita-root[data-theme="dark"] .vita-care-tile, .vita-root[data-theme="dark"] .vita-care-box { border-color: rgba(255, 255, 255, 0.06); }
+.vita-root[data-theme="dark"] .vita-care-tabs { background: rgba(255, 255, 255, 0.06); }
+.vita-care-off { margin-top: 18px; }
+.vita-care-off > summary { list-style: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px; background: rgba(var(--vc-navy-rgb), 0.06); color: rgba(var(--vc-navy-rgb), 0.75); font-size: 13.5px; font-weight: 800; }
+.vita-care-off > summary::-webkit-details-marker { display: none; }
+.vita-care-off > summary svg { transition: transform 0.2s; }
+.vita-care-off[open] > summary svg { transform: rotate(90deg); }
+.vita-care-off .vita-pro-card { opacity: 0.8; }
+.vita-root .vita-pro-card { background: var(--vc-surface); box-shadow: var(--vc-card-shadow); border: 1px solid rgba(var(--vc-navy-rgb), 0.05); }
+
+/* Insights: fewer than 3 readings in the period */
+.vita-ins-few { margin: 10px 0 0; padding: 0; list-style: none; }
+.vita-ins-few li { padding: 7px 0; border-top: 1px solid rgba(var(--vc-navy-rgb),0.07); font-size: 13.5px; font-weight: 700; color: var(--vc-ink); }
+
+/* Habits: water, steps, sleep, mood (daily check-in) */
+.vita-habits { background: var(--vc-surface); border-radius: 10px; box-shadow: var(--vc-card-shadow); border: 1px solid rgba(var(--vc-navy-rgb),0.06); padding: 14px 16px; }
+.vita-habits-head { display: flex; align-items: baseline; gap: 8px; margin-bottom: 4px; }
+.vita-habits-head h2 { flex: 1; margin: 0; font-size: 17px; font-weight: 800; color: var(--vc-navy); }
+.vita-habits-head span { font-size: 13px; font-weight: 700; color: rgba(var(--vc-navy-rgb),0.5); }
+.vita-habit { display: flex; align-items: center; gap: 12px; padding: 11px 0; border-top: 1px solid rgba(var(--vc-navy-rgb),0.06); }
+.vita-habits-head + .vita-habit { border-top: 0; }
+.vita-habit-main { flex: 1; min-width: 0; }
+.vita-habit-line { display: flex; align-items: baseline; gap: 8px; font-size: 14px; }
+.vita-habit-line b { flex: 1; min-width: 0; color: var(--vc-ink); }
+.vita-habit-line span { font-size: 12.5px; font-weight: 700; color: rgba(var(--vc-navy-rgb),0.55); white-space: nowrap; }
+.vita-habit-bar { margin-top: 7px; height: 7px; border-radius: 99px; background: rgba(var(--vc-navy-rgb),0.08); overflow: hidden; }
+.vita-habit-bar i { display: block; height: 100%; border-radius: 99px; transition: width .25s; }
+.vita-habit .vita-habit-add, .vita-habit .vita-habit-btns button { min-width: 44px; min-height: 38px; padding: 0 12px; border-radius: 10px; background: var(--vc-surface-muted); color: var(--vc-navy); font-weight: 800; font-size: 13.5px; }
+.vita-habit-add:disabled, .vita-habit-btns button:disabled, .vita-moods button:disabled { opacity: .5; }
+.vita-habit-btns { display: flex; gap: 6px; flex: none; }
+.vita-habit-btns button { font-size: 18px; padding: 0; width: 40px; }
+.vita-habit-mood { flex-wrap: wrap; }
+.vita-habit-mood .vita-habit-line { flex-direction: column; align-items: flex-start; gap: 2px; }
+.vita-habit-mood .vita-habit-main { min-width: 120px; }
+.vita-moods { display: flex; gap: 4px; flex: none; }
+.vita-habit .vita-moods button { width: 38px; height: 38px; border-radius: 10px; font-size: 20px; background: var(--vc-surface-muted); }
+.vita-moods button[aria-checked="true"] { background: var(--vc-tile-peach); box-shadow: inset 0 0 0 2px var(--vc-action); }
+.vita-habits-note { margin: 8px 0 0; font-size: 12.5px; font-weight: 600; color: rgba(var(--vc-navy-rgb),0.5); }
+@media (max-width: 380px) { .vita-habit-mood .vita-moods { width: 100%; justify-content: space-between; } }

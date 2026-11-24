@@ -31,5 +31,5 @@ export async function saveReading(reading: NewReading): Promise<void> {
       fullness: reading.fullness,
     },
   });
-  invalidate("/api/v1/mobile/health/metrics");
+  invalidate("/api/v1/mobile/health/metrics", "/api/v1/mobile/insights");
 }

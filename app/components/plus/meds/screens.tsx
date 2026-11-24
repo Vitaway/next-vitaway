@@ -14,7 +14,8 @@ import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { useBack } from "@/lib/plus/nav";
 import { ActionButton, AppBar, CenterSpinner, CircleButton, EmptyState, Modal, useFeedback } from "../ui/vita";
 import { MetricLogScaffold, TimePickerModal } from "../readings/log-chrome";
-import { AdherenceSummaryCard, MedicationListCard } from "./cards";
+import { MedicationListCard } from "./cards";
+import { TodayDosesCard, WeekByMedicineCard } from "./pillbox-today";
 
 const navyA = (a: number) => `rgba(var(--vc-navy-rgb),${a})`;
 const plus = <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M12 5v14M5 12h14" /></svg>;
@@ -25,21 +26,8 @@ export function MedicationsScreen() {
   const { push } = usePlusPaths();
   const meds = useMedications();
   const adherence = useAdherence(7);
-  const [marking, setMarking] = useState(false);
   const loading = (meds.loading && !meds.data) || (adherence.loading && !adherence.data);
   const failed = (meds.error && !meds.data) || (adherence.error && !adherence.data);
-  const next = adherence.data?.next_due ?? null;
-  const canMark = next ? canMarkDoseTaken(next.date, next.time) : false;
-  const markNext = async () => {
-    if (!next || !canMark) return;
-    setMarking(true);
-    try {
-      await markDose(next.medication_id, next.date, next.time, "taken");
-    } catch {
-      /* Flutter stays quiet */
-    }
-    setMarking(false);
-  };
   return (
     <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
       <AppBar title={t("pillbox")} actions={<CircleButton label={t("add_medication")} onClick={() => push("/medications/add")}>{plus}</CircleButton>} />
@@ -51,9 +39,10 @@ export function MedicationsScreen() {
         </div>
       ) : (
         <div style={{ flex: 1, overflowY: "auto", padding: "8px 16px 28px" }}>
-          {adherence.data && meds.list.length ? (
-            <div style={{ marginBottom: 16 }}>
-              <AdherenceSummaryCard adherence={adherence.data} marking={marking} onMarkTaken={!next || !canMark ? undefined : markNext} />
+          {meds.list.length ? (
+            <div style={{ display: "flex", flexDirection: "column", gap: 16, marginBottom: 16 }}>
+              <TodayDosesCard />
+              <WeekByMedicineCard meds={meds.list} />
             </div>
           ) : null}
           {!meds.list.length ? (
@@ -82,7 +71,7 @@ function HistoryBadge({ slot }: { slot: MedicationSlot }) {
   const { dark } = useTheme();
   const colors = DOSE_COLORS[slot.status];
   const [bg, fg] = colors ? (dark ? colors.dark : colors.light) : ["var(--vc-surface-muted)", "var(--vc-muted)"];
-  const label = slot.status === "taken" ? `${slot.time} taken` : slot.status === "due" || slot.status === "pending" ? `${slot.time} due` : slot.status === "missed" ? `${slot.time} missed` : slot.time;
+  const label = slot.status === "taken" ? `${slot.time} taken` : slot.status === "due" || slot.status === "pending" ? `${slot.time} due` : slot.status === "missed" ? `${slot.time} missed` : slot.status === "skipped" ? `${slot.time} skipped` : slot.time;
   return <span style={{ padding: "6px 10px", borderRadius: 10, background: bg, color: fg, fontWeight: 700, fontSize: 13 }}>{label}</span>;
 }
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { cloneElement, isValidElement, useEffect, useMemo, useState } from "react";
-import { Activity, Add, ArrowRight3, Book1, Call, Drop, Flash, Heart, MessageQuestion, Notification, Reserve, TickCircle, Weight } from "@/lib/plus/icons";
+import { Activity, ArrowRight3, Book1, Call, Chart, Drop, Flash, MessageQuestion, Notification, Reserve, TickCircle, Weight } from "@/lib/plus/icons";
 import { useLanguage, type Translate } from "@/lib/plus/i18n";
 import { BMI_HOME_CAPTION_KEY, bmiViewFor } from "@/lib/plus/bmi";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
@@ -18,6 +18,8 @@ import {
 } from "@/lib/plus/client/data";
 import { useCarePlan } from "@/lib/plus/client/care-plan";
 import { useTodayMedications } from "@/lib/plus/client/meds";
+import { useInsight } from "@/lib/plus/client/insights";
+import { doseLabel } from "@/lib/plus/medication";
 import { glucoseContextFromFullness, latestByType, parseStamp, type HealthMetric } from "@/lib/plus/health";
 import { bpStatus, gatedHealthScore, glucoseStatus, healthScoreAllowed } from "@/lib/plus/clinical-rules";
 import { useClinicalConfig } from "@/lib/plus/client/clinical-config";
@@ -26,10 +28,9 @@ import { fmtHeaderDate, WEEKDAYS } from "@/lib/plus/format";
 import { appointmentCardText } from "@/lib/plus/appointment-text";
 import { formatGlucose, formatGlucoseUnitBoth, useGlucoseUnit } from "@/lib/plus/units";
 import { useProgrammeConfig } from "@/lib/plus/client/programme-config";
-import { dailyQuestionKey, homeSections, metricCardLayout, pick, readingPrompts, tipOfTheDay, type ProgrammeConfig, type ReadingPrompt, type ReadingType } from "@/lib/plus/programme-config";
-import { ActionButton, DotSpinner, Photo, SectionHead } from "../ui/vita";
+import { dailyQuestionKey, homeSections, metricCardLayout, pick, readingPrompts, tipOfTheDay, type ProgrammeConfig, type ReadingType } from "@/lib/plus/programme-config";
+import { DotSpinner, Photo, SectionHead } from "../ui/vita";
 import { ILLU_TINT, Illu } from "../ui/vita-icons";
-import { TodayMedicineCard } from "../meds/cards";
 
 const ARROW = <ArrowRight3 size={22} color="rgba(var(--vc-navy-rgb),0.35)" />;
 
@@ -108,7 +109,8 @@ function WeekChart({ series, color, height }: { series: Array<number | null>; co
   );
 }
 
-function InsightCard({
+/** One reading on Home: a compact tile (value, a one-line status, a 7-day sparkline). Same height in a row. */
+function MetricTile({
   icon,
   tint,
   ink,
@@ -119,7 +121,6 @@ function InsightCard({
   series,
   letters,
   onClick,
-  compact = false,
 }: {
   icon: React.ReactNode;
   tint: string;
@@ -131,32 +132,27 @@ function InsightCard({
   series: Array<number | null>;
   letters: string[];
   onClick: () => void;
-  compact?: boolean;
 }) {
-  // One card for every reading: header, value (unit can wrap under it), a two-line status, then the week chart
-  // pinned to the bottom so cards in a row line up. `compact` = the phone's full-width card (chart on the right).
   const parts = unit.match(/^(\S+)\s*\((.+)\)$/);
   const unitMain = parts ? parts[1] : unit;
   const unitAlt = parts ? parts[2] : "";
   const empty = value === "—";
   return (
-    <button type="button" onClick={onClick} className={`vita-tap vita-ins ${compact ? "is-wide" : ""} ${empty ? "is-empty" : ""}`} style={{ ["--ins-ink" as string]: ink, ["--ins-tint" as string]: tint }}>
-      <span className="vita-ins-head">
-        <span className="vita-ins-ic">{icon}</span>
-        <span className="vita-ins-title">{title}</span>
-        <ArrowRight3 size={18} color="currentColor" />
+    <button type="button" onClick={onClick} className={`vita-tap vh-tile ${empty ? "is-empty" : ""}`} style={{ ["--t-ink" as string]: ink, ["--t-tint" as string]: tint }}>
+      <span className="vh-tile-head">
+        <span className="vh-tile-ic">{icon}</span>
+        <span className="vh-tile-title">{title}</span>
+        <ArrowRight3 size={16} color="currentColor" />
       </span>
-      <span className="vita-ins-body">
-        <span className="vita-ins-val">
-          <b>{value}</b>
-          {unitMain ? <small>{unitMain}</small> : null}
-        </span>
-        {unitAlt ? <span className="vita-ins-alt">{unitAlt}</span> : null}
-        <span className="vita-ins-status">{status}</span>
+      <span className="vh-tile-val">
+        <b>{value}</b>
+        {unitMain ? <small>{unitMain}</small> : null}
+        {unitAlt ? <em>{unitAlt}</em> : null}
       </span>
-      <span className="vita-ins-chart">
-        <WeekChart series={series} color={ink} height={compact ? 40 : 52} />
-        <span className="vita-ins-days">
+      <span className="vh-tile-status">{status}</span>
+      <span className="vh-tile-chart">
+        <WeekChart series={series} color={ink} height={34} />
+        <span className="vh-tile-days">
           {letters.map((letter, i) => (
             <span key={i} className={i === letters.length - 1 ? "today" : ""}>{letter}</span>
           ))}
@@ -266,39 +262,6 @@ function SubscriptionBanner({ onClick }: { onClick: () => void }) {
   return <BannerShell onClick={onClick} tint="var(--vc-tile-peach)" ink="#E85A2E" icon={<Illu name="plan" size={30} />} title={t("home_subscribe_cta")} subtitle={t("choose_plan")} />;
 }
 
-function MedicinesToday({ onAdd, onOpenPillBox, onOpen }: { onAdd: () => void; onOpenPillBox: () => void; onOpen: (id: number) => void }) {
-  const { t } = useLanguage();
-  const { list, loading, error } = useTodayMedications();
-  if (loading) {
-    return (
-      <div style={{ background: "var(--vc-surface)", borderRadius: 10, padding: 16, height: 80, display: "flex", alignItems: "center", justifyContent: "center", color: "var(--vc-navy)" }}>
-        <DotSpinner />
-      </div>
-    );
-  }
-  const meds = error ? [] : list;
-  if (!meds.length) {
-    return (
-      <div style={{ background: "var(--vc-surface)", borderRadius: 10, padding: 16, display: "flex", alignItems: "center", gap: 12 }}>
-        <span style={{ flex: 1, fontWeight: 700, fontSize: 14, color: "var(--vc-navy)" }}>{t("home_no_medicines_today")}</span>
-        <ActionButton small tone="teal" label={t("add")} onClick={onAdd} icon={<Add size={16} color="currentColor" />} />
-      </div>
-    );
-  }
-  return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-      {meds.slice(0, 3).map((med) => (
-        <TodayMedicineCard key={med.id} medication={med} onClick={() => onOpen(med.id)} />
-      ))}
-      {meds.length > 3 ? (
-        <button type="button" onClick={onOpenPillBox} style={{ padding: 10, fontWeight: 700, color: "var(--vc-teal-ink)", fontSize: 14 }}>
-          {t("home_see_all_medicines", { count: meds.length })}
-        </button>
-      ) : null}
-    </div>
-  );
-}
-
 function LearnSection({ onOpenLearn, onOpenArticle }: { onOpenLearn: () => void; onOpenArticle: (a: Article) => void }) {
   const { t, language } = useLanguage();
   const { articles, loading } = useArticles(language);
@@ -358,41 +321,6 @@ const READING_ICON: Record<ReadingType, React.ReactNode> = {
   weight: <Illu name="weight" size={34} />,
 };
 
-/** W13: readings the member's programme asks for today, from GET /mobile/programme-config. */
-function ReadingPrompts({ prompts, onOpen }: { prompts: ReadingPrompt[]; onOpen: (type: ReadingType) => void }) {
-  const { t, language } = useLanguage();
-  const due = prompts.filter((p) => p.due);
-  if (!due.length) {
-    return (
-      <div data-testid="home-reading-prompts" style={{ background: "var(--vc-surface)", borderRadius: 10, padding: 14, display: "flex", alignItems: "center", gap: 12 }}>
-        <span style={{ width: 40, height: 40, borderRadius: "50%", background: "var(--vc-tile-mint)", color: "var(--vc-navy)", display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
-          <TickCircle size={22} color="currentColor" />
-        </span>
-        <span style={{ fontWeight: 700, fontSize: 14, color: "var(--vc-navy)" }}>{t("readings_all_done")}</span>
-      </div>
-    );
-  }
-  return (
-    <div data-testid="home-reading-prompts" style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-      {due.map((p) => {
-        const title = pick(p.text, language) || t(`reading_prompt_${p.type}`);
-        const when = p.when === "today" ? t("reading_due_today") : t("reading_due_week", { done: p.doneThisWeek, total: p.perWeek });
-        const tod = p.timeOfDay.map((x) => t(`tod_${x}`)).join(", ");
-        return (
-          <button key={p.type} type="button" onClick={() => onOpen(p.type)} className="vita-tap" style={{ width: "100%", display: "flex", alignItems: "center", gap: 12, textAlign: "left", background: "var(--vc-surface)", borderRadius: 10, padding: 14 }}>
-            <span style={{ width: 48, height: 48, borderRadius: 14, background: ILLU_TINT[p.type], display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>{READING_ICON[p.type]}</span>
-            <span style={{ flex: 1, minWidth: 0 }}>
-              <span style={{ display: "block", fontSize: 15, fontWeight: 800, color: "var(--vc-ink)" }}>{title}</span>
-              <span style={{ display: "block", marginTop: 3, fontSize: 13, fontWeight: 600, color: "rgba(var(--vc-navy-rgb),0.58)" }}>{tod ? `${when} · ${tod}` : when}</span>
-            </span>
-            {ARROW}
-          </button>
-        );
-      })}
-    </div>
-  );
-}
-
 /** W13: one question a day from the programme. Only "answered today" is kept, on this phone; answers are not sent yet. */
 function DailyQuestion({ question }: { question: NonNullable<ProgrammeConfig["daily_question"]> }) {
   const { t, language } = useLanguage();
@@ -451,6 +379,108 @@ function MealTip({ config }: { config: ProgrammeConfig }) {
   );
 }
 
+/** A progress ring for the hero's "today at a glance". `total` 0 shows a dash and an empty track. */
+function GlanceRing({ done, total, label, color, center, onClick }: { done: number; total: number; label: string; color: string; center?: string; onClick: () => void }) {
+  const r = 26;
+  const c = 2 * Math.PI * r;
+  const pct = total > 0 ? Math.max(0, Math.min(1, done / total)) : 0;
+  return (
+    <button type="button" className="vita-tap vh-ring" onClick={onClick}>
+      <span className="vh-ring-svg">
+        <svg width="64" height="64" viewBox="0 0 64 64" aria-hidden>
+          <circle cx="32" cy="32" r={r} fill="none" stroke="rgba(255,255,255,0.16)" strokeWidth="6" />
+          <circle cx="32" cy="32" r={r} fill="none" stroke={color} strokeWidth="6" strokeLinecap="round" strokeDasharray={`${c * pct} ${c}`} transform="rotate(-90 32 32)" style={{ transition: "stroke-dasharray .6s ease" }} />
+        </svg>
+        <b>{center ?? (total > 0 ? `${done}/${total}` : "—")}</b>
+      </span>
+      <span className="vh-ring-label">{label}</span>
+    </button>
+  );
+}
+
+type PlanRow = { key: string; icon: React.ReactNode; tint: string; title: string; sub: string; done: boolean; action: string; onClick: () => void };
+
+/** W13 + pillbox: everything due today in one checklist (programme readings, medicine doses, the next reminder). */
+function TodayPlan({ rows, emptyAction, onSeeAll }: { rows: PlanRow[]; emptyAction: () => void; onSeeAll: () => void }) {
+  const { t } = useLanguage();
+  const done = rows.filter((r) => r.done).length;
+  const total = rows.length;
+  return (
+    <div className="vh-card vh-plan" data-testid="home-reading-prompts">
+      <div className="vh-plan-head">
+        <span>
+          <span className="vh-card-title">{t("home_plan_title")}</span>
+          <span className="vh-card-sub">{total ? (done === total ? t("home_plan_all_done") : t("home_plan_progress", { done, total })) : t("home_plan_empty")}</span>
+        </span>
+        <button type="button" className="vh-link" onClick={onSeeAll}>{t("see_all")}</button>
+      </div>
+      {total ? (
+        <>
+          <span className="vh-plan-bar" aria-hidden>
+            <span style={{ width: `${Math.round((done / total) * 100)}%` }} />
+          </span>
+          <ul className="vh-plan-list">
+            {rows.map((row) => (
+              <li key={row.key}>
+                <button type="button" className={`vh-plan-row ${row.done ? "is-done" : ""}`} onClick={row.onClick}>
+                  <span className="vh-plan-ic" style={{ background: row.tint }}>{row.icon}</span>
+                  <span className="vh-plan-txt">
+                    <span className="vh-plan-title">{row.title}</span>
+                    <span className="vh-plan-sub">{row.sub}</span>
+                  </span>
+                  {row.done ? (
+                    <span className="vh-plan-check" aria-label={t("home_done")}>
+                      <TickCircle size={22} variant="Bold" color="currentColor" />
+                    </span>
+                  ) : (
+                    <span className="vh-plan-go">{row.action}</span>
+                  )}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </>
+      ) : (
+        <button type="button" className="vh-plan-row" onClick={emptyAction}>
+          <span className="vh-plan-ic" style={{ background: ILLU_TINT.today }}>
+            <Illu name="today" size={30} />
+          </span>
+          <span className="vh-plan-txt">
+            <span className="vh-plan-title">{t("home_nothing_due")}</span>
+            <span className="vh-plan-sub">{t("home_nothing_due_body")}</span>
+          </span>
+          <span className="vh-plan-go">{t("home_log")}</span>
+        </button>
+      )}
+    </div>
+  );
+}
+
+/** The insights headline (GET /mobile/insights) for BP and glucose, when there are readings in the last 30 days. */
+function NumbersCard({ types, onOpen }: { types: ReadingType[]; onOpen: (type: ReadingType) => void }) {
+  const { t, language } = useLanguage();
+  const bp = useInsight("bp", 30);
+  const glucose = useInsight("glucose", 30);
+  const lines: Array<{ type: ReadingType; text: string }> = [];
+  if (types.includes("bp") && bp.data && bp.data.count > 0) lines.push({ type: "bp", text: language === "rw" ? bp.data.headline.rw : bp.data.headline.en });
+  if (types.includes("glucose") && glucose.data && glucose.data.count > 0) lines.push({ type: "glucose", text: language === "rw" ? glucose.data.headline.rw : glucose.data.headline.en });
+  if (!lines.length) return null;
+  return (
+    <div className="vh-card vh-numbers" data-testid="home-numbers">
+      <span className="vh-numbers-kicker">
+        <Chart size={16} color="currentColor" /> {t("home_numbers_title")}
+      </span>
+      {lines.map((line) => (
+        <button key={line.type} type="button" className="vh-numbers-row" onClick={() => onOpen(line.type)}>
+          <span className="vh-plan-ic" style={{ background: ILLU_TINT[line.type] }}>{READING_ICON[line.type]}</span>
+          <span className="vh-numbers-text">{line.text}</span>
+          <ArrowRight3 size={18} color="currentColor" />
+        </button>
+      ))}
+    </div>
+  );
+}
+
 export default function HomeScreen() {
   const { t, language } = useLanguage();
   const clinical = useClinicalConfig();
@@ -461,6 +491,7 @@ export default function HomeScreen() {
   const { unread } = useNotifications();
   const { all: appointments } = useAppointments();
   const { list: reminders } = useReminders();
+  const meds = useTodayMedications();
   const [glucoseUnit] = useGlucoseUnit();
   const { config } = useProgrammeConfig();
 
@@ -476,7 +507,6 @@ export default function HomeScreen() {
   const scorePoints = gatedHealthScore(clinical, { bp: bpView, glucose: glucoseView, weightLogged: !!weight && (Number.parseFloat(weight.latest_value) || 0) > 0 });
   const caption = (logged: boolean, view: { label: string } | null) => (!logged ? t("no_reading_yet") : view ? view.label : t("reading_care_team_review"));
   const first = (user?.first_name ?? "").trim();
-  const mrn = (user?.profile?.medical_record_number ?? "").trim();
   const org = user?.organization?.name?.trim() ?? "";
   const orgName = org.toLowerCase().replace(/[\s_-]+/g, "") === "mirafood" ? "MiraFood" : org;
   const discount = Number(user?.organization?.discount_pct ?? 0);
@@ -490,17 +520,15 @@ export default function HomeScreen() {
     ? appointmentCardText({ start: appointmentStart(upcoming[0]), firstName: upcoming[0].coach_profile?.first_name, speciality: (upcoming[0].coach_profile as { speciality?: unknown } | null | undefined)?.speciality, clinic: upcoming[0].kind === "clinic", lang: language === "rw" ? "rw" : "en" })
     : null;
   const next = reminders[0] ?? null;
-  const pad = { padding: "0 18px" };
   // W13: which sections, in which order, come from the member's programmes (default = the old Home).
   const sections = homeSections(config.home_cards);
   const metricCards = metricCardLayout(config.home_cards);
   const prompts = readingPrompts(config, metrics.map((m) => ({ type: m.type, at: parseStamp(m.last_updated) })), new Date());
-  const metricCard = (type: ReadingType, wide: boolean) => {
+  const tile = (type: ReadingType) => {
     if (type === "glucose")
       return (
-        <InsightCard
-          compact={wide}
-          icon={<Drop size={16} variant="Bold" color="currentColor" />}
+        <MetricTile
+          icon={<Drop size={15} variant="Bold" color="currentColor" />}
           tint="var(--vc-tile-peach)"
           ink="#E85A2E"
           title={t("hm_glucose")}
@@ -509,14 +537,13 @@ export default function HomeScreen() {
           status={caption(!!glucose && glucoseMg > 0, glucoseView)}
           series={weekSeries(metrics, "glucose")}
           letters={letters}
-          onClick={() => push("/log/glucose")}
+          onClick={() => push("/metrics/glucose")}
         />
       );
     if (type === "bp")
       return (
-        <InsightCard
-          compact={wide}
-          icon={<Activity size={16} color="currentColor" />}
+        <MetricTile
+          icon={<Activity size={15} color="currentColor" />}
           tint="var(--vc-tile-lilac)"
           ink={dark ? "#A99BDB" : "#5B4B8A"}
           title={t("hm_blood_pressure")}
@@ -525,129 +552,140 @@ export default function HomeScreen() {
           status={caption(!!bp && (bp.systolic ?? 0) > 0, bpView)}
           series={weekSeries(metrics, "bp", true)}
           letters={letters}
-          onClick={() => push("/log/bp")}
+          onClick={() => push("/metrics/bp")}
         />
       );
     return (
-        <InsightCard
-          compact={wide}
-          icon={<Weight size={15} color="currentColor" />}
-          tint="var(--vc-tile-mint)"
-          ink={dark ? "#E4EBE8" : "#003E48"}
-          title={t("hm_weight")}
-          value={weight ? (Number.parseFloat(weight.latest_value) || 0).toFixed(1) : "—"}
-          unit={weight ? "kg" : ""}
-          status={weightCaption(t, user?.profile?.height, Number(user?.age ?? user?.profile?.age ?? 0) || 0, weight)}
-          series={weekSeries(metrics, "weight")}
-          letters={letters}
-          onClick={() => push("/log/weight")}
-        />
+      <MetricTile
+        icon={<Weight size={14} color="currentColor" />}
+        tint="var(--vc-tile-mint)"
+        ink={dark ? "#7FD8C8" : "#0B6B63"}
+        title={t("hm_weight")}
+        value={weight ? (Number.parseFloat(weight.latest_value) || 0).toFixed(1) : "—"}
+        unit={weight ? "kg" : ""}
+        status={weightCaption(t, user?.profile?.height, Number(user?.age ?? user?.profile?.age ?? 0) || 0, weight)}
+        series={weekSeries(metrics, "weight")}
+        letters={letters}
+        onClick={() => push("/metrics/weight")}
+      />
     );
   };
 
+  // One "Today's plan" card replaces the three old lists (readings due, the next reminder, medicines today).
+  const PLAN_SECTIONS = ["reading_prompts", "today", "medicines"];
+  const planRows: PlanRow[] = [];
+  if (sections.includes("reading_prompts")) {
+    for (const p of prompts) {
+      const when = p.when === "today" ? t("reading_due_today") : t("reading_due_week", { done: p.doneThisWeek, total: p.perWeek });
+      const tod = p.timeOfDay.map((x) => t(`tod_${x}`)).join(", ");
+      planRows.push({
+        key: `r-${p.type}`,
+        icon: <Illu name={p.type} size={28} />,
+        tint: ILLU_TINT[p.type],
+        title: pick(p.text, language) || t(`reading_prompt_${p.type}`),
+        sub: tod ? `${when} · ${tod}` : when,
+        done: !p.due,
+        action: t("home_log"),
+        onClick: () => push(`/log/${p.type}`),
+      });
+    }
+  }
+  if (sections.includes("today") && next && next.type !== "med" && !prompts.some((p) => p.type === next.type)) {
+    planRows.push({
+      key: "reminder",
+      icon: <Illu name={next.type === "bp" ? "bp" : "glucose"} size={28} />,
+      tint: ILLU_TINT[next.type === "bp" ? "bp" : "glucose"],
+      title: next.name,
+      sub: next.times[0] ?? t("home_scheduled_today"),
+      done: false,
+      action: t("home_log"),
+      onClick: () => push(next.type === "bp" ? "/log/bp" : "/log/glucose"),
+    });
+  }
+  let dosesDue = 0;
+  let dosesTaken = 0;
+  if (sections.includes("medicines") && !meds.error) {
+    for (const med of meds.list) {
+      for (const slot of med.slots) {
+        const taken = slot.status === "taken";
+        dosesDue += 1;
+        if (taken) dosesTaken += 1;
+        planRows.push({
+          key: `m-${med.id}-${slot.time}`,
+          icon: <Illu name="pillbox" size={28} />,
+          tint: ILLU_TINT.pillbox,
+          title: med.name,
+          sub: `${doseLabel(med)} · ${slot.time}`,
+          done: taken,
+          action: t("home_take"),
+          onClick: () => push("/medications"),
+        });
+      }
+    }
+  }
+  const planDone = planRows.filter((r) => r.done).length;
+  const weekTarget = prompts.reduce((sum, p) => sum + p.perWeek, 0);
+
   const renderSection = (section: string): React.ReactNode => {
     switch (section) {
-            case "metrics":
-              return (
-                <div key="metrics" data-sec="metrics">
-                  <SectionHead title={t("home_this_week")} action={t("see_all")} onAction={() => push("/metrics")} style={{ margin: "24px 0 10px" }} />
-                  <div className="vita-home-metrics" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-                    {metricCards.map(({ type, wide }) => (
-                      <div key={type} style={wide ? { gridColumn: "1 / -1", minWidth: 0 } : { minWidth: 0 }}>
-                        {metricCard(type, wide)}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              );
-            case "reading_prompts":
-              return prompts.length ? (
-                <div key="reading_prompts" data-sec="reading_prompts">
-                  <SectionHead title={t("home_readings_due")} style={{ margin: "24px 0 10px" }} />
-                  <ReadingPrompts prompts={prompts} onOpen={(type) => push(`/log/${type}`)} />
-                </div>
-              ) : null;
-            case "daily_question":
-              return config.daily_question ? (
-                <div key="daily_question" data-sec="daily_question" style={{ marginTop: 24 }}>
-                  <DailyQuestion question={config.daily_question} />
-                </div>
-              ) : null;
-            case "meal_tips":
-              return config.meal_tips.enabled ? (
-                <div key="meal_tips" data-sec="meal_tips" style={{ marginTop: 24 }}>
-                  <MealTip config={config} />
-                </div>
-              ) : null;
-            case "today":
-              return (
-                <div key="today" data-sec="today">
-                  <SectionHead title={t("hm_today")} action={t("see_all")} onAction={() => push("/reminders")} style={{ margin: "24px 0 10px" }} />
-                  <button
-                    type="button"
-                    className="vita-tap"
-                    onClick={() => {
-                      if (!next) return push("/log/glucose");
-                      // BL-122: a medicine reminder opens the Pillbox.
-                      if (next.type === "med") return push("/medications");
-                      if (next.type === "bp") return push("/log/bp");
-                      return push("/log/glucose");
-                    }}
-                    style={{ width: "100%", display: "flex", alignItems: "center", gap: 14, textAlign: "left", background: "var(--vc-surface)", borderRadius: 10, padding: 16 }}
-                  >
-                    <span style={{ width: 52, height: 52, borderRadius: 14, background: ILLU_TINT[!next ? "today" : next.type === "med" ? "pillbox" : next.type === "bp" ? "bp" : "glucose"], display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
-                      <Illu name={!next ? "today" : next.type === "med" ? "pillbox" : next.type === "bp" ? "bp" : "glucose"} size={36} />
-                    </span>
-                    <span style={{ flex: 1, minWidth: 0 }}>
-                      <span style={{ display: "block", fontSize: 16, fontWeight: 800, color: "var(--vc-ink)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{next ? next.name : t("home_nothing_due")}</span>
-                      <span style={{ display: "block", marginTop: 4, fontSize: 13, color: "rgba(var(--vc-navy-rgb),0.6)" }}>
-                        {next ? (next.times[0] ?? t("home_scheduled_today")) : t("home_nothing_due_body")}
-                      </span>
-                    </span>
-                  </button>
-                </div>
-              );
-            case "medicines":
-              return (
-                <div key="medicines" data-sec="medicines">
-                  <SectionHead title={t("medicines_today")} action={t("pillbox")} onAction={() => push("/medications")} style={{ margin: "24px 0 10px" }} />
-                  <MedicinesToday onAdd={() => push("/medications/add")} onOpenPillBox={() => push("/medications")} onOpen={(id) => push(`/medications/${id}`)} />
-                </div>
-              );
-            case "visit":
-              return (
-                <div key="visit" data-sec="visit">
-                  <SectionHead title={t("home_clinic_visit")} action={t("home_book")} onAction={() => push("/book-visit")} style={{ margin: "24px 0 10px" }} />
-                  <button
-                    type="button"
-                    className="vita-tap"
-                    onClick={() => push(upcoming.length ? "/appointments" : "/book-visit")}
-                    style={{ width: "100%", display: "flex", alignItems: "center", gap: 12, textAlign: "left", background: "var(--vc-wash)", borderRadius: 10, padding: 14 }}
-                  >
-                    <span style={{ width: 44, height: 44, borderRadius: 12, background: "var(--vc-surface)", display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
-                      <Illu name="book-visit" size={32} />
-                    </span>
-                    <span style={{ flex: 1 }}>
-                      <span style={{ display: "block", fontWeight: 800, fontSize: 15, color: "var(--vc-ink)" }}>
-                        {visit ? visit.title : t("quick_book_visit")}
-                      </span>
-                      <span style={{ display: "block", fontSize: 13, color: dark ? "#D9B8A6" : "#6A4A3A" }}>
-                        {visit ? visit.subtitle : t("home_book_visit_body")}
-                      </span>
-                    </span>
-                    <ArrowRight3 size={22} color="rgba(var(--vc-navy-rgb),0.4)" />
-                  </button>
-                </div>
-              );
-            case "learn":
-              return (
-                <div key="learn" data-sec="learn">
-                  <SectionHead title={t("learn_title")} action={t("view_all")} onAction={() => push("/articles")} style={{ margin: "24px 0 10px" }} />
-                  <LearnSection onOpenLearn={() => push("/articles")} onOpenArticle={(a) => push(`/articles/${a.id}`)} />
-                </div>
-              );
-            default:
-              return null;
+      case "metrics":
+        return (
+          <div key="metrics" data-sec="metrics">
+            <SectionHead title={t("home_this_week")} action={t("see_all")} onAction={() => push("/metrics")} style={{ margin: "24px 0 10px" }} />
+            <div className="vh-tiles">
+              {metricCards.map(({ type }) => (
+                <div key={type} className="vh-tile-cell">{tile(type)}</div>
+              ))}
+            </div>
+            <NumbersCard types={metricCards.map((m) => m.type)} onOpen={(type) => push(`/metrics/${type}`)} />
+          </div>
+        );
+      case "reading_prompts":
+      case "today":
+      case "medicines":
+        // The plan card sits where the first of its three sections was.
+        return sections.find((s) => PLAN_SECTIONS.includes(s)) === section ? (
+          <div key="plan" data-sec="plan" style={{ marginTop: 20 }}>
+            <TodayPlan rows={planRows} emptyAction={() => push("/log/glucose")} onSeeAll={() => push("/reminders")} />
+          </div>
+        ) : null;
+      case "daily_question":
+        return config.daily_question ? (
+          <div key="daily_question" data-sec="daily_question" style={{ marginTop: 20 }}>
+            <DailyQuestion question={config.daily_question} />
+          </div>
+        ) : null;
+      case "meal_tips":
+        return config.meal_tips.enabled ? (
+          <div key="meal_tips" data-sec="meal_tips" style={{ marginTop: 20 }}>
+            <MealTip config={config} />
+          </div>
+        ) : null;
+      case "visit":
+        return (
+          <div key="visit" data-sec="visit" style={{ marginTop: 20 }}>
+            <button type="button" className="vita-tap vh-visit" onClick={() => push(upcoming.length ? "/appointments" : "/book-visit")}>
+              <span className="vh-plan-ic" style={{ background: "var(--vc-surface)" }}>
+                <Illu name="book-visit" size={30} />
+              </span>
+              <span className="vh-plan-txt">
+                <span className="vh-plan-kicker">{t("home_clinic_visit")}</span>
+                <span className="vh-plan-title">{visit ? visit.title : t("quick_book_visit")}</span>
+                <span className="vh-plan-sub">{visit ? visit.subtitle : t("home_book_visit_body")}</span>
+              </span>
+              <ArrowRight3 size={20} color="rgba(var(--vc-navy-rgb),0.4)" />
+            </button>
+          </div>
+        );
+      case "learn":
+        return (
+          <div key="learn" data-sec="learn">
+            <SectionHead title={t("learn_title")} action={t("view_all")} onAction={() => push("/articles")} style={{ margin: "24px 0 10px" }} />
+            <LearnSection onOpenLearn={() => push("/articles")} onOpenArticle={(a) => push(`/articles/${a.id}`)} />
+          </div>
+        );
+      default:
+        return null;
     }
   };
   // Web: some sections move to the right rail. Phones keep the programme's order through CSS `order`.
@@ -659,113 +697,68 @@ export default function HomeScreen() {
   const weekCutoff = Date.now() - 7 * 86_400_000;
   const weekCount = metrics.filter((m) => (parseStamp(m.last_updated)?.getTime() ?? 0) >= weekCutoff).length;
   const weekLine = weekCount === 0 ? t("home_week_none") : weekCount === 1 ? t("home_week_one") : t("home_week_many", { count: weekCount });
-
-  const healthScoreCard = () => (
-        <button
-          type="button"
-          onClick={() => push("/health-score")}
-          className="vita-tap vita-home-score" style={{ position: "relative", width: "calc(100% - 36px)", margin: "-66px 18px 0", display: "flex", alignItems: "center", gap: 14, textAlign: "left", background: "var(--vc-surface)", borderRadius: 10, padding: "12px 14px", boxShadow: "var(--vc-card-shadow)" }}
-        >
-          {/* Wellness score ring (boss review F20 reference): orange arc on a soft track. */}
-          <span
-            className="vita-score-ring"
-            aria-hidden
-            style={{ ["--pct" as string]: `${scorePoints === null ? 0 : Math.max(0, Math.min(100, scorePoints))}%` } as React.CSSProperties}
-          >
-            <span>{scorePoints === null ? "—" : scorePoints}</span>
-          </span>
-          <span style={{ flex: 1 }}>
-            <span style={{ display: "block", fontSize: 16, fontWeight: 800, color: "var(--vc-ink)" }}>{t("health_score")}</span>
-            <span style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 6 }}>
-              {scorePoints !== null && bpView?.tone !== "bad" && glucoseView?.tone !== "bad" && (bpView?.tone === "ok" || glucoseView?.tone === "ok") ? (
-                <span style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "4px 8px", borderRadius: 10, background: "var(--vc-tile-mint)", color: "var(--vc-navy)", fontSize: 13, fontWeight: 800 }}>
-                  <Heart size={12} variant="Bold" color="currentColor" /> {t("home_in_range")}
-                </span>
-              ) : null}
-              <span style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "4px 8px", borderRadius: 10, background: "var(--vc-tile-peach)", color: "var(--vc-navy)", fontSize: 13, fontWeight: 800 }}>
-                {mrn ? <TickCircle size={12} color="currentColor" /> : <Add size={12} color="currentColor" />} {mrn ? t("home_record_linked") : t("home_add_reading")}
-              </span>
-            </span>
-          </span>
-          {ARROW}
-        </button>
-  );
-  const emergencyCard = (rail: boolean) => (
-        <button
-          type="button"
-          onClick={() => push("/emergency")}
-          data-testid={rail ? "home-emergency-card-rail" : "home-emergency-card"}
-          className="vita-tap vita-home-score" style={{ position: "relative", width: "calc(100% - 36px)", margin: "-66px 18px 0", display: "flex", alignItems: "center", gap: 14, textAlign: "left", background: "var(--vc-surface)", borderRadius: 10, padding: "12px 14px", boxShadow: "var(--vc-card-shadow)" }}
-        >
-          <span style={{ width: 64, height: 64, borderRadius: "50%", background: dark ? "#3A1D19" : "#FCE8E8", color: dark ? "#F08A7C" : "#C62828", display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
-            <Call size={28} variant="Bold" color="currentColor" />
-          </span>
-          <span style={{ flex: 1 }}>
-            <span style={{ display: "block", fontSize: 16, fontWeight: 800, color: "var(--vc-ink)" }}>{t("emergency_card_title")}</span>
-            <span style={{ display: "block", marginTop: 4, fontSize: 13, fontWeight: 600, color: "rgba(var(--vc-navy-rgb),0.62)" }}>{t("emergency_card_sub")}</span>
-            <span style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 6 }}>
-              <span style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "4px 8px", borderRadius: 10, background: "var(--vc-tile-peach)", color: "var(--vc-navy)", fontSize: 13, fontWeight: 800 }}>
-                {mrn ? <TickCircle size={12} color="currentColor" /> : <Add size={12} color="currentColor" />} {mrn ? t("home_record_linked") : t("home_add_reading")}
-              </span>
-            </span>
-          </span>
-          {ARROW}
-        </button>
-  );
+  const hello = first ? `${t("hello")}, ${first}!` : `${t("hello")}!`;
 
   return (
-    <div className="vita-home" style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 104px)" }}>
-      {/* Dashboard header */}
-      <div className="vita-home-top" style={{ position: "relative", paddingBottom: 12 }}>
-        <div className="vita-home-hero" style={{ background: "#003E48", borderRadius: "0 0 24px 24px", padding: "calc(env(safe-area-inset-top) + 14px) 20px 86px" }}>
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <span className="vita-home-logo" style={{ width: 52, height: 52, borderRadius: "50%", background: "#fff", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
+    <div className="vita-home vh" style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 104px)" }}>
+      <div className="vita-home-top" style={{ position: "relative" }}>
+        <div className="vita-home-hero vh-band" style={{ background: "#003E48", borderRadius: "0 0 28px 28px", padding: "calc(env(safe-area-inset-top) + 14px) 18px 22px" }}>
+          <div className="vh-toprow" style={{ display: "flex", alignItems: "center" }}>
+            <span className="vita-home-logo" style={{ width: 44, height: 44, borderRadius: "50%", background: "#fff", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/plus-assets/vitaway-logo.png" alt="Vitaway" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
             </span>
-            <span className="vita-home-date" style={{ marginLeft: 10, padding: "8px 12px", borderRadius: 10, background: "rgba(255,255,255,0.18)", color: "#fff", fontWeight: 700, fontSize: 13 }}>{fmtHeaderDate(new Date())}</span>
             <span style={{ flex: 1 }} />
-            <button type="button" className="vita-home-hero-btn" aria-label="Notifications" onClick={() => push("/notifications")} style={{ width: 40, height: 40, borderRadius: "50%", background: "rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center", position: "relative", color: "#fff" }}>
+            <button type="button" className="vita-home-hero-btn" aria-label="Notifications" onClick={() => push("/notifications")} style={{ width: 40, height: 40, borderRadius: "50%", background: "rgba(255,255,255,0.16)", display: "flex", alignItems: "center", justifyContent: "center", position: "relative", color: "#fff" }}>
               <Notification size={20} variant="Bold" color="currentColor" />
               {unread > 0 ? (
-                <span style={{ position: "absolute", top: 4, right: 4, width: 14, height: 14, borderRadius: "50%", background: "#003E48", border: "1.2px solid #fff", color: "#fff", fontSize: 8, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", lineHeight: 1 }}>
+                <span style={{ position: "absolute", top: 4, right: 4, width: 14, height: 14, borderRadius: "50%", background: "#E85A2E", border: "1.2px solid #fff", color: "#fff", fontSize: 8, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", lineHeight: 1 }}>
                   {unread > 9 ? "9" : unread}
                 </span>
               ) : null}
             </button>
-            <button type="button" className="vita-home-hero-btn" aria-label="Account" onClick={() => push("/profile")} style={{ marginLeft: 10, width: 44, height: 44, borderRadius: "50%", background: "#fff", padding: 2 }}>
-              <span style={{ display: "block", width: 40, height: 40, borderRadius: "50%", overflow: "hidden" }}>
-                <Photo url={user?.profile?.profile_picture} size={40} />
+            <button type="button" className="vita-home-hero-btn" aria-label="Account" onClick={() => push("/profile")} style={{ marginLeft: 10, width: 42, height: 42, borderRadius: "50%", background: "#fff", padding: 2 }}>
+              <span style={{ display: "block", width: 38, height: 38, borderRadius: "50%", overflow: "hidden" }}>
+                <Photo url={user?.profile?.profile_picture} size={38} />
               </span>
             </button>
           </div>
-          <p className="vita-home-hello" style={{ margin: "22px 0 0", color: "#fff", fontSize: 30, lineHeight: 1.05, fontWeight: 800, letterSpacing: -0.6 }}>{first ? `${t("hello")}, ${first}!` : `${t("hello")}!`} <span className="vita-wave" aria-hidden>👋</span></p>
-          <p className="vita-home-weekline">{weekLine}</p>
-          {orgName ? (
-            <p className="vita-home-org">{discount > 0 ? t("org_discount", { name: orgName, percent: discount }) : t("org_with", { name: orgName })}</p>
-          ) : null}
+          <div className="vh-hero">
+            <div className="vh-hero-text">
+              <span className="vh-date">{fmtHeaderDate(new Date())}</span>
+              <h1 className="vh-hello">
+                {hello} <span className="vita-wave" aria-hidden>👋</span>
+              </h1>
+              <p className="vh-weekline">{weekLine}</p>
+              {orgName ? <span className="vh-org">{discount > 0 ? t("org_discount", { name: orgName, percent: discount }) : t("org_with", { name: orgName })}</span> : null}
+            </div>
+            <div className="vh-glance" aria-label={t("home_glance_title")}>
+              <span className="vh-glance-title">{t("home_glance_title")}</span>
+              <div className="vh-rings">
+                {showScore ? <GlanceRing done={scorePoints ?? 0} total={scorePoints === null ? 0 : 100} center={scorePoints === null ? "—" : `${scorePoints}`} label={t("health_score")} color="#FF9466" onClick={() => push("/health-score")} /> : null}
+                <GlanceRing done={planDone} total={planRows.length} label={t("home_ring_plan")} color="#5CE0C6" onClick={() => push("/reminders")} />
+                <GlanceRing done={weekCount} total={weekTarget || Math.max(weekCount, 1)} center={weekTarget ? `${Math.min(weekCount, 99)}/${weekTarget}` : `${weekCount}`} label={t("home_ring_week")} color="#FFB38A" onClick={() => push("/metrics")} />
+                {showScore ? null : <GlanceRing done={dosesTaken} total={dosesDue} label={t("home_ring_meds")} color="#C3B5F5" onClick={() => push("/medications")} />}
+              </div>
+            </div>
+          </div>
         </div>
-{showScore ? healthScoreCard() : emergencyCard(false)}
       </div>
 
-      {/* Tablet and web: summary cards that overlap the bottom of the teal greeting band. */}
-      <div className="vita-home-lead">
-        {showScore ? healthScoreCard() : null}
-        {emergencyCard(true)}
-        <div className="vita-home-lead-plan">
-          <SubscriptionBanner onClick={() => push("/plans")} />
-        </div>
-      </div>
-
-      <div className="vita-home-sections vita-home-body" style={pad}>
+      <div className="vita-home-body vh-body" style={{ padding: "0 18px" }}>
         <div className="vita-home-main">{sectionNodes.filter((n) => !n.rail).map((n) => n.node)}</div>
         <aside className="vita-home-rail" aria-label={t("home_side_panel")}>
-          {orgName ? (
-            <p className="vita-home-pad vita-home-sub-m" style={{ order: -2, margin: "0 0 8px", fontSize: 14, fontWeight: 800, color: "var(--vc-navy)" }}>
-              {discount > 0 ? t("org_discount", { name: orgName, percent: discount }) : t("org_with", { name: orgName })}
-            </p>
-          ) : null}
-          <div className="vita-home-pad vita-home-sub-m" style={{ order: -1, padding: "0 0 4px" }}>
+          <button type="button" className="vita-tap vh-sos" data-testid="home-emergency-card" onClick={() => push("/emergency")} style={{ order: -2 }}>
+            <span className="vh-sos-ic">
+              <Call size={18} variant="Bold" color="currentColor" />
+            </span>
+            <span className="vh-plan-txt">
+              <span className="vh-plan-title">{t("emergency_card_title")}</span>
+              <span className="vh-plan-sub">{t("emergency_card_sub")}</span>
+            </span>
+            <ArrowRight3 size={18} color="currentColor" />
+          </button>
+          <div className="vh-subwrap" style={{ order: -1 }}>
             <SubscriptionBanner onClick={() => push("/plans")} />
           </div>
           {sectionNodes.filter((n) => n.rail).map((n) => n.node)}
@@ -776,4 +769,3 @@ export default function HomeScreen() {
 }
 
 const RAIL_SECTIONS = ["daily_question", "meal_tips", "visit"];
-

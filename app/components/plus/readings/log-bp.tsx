@@ -122,7 +122,26 @@ export default function LogBpScreen() {
     }
   };
 
-  if (saved) return <ReadingSaved value={saved.value} status={saved.status} onDone={back} />;
+  if (saved)
+    return (
+      <ReadingSaved
+        kind="bp"
+        value={saved.value}
+        status={saved.status}
+        onDone={back}
+        onMeasureAgain={() => {
+          // Urgent path: rest 5 minutes, then a fresh entry (the first reading stays saved).
+          setSaved(null);
+          setSaving(false);
+          setTop("");
+          setBottom("");
+          setPulse("");
+          setFocus("top");
+          const now = new Date();
+          setTime({ hour: now.getHours(), minute: now.getMinutes() });
+        }}
+      />
+    );
 
   return (
     <MetricLogScaffold

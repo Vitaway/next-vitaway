@@ -2,6 +2,7 @@
 
 import { mobileRequest } from "./api";
 import { useResource } from "./use-resource";
+import { unwrapEnvelope } from "./insights";
 
 /** One professional from GET /api/v1/mobile/care-team (care team plan CT2). */
 export type CareProfessional = {
@@ -33,7 +34,8 @@ export type CareTeam = { mine: CareProfessional[]; on_duty: CareProfessional[]; 
 export function useCareTeam() {
   const resource = useResource<CareTeam>("chat:care-team", async () => {
     try {
-      return await mobileRequest<CareTeam>("/api/v1/mobile/care-team");
+      // The /mobile route answers { success, data }; reading the raw body left the page empty.
+      return unwrapEnvelope<CareTeam>(await mobileRequest("/api/v1/mobile/care-team"));
     } catch {
       return { mine: [], on_duty: [], online_count: 0 };
     }
@@ -42,5 +44,11 @@ export function useCareTeam() {
   for (const pro of [...(resource.data?.mine ?? []), ...(resource.data?.on_duty ?? [])]) {
     if (pro.account_id != null) byAccount.set(pro.account_id, pro);
   }
-  return { ...resource, byAccount };
+  return {
+    ...resource,
+    byAccount,
+    mine: resource.data?.mine ?? [],
+    onDuty: resource.data?.on_duty ?? [],
+    onlineCount: resource.data?.online_count ?? 0,
+  };
 }

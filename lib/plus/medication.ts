@@ -163,7 +163,8 @@ export function slotDateTime(dateYmd: string, timeHm: string): Date | null {
 export function effectiveSlotStatus(loggedStatus: string, dateYmd: string, timeHm: string, now = new Date()): string {
   const normalized = loggedStatus.toLowerCase();
   if (normalized === "taken") return "taken";
-  if (normalized === "missed" || normalized === "skipped") return "missed";
+  if (normalized === "skipped") return "skipped";
+  if (normalized === "missed") return "missed";
   const when = slotDateTime(dateYmd, timeHm);
   if (!when) return normalized || "upcoming";
   if (now.getTime() < when.getTime() - EARLY_WINDOW_MS) return "upcoming";
@@ -189,6 +190,7 @@ export const DOSE_COLORS: Record<string, { light: [string, string]; dark: [strin
   due: { light: ["#FFE8D6", "#C45C12"], dark: ["#3A2219", "#F2A272"] },
   pending: { light: ["#FFE8D6", "#C45C12"], dark: ["#3A2219", "#F2A272"] },
   missed: { light: ["#FFF0C2", "#9A7300"], dark: ["#3D3419", "#E8C547"] },
+  skipped: { light: ["#E8EEF4", "#3A5068"], dark: ["#1E2A36", "#A9BCD0"] },
 };
 
 /**

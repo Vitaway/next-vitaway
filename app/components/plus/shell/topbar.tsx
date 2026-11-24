@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Add, ArrowDown2, Calendar1, Card, Crown1, LogoutCurve, Messages2, Notification, Profile, Setting2, Timer1 } from "@/lib/plus/icons";
 import { useLanguage } from "@/lib/plus/i18n";
+import { useTheme, type ThemeMode } from "@/lib/plus/theme";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { displayName, useMe, useNotifications } from "@/lib/plus/client/data";
 import { useAccountActions } from "../account/shared";
@@ -41,6 +42,7 @@ function usePopover(path: string) {
  */
 export default function TopBar({ supportBadge = false }: { supportBadge?: boolean }) {
   const { t, language, setLanguage } = useLanguage();
+  const theme = useTheme();
   const path = useAppPath();
   const { push } = usePlusPaths();
   const { user } = useMe();
@@ -154,6 +156,16 @@ export default function TopBar({ supportBadge = false }: { supportBadge?: boolea
                     {(["en", "rw"] as const).map((code) => (
                       <button key={code} type="button" className={cx(language === code && "on")} aria-pressed={language === code} onClick={() => setLanguage(code)}>
                         {code === "en" ? "English" : "Kinyarwanda"}
+                      </button>
+                    ))}
+                  </span>
+                </div>
+                <div className="vita-pop-lang next" role="group" aria-label={t("appearance")}>
+                  <span>{t("appearance")}</span>
+                  <span className="seg">
+                    {(["light", "dark", "system"] as ThemeMode[]).map((mode) => (
+                      <button key={mode} type="button" className={cx(theme.mode === mode && "on")} aria-pressed={theme.mode === mode} onClick={() => theme.setMode(mode)}>
+                        {t(`theme_${mode}`)}
                       </button>
                     ))}
                   </span>

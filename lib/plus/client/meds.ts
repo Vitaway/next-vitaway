@@ -40,10 +40,10 @@ export function useMedicationHistory(id: number | null, days = 30) {
 }
 
 export function refreshMedications(): void {
-  invalidate("/medications");
+  invalidate("/medications", "/api/v1/mobile/insights/meds");
 }
 
-export async function markDose(medicationId: number, date: string, time: string, status: "taken" | "missed"): Promise<void> {
+export async function markDose(medicationId: number, date: string, time: string, status: "taken" | "missed" | "skipped"): Promise<void> {
   await mobileRequest(`/medications/${medicationId}/doses/`, { method: "POST", body: { date, time, status } });
   refreshMedications();
 }

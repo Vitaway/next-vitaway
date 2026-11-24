@@ -1,14 +1,14 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Activity, Award, Book1, Calendar1, Call, CloudCross, Crown1, Cup, Edit2, Flash, Gallery, Lock, MessageFavorite, People, Reserve, ShieldTick, Star1, TickCircle } from "@/lib/plus/icons";
+import { Activity, ArrowRight3, Award, Book1, Calendar1, Call, CloudCross, Crown1, Cup, Edit2, Flash, Gallery, Lock, MessageFavorite, People, Reserve, ShieldTick, Star1, TickCircle } from "@/lib/plus/icons";
 import { badgeFraction, badgeText, fetchBadgeBoard, type BadgeBoard, type BadgeItem } from "@/lib/plus/badge-board";
 import { useLanguage, useT } from "@/lib/plus/i18n";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { mobileRequest, mediaUrl } from "@/lib/plus/client/api";
 import { useArticles, useSubscription, type Article } from "@/lib/plus/client/data";
 import { invalidate, useResource } from "@/lib/plus/client/use-resource";
-import { ActionButton, AppBar, CenterSpinner, EmptyState, Modal, Page, SectionLabel, Tabs, useFeedback } from "../ui/vita";
+import { ActionButton, AppBar, CenterSpinner, EmptyState, Modal, Page, SectionLabel, useFeedback } from "../ui/vita";
 import { YourPathBlock } from "./your-path";
 import { MyProgrammeBlock, useAcademyHome } from "../academy/my-programme";
 
@@ -58,7 +58,7 @@ function ArticleTile({ article, onClick }: { article: Article; onClick: () => vo
   );
 }
 
-/** learn_page.dart: Informative · Sustaining · Earn badges. */
+/** Learn: the Academy (programme or library), then every care-team article in one list (no category tabs). */
 export function LearnScreen() {
   const t = useT();
   const { language } = useLanguage();
@@ -66,12 +66,11 @@ export function LearnScreen() {
   const { confirm } = useFeedback();
   const { active } = useSubscription();
   const { articles, loading, error, reload } = useArticles(language);
-  const [tab, setTab] = useState<"1" | "2" | "3">("1");
-  const filtered = articles.filter((a) => String(a.category) === tab);
   const academy = useAcademyHome();
   const hasProgramme = Boolean(academy.data?.programme && academy.data.programme.live_items > 0);
   const open = async (a: Article) => {
-    if (tab === "3" && !active) {
+    // "Earn badges" articles (category 3) still need a plan, as when they had their own tab.
+    if (String(a.category) === "3" && !active) {
       const go = await confirm({ title: t("premium_feature"), message: t("premium_text"), confirmLabel: t("choose_plan"), cancelLabel: t("cancel") });
       if (go) push("/plans");
       return;
@@ -81,9 +80,19 @@ export function LearnScreen() {
   };
   return (
     <Page width="wide">
-      <AppBar title={cap(t("learn_title"))} back={false} profile bottom={<Tabs onBar value={tab} onChange={setTab} tabs={[{ value: "1", label: cap(t("informative")) }, { value: "2", label: cap(t("sustaining")) }, { value: "3", label: cap(t("earn_badges")) }]} />} />
+      <AppBar title={cap(t("learn_title"))} back={false} profile />
       {/* Vitaway Academy: My programme once the member's course has published lessons; otherwise the BL-154 path. */}
       {hasProgramme ? null : <YourPathBlock />}
+      {/* Members without a programme still reach the published courses and video briefs. */}
+      {!hasProgramme && (academy.data?.library_count ?? 0) > 0 ? (
+        <div className="vita-learn-lib">
+          <button type="button" className="ac-lib-row" onClick={() => push("/learn/library")}>
+            <span className="ac-lib-ic"><Book1 size={22} color="currentColor" /></span>
+            <span><b>{t("learn_library_cta")}</b><small>{t("learn_library_cta_sub")}</small></span>
+            <ArrowRight3 size={18} color="currentColor" />
+          </button>
+        </div>
+      ) : null}
       <div style={{ flex: 1, overflowY: "auto", paddingBottom: 24 }}>
         {hasProgramme && academy.data ? <MyProgrammeBlock home={academy.data} /> : null}
         {loading ? (
@@ -92,10 +101,13 @@ export function LearnScreen() {
           <EmptyState title="Could not load articles" subtitle="Check your connection and try again." actionLabel={t("retry")} onAction={() => void reload()} />
         ) : !articles.length ? (
           <EmptyState title="Nothing to read yet" subtitle="Articles from the care team will show up here." />
-        ) : !filtered.length ? (
-          <EmptyState title={t("no_articles")} subtitle={t("no_articles_body")} />
         ) : (
-          <div className="vita-flex-list vita-tiles">{filtered.map((a) => <ArticleTile key={a.id} article={a} onClick={() => void open(a)} />)}</div>
+          <>
+            <div className="vita-learn-articles-head">
+              <SectionLabel icon={<Book1 size={18} color="currentColor" />} label={t("learn_articles")} />
+            </div>
+            <div className="vita-flex-list vita-tiles">{articles.map((a) => <ArticleTile key={a.id} article={a} onClick={() => void open(a)} />)}</div>
+          </>
         )}
       </div>
     </Page>

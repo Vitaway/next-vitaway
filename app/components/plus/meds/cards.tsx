@@ -101,7 +101,9 @@ export function DoseBadge({ slot, onClick }: { slot: MedicationSlot; onClick?: (
         ? `${slot.time} due`
         : slot.status === "missed"
           ? `${slot.time} missed`
-          : slot.time;
+          : slot.status === "skipped"
+            ? `${slot.time} skipped`
+            : slot.time;
   const style: React.CSSProperties = { padding: "5px 10px", borderRadius: 10, background: bg, color: fg, fontWeight: 700, fontSize: 13, display: "inline-block" };
   if (onClick) {
     return (

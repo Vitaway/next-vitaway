@@ -15,6 +15,7 @@ import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { formatGlucose, formatGlucoseUnitBoth, useGlucoseUnit } from "@/lib/plus/units";
 import { ActionButton, AppBar, CenterSpinner, EmptyState, Modal, Tabs, useFeedback } from "../ui/vita";
 import MetricChart from "./metric-chart";
+import InsightsScreen, { InsightsPanel } from "./insights";
 
 type Range = "week" | "month" | "year";
 
@@ -188,6 +189,11 @@ function SetGoalModal({ open, current, onClose }: { open: boolean; current: numb
 }
 
 export default function MetricDetailScreen({ type }: { type: string }) {
+  if (type === "activity" || type === "meds") return <InsightsScreen type={type} />;
+  return <ReadingDetail type={type} />;
+}
+
+function ReadingDetail({ type }: { type: string }) {
   const t = useT();
   const { push } = usePlusPaths();
   const { metrics, loading } = useMetrics();
@@ -268,6 +274,11 @@ export default function MetricDetailScreen({ type }: { type: string }) {
                 </div>
               </div>
             </button>
+          </div>
+        ) : null}
+        {type === "bp" || type === "glucose" || type === "weight" ? (
+          <div style={{ padding: "8px 16px 0" }}>
+            <InsightsPanel type={type} embedded />
           </div>
         ) : null}
         <div style={{ display: "flex", gap: 10, padding: "20px 16px 20px" }}>

@@ -1,5 +1,6 @@
 /** W30 API calls: read a device photo, then save the member-confirmed reading. */
 import { mobileRequest } from "./client/api";
+import { invalidate } from "./client/use-resource";
 import { parsePhotoRead, type PhotoReadType } from "./photo-read-logic";
 import { prepareImageForUpload } from "./upload-image";
 
@@ -13,5 +14,8 @@ export async function readDevicePhoto(type: PhotoReadType, file: File) {
 }
 
 export async function saveConfirmedReading(body: Record<string, unknown>) {
-  return mobileRequest(`/api/v1/mobile/observations`, { method: "POST", body });
+  const saved = await mobileRequest(`/api/v1/mobile/observations`, { method: "POST", body });
+  // The backend also writes the legacy metric row, so the tiles and charts must refetch now, not in 30 s.
+  invalidate("/api/v1/mobile/health/metrics", "/api/v1/mobile/insights", "/api/v1/mobile/observations");
+  return saved;
 }

@@ -55,6 +55,7 @@ export const QUICK_ACTIONS: QuickAction[] = [
   { label: "quick_blood_glucose", path: "/log/glucose", tint: ILLU_TINT.glucose, icon: <Illu name="glucose" size={30} /> },
   { label: "quick_blood_pressure", path: "/log/bp", tint: ILLU_TINT.bp, icon: <Illu name="bp" size={30} /> },
   { label: "quick_weight", path: "/log/weight", tint: ILLU_TINT.weight, icon: <Illu name="weight" size={30} /> },
+  { label: "quick_habits", path: "/habits", tint: ILLU_TINT.today, icon: <Illu name="today" size={30} /> },
   { label: "quick_meal_photo", path: "/meal-photos/new", tint: ILLU_TINT["meal-photo"], icon: <Illu name="meal-photo" size={30} /> },
   // BL-122: the + menu reaches the Pillbox (add a medicine from there), as in Flutter.
   { label: "pillbox", path: "/medications", tint: ILLU_TINT.pillbox, icon: <Illu name="pillbox" size={30} /> },
