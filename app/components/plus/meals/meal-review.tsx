@@ -17,6 +17,7 @@ import {
   PREPARATIONS,
   QUANTITIES,
   QUICK_GROUP_ORDER,
+  askToAdd,
   commonFoods,
   defaultPortionText,
   getFood,
@@ -172,6 +173,8 @@ export function PortionSheet({ item, onChange, onClose }: { item: ReviewItem | n
           +
         </button>
       </div>
+      {item.group_code === "12" || item.group_code === "06" ? null : (
+        <>
       <div style={{ fontSize: 13, fontWeight: 700, color: "var(--vc-muted)", marginTop: 16 }}>{t("mr_preparation")}</div>
       <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 8 }}>
         {PREPARATIONS.map((p) => (
@@ -180,6 +183,8 @@ export function PortionSheet({ item, onChange, onClose }: { item: ReviewItem | n
           </button>
         ))}
       </div>
+        </>
+      )}
       {n.kcal != null ? (
         <div className="vfp-nums">
           <span><b>~{n.kcal}</b> kcal</span>
@@ -218,8 +223,9 @@ function FoodRow({ food, onPick, disabled }: { food: FoodOption; onPick: (food: 
 let quickCache: { recent: FoodOption[]; common: FoodOption[]; at: number } | null = null;
 
 /** Search the food list (MiraFood master database, or the unverified fallback list) and add a food; a typed name works too. */
-export function FoodSearchSheet({ open, onPick, onClose }: { open: boolean; onPick: (item: ReviewItem) => void; onClose: () => void }) {
+export function FoodSearchSheet({ open, onPick, onClose, initialQuery = "" }: { open: boolean; onPick: (item: ReviewItem) => void; onClose: () => void; initialQuery?: string }) {
   const t = useT();
+  const [asked, setAsked] = useState<string | null>(null);
   const { language } = useLanguage();
   const [q, setQ] = useState("");
   const [group, setGroup] = useState<string | null>(null);
@@ -229,7 +235,8 @@ export function FoodSearchSheet({ open, onPick, onClose }: { open: boolean; onPi
   const inputRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
     if (!open) return;
-    setQ("");
+    setQ(initialQuery);
+    setAsked(null);
     setGroup(null);
     setResults(null);
     setTimeout(() => inputRef.current?.focus(), 50);
@@ -332,6 +339,21 @@ export function FoodSearchSheet({ open, onPick, onClose }: { open: boolean; onPi
           <h4>{group && q.trim().length < 2 ? groupName(group) : t("mr_search_results")}</h4>
           <div className="vfp-list">{results?.map((food) => <FoodRow key={food.food_key} food={food} onPick={(f) => void pick(f)} disabled={busy} />)}</div>
           {results && !results.length ? <p className="vfp-muted">{t("mr_search_empty")}</p> : null}
+          {results && !results.length && q.trim().length >= 2 ? (
+            <button
+              type="button"
+              data-testid="ask-add"
+              disabled={asked === q.trim()}
+              onClick={() => {
+                const term = q.trim();
+                setAsked(term);
+                void askToAdd(term).catch(() => setAsked(null));
+              }}
+              style={{ marginTop: 8, ...chip(asked === q.trim()) }}
+            >
+              {asked === q.trim() ? t("mr_asked_done") : t("mr_ask_add", { name: q.trim() })}
+            </button>
+          ) : null}
           {q.trim().length >= 2 ? (
             <button type="button" onClick={() => onPick(itemFromTyped(q))} style={{ marginTop: 12, ...chip(false) }}>
               {t("mr_search_add_typed", { name: q.trim() })}
@@ -342,6 +364,13 @@ export function FoodSearchSheet({ open, onPick, onClose }: { open: boolean; onPi
     </Sheet>
   );
 }
+
+const QUICK_DRINKS = [
+  { key: "mf:MF-12-0003-NS", emoji: "💧", label: "mr_drink_water" },
+  { key: "mf:MF-05-0009-MX", emoji: "🧃", label: "mr_drink_juice" },
+  { key: "mf:MF-12-0019-NS", emoji: "🍵", label: "mr_drink_tea" },
+  { key: "mf:MF-06-0001-BO", emoji: "🥛", label: "mr_drink_milk" },
+];
 
 export function MealReviewItems({
   items,
@@ -358,6 +387,19 @@ export function MealReviewItems({
   const [adding, setAdding] = useState(false);
   const totals = useMemo(() => reviewTotals(items), [items]);
   const editItem = items.find((i) => i.uid === editing) ?? null;
+  const [busyDrink, setBusyDrink] = useState(false);
+  const addDrink = async (key: string) => {
+    setBusyDrink(true);
+    try {
+      const item = itemFromFood(await getFood(key));
+      setItems([...items, item]);
+      setEditing(item.uid);
+    } catch {
+      setAdding(true);
+    } finally {
+      setBusyDrink(false);
+    }
+  };
   const update = (next: ReviewItem) => setItems(items.map((i) => (i.uid === next.uid ? next : i)));
   return (
     <div>
@@ -417,6 +459,14 @@ export function MealReviewItems({
           </div>
         );
       })}
+      <div data-testid="quick-drinks" style={{ marginTop: 12, display: "flex", flexWrap: "wrap", gap: 6, alignItems: "center" }}>
+        <span style={{ fontSize: 13, fontWeight: 700, color: "var(--vc-muted)" }}>{t("mr_quick_drinks")}</span>
+        {QUICK_DRINKS.map((d) => (
+          <button key={d.key} type="button" disabled={busyDrink} onClick={() => void addDrink(d.key)} style={chip(false)}>
+            {d.emoji} {t(d.label)}
+          </button>
+        ))}
+      </div>
       <button
         type="button"
         data-testid="add-food"

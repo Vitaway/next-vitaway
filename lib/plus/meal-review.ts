@@ -60,3 +60,8 @@ export async function recognizeMeal(file: File): Promise<Recognition> {
       : [],
   };
 }
+
+/** "Ask MiraFood to add it": tells the food team a member looked for a food we do not have (counted once per member, word and day). */
+export async function askToAdd(term: string, source: "search" | "typed" = "search"): Promise<void> {
+  await mobileRequest(`${FOODS}/requests`, { method: "POST", body: { term, source } });
+}

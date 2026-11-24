@@ -1758,5 +1758,13 @@
  "acct_sec_rewards": "Ibihembo n'umuryango",
  "acct_sec_prefs": "Ibyo ukunda",
  "acct_sec_help": "Ubufasha n'amategeko",
- "prof_complete": "Amakuru {n} kuri {total} yongewemo"
+ "prof_complete": "Amakuru {n} kuri {total} yongewemo",
+ "mr_type_instead": "Nta foto ufite? Yandike aho",
+ "mr_quick_drinks": "Ongeraho vuba",
+ "mr_drink_water": "Amazi",
+ "mr_drink_juice": "Umutobe",
+ "mr_drink_tea": "Icyayi",
+ "mr_drink_milk": "Amata",
+ "mr_ask_add": "Saba MiraFood kongeraho “{name}”",
+ "mr_asked_done": "Murakoze, itsinda ry’ibiribwa rirabirebera"
 }

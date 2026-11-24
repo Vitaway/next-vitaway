@@ -1755,5 +1755,13 @@
  "acct_sec_rewards": "Rewards and community",
  "acct_sec_prefs": "Preferences",
  "acct_sec_help": "Help and legal",
- "prof_complete": "{n} of {total} details added"
+ "prof_complete": "{n} of {total} details added",
+ "mr_type_instead": "No photo? Type it instead",
+ "mr_quick_drinks": "Quick add",
+ "mr_drink_water": "Water",
+ "mr_drink_juice": "Juice",
+ "mr_drink_tea": "Tea",
+ "mr_drink_milk": "Milk",
+ "mr_ask_add": "Ask MiraFood to add “{name}”",
+ "mr_asked_done": "Thanks, the food team will look at it"
 }

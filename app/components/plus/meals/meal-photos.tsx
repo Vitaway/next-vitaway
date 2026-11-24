@@ -14,6 +14,7 @@ import {
 } from "@/lib/plus/meal-photos";
 import { useLanguage, useT } from "@/lib/plus/i18n";
 import { FoodTargetsCard, PlanTodayCard } from "./food-today";
+import { PlateDrawing } from "./plate";
 import { useProgrammeConfig } from "@/lib/plus/client/programme-config";
 import { MobileApiError } from "@/lib/plus/client/api";
 import { changeLine, getFood, mealPollMs, itemFromRecognised, recognizeMeal, toSubmission, type Recognition, type ReviewItem } from "@/lib/plus/meal-review";
@@ -42,6 +43,16 @@ function AuthImage({ id, thumb, alt }: { id: number; thumb?: boolean; alt: strin
   if (!src) return <div style={{ width: "100%", height: "100%", background: "var(--vc-surface-muted)" }} />;
   // eslint-disable-next-line @next/next/no-img-element
   return <img src={src} alt={alt} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />;
+}
+
+/** The meal's picture: its photo, or a plate drawn from its foods when it was typed in without one. */
+function MealThumb({ meal, thumb, size }: { meal: MealPhoto; thumb?: boolean; size: number }) {
+  if (meal.has_image) return <AuthImage id={meal.id} thumb={thumb} alt="" />;
+  return (
+    <div style={{ width: "100%", height: "100%", display: "grid", placeItems: "center", background: "var(--vc-surface-muted)" }}>
+      <PlateDrawing foods={meal.foods} size={size} />
+    </div>
+  );
 }
 
 function statusTone(status: string) {
@@ -127,7 +138,7 @@ export function MealPhotosScreen() {
                 return (
                   <button key={photo.id} type="button" className="vita-nu-card" onClick={() => push(`/meal-photos/${photo.id}`)}>
                     <span className="ph">
-                      <AuthImage id={photo.id} thumb alt="" />
+                      <MealThumb meal={photo} thumb size={120} />
                       <span className={`vita-mc-chip tone-${statusTone(photo.status)}`}>{photo.status_label}</span>
                     </span>
                     <span className="bd">
@@ -177,6 +188,11 @@ export function MealPhotoComposeScreen({ retakeOf }: { retakeOf?: number }) {
   const [items, setItems] = useState<ReviewItem[]>([]);
 
   /** W23: after the photo, ask for suggestions (MiraFood when on), then let the member check them. */
+  const typeInstead = () => {
+    setFile(null);
+    setStep("review");
+  };
+
   const toReview = async () => {
     if (!file) {
       toast(t("meal_photos_need_photo"), { error: true });
@@ -208,14 +224,14 @@ export function MealPhotoComposeScreen({ retakeOf }: { retakeOf?: number }) {
   }, [file]);
 
   const send = async () => {
-    if (!file) {
+    if (!file && !items.length) {
       toast(t("meal_photos_need_photo"), { error: true });
       return;
     }
     setSaving(true);
     try {
       const photo = await uploadMealPhoto({
-        file,
+        file: file ?? undefined,
         mealType,
         note,
         retakeOf,
@@ -243,7 +259,11 @@ export function MealPhotoComposeScreen({ retakeOf }: { retakeOf?: number }) {
             {preview ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={preview} alt="" style={{ width: 72, height: 72, borderRadius: 12, objectFit: "cover", flex: "none" }} />
-            ) : null}
+            ) : (
+              <span style={{ width: 72, height: 72, flex: "none", borderRadius: 12, background: "var(--vc-surface-muted)", display: "grid", placeItems: "center" }}>
+                <PlateDrawing size={60} foods={items.map((i) => ({ grams: i.grams ?? null, group_code: i.group_code ?? null }))} />
+              </span>
+            )}
             <div style={{ fontSize: 13, lineHeight: 1.4, color: "var(--vc-body)" }}>
               <b style={{ color: "var(--vc-teal-ink)" }}>{t(`meal_type_${mealType}`)}</b>
               <br />
@@ -296,6 +316,11 @@ export function MealPhotoComposeScreen({ retakeOf }: { retakeOf?: number }) {
             </span>
           )}
         </button>
+        {!retakeOf ? (
+          <button type="button" data-testid="type-instead" onClick={typeInstead} style={{ display: "block", margin: "12px auto 0", border: "none", background: "transparent", color: "var(--vc-teal-ink)", fontWeight: 800, fontSize: 14, textDecoration: "underline", padding: 6 }}>
+            {t("mr_type_instead")}
+          </button>
+        ) : null}
         <div style={{ display: "flex", gap: 10, marginTop: 12 }}>
           <ActionButton small label={t("meal_photos_library")} onClick={() => inputRef.current?.click()} icon={<Gallery size={14} color="currentColor" />} />
         </div>
@@ -380,7 +405,7 @@ export function MealPhotoDetailScreen({ id }: { id: number }) {
       <AppBar title={t("meal_photos_title")} />
       <div className="vita-media-split" style={{ flex: 1, overflowY: "auto", padding: "16px 20px 32px" }}>
         <div className="media" style={{ aspectRatio: "4 / 3", borderRadius: 14, overflow: "hidden" }}>
-          <AuthImage id={photo.id} alt="" />
+          <MealThumb meal={photo} size={240} />
         </div>
         <div className="info">
         <h1 style={{ margin: "16px 0 0", fontSize: 22, fontWeight: 800, color: "var(--vc-teal-ink)" }}>{t(`meal_type_${photo.meal_type}`)}</h1>

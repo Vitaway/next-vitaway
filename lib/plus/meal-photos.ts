@@ -35,6 +35,15 @@ export type MealPhotoFood = {
   kcal: number | null;
   /** W24: a reviewer added or changed this food. */
   coach_changed: boolean;
+  /** The member changed a recognised food (portion or cooking): shown as "Edited by you". */
+  member_changed: boolean;
+  /** MiraFood food group ("01".."15") from the food id, for the drawn plate. */
+  group_code: string | null;
+  protein_g: number | null;
+  fibre_g: number | null;
+  carbs_g: number | null;
+  /** The AI's confidence for a recognised food (0..1). */
+  confidence: number | null;
 };
 
 /** W24: one line of "What changed" after a reviewer edited the foods. */
@@ -53,6 +62,8 @@ export type MealPhoto = {
   status_label: string;
   review: MealPhotoReview | null;
   retake_of: number | null;
+  /** False for a meal typed in without a photo; the app draws a plate from its foods. */
+  has_image: boolean;
   image_url: string;
   thumb_url: string;
   created_at: string;
@@ -82,6 +93,12 @@ export function parseMealPhoto(raw: unknown): MealPhoto {
             verified: f.verified === true,
             kcal: num((f.nutrients as Record<string, unknown> | null | undefined)?.kcal),
             coach_changed: f.coach_changed === true,
+            member_changed: f.member_changed === true,
+            group_code: typeof f.food_id === "string" ? (/MF-(\d\d)-/.exec(f.food_id)?.[1] ?? null) : null,
+            protein_g: num((f.nutrients as Record<string, unknown> | null | undefined)?.protein_g),
+            fibre_g: num((f.nutrients as Record<string, unknown> | null | undefined)?.fibre_g),
+            carbs_g: num((f.nutrients as Record<string, unknown> | null | undefined)?.carbs_g),
+            confidence: num(f.confidence),
           }))
       : [],
     changes: Array.isArray(json.changes)
@@ -104,6 +121,7 @@ export function parseMealPhoto(raw: unknown): MealPhoto {
         }
       : null,
     retake_of: json.retake_of == null ? null : Number(json.retake_of),
+    has_image: json.has_image !== false && Boolean(json.image_url),
     image_url: String(json.image_url ?? ""),
     thumb_url: String(json.thumb_url ?? ""),
     created_at: String(json.created_at ?? ""),
@@ -129,7 +147,8 @@ export async function getMealPhoto(id: number): Promise<MealPhoto> {
 }
 
 export async function uploadMealPhoto(input: {
-  file: File;
+  /** Omit for a meal typed in without a photo (it must name at least one food). */
+  file?: File | null;
   mealType: string;
   note?: string;
   retakeOf?: number | null;
@@ -140,7 +159,7 @@ export async function uploadMealPhoto(input: {
   datasetVersion?: string | null;
 }): Promise<MealPhoto> {
   const form = new FormData();
-  form.append("image", await prepareImageForUpload(input.file));
+  if (input.file) form.append("image", await prepareImageForUpload(input.file));
   form.append("meal_type", input.mealType);
   form.append("eaten_at", new Date().toISOString());
   if (input.note?.trim()) form.append("note", input.note.trim());
