@@ -310,6 +310,7 @@ export default function AllMetricsScreen() {
           <HubLinks
             links={[
               { label: t("pillbox"), icon: <Illu name="pillbox" size={30} />, tint: ILLU_TINT.pillbox, onClick: () => push("/medications") },
+              { label: t("rpt_title"), icon: <Illu name="food-reports" size={30} />, tint: ILLU_TINT["food-reports"], onClick: () => push("/reports") },
               { label: t("health_score"), icon: <Illu name="health-score" size={30} />, tint: ILLU_TINT["health-score"], onClick: () => push("/health-score") },
               { label: t("reminders_title"), icon: <Illu name="reminders" size={30} />, tint: ILLU_TINT.reminders, onClick: () => push("/reminders") },
             ]}
