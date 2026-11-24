@@ -129,9 +129,10 @@ html:has(.vita-root[data-theme="dark"]) body {
 }
 
 .vita-root *, .vita-root *::before, .vita-root *::after { box-sizing: border-box; }
-.vita-root button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
-.vita-root input, .vita-root textarea, .vita-root select { font: inherit; color: inherit; }
-.vita-root a { color: inherit; text-decoration: none; }
+/* Low-specificity reset, so any class on a button (chips, pills, tiles) wins over it. */
+:where(.vita-root) button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+:where(.vita-root) :is(input, textarea, select) { font: inherit; color: inherit; }
+:where(.vita-root) a { color: inherit; text-decoration: none; }
 
 /* Edge-to-edge column: no phone frame, no grey gutters, no max-width cap. */
 .vita-column {
@@ -260,7 +261,7 @@ textarea.vita-input { height: auto; min-height: 96px; padding: 12px 14px; resize
 .vita-tabs.scroll { overflow-x: auto; scrollbar-width: none; padding: 0 8px; }
 .vita-tabs.scroll::-webkit-scrollbar { display: none; }
 .vita-tabs.scroll button { flex: none; padding: 0 14px; white-space: nowrap; }
-.vita-tabs button { flex: 1; height: 46px; font-size: 13px; font-weight: 500; color: rgba(var(--vc-navy-rgb), 0.38); position: relative; }
+.vita-tabs button { flex: 1; height: 46px; font-size: 13px; font-weight: 500; color: rgba(var(--vc-navy-rgb), 0.62); position: relative; }
 .vita-tabs button.on { font-weight: 700; color: var(--vc-navy); }
 .vita-tabs button.on::after { content: ""; position: absolute; left: 12%; right: 12%; bottom: 0; height: 3px; background: var(--vc-mint); border-radius: 2px; }
 .vita-tabs.on-bar button { color: rgba(255, 255, 255, 0.62); }
@@ -1910,41 +1911,11 @@ button.vita-quiz-input { text-align: left; cursor: pointer; }
 }
 
 /* ── Home "This week" reading cards v2 (23 Nov 2026): one layout, equal heights, nothing cut off ─────────── */
-.vita-root .vita-ins {
-  width: 100%; height: 100%; display: grid; grid-template-areas: "head" "body" "chart"; grid-template-rows: auto 1fr auto; gap: 10px;
-  text-align: left; padding: 14px 14px 12px; border-radius: 16px; background: var(--vc-surface); color: var(--vc-ink);
-  border: 1px solid rgba(var(--vc-navy-rgb), 0.06); position: relative; overflow: hidden;
-}
-.vita-root .vita-ins::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 3px; background: var(--ins-ink); opacity: 0.85; }
-.vita-ins-head { grid-area: head; display: flex; align-items: center; gap: 8px; color: rgba(var(--vc-navy-rgb), 0.35); }
-.vita-ins-ic { width: 30px; height: 30px; border-radius: 9px; flex: none; display: flex; align-items: center; justify-content: center; background: var(--ins-tint); color: var(--ins-ink); }
-.vita-ins-title { flex: 1; min-width: 0; font-size: 13.5px; font-weight: 800; color: var(--vc-ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.vita-ins-body { grid-area: body; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
-.vita-ins-val { display: flex; align-items: baseline; flex-wrap: wrap; column-gap: 6px; }
-.vita-ins-val b { font-size: 28px; line-height: 1.1; font-weight: 800; letter-spacing: -0.5px; color: var(--vc-ink); font-variant-numeric: tabular-nums; }
-.vita-ins-val small { font-size: 13px; font-weight: 800; color: rgba(var(--vc-navy-rgb), 0.55); }
-.vita-ins-alt { font-size: 12px; font-weight: 700; color: rgba(var(--vc-navy-rgb), 0.45); }
-.vita-ins-status {
-  margin-top: 4px; font-size: 12.5px; line-height: 1.4; font-weight: 600; color: rgba(var(--vc-navy-rgb), 0.62);
-  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
-}
-.vita-ins.is-empty .vita-ins-val b { color: rgba(var(--vc-navy-rgb), 0.3); }
-.vita-ins-chart { grid-area: chart; display: block; min-width: 0; padding: 8px 8px 0; margin: 0 -4px; border-radius: 12px; background: linear-gradient(180deg, transparent, rgba(var(--vc-navy-rgb), 0.035)); }
-.vita-ins-days { display: flex; margin-top: 2px; padding-bottom: 6px; }
-.vita-ins-days span { flex: 1; text-align: center; font-size: 10px; font-weight: 800; color: rgba(var(--vc-navy-rgb), 0.38); }
-.vita-ins-days span.today { color: var(--ins-ink); }
 /* Phone, full-width card: text left, chart right. */
-.vita-root .vita-ins.is-wide { grid-template-areas: "head head" "body chart"; grid-template-columns: minmax(0, 1fr) 132px; grid-template-rows: auto auto; align-items: end; }
-.vita-ins.is-wide .vita-ins-chart { align-self: end; }
-.vita-root[data-theme="dark"] .vita-ins { border-color: rgba(255, 255, 255, 0.06); }
-.vita-root[data-theme="dark"] .vita-ins-chart { background: linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.03)); }
 
 @media (min-width: 768px) {
   .vita-home-metrics { align-items: stretch !important; }
   .vita-home-metrics > div { display: flex; }
-  .vita-root .vita-ins, .vita-root .vita-ins.is-wide { grid-template-areas: "head" "body" "chart"; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 1fr auto; align-items: stretch; padding: 16px 16px 12px; min-height: 236px; }
-  .vita-root .vita-home-body .vita-ins { border-radius: 18px !important; }
-  .vita-ins-val b { font-size: 30px; }
 
   /* Lead row: the two cards share one look and one height. */
   .vita-home-lead { align-items: stretch; }
@@ -2054,7 +2025,7 @@ button.vita-quiz-input { text-align: left; cursor: pointer; }
 .vita-ins-heat i.t { background: var(--vc-teal); }
 .vita-ins-heat i.m { background: var(--vc-action); }
 .vita-ins-heat i.n { border: 1.5px dashed rgba(var(--vc-navy-rgb),0.35); }
-@media (min-width: 900px) { .vita-ins:not(.embedded) { max-width: 720px; } }
+@media (min-width: 900px) { .vita-ins:not(.embedded) { max-width: 760px; margin: 0 auto; width: 100%; } }
 
 /* Learn: library entry for members without a programme (same padding as the path card). */
 .vita-learn-lib { padding: 0 16px 4px; }
@@ -2420,3 +2391,5 @@ button.vita-quiz-input { text-align: left; cursor: pointer; }
   .vita-chat-main [data-testid="chat-safety-banner"] > span > span { display: inline !important; margin: 0 8px 0 0 !important; }
 }
 .vita-chat .vita-chat-head { margin: 0 !important; }
+.vita-ft-wrap > :only-child { grid-column: 1 / -1; }
+.vita-med-dose .vita-med-input { min-width: 0; }

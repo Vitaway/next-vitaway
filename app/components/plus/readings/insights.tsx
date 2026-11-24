@@ -444,7 +444,7 @@ function MedsView({ d, ctx, lang }: { d: MedsInsight; ctx: Ctx; lang: string }) 
             return (
               <div key={`${r.medication_id}-${r.slot}`} className="vita-ins-pill">
                 <b>{r.name} · {r.slot}</b>
-                <div className="vita-ins-heat" style={{ gridTemplateColumns: `repeat(${Math.max(days.length, 7)}, 1fr)` }}>
+                <div className="vita-ins-heat" style={{ gridTemplateColumns: `repeat(${Math.max(days.length, 7)}, minmax(0, 16px))` }}>
                   {days.map((x) => <i key={x.date} className={cell(x.status)} title={`${shortDay(x.date, lang)}: ${x.status}`} />)}
                 </div>
               </div>

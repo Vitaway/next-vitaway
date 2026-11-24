@@ -239,7 +239,7 @@ function ReadingDetail({ type }: { type: string }) {
         <div style={{ padding: "14px 16px 0" }}>
           <SummaryHero metric={selected} bmi={bmi} avg={weekAverage(type, metrics)} date={dateLabel(selected.last_updated, t)} />
         </div>
-        <div style={{ height: 280, padding: "8px 8px 0 4px" }}>
+        <div style={{ height: series.length ? 280 : 120, padding: "8px 8px 0 4px" }}>
           {series.length === 0 ? (
             <div style={{ height: "100%", display: "flex", alignItems: "center", justifyContent: "center", textAlign: "center", color: "rgba(var(--vc-navy-rgb),0.55)", fontWeight: 600 }}>{emptyCopy}</div>
           ) : (
