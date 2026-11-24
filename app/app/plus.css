@@ -2365,3 +2365,58 @@ button.vita-quiz-input { text-align: left; cursor: pointer; }
 .vita-ft-plan-tx b { display: block; font-size: 14px; color: var(--vc-ink); }
 .vita-ft-plan button { flex: none; min-height: 36px; padding: 0 12px; border-radius: 10px; background: var(--vc-surface-muted); color: var(--vc-navy); font-size: 13px; font-weight: 800; }
 .vita-ft-plan.now button { background: var(--vc-action); color: #fff; }
+
+/* ── Chat (24 Nov): sidebar of conversations on desktop, readable header, pinned composer ── */
+.vita-page.vita-chat { display: flex; flex-direction: row; }
+.vita-chat-main { flex: 1; min-width: 0; display: flex; flex-direction: column; min-height: 0; }
+.vita-chat-side { display: none; }
+.vita-chat-head { color: #fff; }
+.vita-chat-head-row { height: 64px; display: flex; align-items: center; gap: 10px; padding: 0 12px 0 8px; }
+.vita-chat-who { flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px; text-align: left; color: inherit; }
+.vita-chat-who .tx { flex: 1; min-width: 0; }
+.vita-chat-who .nm { display: flex; align-items: center; gap: 6px; font-size: 15.5px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.vita-chat-who .sub { display: flex; align-items: center; gap: 6px; margin-top: 2px; font-size: 12.5px; font-weight: 600; opacity: .82; white-space: nowrap; overflow: hidden; }
+.vita-chat-who .pres { display: inline-flex; align-items: center; gap: 5px; }
+.vita-chat-who .pres i { width: 7px; height: 7px; border-radius: 50%; opacity: .9; }
+.vita-chat-empty { max-width: 380px; margin: 0 auto; padding: 48px 24px 24px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px; }
+.vita-chat-empty b { margin-top: 10px; font-size: 18px; font-weight: 800; color: var(--vc-navy); }
+.vita-chat-empty .role { font-size: 13px; font-weight: 700; color: rgba(var(--vc-navy-rgb),0.6); }
+.vita-chat-empty p { margin: 6px 0 14px; font-size: 14px; line-height: 1.45; color: rgba(var(--vc-navy-rgb),0.6); }
+.vita-chat-quick { display: flex; gap: 8px; overflow-x: auto; padding: 10px 12px 0; scrollbar-width: none; }
+.vita-chat-quick::-webkit-scrollbar { display: none; }
+.vita-chat-quick button { flex: none; min-height: 36px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--vc-line); background: var(--vc-surface); color: var(--vc-navy); font-size: 13px; font-weight: 700; white-space: nowrap; }
+.vita-chat-quick button:hover { border-color: var(--vc-action); }
+.vita-chat-compose { display: flex; align-items: flex-end; gap: 8px; padding: 10px 12px; }
+
+@media (min-width: 1024px) {
+  /* Fits under the top bar: the composer is always on screen. */
+  .vita-app-main .vita-page.vita-chat {
+    height: calc(100dvh - 136px) !important; min-height: 0 !important; max-width: 1200px !important; margin: 0 auto 24px !important; padding: 0 !important;
+    border-radius: 18px; overflow: hidden; border: 1px solid var(--vc-line); box-shadow: var(--vc-card-shadow); background: var(--vc-surface) !important;
+  }
+  .vita-chat-side { display: flex; flex-direction: column; width: 320px; flex: none; border-right: 1px solid var(--vc-line); background: var(--vc-canvas); min-height: 0; }
+  .vita-chat-side-head { padding: 18px 16px 10px; }
+  .vita-chat-side-head h2 { margin: 0 0 10px; font-size: 18px; font-weight: 800; color: var(--vc-navy); }
+  .vita-chat-side-head input { width: 100%; min-height: 40px; border-radius: 10px; border: 1px solid var(--vc-line); background: var(--vc-surface); color: var(--vc-ink); padding: 0 12px; font: inherit; font-size: 14px; }
+  .vita-chat-side-list { flex: 1; overflow-y: auto; padding: 0 8px 8px; }
+  .vita-chat-side-empty { padding: 16px; font-size: 13px; color: rgba(var(--vc-navy-rgb),0.55); }
+  .vita-chat-side .vita-chat-side-row { width: 100%; display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 12px; text-align: left; color: var(--vc-ink); }
+  .vita-chat-side-row:hover { background: rgba(var(--vc-navy-rgb),0.05); }
+  .vita-chat-side-row.on { background: var(--vc-surface); box-shadow: 0 1px 6px rgba(var(--vc-navy-rgb),0.1); }
+  .vita-chat-side-row .tx { flex: 1; min-width: 0; }
+  .vita-chat-side-row .top, .vita-chat-side-row .bot { display: flex; align-items: center; gap: 8px; }
+  .vita-chat-side-row .top b { flex: 1; min-width: 0; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .vita-chat-side-row .top small { font-size: 11.5px; font-weight: 600; color: rgba(var(--vc-navy-rgb),0.5); }
+  .vita-chat-side-row .bot span { flex: 1; min-width: 0; font-size: 12.5px; font-weight: 600; color: rgba(var(--vc-navy-rgb),0.55); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .vita-chat-side-row .bot i { font-style: normal; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 99px; background: var(--vc-action); color: #fff; font-size: 11px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; }
+  .vita-chat-side .vita-chat-side-new { margin: 8px 16px 16px; min-height: 42px; border-radius: 12px; background: var(--vc-action); color: #fff; font-weight: 800; font-size: 14px; }
+  .vita-chat-head { color: var(--vc-ink); background: var(--vc-surface) !important; border-bottom: 1px solid var(--vc-line); }
+  .vita-chat-head .vita-chat-head-row { height: 72px; padding: 0 16px; }
+  .vita-chat-head .vita-chat-head-row > .vita-circle-btn:first-child { display: none; }
+  .vita-chat-head .vita-circle-btn { background: var(--vc-canvas) !important; color: var(--vc-navy) !important; }
+  .vita-chat-who .sub { opacity: 1; color: rgba(var(--vc-navy-rgb),0.6); }
+  .vita-chat-main .vita-bubble-col { max-width: 62% !important; }
+  .vita-chat-main [data-testid="chat-safety-banner"] { padding: 8px 20px !important; }
+  .vita-chat-main [data-testid="chat-safety-banner"] > span > span { display: inline !important; margin: 0 8px 0 0 !important; }
+}
+.vita-chat .vita-chat-head { margin: 0 !important; }
