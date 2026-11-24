@@ -1656,5 +1656,6 @@
  "ft_estimate": "Numbers are estimates until your nutritionist checks the meal.",
  "ft_plan_today": "Today on your meal plan",
  "ft_log_this": "Log this meal",
- "ft_plan_note": "Ate something else? Log it anyway; your nutritionist sees what you really ate."
+ "ft_plan_note": "Ate something else? Log it anyway; your nutritionist sees what you really ate.",
+ "care_topic_habits": "Habits and motivation"
 }

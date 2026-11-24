@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Activity, ArrowRight3, Call, Camera, Danger, DocumentText, Drop, FolderOpen, Health, MessageQuestion, NoteText, Reserve } from "@/lib/plus/icons";
+import { Activity, ArrowRight3, Call, Camera, Danger, DocumentText, Drop, Flash, FolderOpen, Health, MessageQuestion, NoteText, Reserve } from "@/lib/plus/icons";
 import { useT } from "@/lib/plus/i18n";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { MobileApiError, mobileRequest } from "@/lib/plus/client/api";
@@ -29,6 +29,7 @@ const TOPICS: Array<[string, string, React.ReactNode]> = [
   ["sugar", "care_topic_sugar", <Drop key="sugar" size={20} color="currentColor" />],
   ["bp", "care_topic_bp", <Activity key="bp" size={20} color="currentColor" />],
   ["symptoms", "care_topic_symptoms", <Danger key="symptoms" size={20} color="currentColor" />],
+  ["habits", "care_topic_habits", <Flash key="habits" size={20} color="currentColor" />],
   ["other", "care_topic_other", <MessageQuestion key="other" size={20} color="currentColor" />],
 ];
 
