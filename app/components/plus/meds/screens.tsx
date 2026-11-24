@@ -331,8 +331,10 @@ export function AddMedicationScreen() {
       loading={saving}
       onSave={valid && !saving ? () => void save() : undefined}
       saveHint={missing}
+      form
     >
       <div className="vita-med-form">
+        <div className="vita-med-col">
         <MedSection step={1} title={t("med_section_name")} done={nameOk}>
           <label className={`vita-med-input${nameError ? " bad" : nameOk ? " good" : ""}`}>
             <Health size={22} color="currentColor" />
@@ -410,6 +412,8 @@ export function AddMedicationScreen() {
           <FieldNote error={freqError} />
         </MedSection>
 
+        </div>
+        <div className="vita-med-col">
         <MedSection step={4} title={t("med_section_times")} done={!timesError}>
           <div className="vita-med-times">
             {times.map((tm, i) => (
@@ -456,6 +460,7 @@ export function AddMedicationScreen() {
           <p>{summary ?? t("med_summary_empty")}</p>
         </div>
         {submitError ? <p className="vita-med-note error" role="alert">{submitError}</p> : null}
+        </div>
       </div>
       <Modal
         open={duplicate !== null}

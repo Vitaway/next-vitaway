@@ -86,7 +86,7 @@ export default function MyCareScreen() {
       stashCoach(coachFromPro(pro));
       push(`/coaches/${pro.account_id}/book`);
     } else {
-      push("/book-visit");
+      push(`/book-visit?pro=${encodeURIComponent(pro.id)}&with=${encodeURIComponent(pro.name)}&role=${encodeURIComponent(pro.role_label.en)}`);
     }
   };
 

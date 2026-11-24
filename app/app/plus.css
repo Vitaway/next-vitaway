@@ -2618,3 +2618,16 @@ button.vita-quiz-input { text-align: left; cursor: pointer; }
 @media (min-width: 768px) {
   .vita-root .vita-topbar, .vita-root[data-theme="dark"] .vita-topbar { background: var(--band); pointer-events: auto; padding-bottom: 12px; border-radius: 0 0 22px 22px; box-shadow: 0 6px 18px rgba(0, 20, 26, 0.16); }
 }
+
+/* Save bar: the hint sits under the button, never beside it (it collided with the button on desktop) */
+.vita-root .vita-bottom-bar { flex-direction: column; align-items: center; }
+.vita-bottom-bar .vita-save-hint { margin-top: 6px; }
+
+/* Add Medication: a full-width form, two columns on desktop (what / how often on the left, when / notes on the right) */
+.vita-med-col { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+@media (min-width: 1024px) {
+  .vita-log-page.is-form .vita-log-body { display: block; }
+  .vita-log-page.is-form .vita-log-main { max-width: 1040px; margin: 0 auto; }
+  .vita-log-page.is-form .vita-med-form { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; align-items: start; padding: 20px 0 16px; }
+  .vita-log-page.is-form .vita-bottom-bar .vita-btn.full { min-width: 320px; }
+}

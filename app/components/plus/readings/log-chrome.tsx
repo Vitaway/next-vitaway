@@ -23,6 +23,7 @@ export function MetricLogScaffold({
   photoType,
   metricType,
   saveHint,
+  form = false,
 }: {
   title: string;
   /** Kept for callers; the header button is now History. */
@@ -37,11 +38,13 @@ export function MetricLogScaffold({
   metricType?: "bp" | "glucose" | "weight";
   /** Says why Save is greyed out (shown only while it is). */
   saveHint?: string | null;
+  /** A multi-section form (not a keypad): full-width, two columns on desktop. */
+  form?: boolean;
 }) {
   const { push } = usePlusPaths();
   const t = useT();
   return (
-    <div className="vita-page w-narrow vita-log-page">
+    <div className={`vita-page w-narrow vita-log-page${form ? " is-form" : ""}`}>
       <AppBar
         title={title}
         actions={
