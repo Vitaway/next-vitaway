@@ -1751,5 +1751,12 @@
  "care_visits_title": "Gusurwa kwawe",
  "care_visits_empty": "Nta gusurwa kwateguwe. Hitamo umuntu mu itsinda rikwitaho ukande Gena.",
  "care_visits_past": "Gusurwa gushize ({n})",
- "care_visits_hide_past": "Hisha gusurwa gushize"
+ "care_visits_hide_past": "Hisha gusurwa gushize",
+ "acct_sec_account": "Konti yawe",
+ "acct_sec_care": "Ubuvuzi bwawe",
+ "acct_sec_work": "Akazi kawe",
+ "acct_sec_rewards": "Ibihembo n'umuryango",
+ "acct_sec_prefs": "Ibyo ukunda",
+ "acct_sec_help": "Ubufasha n'amategeko",
+ "prof_complete": "Amakuru {n} kuri {total} yongewemo"
 }

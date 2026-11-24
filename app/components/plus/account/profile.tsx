@@ -2,34 +2,8 @@
 
 import { useState } from "react";
 import { useLegal } from "../legal/legal-dialog";
-import {
-  Activity,
-  ArrowRight3,
-  Clock,
-  Crown1,
-  Cup,
-  DocumentText,
-  Edit2,
-  Export,
-  FolderOpen,
-  Health,
-  InfoCircle,
-  Logout,
-  MessageQuestion,
-  Mobile,
-  Messages2,
-  Moon,
-  NoteText,
-  ReceiptItem,
-  Setting2,
-  ShieldTick,
-  Sun1,
-  Translate,
-  Trash,
-  User,
-  UserTag,
-  Star1,
-} from "@/lib/plus/icons";
+import { ArrowRight3, Edit2 } from "@/lib/plus/icons";
+import { Illu, ILLU_TINT, type IlluName } from "../ui/vita-icons";
 import { useT, useLanguage, languageDisplayName } from "@/lib/plus/i18n";
 import { useTheme } from "@/lib/plus/theme";
 import { useInstall } from "@/lib/plus/install";
@@ -41,29 +15,33 @@ import { AppBar, Modal, Page, Photo, useFeedback } from "../ui/vita";
 import { useChatGate } from "../support/sheets";
 import { AppearanceSegments, LanguageOptions, navyA, themeModeName, useAccountActions, useProfile } from "./shared";
 
-type MenuItem = { icon: React.ReactNode; label: string; subtitle?: string; trailing?: string | null; destructive?: boolean; onClick: () => void };
+type MenuItem = { illu: IlluName; label: string; subtitle?: string; trailing?: string | null; destructive?: boolean; onClick: () => void };
 
-function MenuCard({ items }: { items: MenuItem[] }) {
+/** One titled group: a heading, then rows that each carry a Vitaway illustration on a soft tint. */
+function Section({ title, items }: { title?: string; items: MenuItem[] }) {
+  if (!items.length) return null;
   return (
-    <div style={{ background: "var(--vc-surface)", borderRadius: 10, overflow: "hidden" }}>
-      {items.map((item, i) => {
-        const color = item.destructive ? "var(--vc-danger)" : "var(--vc-navy)";
-        return (
+    <section style={{ marginBottom: 18 }}>
+      {title ? <h3 style={{ margin: "0 4px 8px", fontSize: 12, fontWeight: 800, letterSpacing: "0.08em", textTransform: "uppercase", color: navyA(0.45) }}>{title}</h3> : null}
+      <div style={{ background: "var(--vc-surface)", borderRadius: 16, overflow: "hidden", boxShadow: `0 1px 0 ${navyA(0.04)}` }}>
+        {items.map((item, i) => (
           <div key={item.label}>
-            {i > 0 ? <div style={{ height: 1, margin: "0 16px 0 56px", background: navyA(0.06) }} /> : null}
-            <button type="button" onClick={item.onClick} style={{ width: "100%", display: "flex", alignItems: "center", gap: 14, padding: "14px 16px", textAlign: "left", color }}>
-              <span style={{ display: "inline-flex", flex: "none" }}>{item.icon}</span>
-              <span style={{ flex: 1, minWidth: 0 }}>
-                <span style={{ display: "block", fontSize: 15, fontWeight: 600 }}>{item.label}</span>
-                {item.subtitle ? <span style={{ display: "block", marginTop: 2, fontSize: 13, fontWeight: 500, opacity: 0.45, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{item.subtitle}</span> : null}
+            {i > 0 ? <div style={{ height: 1, margin: "0 16px 0 72px", background: navyA(0.06) }} /> : null}
+            <button type="button" onClick={item.onClick} className="vita-profile-row" style={{ width: "100%", display: "flex", alignItems: "center", gap: 14, padding: "11px 14px", textAlign: "left", color: item.destructive ? "var(--vc-danger)" : "var(--vc-navy)" }}>
+              <span style={{ width: 44, height: 44, borderRadius: 12, flex: "none", display: "grid", placeItems: "center", background: ILLU_TINT[item.illu] }}>
+                <Illu name={item.illu} size={32} />
               </span>
-              {item.trailing ? <span style={{ flexShrink: 1, minWidth: 0, maxWidth: "45%", fontSize: 13, fontWeight: 600, opacity: 0.42, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", textAlign: "right" }}>{item.trailing}</span> : null}
-              {!item.destructive ? <ArrowRight3 size={22} color="currentColor" style={{ opacity: 0.28, flex: "none" }} /> : null}
+              <span style={{ flex: 1, minWidth: 0 }}>
+                <span style={{ display: "block", fontSize: 15, fontWeight: 700 }}>{item.label}</span>
+                {item.subtitle ? <span style={{ display: "block", marginTop: 2, fontSize: 13, fontWeight: 500, opacity: 0.5, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{item.subtitle}</span> : null}
+              </span>
+              {item.trailing ? <span style={{ flexShrink: 1, minWidth: 0, maxWidth: "42%", padding: "3px 10px", borderRadius: 999, background: navyA(0.06), fontSize: 12.5, fontWeight: 700, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{item.trailing}</span> : null}
+              {!item.destructive ? <ArrowRight3 size={20} color="currentColor" style={{ opacity: 0.25, flex: "none" }} /> : null}
             </button>
           </div>
-        );
-      })}
-    </div>
+        ))}
+      </div>
+    </section>
   );
 }
 
@@ -76,7 +54,7 @@ export function ProfileScreen() {
   const installApp = useInstall();
   const { p } = useProfile();
   const { language } = useLanguage();
-  const { mode, dark } = useTheme();
+  const { mode } = useTheme();
   const { logout, deleteAccount } = useAccountActions();
   const gate = useChatGate();
   const [sheet, setSheet] = useState<null | "language" | "appearance">(null);
@@ -88,8 +66,6 @@ export function ProfileScreen() {
   const name = [p.firstName, p.lastName].filter(Boolean).join(" ");
   const missing = t("no_mrn");
   const subtitle = isDietitian ? "Dietitian" : isPatient ? (p.mrn?.trim() ? `${t("mrn")}${p.mrn.trim()}` : missing === "no_mrn" ? "No MRN" : missing) : t("coach");
-  const icon = (C: typeof User) => <C size={22} color="currentColor" />;
-
   const share = async () => {
     const text = t("share_app_text");
     try {
@@ -103,44 +79,54 @@ export function ProfileScreen() {
     }
   };
 
-  const first: MenuItem[] = [
-    { icon: icon(User), label: t("my_profile"), subtitle: t("edit_account_body"), onClick: () => push("/account/my-profile") },
-    ...(isPatient ? [{ icon: icon(Activity), label: t("health_details"), subtitle: t("health_details_body"), onClick: () => push("/account/health-details") }] : []),
-    { icon: icon(FolderOpen), label: t("my_documents"), onClick: () => push("/documents") },
-    { icon: icon(ReceiptItem), label: t("programme_payments"), onClick: () => push("/account/payments") },
-    ...(isPatient
-      ? [
-          { icon: icon(Star1), label: t("rewards_title"), subtitle: t("rewards_menu_body"), onClick: () => push("/rewards") },
-          { icon: icon(Cup), label: t("badges_earned"), trailing: `${badges.data?.earnedCount ?? 0} · ${badges.data ? badgesRemaining(badges.data) : 0} ${t("badges_remaining")}`, onClick: () => push("/badges") },
-          { icon: icon(UserTag), label: t("community_handle"), subtitle: t("community_handle_body"), trailing: p.handle || null, onClick: () => void gate.ensureHandle(true) },
-          { icon: icon(Health), label: t("my_programmes"), subtitle: t("programmes_title"), onClick: () => push("/programmes/mine") },
-          { icon: icon(Crown1), label: t("plans_pricing_title"), onClick: () => push("/plans") },
-          { icon: icon(Health), label: t("medications_title"), onClick: () => push("/medications") },
-        ]
-      : []),
-    ...(isCoach
-      ? [
-          { icon: icon(Clock), label: t("my_availability"), onClick: () => push("/account/availability") },
-          { icon: icon(NoteText), label: t("progress_notes_coach"), onClick: () => push("/notes") },
-        ]
-      : []),
-    ...(!isPatient ? [{ icon: icon(Messages2), label: t("my_messages"), onClick: () => push("/support") }] : []),
-    { icon: icon(Translate), label: t("language"), trailing: languageDisplayName(language), onClick: () => setSheet("language") },
-    { icon: dark ? icon(Moon) : icon(Sun1), label: t("appearance"), trailing: themeModeName(t, mode), onClick: () => setSheet("appearance") },
-    { icon: icon(Setting2), label: t("settings_title"), onClick: () => push("/settings") },
+  const account: MenuItem[] = [
+    { illu: "profile", label: t("my_profile"), subtitle: t("edit_account_body"), onClick: () => push("/account/my-profile") },
+    ...(isPatient ? [{ illu: "health-score" as IlluName, label: t("health_details"), subtitle: t("health_details_body"), onClick: () => push("/account/health-details") }] : []),
+    { illu: "documents", label: t("my_documents"), onClick: () => push("/documents") },
+    { illu: "payments", label: t("programme_payments"), onClick: () => push("/account/payments") },
   ];
-  const second: MenuItem[] = [
-    ...(installApp.available
-      ? [{ icon: icon(Mobile), label: t("install_app_button"), subtitle: t("install_menu_subtitle"), onClick: () => void installApp.install() }]
-      : []),
-    { icon: icon(MessageQuestion), label: t("contact_us_title"), onClick: () => push("/account/contact") },
-    { icon: icon(Export), label: t("share_app"), onClick: () => void share() },
-    { icon: icon(InfoCircle), label: t("about_app"), onClick: () => push("/account/about") },
-    { icon: icon(ShieldTick), label: t("privacy_policy"), onClick: () => openLegal("privacy") },
-    { icon: icon(DocumentText), label: t("terms_of_use"), onClick: () => openLegal("terms") },
-    { icon: icon(Health), label: t("medical_disclaimer"), onClick: () => void alert(t("medical_disclaimer"), t("medical_disclaimer_body")) },
-    { icon: icon(Trash), label: t("delete_account"), destructive: true, onClick: () => void deleteAccount() },
-    { icon: icon(Logout), label: t("logout_title"), destructive: true, onClick: () => void logout() },
+  const care: MenuItem[] = isPatient
+    ? [
+        { illu: "appointments", label: t("my_appointments"), onClick: () => push("/appointments") },
+        { illu: "learn", label: t("my_programmes"), subtitle: t("programmes_title"), onClick: () => push("/programmes/mine") },
+        { illu: "pillbox", label: t("medications_title"), onClick: () => push("/medications") },
+        { illu: "plan", label: t("plans_pricing_title"), onClick: () => push("/plans") },
+      ]
+    : [
+        ...(isCoach
+          ? [
+              { illu: "reminders" as IlluName, label: t("my_availability"), onClick: () => push("/account/availability") },
+              { illu: "food-reports" as IlluName, label: t("progress_notes_coach"), onClick: () => push("/notes") },
+            ]
+          : []),
+        { illu: "messages", label: t("my_messages"), onClick: () => push("/support") },
+      ];
+  const rewards: MenuItem[] = isPatient
+    ? [
+        { illu: "rewards", label: t("rewards_title"), subtitle: t("rewards_menu_body"), onClick: () => push("/rewards") },
+        { illu: "badge", label: t("badges_earned"), trailing: `${badges.data?.earnedCount ?? 0} · ${badges.data ? badgesRemaining(badges.data) : 0} ${t("badges_remaining")}`, onClick: () => push("/badges") },
+        { illu: "community", label: t("community_handle"), subtitle: t("community_handle_body"), trailing: p.handle || null, onClick: () => void gate.ensureHandle(true) },
+      ]
+    : [];
+  const prefs: MenuItem[] = [
+    { illu: "language", label: t("language"), trailing: languageDisplayName(language), onClick: () => setSheet("language") },
+    { illu: "appearance", label: t("appearance"), trailing: themeModeName(t, mode), onClick: () => setSheet("appearance") },
+    { illu: "settings", label: t("settings_title"), onClick: () => push("/settings") },
+    ...(installApp.available ? [{ illu: "install" as IlluName, label: t("install_app_button"), subtitle: t("install_menu_subtitle"), onClick: () => void installApp.install() }] : []),
+  ];
+  const help: MenuItem[] = [
+    { illu: "messages", label: t("contact_us_title"), onClick: () => push("/account/contact") },
+    { illu: "share", label: t("share_app"), onClick: () => void share() },
+    { illu: "about", label: t("about_app"), onClick: () => push("/account/about") },
+  ];
+  const legal: MenuItem[] = [
+    { illu: "privacy", label: t("privacy_policy"), onClick: () => openLegal("privacy") },
+    { illu: "terms", label: t("terms_of_use"), onClick: () => openLegal("terms") },
+    { illu: "disclaimer", label: t("medical_disclaimer"), onClick: () => void alert(t("medical_disclaimer"), t("medical_disclaimer_body")) },
+  ];
+  const session: MenuItem[] = [
+    { illu: "logout", label: t("logout_title"), destructive: true, onClick: () => void logout() },
+    { illu: "delete", label: t("delete_account"), destructive: true, onClick: () => void deleteAccount() },
   ];
 
   return (
@@ -169,9 +155,16 @@ export function ProfileScreen() {
         </div>
         <div style={{ height: 14 }} />
         <div className="vita-profile-menus">
-          <MenuCard items={first} />
-          <div className="vita-mobile-gap" style={{ height: 12 }} />
-          <MenuCard items={second} />
+          <div>
+            <Section title={t("acct_sec_account")} items={account} />
+            <Section title={isPatient ? t("acct_sec_care") : t("acct_sec_work")} items={care} />
+            <Section title={t("acct_sec_rewards")} items={rewards} />
+          </div>
+          <div>
+            <Section title={t("acct_sec_prefs")} items={prefs} />
+            <Section title={t("acct_sec_help")} items={[...help, ...legal]} />
+            <Section items={session} />
+          </div>
         </div>
       </div>
       <Modal open={sheet === "language"} title={t("language")} onClose={() => setSheet(null)}>

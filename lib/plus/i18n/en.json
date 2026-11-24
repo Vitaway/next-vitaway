@@ -1748,5 +1748,12 @@
  "care_visits_title": "Your visits",
  "care_visits_empty": "No visit booked. Choose someone from your care team and tap Book.",
  "care_visits_past": "Past visits ({n})",
- "care_visits_hide_past": "Hide past visits"
+ "care_visits_hide_past": "Hide past visits",
+ "acct_sec_account": "Your account",
+ "acct_sec_care": "Your care",
+ "acct_sec_work": "Your work",
+ "acct_sec_rewards": "Rewards and community",
+ "acct_sec_prefs": "Preferences",
+ "acct_sec_help": "Help and legal",
+ "prof_complete": "{n} of {total} details added"
 }

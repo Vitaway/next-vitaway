@@ -62,61 +62,73 @@ export function MyProfileScreen() {
   const height = p.height != null ? convertHeight(Number(p.height), heightUnit).toFixed(1) : "N/A";
 
   const stat = (label: string, value: string, known: boolean, onClick: () => void) => (
-    <button type="button" onClick={onClick} style={{ flex: 1, padding: "14px 8px", borderRadius: 8, background: "var(--vc-surface)", border: `1px solid ${navyA(0.08)}`, textAlign: "center" }}>
-      <div style={{ fontSize: 13, fontWeight: 600, color: navyA(0.55) }}>{label}</div>
-      <div style={{ marginTop: 4, fontSize: 16, fontWeight: 800, color: known ? "var(--vc-navy)" : "var(--vc-action)" }}>{known ? value : t("add")}</div>
+    <button type="button" className="vita-prof-stat" onClick={onClick}>
+      <small>{label}</small>
+      <b className={known ? "" : "add"}>{known ? value : t("add")}</b>
     </button>
   );
-  const row = (label: string, value: string, onClick: () => void) => (
-    <button type="button" onClick={onClick} style={{ width: "100%", display: "flex", alignItems: "center", padding: "14px 18px", textAlign: "left" }}>
-      <span style={{ flex: 1, fontSize: 14, fontWeight: 600, color: navyA(0.55) }}>{label}</span>
-      <span style={{ fontSize: 14, fontWeight: 700, color: value ? "var(--vc-navy)" : "var(--vc-action)" }}>{value || t("add")}</span>
+  const field = (label: string, value: string, onClick: () => void, locked = false) => (
+    <button type="button" className="vita-prof-field" onClick={onClick} disabled={locked}>
+      <small>{label}</small>
+      <b className={value ? "" : "add"}>{value || t("add")}</b>
+      {locked ? null : <Edit2 size={15} color="currentColor" />}
     </button>
   );
   const fullName = `${p.firstName} ${p.lastName}`.trim();
+  const details: boolean[] = [weight > 0, ageKnown(p.age), heightKnown(p.height), Boolean(filled(p.country)), Boolean(filled(p.city)), Boolean(filled(p.idNumber)), Boolean(filled(p.phone))];
+  const done = details.filter(Boolean).length;
 
   return (
     <div className="vita-page w-narrow" style={{ background: "var(--vc-canvas)" }}>
       <AppBar title={t("my_profile")} />
-      <div style={{ flex: 1, overflowY: "auto", padding: "16px 20px 32px", display: "flex", flexDirection: "column", alignItems: "center" }}>
-        <div style={{ padding: 3, borderRadius: "50%", border: "2.5px solid var(--vc-mint)" }}>
-          <Avatar url={p.photo} size={100} />
-        </div>
-        <div style={{ marginTop: 10, fontSize: 18, fontWeight: 800, color: "var(--vc-navy)" }}>{fullName}</div>
-        {p.mrn?.trim() ? <div style={{ marginTop: 4, fontSize: 13, fontWeight: 600, color: navyA(0.55) }}>{p.mrn.trim()}</div> : null}
-        <div style={{ height: 10 }} />
-        <ActionButton tone="white" label={t("edit_account")} icon={<Edit2 size={18} color="currentColor" />} onClick={() => push("/account/edit")} />
-        {p.type === "normal" ? (
-          <div style={{ display: "flex", gap: 10, width: "100%", marginTop: 16 }}>
-            {stat(t("hm_weight"), `${convertWeight(weight, weightUnit).toFixed(0)} ${wUnit}`, weight > 0, () => setSheet("weight"))}
-            {stat(t("age"), String(p.age), ageKnown(p.age), () => setSheet("age"))}
-            {stat(t("ap_height"), `${height} ${hUnit}`, heightKnown(p.height), () => {
-              setCm(heightKnown(p.height) ? Number(p.height) : 170);
-              setSheet("height");
-            })}
+      <div className="vita-prof">
+        <aside className="vita-prof-card">
+          <div className="vita-prof-photo">
+            <Avatar url={p.photo} size={96} />
           </div>
-        ) : null}
-        {p.type === "coach" ? (
-          <div style={{ width: "100%", marginTop: 16 }}>
-            <div style={{ fontSize: 16, fontWeight: 800, color: "var(--vc-navy)" }}>{t("my_bio")}</div>
-            <p style={{ margin: "6px 0 0", color: "var(--vc-ink)" }}>{p.bio || "N/A"}</p>
+          <h2>{fullName}</h2>
+          {p.mrn?.trim() ? <span className="mrn">{p.mrn.trim()}</span> : null}
+          <ActionButton tone="white" label={t("edit_account")} icon={<Edit2 size={16} color="currentColor" />} onClick={() => push("/account/edit")} />
+          {p.type === "normal" ? (
+            <>
+              <div className="vita-prof-stats">
+                {stat(t("hm_weight"), `${convertWeight(weight, weightUnit).toFixed(0)} ${wUnit}`, weight > 0, () => setSheet("weight"))}
+                {stat(t("age"), String(p.age), ageKnown(p.age), () => setSheet("age"))}
+                {stat(t("ap_height"), `${height} ${hUnit}`, heightKnown(p.height), () => {
+                  setCm(heightKnown(p.height) ? Number(p.height) : 170);
+                  setSheet("height");
+                })}
+              </div>
+              <div className="vita-prof-done" aria-label={t("prof_complete", { n: done, total: details.length })}>
+                <span className="bar"><i style={{ width: `${(done / details.length) * 100}%` }} /></span>
+                <small>{t("prof_complete", { n: done, total: details.length })}</small>
+              </div>
+            </>
+          ) : null}
+          {p.type === "coach" ? (
+            <div className="vita-prof-bio">
+              <b>{t("my_bio")}</b>
+              <p>{p.bio || "N/A"}</p>
+            </div>
+          ) : null}
+        </aside>
+        <section className="vita-prof-card wide">
+          <h3>{t("amakuru_yanjye")}</h3>
+          <div className="vita-prof-fields">
+            {field(t("country"), filled(p.country), () => setSheet("country"))}
+            {field(t("city"), filled(p.city), () => setSheet("city"))}
+            {field(t("id_number"), filled(p.idNumber), () => setSheet("id"))}
+            {field(t("phone"), filled(p.phone), () => setSheet("phone"))}
+            {field("MRN", filled(p.mrn), () => setSheet("mrn"))}
+            <div className="vita-prof-field static">
+              <small>Transactions</small>
+              <b>{transactions.loading ? "..." : String(transactions.data?.length ?? 0)}</b>
+            </div>
           </div>
-        ) : null}
-        <div style={{ width: "100%", maxWidth: 350, marginTop: 16, borderRadius: 8, background: "var(--vc-surface)", border: `1px solid ${navyA(0.08)}`, paddingTop: 14 }}>
-          <div style={{ padding: "0 18px 4px", fontSize: 16, fontWeight: 800, color: "var(--vc-navy)" }}>{t("amakuru_yanjye")}</div>
-          {row(t("country"), filled(p.country), () => setSheet("country"))}
-          {row(t("city"), filled(p.city), () => setSheet("city"))}
-          {row(t("id_number"), filled(p.idNumber), () => setSheet("id"))}
-          {row("MRN", filled(p.mrn), () => setSheet("mrn"))}
-          {row(t("phone"), filled(p.phone), () => setSheet("phone"))}
-          <div style={{ display: "flex", padding: "14px 18px" }}>
-            <span style={{ flex: 1, fontSize: 14, fontWeight: 600, color: navyA(0.55) }}>Transactions</span>
-            <span style={{ fontSize: 14, fontWeight: 700, color: "var(--vc-navy)" }}>{transactions.loading ? "..." : String(transactions.data?.length ?? 0)}</span>
+          <div className="vita-prof-links">
+            <ActionButton tone="white" label={t("my_documents")} icon={<FolderOpen size={18} color="currentColor" />} onClick={() => push("/documents")} />
           </div>
-          <div style={{ padding: "4px 18px 18px" }}>
-            <ActionButton full tone="white" label={t("my_documents")} icon={<FolderOpen size={18} color="currentColor" />} onClick={() => push("/documents")} />
-          </div>
-        </div>
+        </section>
       </div>
 
       <FieldSheet
