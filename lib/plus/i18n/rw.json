@@ -1646,5 +1646,18 @@
  "rp_from_clinic": "Bivuye ku ivuriro ryawe",
  "rp_visit_summaries": "Incamake z'isura",
  "rp_food_reports": "Raporo z'imirire",
- "rpt_title": "Raporo"
+ "rpt_title": "Raporo",
+ "ft_title": "Uyu munsi ugereranyije n'intego",
+ "ft_set_by_team": "Byashyizweho n'itsinda rikwitaho",
+ "ft_default": "Intego rusange kugeza umuhanga mu mirire ashyizeho izawe",
+ "ft_protein": "Poroteyine",
+ "ft_fibre": "Fibre",
+ "ft_no_protein_goal": "Umuhanga mu mirire ni we ugushyiriraho intego ya poroteyine.",
+ "ft_none_today": "Nta funguro ryanditswe uyu munsi. Fotora isahani ikurikira urebe poroteyine na fibre.",
+ "ft_fibre_low": "Fibre ni nke uyu munsi. Ibishyimbo, isombe cyangwa imboga ku ifunguro rikurikira bizafasha.",
+ "ft_ok": "Uri mu nzira nziza uyu munsi. Komeza kurya imboga.",
+ "ft_estimate": "Imibare ni igereranya kugeza umuhanga mu mirire agenzuye ifunguro.",
+ "ft_plan_today": "Uyu munsi kuri gahunda y'imirire",
+ "ft_log_this": "Andika iri funguro",
+ "ft_plan_note": "Wariye ikindi? Cyandike uko byagenda kose; umuhanga mu mirire abona ibyo wariye koko."
 }

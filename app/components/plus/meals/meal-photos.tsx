@@ -13,6 +13,7 @@ import {
   type MealPhoto,
 } from "@/lib/plus/meal-photos";
 import { useLanguage, useT } from "@/lib/plus/i18n";
+import { FoodTargetsCard, PlanTodayCard } from "./food-today";
 import { useProgrammeConfig } from "@/lib/plus/client/programme-config";
 import { MobileApiError } from "@/lib/plus/client/api";
 import { changeLine, getFood, mealPollMs, itemFromRecognised, recognizeMeal, toSubmission, type Recognition, type ReviewItem } from "@/lib/plus/meal-review";
@@ -90,6 +91,13 @@ export function MealPhotosScreen() {
           </div>
         </section>
 
+        {rows ? (
+          <div className="vita-ft-wrap">
+            <FoodTargetsCard rows={rows} />
+            <PlanTodayCard />
+          </div>
+        ) : null}
+
         {rows == null && !error ? <CenterSpinner /> : null}
         {error ? <EmptyState title={t("meal_photos_load_error")} actionLabel={t("retry")} onAction={load} /> : null}
 
@@ -150,8 +158,16 @@ export function MealPhotoComposeScreen({ retakeOf }: { retakeOf?: number }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
+  // "Log this meal" from today's plan opens here with the meal and its description filled in.
   const [mealType, setMealType] = useState("lunch");
   const [note, setNote] = useState("");
+  useEffect(() => {
+    const q = new URLSearchParams(window.location.search);
+    const meal = q.get("meal");
+    if (meal && (MEAL_TYPES as readonly string[]).includes(meal)) setMealType(meal);
+    const planned = q.get("note");
+    if (planned) setNote(planned.slice(0, 300));
+  }, []);
   const [saving, setSaving] = useState(false);
   const { language } = useLanguage();
   const { config } = useProgrammeConfig();

@@ -2345,3 +2345,23 @@ button.vita-quiz-input { text-align: left; cursor: pointer; }
   .vita-report-paper { position: absolute; left: 0; top: 0; width: 100%; box-shadow: none; border: 0; background: #fff; color: #0b2c4d; }
 }
 .vita-report-qadd .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* Nutrition: today vs targets, today's plan */
+.vita-ft-wrap { display: grid; gap: 14px; margin: 14px 0 18px; }
+@media (min-width: 900px) { .vita-ft-wrap { grid-template-columns: repeat(2, minmax(0,1fr)); align-items: start; } }
+.vita-ft { background: var(--vc-surface); border-radius: 10px; box-shadow: var(--vc-card-shadow); border: 1px solid rgba(var(--vc-navy-rgb),0.06); padding: 14px 16px; }
+.vita-ft-head { display: flex; flex-direction: column; gap: 2px; margin-bottom: 6px; }
+.vita-ft-head h2 { margin: 0; font-size: 16.5px; font-weight: 800; color: var(--vc-navy); }
+.vita-ft-head span { font-size: 12.5px; font-weight: 700; color: rgba(var(--vc-navy-rgb),0.5); }
+.vita-ft-row { padding: 8px 0; }
+.vita-ft-line { display: flex; align-items: baseline; gap: 8px; font-size: 14px; }
+.vita-ft-line b { flex: 1; color: var(--vc-ink); }
+.vita-ft-line span { font-size: 13px; font-weight: 800; color: var(--vc-navy); }
+.vita-ft-note { margin: 6px 0 0; font-size: 12.5px; font-weight: 600; line-height: 1.45; color: rgba(var(--vc-navy-rgb),0.55); }
+.vita-ft-plan { display: flex; align-items: center; gap: 10px; padding: 9px 10px; margin: 0 -10px; border-radius: 8px; border-top: 1px solid rgba(var(--vc-navy-rgb),0.06); }
+.vita-ft-plan.now { background: var(--vc-tile-peach); border-top-color: transparent; }
+.vita-ft-plan-tx { flex: 1; min-width: 0; }
+.vita-ft-plan-tx small { display: block; font-size: 11.5px; font-weight: 800; color: rgba(var(--vc-navy-rgb),0.5); }
+.vita-ft-plan-tx b { display: block; font-size: 14px; color: var(--vc-ink); }
+.vita-ft-plan button { flex: none; min-height: 36px; padding: 0 12px; border-radius: 10px; background: var(--vc-surface-muted); color: var(--vc-navy); font-size: 13px; font-weight: 800; }
+.vita-ft-plan.now button { background: var(--vc-action); color: #fff; }

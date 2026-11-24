@@ -1643,5 +1643,18 @@
  "rp_from_clinic": "From your clinic",
  "rp_visit_summaries": "Visit summaries",
  "rp_food_reports": "Food reports",
- "rpt_title": "Reports"
+ "rpt_title": "Reports",
+ "ft_title": "Today vs your targets",
+ "ft_set_by_team": "Set by your care team",
+ "ft_default": "Standard goals until your nutritionist sets yours",
+ "ft_protein": "Protein",
+ "ft_fibre": "Fibre",
+ "ft_no_protein_goal": "Your nutritionist sets your protein goal.",
+ "ft_none_today": "No meals logged today yet. Snap your next plate to see protein and fibre.",
+ "ft_fibre_low": "Fibre is low today. Beans, isombe or vegetables at your next meal close most of the gap.",
+ "ft_ok": "On track today. Keep the vegetables coming.",
+ "ft_estimate": "Numbers are estimates until your nutritionist checks the meal.",
+ "ft_plan_today": "Today on your meal plan",
+ "ft_log_this": "Log this meal",
+ "ft_plan_note": "Ate something else? Log it anyway; your nutritionist sees what you really ate."
 }
