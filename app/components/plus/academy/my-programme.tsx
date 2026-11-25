@@ -4,6 +4,7 @@
  * Learn → My programme (Harvard learner dashboard + Omada/Noom "Today"), the Library (catalogue by format)
  * and the 4-week meal plan. Shown when the member's programme course has published lessons.
  */
+import Link from "next/link";
 import "./academy.css";
 import { useMemo, useState } from "react";
 import { ArrowRight3, Book1, Calendar1, Edit2, Lock, Message, TickCircle } from "@/lib/plus/icons";
@@ -231,7 +232,7 @@ export function MealPlanScreen({ courseId }: { courseId: string }) {
           <div className="ac-card" style={{ textAlign: "center", marginTop: 24 }}>
             <h3 className="ac-h3">{T.mealPlan}</h3>
             <p className="ac-muted">The 4-week meal plan opens when you join a programme with your care team.</p>
-            <a href="/app/programmes" className="ac-link">See programmes</a>
+            <Link href="/programmes" className="ac-link">See programmes</Link>
           </div>
         ) : !mp ? (
           <CenterSpinner />
