@@ -36,8 +36,8 @@ export type VerifyOtpResult =
   | { kind: "staff_setup"; challengeToken: string; message: string };
 
 export function apiBase(): string {
-  // TODO staging: revert to care-api.vitaway.org before production
-  const configured = (process.env.NEXT_PUBLIC_PLUS_API_URL || "https://vitaway.keyypress.com").replace(/\/$/, "");
+  // Production API (core-backend on prod-api.vitaway.org). NEXT_PUBLIC_PLUS_API_URL overrides it at build time.
+  const configured = (process.env.NEXT_PUBLIC_PLUS_API_URL || "https://prod-api.vitaway.org").replace(/\/$/, "");
   if (typeof window !== "undefined") {
     const host = window.location.hostname;
     if (host === "localhost" || host === "127.0.0.1") return "";

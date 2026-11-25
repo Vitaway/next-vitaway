@@ -11,7 +11,7 @@ import { GroupIcon, PersonIcon, ShopIcon } from './icons/omada-icons';
 import { useBooking } from './booking/booking-context';
 import { Activity, Building as Building2, Calendar1 as CalendarDays, CalendarTick as CalendarRange, QuestionCircle as CircleHelp, Drop as Droplets, Graduation as GraduationCap, Handshake, HeartHand as HeartHandshake, Health as HeartPulse, HeartHand as HelpingHand, Bank as Landmark, Grid as LayoutGrid, MessageQuestion as MessageCircleQuestion, More as MoreHorizontal, Weight as Scale, People as Users, People as UsersRound, type IconProps } from "@/lib/plus/icons";
 
-const WEB_APP_URL = 'https://vitaway.keyypress.com/app';
+const WEB_APP_URL = '/app';
 
 type LucideIcon = React.ComponentType<IconProps>;
 import {

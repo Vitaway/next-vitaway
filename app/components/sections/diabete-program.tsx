@@ -42,7 +42,7 @@ function DiabeteProgram() {
                         </ul>
                         <StoreButtons className="mt-8" />
                         <div className="mt-5 flex flex-wrap items-center gap-3">
-                            <PressButton href="https://vitaway.keyypress.com/app">
+                            <PressButton href="/app">
                                 Open the web app
                             </PressButton>
                             <PressButton href="/download" variant="secondary" surface="light">
