@@ -30,6 +30,9 @@ import {
     UsersRound,
     type LucideIcon,
 } from 'lucide-react';
+
+const WEB_APP_URL = 'https://vitaway.keyypress.com/app';
+
 import {
     defaultTealLinks,
     individualLinks,
@@ -391,6 +394,12 @@ function Navbar() {
                             {isShop && <NavCaret />}
                         </Link>
                         <ShoppingCart className="text-[#282E33]" />
+                        <a
+                            href={WEB_APP_URL}
+                            className="inline-flex items-center rounded-full border border-[#003E48] px-5 py-2 text-[15px] font-bold text-[#003E48] transition-colors hover:bg-[#003E48] hover:text-white"
+                        >
+                            Log in
+                        </a>
                     </div>
 
                     <div className="ml-auto hidden items-center gap-2 max-lg:flex">
@@ -532,6 +541,9 @@ function Navbar() {
                         <Link href="/download" onClick={() => setIsOpen(false)} className="py-2.5">
                             Get the app
                         </Link>
+                        <a href={WEB_APP_URL} className="py-2.5 font-bold text-[#E85A2E]">
+                            Log in to the web app
+                        </a>
                         <PressButton
                             size="sm"
                             className="mt-3 w-full"
