@@ -383,7 +383,13 @@ function Navbar() {
                         </a>
                     </div>
 
-                    <div className="ml-auto hidden items-center gap-2 max-lg:flex">
+                    <div className="ml-auto hidden items-center gap-1 max-lg:flex">
+                        <a
+                            href={WEB_APP_URL}
+                            className="inline-flex h-9 items-center rounded-full border border-[#003E48] px-4 text-[14px] font-bold text-[#003E48] transition-colors active:bg-[#003E48] active:text-white"
+                        >
+                            Log in
+                        </a>
                         <ShoppingCart className="text-[#282E33]" />
                         <button
                             type="button"
