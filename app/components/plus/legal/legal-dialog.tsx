@@ -1,10 +1,11 @@
 "use client";
 
-import { createContext, useCallback, useContext, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { MdClose } from "@/lib/plus/icons";
 import { useT } from "@/lib/plus/i18n";
-import { ActionButton, CenterSpinner, Modal } from "../ui/vita";
-import { Markdown, splitMarkdownTitle } from "./markdown";
+import { ActionButton, CenterSpinner, RootPortal } from "../ui/vita";
+import { Illu } from "../ui/vita-icons";
+import { Markdown, markdownSections, splitMarkdownTitle } from "./markdown";
 
 export type LegalDoc = "privacy" | "terms";
 
@@ -46,24 +47,66 @@ export function LegalProvider({ children }: { children: React.ReactNode }) {
   const value = useMemo(() => ({ openLegal }), [openLegal]);
   const fallback = doc === "terms" ? t("terms_of_use") : t("privacy_policy");
   const document = text ? splitMarkdownTitle(text, fallback) : null;
+  const sections = useMemo(() => (document ? markdownSections(document.body) : []), [document]);
+  const bodyRef = useRef<HTMLDivElement>(null);
+  const jump = (i: number) => {
+    const el = bodyRef.current?.querySelector<HTMLElement>(`[data-sec="${i}"]`);
+    el?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+  useEffect(() => {
+    if (doc === null) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setDoc(null);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [doc]);
 
   return (
     <LegalContext.Provider value={value}>
       {children}
-      <Modal
-        open={doc !== null}
-        title={document?.title ?? fallback}
-        onClose={() => setDoc(null)}
-        actions={<ActionButton label="Close" tone="teal" small icon={<MdClose size={16} />} onClick={() => setDoc(null)} />}
-      >
-        {failed ? (
-          <p style={{ margin: 0, color: "var(--vc-danger)", fontSize: 14 }}>{t("network_error")}</p>
-        ) : document ? (
-          <Markdown source={document.body} />
-        ) : (
-          <CenterSpinner />
-        )}
-      </Modal>
+      {doc !== null ? (
+        <RootPortal>
+          <div className="vita-legal-scrim" onClick={() => setDoc(null)} role="presentation">
+            <div className="vita-legal" role="dialog" aria-modal="true" aria-label={document?.title ?? fallback} onClick={(e) => e.stopPropagation()}>
+              <header className="vita-legal-head">
+                <div className="vita-legal-badge">
+                  <Illu name={doc === "terms" ? "terms" : "privacy"} size={36} />
+                </div>
+                <div className="vita-legal-titles">
+                  <span className="vita-legal-eyebrow">{doc === "terms" ? "Terms of service" : "Privacy"}</span>
+                  <h2>{document?.title ?? fallback}</h2>
+                </div>
+                <button type="button" className="vita-legal-x" aria-label="Close" onClick={() => setDoc(null)}>
+                  <MdClose size={18} />
+                </button>
+              </header>
+              <div className="vita-legal-main">
+                {sections.length > 1 ? (
+                  <nav className="vita-legal-toc" aria-label="Sections">
+                    <span className="vita-legal-toc-title">In this document</span>
+                    {sections.map((name, i) => (
+                      <button key={i} type="button" onClick={() => jump(i)}>
+                        {name}
+                      </button>
+                    ))}
+                  </nav>
+                ) : null}
+                <div className="vita-legal-body" ref={bodyRef}>
+                  {failed ? (
+                    <p style={{ margin: 0, color: "var(--vc-danger)", fontSize: 14 }}>{t("network_error")}</p>
+                  ) : document ? (
+                    <Markdown source={document.body} />
+                  ) : (
+                    <CenterSpinner />
+                  )}
+                </div>
+              </div>
+              <footer className="vita-legal-foot">
+                <ActionButton label="Close" tone="teal" small icon={<MdClose size={16} />} onClick={() => setDoc(null)} />
+              </footer>
+            </div>
+          </div>
+        </RootPortal>
+      ) : null}
     </LegalContext.Provider>
   );
 }

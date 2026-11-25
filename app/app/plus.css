@@ -2693,3 +2693,42 @@ button.vita-quiz-input { text-align: left; cursor: pointer; }
 .vh-tile-status { display: inline-block; align-self: flex-start !important; width: auto !important; max-width: 100%; margin-top: 10px; padding: 4px 10px; border-radius: 999px; background: color-mix(in srgb, var(--t-ink) 12%, transparent); font-size: 12px; font-weight: 700; line-height: 1.3; }
 .vh-tile-chart { padding-top: 14px; }
 .vh-tile-days span { font-size: 10.5px; }
+
+/* Legal reading sheet (Terms of service / Privacy policy) */
+.vita-legal-scrim { position: fixed; inset: 0; z-index: 90; background: var(--vc-scrim); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 20px; animation: vita-fade 0.18s ease; }
+.vita-legal { width: 100%; max-width: 920px; height: min(780px, calc(100dvh - 40px)); display: flex; flex-direction: column; background: var(--vc-surface); border-radius: 24px; overflow: hidden; box-shadow: 0 28px 80px rgba(8, 32, 56, 0.34); }
+.vita-legal-head { display: flex; align-items: center; gap: 14px; padding: 18px 20px; color: #fff; background: linear-gradient(135deg, #003e48 0%, #0a5560 100%); }
+.vita-legal-badge { flex: none; width: 52px; height: 52px; border-radius: 16px; background: rgba(255, 255, 255, 0.14); display: flex; align-items: center; justify-content: center; }
+.vita-legal-titles { flex: 1; min-width: 0; }
+.vita-legal-eyebrow { display: block; font-size: 11.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #ffb59c; margin-bottom: 3px; }
+.vita-legal-titles h2 { margin: 0; font-size: 19px; font-weight: 700; line-height: 1.25; }
+.vita-legal-x { flex: none; width: 40px; height: 40px; border-radius: 50%; border: 0; display: flex; align-items: center; justify-content: center; color: #fff; background: rgba(255, 255, 255, 0.14); cursor: pointer; }
+.vita-legal-x:hover { background: rgba(255, 255, 255, 0.24); }
+.vita-legal-main { flex: 1; min-height: 0; display: flex; }
+.vita-legal-toc { flex: none; width: 250px; overflow-y: auto; padding: 20px 12px 20px 16px; border-right: 1px solid var(--vc-line); background: var(--vc-canvas); display: flex; flex-direction: column; gap: 2px; }
+.vita-legal-toc-title { font-size: 11.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--vc-muted); padding: 0 10px 8px; }
+.vita-legal-toc button { text-align: left; border: 0; background: transparent; font: inherit; font-size: 13.5px; font-weight: 600; color: var(--vc-body); padding: 8px 10px; border-radius: 10px; cursor: pointer; line-height: 1.3; }
+.vita-legal-toc button:hover { background: rgba(0, 62, 72, 0.08); color: var(--vc-navy); }
+.vita-legal-body { flex: 1; min-width: 0; overflow-y: auto; padding: 26px 32px 32px; scroll-behavior: smooth; display: block; }
+.vita-legal-foot { display: flex; justify-content: flex-end; padding: 12px 20px calc(12px + env(safe-area-inset-bottom)); border-top: 1px solid var(--vc-line); background: var(--vc-surface); }
+.vita-legal .vita-md { display: block; max-width: 640px; font-size: 15px; line-height: 1.7; color: var(--vc-body); }
+.vita-legal .vita-md .md-p { margin: 0 0 14px; }
+.vita-legal .vita-md > .md-p:first-child { font-size: 16.5px; line-height: 1.65; color: var(--vc-ink); }
+.vita-legal .vita-md .md-rule { border: 0; height: 1px; background: var(--vc-line); margin: 26px 0 4px; }
+.vita-legal .vita-md .md-h2 { display: flex; align-items: center; gap: 12px; font-size: 20px; font-weight: 700; color: var(--vc-navy); margin: 22px 0 12px; scroll-margin-top: 8px; }
+.vita-legal .vita-md .md-num { flex: none; width: 32px; height: 32px; border-radius: 10px; background: #e85a2e; color: #fff; font-size: 15px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; }
+.vita-legal .vita-md .md-h3 { font-size: 15.5px; font-weight: 700; color: #0a5560; margin: 20px 0 8px; }
+.vita-legal .vita-md .md-list { margin: 0 0 14px; padding-left: 0; list-style: none; }
+.vita-legal .vita-md ul.md-list li { position: relative; padding-left: 22px; margin-bottom: 7px; }
+.vita-legal .vita-md ul.md-list li::before { content: ""; position: absolute; left: 4px; top: 0.72em; width: 7px; height: 7px; border-radius: 50%; background: #e85a2e; }
+.vita-legal .vita-md ol.md-list { counter-reset: lg; }
+.vita-legal .vita-md ol.md-list li { position: relative; padding-left: 30px; margin-bottom: 7px; counter-increment: lg; }
+.vita-legal .vita-md ol.md-list li::before { content: counter(lg); position: absolute; left: 0; top: 0.2em; width: 20px; height: 20px; border-radius: 6px; background: rgba(232, 90, 46, 0.14); color: #c4441c; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+@media (max-width: 760px) {
+  .vita-legal-scrim { align-items: flex-end; padding: 0; }
+  .vita-legal { max-width: none; height: calc(100dvh - env(safe-area-inset-top) - 12px); border-radius: 24px 24px 0 0; }
+  .vita-legal-toc { display: none; }
+  .vita-legal-body { padding: 20px 18px 28px; }
+  .vita-legal-titles h2 { font-size: 17px; }
+  .vita-legal-foot .vita-btn { flex: 1; }
+}

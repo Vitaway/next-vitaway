@@ -42,6 +42,7 @@ export function splitMarkdownTitle(markdown: string, fallback: string): { title:
 export function Markdown({ source }: { source: string }) {
   const blocks: React.ReactNode[] = [];
   const lines = source.replace(/\r/g, "").split("\n");
+  let sec = 0;
   let para: string[] = [];
   let list: { ordered: boolean; items: string[] } | null = null;
   const flushPara = () => {
@@ -77,18 +78,25 @@ export function Markdown({ source }: { source: string }) {
   for (const raw of lines) {
     const line = raw.trimEnd();
     const h = /^(#{1,6})\s+(.*)$/.exec(line.trim());
+    const rule = /^\s*([-*_])\1{2,}\s*$/.test(line);
     const bullet = /^\s*[-*+]\s+(.*)$/.exec(line);
     const numbered = /^\s*\d+[.)]\s+(.*)$/.exec(line);
     if (!line.trim()) {
       flushPara();
       flushList();
+    } else if (rule) {
+      flushPara();
+      flushList();
+      blocks.push(<hr key={`r${blocks.length}`} className="md-rule" />);
     } else if (h) {
       flushPara();
       flushList();
       const level = h[1].length;
+      const num = level === 2 ? /^(\d+)\.\s+(.*)$/.exec(h[2]) : null;
       blocks.push(
-        <div key={`h${blocks.length}`} className={`md-h md-h${Math.min(level, 4)}`}>
-          {inline(h[2], `h${blocks.length}`)}
+        <div key={`h${blocks.length}`} className={`md-h md-h${Math.min(level, 4)}`} {...(level === 2 ? { "data-sec": sec++ } : {})}>
+          {num ? <span className="md-num">{num[1]}</span> : null}
+          <span>{inline(num ? num[2] : h[2], `h${blocks.length}`)}</span>
         </div>,
       );
     } else if (bullet || numbered) {
@@ -107,4 +115,14 @@ export function Markdown({ source }: { source: string }) {
   flushPara();
   flushList();
   return <div className="vita-md">{blocks}</div>;
+}
+
+/** Level-2 headings of a Markdown document, in order (for the legal dialog's contents list). */
+export function markdownSections(markdown: string): string[] {
+  return markdown
+    .replace(/\r/g, "")
+    .split("\n")
+    .map((l) => /^##\s+(.*)$/.exec(l.trim())?.[1])
+    .filter((x): x is string => Boolean(x))
+    .map((x) => x.replace(/\*\*/g, ""));
 }
