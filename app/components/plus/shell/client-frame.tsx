@@ -7,9 +7,12 @@ import { isStaffPrimaryDoor } from "@/lib/plus/session";
 import { useAuthGate } from "@/lib/plus/use-auth-gate";
 import PlusLoading from "../plus-loading";
 import StaffDoor from "../staff-door";
-import Dock, { ROOT_TABS, useAppPath } from "./dock";
+import Dock, { DOCK_SCREENS, useAppPath } from "./dock";
+import WebFooter from "./web-footer";
+import TopBar from "./topbar";
 import { useSupportBadge } from "@/lib/plus/client/support-badge";
 import { WebReminderScheduler } from "../reminders/web-reminder-scheduler";
+import { useT } from "@/lib/plus/i18n";
 
 const CLIENT_DOOR_KEY = "vitaway.plus.clientDoor";
 
@@ -29,9 +32,10 @@ export default function ClientFrame({ children }: { children: React.ReactNode })
     return <PlusLoading label="Opening Vitaway Plus…" />;
   }
 
-  const canUseClient = Boolean(session.mobileToken) && (session.doors.includes("client_app") || !isStaffPrimaryDoor(session.primaryDoor));
+  // F11: the mobile key lives in an HttpOnly cookie, so session.mobileToken may be empty after reload.
+  const canUseClient = session.doors.includes("client_app") || !isStaffPrimaryDoor(session.primaryDoor);
 
-  if ((isStaffPrimaryDoor(session.primaryDoor) && !clientDoor) || !session.mobileToken) {
+  if (isStaffPrimaryDoor(session.primaryDoor) && !clientDoor) {
     return (
       <div style={{ minHeight: "100dvh", padding: "40px 16px", background: "var(--vc-surface-muted)" }}>
         <div style={{ maxWidth: 512, margin: "0 auto" }}>
@@ -56,23 +60,49 @@ export default function ClientFrame({ children }: { children: React.ReactNode })
     );
   }
 
-  const showDock = (ROOT_TABS as readonly string[]).includes(path);
+  const showDock = (DOCK_SCREENS as readonly string[]).includes(path);
 
-  return (
-    <>
-      {children}
-      <LiveDock show={showDock} path={path} />
-    </>
-  );
+  return <AppShell path={path} showDock={showDock}>{children}</AppShell>;
 }
 
-/** Stays mounted across pages so the Support dot survives leaving the root tabs. */
-function LiveDock({ show, path }: { show: boolean; path: string }) {
+/** Tracks navigator.onLine so every screen gets the same offline notice (F23). */
+function useOnline(): boolean {
+  const [online, setOnline] = useState(true);
+  useEffect(() => {
+    const update = () => setOnline(navigator.onLine);
+    update();
+    window.addEventListener("online", update);
+    window.addEventListener("offline", update);
+    return () => {
+      window.removeEventListener("online", update);
+      window.removeEventListener("offline", update);
+    };
+  }, []);
+  return online;
+}
+
+/**
+ * Responsive app shell. The top bar and dock are toggled in CSS:
+ * phones (<768px) use the Flutter bottom dock, 768px+ use the sticky top bar
+ * (icon + label tabs on tablet, labelled with brand and name from 1024px). See .vita-app in plus.css.
+ * Stays mounted across pages so the Support dot survives leaving the root tabs.
+ */
+function AppShell({ path, showDock, children }: { path: string; showDock: boolean; children: React.ReactNode }) {
   const supportBadge = useSupportBadge(path);
+  const online = useOnline();
+  const t = useT();
   return (
-    <>
+    <div className={showDock ? "vita-app vita-fullbleed has-dock" : "vita-app vita-fullbleed"}>
+      {online ? null : (
+        <div className="vita-offline-banner" role="status">
+          {t("offline_banner")}
+        </div>
+      )}
+      <TopBar supportBadge={supportBadge} />
+      <div className="vita-app-main">{children}</div>
+      <WebFooter />
       <WebReminderScheduler />
-      {show ? <Dock supportBadge={supportBadge} /> : null}
-    </>
+      {showDock ? <Dock supportBadge={supportBadge} /> : null}
+    </div>
   );
 }

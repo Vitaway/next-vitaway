@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { MdCheck } from "react-icons/md";
+import { MdCheck } from "@/lib/plus/icons";
 import { usePlusAuth } from "@/lib/plus/auth-context";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { useT } from "@/lib/plus/i18n";

@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { CalendarDays } from 'lucide-react';
+import { Calendar1 as CalendarDays } from "@/lib/plus/icons";
 import PressButton from '../buttons/press-button';
 import { useBooking } from './booking-context';
 

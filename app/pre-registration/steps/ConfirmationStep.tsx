@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { CheckCircle } from 'lucide-react';
+import { TickCircle as CheckCircle } from "@/lib/plus/icons";
 import PressButton from '@/app/components/buttons/press-button';
 import { SITE_EMAIL, SITE_MAILTO } from '@/content/contact';
 

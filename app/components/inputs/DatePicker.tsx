@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { MdChevronLeft as ChevronLeft, MdChevronRight as ChevronRight } from "@/lib/plus/icons";
 import FormLabel from './FormLabel';
 
 const MONTHS = [

@@ -1,7 +1,9 @@
 "use client";
 
+import { Select } from "../ui/select";
+
 import { useRef, useState } from "react";
-import { DocumentText1, DocumentUpload, Trash } from "iconsax-react";
+import { DocumentText1, DocumentUpload, Trash } from "@/lib/plus/icons";
 import { useT } from "@/lib/plus/i18n";
 import { useMe } from "@/lib/plus/client/data";
 import { deleteDocument, documentTypeName, fmtMMMdY, openUserDocumentBlob, uploadDocument, useDocuments, type UserDocument } from "@/lib/plus/client/care";
@@ -30,17 +32,17 @@ function UploadSheet({ isPatient, onClose, onPick }: { isPatient: boolean; onClo
     >
       <label style={{ display: "block" }}>
         <span className="vita-label">{t("document_type")}</span>
-        <select className="vita-input" value={documentType} onChange={(e) => setType(e.target.value)} style={field}>
-          {isPatient ? <option value="medical_record">{t("medical_record")}</option> : null}
-          {!isPatient ? (
-            <>
-              <option value="certification">{t("certification")}</option>
-              <option value="cv">CV/Resume</option>
-              <option value="license">{t("professional_license")}</option>
-            </>
-          ) : null}
-          <option value="other">{t("other")}</option>
-        </select>
+        <Select
+          label={t("document_type")}
+          compact
+          value={documentType}
+          onChange={setType}
+          options={[
+            ...(isPatient ? [{ value: "medical_record", label: t("medical_record") }] : []),
+            ...(!isPatient ? [{ value: "certification", label: t("certification") }, { value: "cv", label: "CV/Resume" }, { value: "license", label: t("professional_license") }] : []),
+            { value: "other", label: t("other") },
+          ]}
+        />
       </label>
       <label style={{ display: "block", marginTop: 12 }}>
         <span className="vita-label">{t("document_name")}</span>
@@ -117,7 +119,7 @@ export default function MyDocumentsScreen() {
             <EmptyState title={t("no_documents")} subtitle={t("no_documents_body")} actionLabel={t("upload_document")} actionIcon={<DocumentUpload size={16} color="currentColor" />} onAction={() => setSheet(true)} />
           </div>
         ) : (
-          <div style={{ padding: "8px 18px 108px", display: "flex", flexDirection: "column", gap: 10 }}>
+          <div className="vita-flex-list" style={{ padding: "8px 18px 108px", display: "flex", flexDirection: "column", gap: 10 }}>
             {documents.map((doc) => (
               <div key={doc.id} className="vita-tap" role="button" tabIndex={0} onClick={() => void open(doc)} style={{ padding: 14, borderRadius: 10, background: "var(--vc-surface)", display: "flex", alignItems: "center", color: "var(--vc-navy)" }}>
                 <span style={{ width: 44, height: 44, borderRadius: 8, background: "var(--vc-tile-mint)", display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
@@ -125,7 +127,7 @@ export default function MyDocumentsScreen() {
                 </span>
                 <span style={{ marginLeft: 12, flex: 1, minWidth: 0 }}>
                   <span style={{ display: "block", fontSize: 15, fontWeight: 800, color: "var(--vc-ink)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{doc.name}</span>
-                  <span style={{ display: "block", marginTop: 2, fontSize: 12, fontWeight: 600, color: "rgba(var(--vc-navy-rgb),0.5)" }}>{`${documentTypeName(doc.documentType)} · ${fmtMMMdY(doc.uploadedAt)}`}</span>
+                  <span style={{ display: "block", marginTop: 2, fontSize: 13, fontWeight: 600, color: "rgba(var(--vc-navy-rgb),0.5)" }}>{`${documentTypeName(doc.documentType)} · ${fmtMMMdY(doc.uploadedAt)}`}</span>
                 </span>
                 {openingId === doc.id ? <DotSpinner small /> : <span style={{ fontSize: 13, fontWeight: 800, color: "var(--vc-action)" }}>Read</span>}
                 <button type="button" aria-label={t("delete")} onClick={(e) => { e.stopPropagation(); void remove(doc); }} style={{ marginLeft: 4, width: 40, height: 40, display: "flex", alignItems: "center", justifyContent: "center", color: "var(--vc-danger)", opacity: 0.85 }}>

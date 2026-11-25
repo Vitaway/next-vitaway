@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Calendar1, CalendarRemove, Call, Clock, Message, User, UserAdd, Video } from "iconsax-react";
+import { Calendar1, CalendarRemove, Call, Clock, Message, User, UserAdd, Video } from "@/lib/plus/icons";
 import { useT } from "@/lib/plus/i18n";
 import { useMe, useSubscription } from "@/lib/plus/client/data";
 import { MobileApiError, asList, mobileRequest } from "@/lib/plus/client/api";
@@ -103,10 +103,10 @@ export function CoachDetailsScreen({ id }: { id: number }) {
   const speciality = (coach.profile.speciality ?? "").trim();
   const bio = (coach.profile.bio ?? "").trim();
   return (
-    <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
+    <div className="vita-page w-narrow" style={{ background: "var(--vc-canvas)" }}>
       <AppBar title="" />
       <div style={{ flex: 1, overflowY: "auto", padding: "0 20px calc(env(safe-area-inset-bottom) + 104px)" }}>
-        <div style={{ height: 280, borderRadius: 10, overflow: "hidden", marginTop: 0 }}>
+        <div className="vita-coach-photo" style={{ height: 280, borderRadius: 10, overflow: "hidden", marginTop: 0 }}>
           <Photo url={coach.profile.profile_picture} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
         </div>
         <h2 style={{ margin: "20px 0 0", textAlign: "center", fontSize: 26, fontWeight: 800, letterSpacing: -0.6, color: "var(--vc-navy)" }}>{name || "—"}</h2>
@@ -294,7 +294,7 @@ export function RequestAppointmentScreen({ id }: { id: number }) {
   const pay = session?.pay;
 
   return (
-    <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
+    <div className="vita-page w-narrow" style={{ background: "var(--vc-canvas)" }}>
       <AppBar title={t("request_appointment")} actions={<Avatar url={coach?.profile.profile_picture} size={38} />} />
       {loading || coachLoading ? (
         <CenterSpinner />
@@ -331,7 +331,7 @@ export function RequestAppointmentScreen({ id }: { id: number }) {
               </div>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", rowGap: 0 }}>
                 {WD.map((w) => (
-                  <span key={w} style={{ textAlign: "center", fontSize: 12, fontWeight: 600, color: navyA(0.4), paddingBottom: 6 }}>{w}</span>
+                  <span key={w} style={{ textAlign: "center", fontSize: 13, fontWeight: 600, color: navyA(0.4), paddingBottom: 6 }}>{w}</span>
                 ))}
                 {cells.map((d) => {
                   const key = dayKey(d);

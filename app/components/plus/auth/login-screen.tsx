@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Call, Lock, Mobile, Sms } from "iconsax-react";
-import { MdLogin } from "react-icons/md";
+import { Call, Lock, Mobile, Sms } from "@/lib/plus/icons";
+import { MdLogin } from "@/lib/plus/icons";
 import { usePlusAuth } from "@/lib/plus/auth-context";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { useT } from "@/lib/plus/i18n";
@@ -197,7 +197,7 @@ export default function LoginScreen() {
         <Gap h={20} />
         <AuthSwitchRow prompt={t("no_account")} action={t("sign_up")} onClick={() => push("/register")} />
         <Gap h={8} />
-        <p style={{ margin: 0, textAlign: "center", fontSize: 12, lineHeight: 1.45, color: "rgba(var(--vc-navy-rgb),0.45)" }}>
+        <p style={{ margin: 0, textAlign: "center", fontSize: 13, lineHeight: 1.45, color: "rgba(var(--vc-navy-rgb),0.45)" }}>
           {t("agreements")}
           <button type="button" className="vita-inline-link" onClick={() => openLegal("terms")}>
             {t("terms_of_use")}

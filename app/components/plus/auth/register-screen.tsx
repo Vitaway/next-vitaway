@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Call, Lock, Mobile, Sms } from "iconsax-react";
-import { MdArrowForward } from "react-icons/md";
+import { Call, Lock, Mobile, Sms } from "@/lib/plus/icons";
+import { MdArrowForward } from "@/lib/plus/icons";
 import { usePlusAuth } from "@/lib/plus/auth-context";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { useT } from "@/lib/plus/i18n";

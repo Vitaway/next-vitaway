@@ -14,6 +14,11 @@ export type Medication = {
   instructions?: string | null;
   reminders_enabled: boolean;
   slots: MedicationSlot[];
+  /** W7 (BL-126): who added it and whether the care team has confirmed it. Old servers send neither. */
+  added_by: "member" | "staff";
+  /** null when the server does not send it (older backend): then no chip is shown. */
+  staff_confirmed: boolean | null;
+  staff_confirmed_at: string | null;
 };
 
 export type AdherenceCell = { date: string; time: string; status: string };
@@ -59,7 +64,20 @@ export function normalizeMedication(raw: Record<string, unknown>): Medication {
     instructions: raw.instructions ? String(raw.instructions) : null,
     reminders_enabled: raw.reminders_enabled !== false,
     slots,
+    added_by: raw.added_by === "staff" ? "staff" : "member",
+    staff_confirmed: raw.staff_confirmed === undefined || raw.staff_confirmed === null ? null : raw.staff_confirmed === true,
+    staff_confirmed_at: raw.staff_confirmed_at ? String(raw.staff_confirmed_at) : null,
   };
+}
+
+/**
+ * W7: show "Care team will check" on a medicine the member added until a pharmacist, nurse, doctor or the
+ * clinical lead confirms it. Only when the server sends the field, so an older backend shows no chip.
+ */
+export function needsCareTeamCheck(raw: Record<string, unknown> | Medication): boolean {
+  if (!("staff_confirmed" in raw) || raw.staff_confirmed === undefined || raw.staff_confirmed === null) return false;
+  if (raw.added_by === "staff") return false;
+  return raw.staff_confirmed !== true;
 }
 
 export function normalizeAdherence(raw: Record<string, unknown>): MedicationAdherence {
@@ -145,7 +163,8 @@ export function slotDateTime(dateYmd: string, timeHm: string): Date | null {
 export function effectiveSlotStatus(loggedStatus: string, dateYmd: string, timeHm: string, now = new Date()): string {
   const normalized = loggedStatus.toLowerCase();
   if (normalized === "taken") return "taken";
-  if (normalized === "missed" || normalized === "skipped") return "missed";
+  if (normalized === "skipped") return "skipped";
+  if (normalized === "missed") return "missed";
   const when = slotDateTime(dateYmd, timeHm);
   if (!when) return normalized || "upcoming";
   if (now.getTime() < when.getTime() - EARLY_WINDOW_MS) return "upcoming";
@@ -171,4 +190,26 @@ export const DOSE_COLORS: Record<string, { light: [string, string]; dark: [strin
   due: { light: ["#FFE8D6", "#C45C12"], dark: ["#3A2219", "#F2A272"] },
   pending: { light: ["#FFE8D6", "#C45C12"], dark: ["#3A2219", "#F2A272"] },
   missed: { light: ["#FFF0C2", "#9A7300"], dark: ["#3D3419", "#E8C547"] },
+  skipped: { light: ["#E8EEF4", "#3A5068"], dark: ["#1E2A36", "#A9BCD0"] },
 };
+
+/**
+ * Medicine reminders follow the medicine (22 Nov 2026): every saved medicine reminds at its dose times
+ * until its reminders are turned off. Uses the server's `reminders` summary when sent, else the medicine's times.
+ */
+export function medicineReminderSummary(raw: { times?: unknown; frequency?: unknown; reminders_enabled?: unknown; reminders?: unknown }): { enabled: boolean; times: string[] } {
+  const server = raw.reminders as { enabled?: unknown; times?: unknown } | null | undefined;
+  if (server && typeof server === "object" && Array.isArray(server.times)) {
+    return { enabled: server.enabled === true, times: server.times.filter((t): t is string => typeof t === "string") };
+  }
+  if (raw.reminders_enabled === false) return { enabled: false, times: [] };
+  const list = Array.isArray(raw.times) && raw.times.length ? raw.times : defaultTimesForFrequency(Number(raw.frequency) || 1);
+  const times = [...new Set(list.filter((t): t is string => typeof t === "string" && /^\d{1,2}:\d{2}$/.test(t.trim())).map((t) => t.trim().padStart(5, "0")))].sort();
+  return { enabled: times.length > 0, times };
+}
+
+/** "08:00", "08:00 and 20:00", "08:00, 14:00 and 20:00" (the joining word comes from i18n). */
+export function joinTimes(times: string[], and: string): string {
+  if (times.length <= 1) return times[0] ?? "";
+  return `${times.slice(0, -1).join(", ")} ${and} ${times[times.length - 1]}`;
+}

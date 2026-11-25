@@ -15,9 +15,9 @@ export type NewReading = {
   fullness: number;
 };
 
-/** POST /health-metrics/ with the same body HealthMetric.toJson() sends. */
+/** POST the canonical metrics path so a cookie session reaches the API through the /api/v1 rewrite. */
 export async function saveReading(reading: NewReading): Promise<void> {
-  await mobileRequest("/health-metrics/", {
+  await mobileRequest("/api/v1/mobile/health/metrics", {
     method: "POST",
     body: {
       unique_id: newUuid(),
@@ -31,5 +31,5 @@ export async function saveReading(reading: NewReading): Promise<void> {
       fullness: reading.fullness,
     },
   });
-  invalidate("/health-metrics/");
+  invalidate("/api/v1/mobile/health/metrics", "/api/v1/mobile/insights");
 }

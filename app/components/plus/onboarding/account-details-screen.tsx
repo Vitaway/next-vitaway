@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Sms, User } from "iconsax-react";
+import { Sms, User } from "@/lib/plus/icons";
 import { usePlusAuth } from "@/lib/plus/auth-context";
 import { nextAuthPath } from "@/lib/plus/auth-flow";
 import { useAuthGate } from "@/lib/plus/use-auth-gate";

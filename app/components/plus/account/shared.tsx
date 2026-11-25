@@ -266,7 +266,7 @@ export function FieldSheet({
       }
     >
       <label style={{ display: "block", padding: "8px 14px", borderRadius: 8, background: "var(--vc-canvas)" }}>
-        <span style={{ display: "block", fontSize: 12, fontWeight: 600, color: navyA(0.55) }}>{label ?? title}</span>
+        <span style={{ display: "block", fontSize: 13, fontWeight: 600, color: navyA(0.55) }}>{label ?? title}</span>
         <input
           autoFocus
           inputMode={inputMode}

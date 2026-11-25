@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Mail, Phone, MessageCircle, MessageSquare, Sunrise, Sun, Sunset, Check } from 'lucide-react';
+import { Sms as Mail, Call as Phone, Message as MessageCircle, ChatSquare as MessageSquare, Sunrise, Sun1 as Sun, Sunset, MdCheck as Check } from "@/lib/plus/icons";
 import { PreRegistrationPayload } from '@/lib/api/types';
 
 interface Props {

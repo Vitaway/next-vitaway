@@ -127,14 +127,23 @@ export function useDirectory() {
     const people = (key: string) => (Array.isArray(body[key]) ? (body[key] as unknown[]).filter((x) => x && typeof x === "object").map(parseCoach) : []);
     const community = Array.isArray(body.community) ? (body.community as unknown[]).map((x) => ({ id: num(rec(x).id), handle: str(rec(x).handle) })) : [];
     let assignedCoachId: number | null = null;
+    let assignedCoach: ReturnType<typeof parseCoach> | null = null;
     try {
       const mine = rec(await mobileRequest("/api/v1/mobile/coaching/my-coach"));
       const v = mine.coach_account_id;
       assignedCoachId = typeof v === "number" ? v : Number.parseInt(str(v), 10) || null;
+      if (mine.coach && typeof mine.coach === "object") assignedCoach = parseCoach(mine.coach);
     } catch {
       /* no assigned coach */
     }
-    return { coaches: people("coaches"), dietitians: people("dietitians"), admins: people("admins"), community, assignedCoachId };
+    const coaches = people("coaches");
+    const dietitians = people("dietitians");
+    const admins = people("admins");
+    // F02: a nutritionist assigned as care team may not appear in the coaches directory (they are a professional).
+    if (assignedCoach && ![...coaches, ...dietitians, ...admins].some((row) => row.id === assignedCoach!.id)) {
+      coaches.unshift(assignedCoach);
+    }
+    return { coaches, dietitians, admins, community, assignedCoachId };
   });
   return resource;
 }

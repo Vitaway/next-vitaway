@@ -1,10 +1,15 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft } from "iconsax-react";
-import { MdArrowForward } from "react-icons/md";
+import { createContext, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+import { ArrowLeft } from "@/lib/plus/icons";
+import { MdArrowForward } from "@/lib/plus/icons";
 import { useBack } from "@/lib/plus/nav";
 import { mediaUrl } from "@/lib/plus/client/api";
+import { useMe } from "@/lib/plus/client/data";
+import { usePlusPaths } from "@/lib/plus/plus-paths";
+import { Illu, NAV_ILLU } from "./vita-icons";
+import { tabFor, useAppPath } from "../shell/dock";
 
 export function cx(...parts: Array<string | false | null | undefined>): string {
   return parts.filter(Boolean).join(" ");
@@ -26,7 +31,7 @@ export function CircleButton({
   onClick,
   children,
   label,
-  size = 40,
+  size = 44,
   background,
   color,
 }: {
@@ -50,6 +55,31 @@ export function CircleButton({
   );
 }
 
+/** Shortcut tiles at the top of a tab screen (F16: each tab groups its related screens). */
+export function HubLinks({ links }: { links: Array<{ label: string; icon: React.ReactNode; onClick: () => void; testId?: string; tint?: string }> }) {
+  return (
+    <div className="vita-hub-links">
+      {links.map((link) => (
+        <button key={link.label} type="button" className="vita-hub-link vita-tap" data-testid={link.testId} onClick={link.onClick}>
+          <span className="ic" style={link.tint ? { background: link.tint } : undefined}>{link.icon}</span>
+          <span className="lb">{link.label}</span>
+        </button>
+      ))}
+    </div>
+  );
+}
+
+/** F16: account and settings open from the profile picture in the top bar. */
+export function ProfileButton() {
+  const { user } = useMe();
+  const { push } = usePlusPaths();
+  return (
+    <button type="button" className="vita-avatar-btn" aria-label="Account" onClick={() => push("/profile")}>
+      <Photo url={user?.profile?.profile_picture} size={40} />
+    </button>
+  );
+}
+
 export function AppBar({
   title,
   back = true,
@@ -58,6 +88,7 @@ export function AppBar({
   actions,
   bottom,
   bubbles = true,
+  profile = false,
 }: {
   title: string;
   back?: boolean;
@@ -66,8 +97,13 @@ export function AppBar({
   actions?: React.ReactNode;
   bottom?: React.ReactNode;
   bubbles?: boolean;
+  /** Show the profile picture (opens Account) — used on the tab screens. */
+  profile?: boolean;
 }) {
   const goBack = useBack(backTo);
+  // The section's illustrated icon (same as the web top bar) sits left of the title, on every width.
+  const section = tabFor(useAppPath());
+  const sectionIcon = section ? NAV_ILLU[section] : undefined;
   return (
     <header className="vita-appbar">
       {bubbles ? <AppBarBubbles /> : null}
@@ -79,8 +115,20 @@ export function AppBar({
             </CircleButton>
           </div>
         ) : null}
-        <h1 className="vita-appbar-title">{title}</h1>
-        {actions ? <div className="vita-appbar-trail">{actions}</div> : null}
+        <h1 className="vita-appbar-title">
+          {sectionIcon ? (
+            <span className="vita-appbar-ic" aria-hidden>
+              <Illu name={sectionIcon} size={26} />
+            </span>
+          ) : null}
+          <span className="vita-appbar-tx">{title}</span>
+        </h1>
+        {actions || profile ? (
+          <div className="vita-appbar-trail">
+            {actions}
+            {profile ? <ProfileButton /> : null}
+          </div>
+        ) : null}
       </div>
       {bottom ? <div className="vita-appbar-bottom">{bottom}</div> : null}
     </header>
@@ -103,12 +151,17 @@ export function BubbleBackdrop() {
 export function Page({
   children,
   backdrop = false,
+  width = "regular",
+  className,
 }: {
   children: React.ReactNode;
   backdrop?: boolean;
+  /** Desktop content width: narrow for forms, wide for dashboards and grids. Phones are unaffected. */
+  width?: "narrow" | "regular" | "wide";
+  className?: string;
 }) {
   return (
-    <div className="vita-page" style={{ position: "relative" }}>
+    <div className={cx("vita-page", width !== "regular" && `w-${width}`, className)} style={{ position: "relative" }}>
       {backdrop ? <BubbleBackdrop /> : null}
       <div style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", flex: 1 }}>{children}</div>
     </div>
@@ -386,14 +439,17 @@ export function Tabs<T extends string>({
   value,
   onChange,
   onBar = false,
+  scrollable = false,
 }: {
   tabs: Array<{ value: T; label: string }>;
   value: T;
   onChange: (value: T) => void;
   onBar?: boolean;
+  /** Tabs keep their natural width and scroll sideways (vitaTabBar scrollable). */
+  scrollable?: boolean;
 }) {
   return (
-    <div className={cx("vita-tabs", onBar && "on-bar")} role="tablist">
+    <div className={cx("vita-tabs", onBar && "on-bar", scrollable && "scroll")} role="tablist">
       {tabs.map((tab) => (
         <button
           key={tab.value}
@@ -448,6 +504,7 @@ export function Modal({
   }, [open, onClose]);
   if (!open) return null;
   return (
+    <RootPortal>
     <div className="vita-modal-scrim" onClick={onClose} role="presentation">
       <div
         className={cx("vita-modal", compact && "compact")}
@@ -470,7 +527,21 @@ export function Modal({
         {actions ? <div className="vita-modal-foot">{actions}</div> : null}
       </div>
     </div>
+    </RootPortal>
   );
+}
+
+/**
+ * Renders overlays (modals, pickers, full-screen viewers) at the top of the app, inside `.vita-root`.
+ * Inside a screen they could be trapped in that screen's stacking context, so the phone tab bar and the
+ * Log button sat on top of them. `.vita-root` (not document.body) keeps the theme colour tokens.
+ */
+export function RootPortal({ children }: { children: React.ReactNode }) {
+  const [host, setHost] = useState<Element | null>(null);
+  useLayoutEffect(() => {
+    setHost(document.querySelector(".vita-root"));
+  }, []);
+  return host ? createPortal(children, host) : <>{children}</>;
 }
 
 /* ───────── Toasts and confirm ───────── */

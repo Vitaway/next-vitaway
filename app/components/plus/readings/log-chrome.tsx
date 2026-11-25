@@ -1,40 +1,77 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Clock, Danger, InfoCircle, TickCircle } from "iconsax-react";
+import { Clock, Danger, InfoCircle, TickCircle } from "@/lib/plus/icons";
+import { useMetrics } from "@/lib/plus/client/data";
+import { parseStamp, type HealthMetric } from "@/lib/plus/health";
+import { fmtListTime } from "@/lib/plus/format";
 import { useTheme } from "@/lib/plus/theme";
 import { MONTHS, WEEKDAYS_SHORT, fmtLongDay, startOfDay } from "@/lib/plus/format";
 import { ActionButton, AppBar, CircleButton, Modal } from "../ui/vita";
+import { Camera } from "@/lib/plus/icons";
+import { usePlusPaths } from "@/lib/plus/plus-paths";
+import { useT } from "@/lib/plus/i18n";
 
 export const FUTURE_TIME_MESSAGE = "That time hasn’t happened yet.";
 
 export function MetricLogScaffold({
   title,
-  icon,
   saveLabel,
   loading,
   onSave,
   children,
+  photoType,
+  metricType,
+  saveHint,
+  form = false,
 }: {
   title: string;
-  icon: React.ReactNode;
+  /** Kept for callers; the header button is now History. */
+  icon?: React.ReactNode;
   saveLabel: string;
   loading: boolean;
   onSave?: () => void | Promise<void>;
   children: React.ReactNode;
+  /** W30: show "Read it from a photo" for this reading type. */
+  photoType?: "blood_pressure" | "glucose" | "weight";
+  /** Adds the History button and, on wide screens, a "Recent readings" column. */
+  metricType?: "bp" | "glucose" | "weight";
+  /** Says why Save is greyed out (shown only while it is). */
+  saveHint?: string | null;
+  /** A multi-section form (not a keypad): full-width, two columns on desktop. */
+  form?: boolean;
 }) {
+  const { push } = usePlusPaths();
+  const t = useT();
   return (
-    <div className="vita-page">
+    <div className={`vita-page w-narrow vita-log-page${form ? " is-form" : ""}`}>
       <AppBar
         title={title}
         actions={
-          <CircleButton label={title}>
-            {icon}
-          </CircleButton>
+          metricType ? (
+            <CircleButton label={t("log_history")} onClick={() => push(`/metrics/${metricType}`)}>
+              <Clock size={18} color="currentColor" />
+            </CircleButton>
+          ) : null
         }
       />
-      <div style={{ flex: 1, overflowY: "auto" }}>{children}</div>
-      <div style={{ position: "sticky", bottom: 0, padding: "8px 20px calc(12px + env(safe-area-inset-bottom))", background: "var(--vc-canvas)" }}>
+      <div className="vita-log-body" style={{ flex: 1, overflowY: "auto" }}>
+      <div className="vita-log-main">
+        {photoType ? (
+          <button type="button" data-testid="pr-link" onClick={() => push(`/log/photo?type=${photoType}`)} style={{ display: "flex", alignItems: "center", gap: 8, width: "calc(100% - 40px)", margin: "12px 20px 0", padding: "10px 14px", borderRadius: 10, border: "1px dashed var(--vc-teal)", background: "transparent", fontSize: 14, fontWeight: 800, color: "var(--vc-teal-ink)" }}>
+            <Camera size={18} color="currentColor" />
+            {t("pr_open")}
+          </button>
+        ) : null}
+        {children}
+      </div>
+      {metricType ? (
+        <aside className="vita-log-aside">
+          <RecentReadings type={metricType} />
+        </aside>
+      ) : null}
+      </div>
+      <div className="vita-bottom-bar" style={{ position: "sticky", bottom: 0, padding: "8px 20px calc(12px + env(safe-area-inset-bottom))", background: "var(--vc-canvas)" }}>
         <ActionButton
           full
           label={saveLabel}
@@ -47,7 +84,58 @@ export function MetricLogScaffold({
             </svg>
           }
         />
+        {!onSave && saveHint ? <p className="vita-save-hint">{saveHint}</p> : null}
       </div>
+    </div>
+  );
+}
+
+/** Readings of one type, newest first (the readings list already holds every saved reading). */
+export function useRecentReadings(type: "bp" | "glucose" | "weight", count = 3) {
+  const { metrics } = useMetrics();
+  return metrics
+    .filter((m) => m.type === type)
+    .map((m) => ({ m, at: parseStamp(m.last_updated) }))
+    .filter((row): row is { m: HealthMetric; at: Date } => row.at !== null)
+    .sort((a, b) => b.at.getTime() - a.at.getTime())
+    .slice(0, count);
+}
+
+export function readingText(m: HealthMetric) {
+  if (m.type === "bp") return `${m.systolic ?? "–"}/${m.diastolic ?? "–"} mmHg`;
+  if (m.type === "glucose") return `${m.latest_value} mg/dL`;
+  if (m.type === "weight") return `${m.latest_value} kg`;
+  return `${m.latest_value} ${m.unit ?? ""}`.trim();
+}
+
+/** "Last time: 132/84 mmHg · Fri" under the fields, on every width. */
+export function LastReadingLine({ type }: { type: "bp" | "glucose" | "weight" }) {
+  const t = useT();
+  const [last] = useRecentReadings(type, 1);
+  if (!last) return null;
+  return <p className="vita-last-reading">{t("log_last_time", { value: readingText(last.m), when: fmtListTime(last.at) })}</p>;
+}
+
+function RecentReadings({ type }: { type: "bp" | "glucose" | "weight" }) {
+  const t = useT();
+  const { push } = usePlusPaths();
+  const rows = useRecentReadings(type, 3);
+  return (
+    <div className="vita-log-recent">
+      <h2>{t("log_recent")}</h2>
+      {rows.length ? (
+        <ul>
+          {rows.map(({ m, at }) => (
+            <li key={m.unique_id}>
+              <b>{readingText(m)}</b>
+              <span>{fmtListTime(at)}</span>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="empty">{t("log_recent_empty")}</p>
+      )}
+      <button type="button" onClick={() => push(`/metrics/${type}`)}>{t("log_history")} →</button>
     </div>
   );
 }
@@ -73,7 +161,20 @@ export function MetricFeedbackBox({ kind, title, body }: { kind: FeedbackKind; t
   );
 }
 
-export function NumericKeypad({ onKey, showDecimal = false }: { onKey: (key: string) => void; showDecimal?: boolean }) {
+export function NumericKeypad({
+  onKey,
+  showDecimal = false,
+  onNext,
+  onSubmit,
+}: {
+  onKey: (key: string) => void;
+  showDecimal?: boolean;
+  /** Tab on a keyboard: move to the next box. */
+  onNext?: () => void;
+  /** Enter on a keyboard: save. */
+  onSubmit?: () => void;
+}) {
+  const t = useT();
   const keys = ["1", "2", "3", "4", "5", "6", "7", "8", "9", showDecimal ? "." : "", "0", "del"];
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -81,11 +182,22 @@ export function NumericKeypad({ onKey, showDecimal = false }: { onKey: (key: str
       if (/^[0-9]$/.test(event.key)) onKey(event.key);
       else if (event.key === "Backspace") onKey("del");
       else if (event.key === "." && showDecimal) onKey(".");
+      else if (event.key === "Tab" && onNext && !event.shiftKey && !(event.target instanceof HTMLButtonElement)) {
+        event.preventDefault();
+        onNext();
+      } else if (event.key === "Enter" && onSubmit && !(event.target instanceof HTMLButtonElement)) {
+        event.preventDefault();
+        onSubmit();
+      }
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [onKey, showDecimal]);
+  }, [onKey, showDecimal, onNext, onSubmit]);
   return (
+    <>
+    <p className="vita-type-hint">
+      <span aria-hidden>⌨</span> {onNext ? t("log_type_hint_fields") : t("log_type_hint")}
+    </p>
     <div className="vita-keypad" style={{ padding: "0 18px" }}>
       {keys.map((key, i) =>
         !key ? (
@@ -104,6 +216,7 @@ export function NumericKeypad({ onKey, showDecimal = false }: { onKey: (key: str
         ),
       )}
     </div>
+    </>
   );
 }
 
@@ -202,7 +315,7 @@ export function DateLine({ value, onChange }: { value: Date; onChange: (d: Date)
                 border: active ? "none" : "1px solid rgba(var(--vc-navy-rgb),0.08)",
               }}
             >
-              <span style={{ fontSize: 11, fontWeight: 600, color: active ? "rgba(255,255,255,0.78)" : "rgba(var(--vc-navy-rgb),0.4)" }}>{WEEKDAYS_SHORT[day.getDay()]}</span>
+              <span style={{ fontSize: 13, fontWeight: 600, color: active ? "rgba(255,255,255,0.78)" : "rgba(var(--vc-navy-rgb),0.4)" }}>{WEEKDAYS_SHORT[day.getDay()]}</span>
               <span style={{ fontSize: 18, fontWeight: active ? 800 : 700, color: active ? "#fff" : "var(--vc-navy)" }}>{day.getDate()}</span>
             </button>
           );

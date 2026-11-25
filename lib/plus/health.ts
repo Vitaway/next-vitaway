@@ -3,6 +3,9 @@
  * (utils/health_classifiers.dart and Pages/home/health_score.dart).
  */
 
+import { bmiViewFor } from "./bmi";
+export { bpFieldComplete, bpKeypadAppend } from "./bp-keypad";
+
 export type HealthMetric = {
   unique_id: string;
   type: "glucose" | "bp" | "weight" | string;
@@ -65,6 +68,21 @@ export const BP_DIASTOLIC_MIN = 30;
 export const BP_DIASTOLIC_MAX = 200;
 export const BP_PULSE_MIN = 30;
 export const BP_PULSE_MAX = 220;
+
+/** Highest value each BP keypad field accepts: 0 top, 1 bottom, 2 pulse (health_classifiers.dart bpFieldMax). */
+export function bpFieldMax(field: "top" | "bottom" | "pulse"): number {
+  return field === "top" ? BP_SYSTOLIC_MAX : field === "bottom" ? BP_DIASTOLIC_MAX : BP_PULSE_MAX;
+}
+
+type Tr = (key: string, vars?: Record<string, string | number>) => string;
+
+/** Localised form of bpValidationError (Flutter reads the same en/rw keys). */
+export function bpValidationErrorText(t: Tr, systolic: number, diastolic: number): string | null {
+  if (systolic < BP_SYSTOLIC_MIN || systolic > BP_SYSTOLIC_MAX) return t("bp_err_top_range", { min: BP_SYSTOLIC_MIN, max: BP_SYSTOLIC_MAX });
+  if (diastolic < BP_DIASTOLIC_MIN || diastolic > BP_DIASTOLIC_MAX) return t("bp_err_bottom_range", { min: BP_DIASTOLIC_MIN, max: BP_DIASTOLIC_MAX });
+  if (systolic <= diastolic) return t("bp_err_top_above_bottom");
+  return null;
+}
 
 export function bpValidationError(systolic: number, diastolic: number): string | null {
   if (systolic < BP_SYSTOLIC_MIN || systolic > BP_SYSTOLIC_MAX) {
@@ -272,13 +290,15 @@ export function glucoseMetricsStatus(category: GlucoseCategory | null): MetricSt
 
 /* ───────── Weight ───────── */
 
-export function weightCaption(kg: number, heightCm: number | null | undefined): string {
+/** English caption; adult ranges only from 18 with a known age (BL-013). */
+export function weightCaption(kg: number, heightCm: number | null | undefined, age?: number | null): string {
   const h = heightCm ?? 0;
   if (!h || h === 110 || kg <= 0) return "Latest weigh-in";
-  const bmi = (kg / (h * h)) * 10000;
-  if (bmi < 18.5) return "Below the usual range";
-  if (bmi < 25) return "In the usual range";
-  if (bmi < 30) return "Above the usual range";
+  const view = bmiViewFor(kg, h, age ?? 0);
+  if (!view.band) return "Latest weigh-in";
+  if (view.band === "underweight") return "Below the usual range";
+  if (view.band === "healthy") return "In the usual range";
+  if (view.band === "overweight") return "Above the usual range";
   return "Well above the usual range";
 }
 

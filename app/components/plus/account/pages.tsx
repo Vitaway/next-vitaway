@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ArrowDown2, ArrowRight3, Call, Camera, Clock, DocumentDownload, Edit2, FolderOpen, Location, Sms, Weight } from "iconsax-react";
+import { Select } from "../ui/select";
+import { ArrowDown2, ArrowRight3, Call, Camera, Clock, DocumentDownload, Edit2, FolderOpen, Location, Sms, Weight } from "@/lib/plus/icons";
 import { useT } from "@/lib/plus/i18n";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { useBack } from "@/lib/plus/nav";
@@ -24,7 +25,7 @@ const filled = (v?: string | null) => {
 
 function BottomSave({ label, loading, onClick }: { label: string; loading: boolean; onClick: () => void }) {
   return (
-    <div style={{ position: "sticky", bottom: 0, padding: "8px 20px calc(12px + env(safe-area-inset-bottom))", background: "var(--vc-canvas)" }}>
+    <div className="vita-bottom-bar" style={{ position: "sticky", bottom: 0, padding: "8px 20px calc(12px + env(safe-area-inset-bottom))", background: "var(--vc-canvas)" }}>
       <ActionButton full label={label} loading={loading} onClick={onClick} icon={<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>} />
     </div>
   );
@@ -55,67 +56,79 @@ export function MyProfileScreen() {
       return false;
     }
   };
-  if (loading && !p.firstName) return <div className="vita-page"><AppBar title={t("my_profile")} /><CenterSpinner /></div>;
+  if (loading && !p.firstName) return <div className="vita-page w-narrow"><AppBar title={t("my_profile")} /><CenterSpinner /></div>;
   const hUnit = heightUnit === "in" ? "In" : "cm";
   const wUnit = weightUnit === "kg" ? "Kg" : "lbs";
   const height = p.height != null ? convertHeight(Number(p.height), heightUnit).toFixed(1) : "N/A";
 
   const stat = (label: string, value: string, known: boolean, onClick: () => void) => (
-    <button type="button" onClick={onClick} style={{ flex: 1, padding: "14px 8px", borderRadius: 8, background: "var(--vc-surface)", border: `1px solid ${navyA(0.08)}`, textAlign: "center" }}>
-      <div style={{ fontSize: 12, fontWeight: 600, color: navyA(0.55) }}>{label}</div>
-      <div style={{ marginTop: 4, fontSize: 16, fontWeight: 800, color: known ? "var(--vc-navy)" : "var(--vc-action)" }}>{known ? value : t("add")}</div>
+    <button type="button" className="vita-prof-stat" onClick={onClick}>
+      <small>{label}</small>
+      <b className={known ? "" : "add"}>{known ? value : t("add")}</b>
     </button>
   );
-  const row = (label: string, value: string, onClick: () => void) => (
-    <button type="button" onClick={onClick} style={{ width: "100%", display: "flex", alignItems: "center", padding: "14px 18px", textAlign: "left" }}>
-      <span style={{ flex: 1, fontSize: 14, fontWeight: 600, color: navyA(0.55) }}>{label}</span>
-      <span style={{ fontSize: 14, fontWeight: 700, color: value ? "var(--vc-navy)" : "var(--vc-action)" }}>{value || t("add")}</span>
+  const field = (label: string, value: string, onClick: () => void, locked = false) => (
+    <button type="button" className="vita-prof-field" onClick={onClick} disabled={locked}>
+      <small>{label}</small>
+      <b className={value ? "" : "add"}>{value || t("add")}</b>
+      {locked ? null : <Edit2 size={15} color="currentColor" />}
     </button>
   );
   const fullName = `${p.firstName} ${p.lastName}`.trim();
+  const details: boolean[] = [weight > 0, ageKnown(p.age), heightKnown(p.height), Boolean(filled(p.country)), Boolean(filled(p.city)), Boolean(filled(p.idNumber)), Boolean(filled(p.phone))];
+  const done = details.filter(Boolean).length;
 
   return (
-    <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
+    <div className="vita-page w-narrow" style={{ background: "var(--vc-canvas)" }}>
       <AppBar title={t("my_profile")} />
-      <div style={{ flex: 1, overflowY: "auto", padding: "16px 20px 32px", display: "flex", flexDirection: "column", alignItems: "center" }}>
-        <div style={{ padding: 3, borderRadius: "50%", border: "2.5px solid var(--vc-mint)" }}>
-          <Avatar url={p.photo} size={100} />
-        </div>
-        <div style={{ marginTop: 10, fontSize: 18, fontWeight: 800, color: "var(--vc-navy)" }}>{fullName}</div>
-        {p.mrn?.trim() ? <div style={{ marginTop: 4, fontSize: 13, fontWeight: 600, color: navyA(0.55) }}>{p.mrn.trim()}</div> : null}
-        <div style={{ height: 10 }} />
-        <ActionButton tone="white" label={t("edit_account")} icon={<Edit2 size={18} color="currentColor" />} onClick={() => push("/account/edit")} />
-        {p.type === "normal" ? (
-          <div style={{ display: "flex", gap: 10, width: "100%", marginTop: 16 }}>
-            {stat(t("hm_weight"), `${convertWeight(weight, weightUnit).toFixed(0)} ${wUnit}`, weight > 0, () => setSheet("weight"))}
-            {stat(t("age"), String(p.age), ageKnown(p.age), () => setSheet("age"))}
-            {stat(t("ap_height"), `${height} ${hUnit}`, heightKnown(p.height), () => {
-              setCm(heightKnown(p.height) ? Number(p.height) : 170);
-              setSheet("height");
-            })}
+      <div className="vita-prof">
+        <aside className="vita-prof-card">
+          <div className="vita-prof-photo">
+            <Avatar url={p.photo} size={96} />
           </div>
-        ) : null}
-        {p.type === "coach" ? (
-          <div style={{ width: "100%", marginTop: 16 }}>
-            <div style={{ fontSize: 16, fontWeight: 800, color: "var(--vc-navy)" }}>{t("my_bio")}</div>
-            <p style={{ margin: "6px 0 0", color: "var(--vc-ink)" }}>{p.bio || "N/A"}</p>
+          <h2>{fullName}</h2>
+          {p.mrn?.trim() ? <span className="mrn">{p.mrn.trim()}</span> : null}
+          <ActionButton tone="white" label={t("edit_account")} icon={<Edit2 size={16} color="currentColor" />} onClick={() => push("/account/edit")} />
+          {p.type === "normal" ? (
+            <>
+              <div className="vita-prof-stats">
+                {stat(t("hm_weight"), `${convertWeight(weight, weightUnit).toFixed(0)} ${wUnit}`, weight > 0, () => setSheet("weight"))}
+                {stat(t("age"), String(p.age), ageKnown(p.age), () => setSheet("age"))}
+                {stat(t("ap_height"), `${height} ${hUnit}`, heightKnown(p.height), () => {
+                  setCm(heightKnown(p.height) ? Number(p.height) : 170);
+                  setSheet("height");
+                })}
+              </div>
+              <div className="vita-prof-done" aria-label={t("prof_complete", { n: done, total: details.length })}>
+                <span className="bar"><i style={{ width: `${(done / details.length) * 100}%` }} /></span>
+                <small>{t("prof_complete", { n: done, total: details.length })}</small>
+              </div>
+            </>
+          ) : null}
+          {p.type === "coach" ? (
+            <div className="vita-prof-bio">
+              <b>{t("my_bio")}</b>
+              <p>{p.bio || "N/A"}</p>
+            </div>
+          ) : null}
+        </aside>
+        <section className="vita-prof-card wide">
+          <h3>{t("amakuru_yanjye")}</h3>
+          <div className="vita-prof-fields">
+            {field(t("country"), filled(p.country), () => setSheet("country"))}
+            {field(t("city"), filled(p.city), () => setSheet("city"))}
+            {field(t("id_number"), filled(p.idNumber), () => setSheet("id"))}
+            {field(t("phone"), filled(p.phone), () => setSheet("phone"))}
+            {field("MRN", filled(p.mrn), () => setSheet("mrn"))}
+            <div className="vita-prof-field static">
+              <small>Transactions</small>
+              <b>{transactions.loading ? "..." : String(transactions.data?.length ?? 0)}</b>
+            </div>
           </div>
-        ) : null}
-        <div style={{ width: "100%", maxWidth: 350, marginTop: 16, borderRadius: 8, background: "var(--vc-surface)", border: `1px solid ${navyA(0.08)}`, paddingTop: 14 }}>
-          <div style={{ padding: "0 18px 4px", fontSize: 16, fontWeight: 800, color: "var(--vc-navy)" }}>{t("amakuru_yanjye")}</div>
-          {row(t("country"), filled(p.country), () => setSheet("country"))}
-          {row(t("city"), filled(p.city), () => setSheet("city"))}
-          {row(t("id_number"), filled(p.idNumber), () => setSheet("id"))}
-          {row("MRN", filled(p.mrn), () => setSheet("mrn"))}
-          {row(t("phone"), filled(p.phone), () => setSheet("phone"))}
-          <div style={{ display: "flex", padding: "14px 18px" }}>
-            <span style={{ flex: 1, fontSize: 14, fontWeight: 600, color: navyA(0.55) }}>Transactions</span>
-            <span style={{ fontSize: 14, fontWeight: 700, color: "var(--vc-navy)" }}>{transactions.loading ? "..." : String(transactions.data?.length ?? 0)}</span>
+          <div className="vita-prof-links">
+            <ActionButton tone="white" label={t("my_documents")} icon={<FolderOpen size={18} color="currentColor" />} onClick={() => push("/documents")} />
           </div>
-          <div style={{ padding: "4px 18px 18px" }}>
-            <ActionButton full tone="white" label={t("my_documents")} icon={<FolderOpen size={18} color="currentColor" />} onClick={() => push("/documents")} />
-          </div>
-        </div>
+        </section>
       </div>
 
       <FieldSheet
@@ -214,7 +227,7 @@ function ProfileField({ label, value, onChange, inputMode, multiline = false, er
     <label style={{ display: "block", padding: "12px 0" }}>
       <span style={{ display: "block", fontSize: 13, fontWeight: 600, color: navyA(0.55) }}>{label}</span>
       {multiline ? <textarea rows={4} value={value} placeholder={label} onChange={(e) => onChange(e.target.value)} style={style} /> : <input value={value} placeholder={label} inputMode={inputMode} onChange={(e) => onChange(e.target.value)} style={style} />}
-      {error ? <span style={{ display: "block", marginTop: 4, fontSize: 12, lineHeight: 1.3, color: "var(--vc-danger)" }}>{error}</span> : null}
+      {error ? <span style={{ display: "block", marginTop: 4, fontSize: 13, lineHeight: 1.3, color: "var(--vc-danger)" }}>{error}</span> : null}
     </label>
   );
 }
@@ -297,7 +310,7 @@ export function EditProfileScreen() {
   const set = (k: keyof typeof form) => (v: string) => setForm((f) => ({ ...f, [k]: v }));
 
   return (
-    <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
+    <div className="vita-page w-narrow" style={{ background: "var(--vc-canvas)" }}>
       <AppBar title={t("edit_account")} />
       <div style={{ flex: 1, overflowY: "auto", padding: "8px 20px 20px" }}>
         <p style={{ margin: "0 0 14px", fontSize: 14, fontWeight: 500, lineHeight: 1.4, color: navyA(0.6) }}>{t("edit_account_body")}</p>
@@ -400,7 +413,7 @@ export function HealthDetailsScreen() {
     </button>
   );
   return (
-    <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
+    <div className="vita-page w-narrow" style={{ background: "var(--vc-canvas)" }}>
       <AppBar title={t("health_details")} />
       <div style={{ flex: 1, overflowY: "auto", padding: "8px 20px 20px", display: "flex", flexDirection: "column", gap: 12 }}>
         <p style={{ margin: "0 0 2px", fontSize: 14, fontWeight: 500, lineHeight: 1.4, color: navyA(0.6) }}>{t("health_details_body")}</p>
@@ -438,6 +451,7 @@ type Txn = { id: number | string; name?: string | null; amount?: unknown; status
 
 /** payments_page.dart: list and receipts. */
 export function PaymentsScreen() {
+  const t = useT();
   const { toast } = useFeedback();
   const rows = useResource<Txn[]>("/transactions/", async () => asList<Txn>(await mobileRequest("/transactions/")));
   const [savingId, setSavingId] = useState<string | null>(null);
@@ -471,8 +485,8 @@ export function PaymentsScreen() {
   };
   const list = rows.data ?? [];
   return (
-    <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
-      <AppBar title="Payments" />
+    <div className="vita-page w-narrow" style={{ background: "var(--vc-canvas)" }}>
+      <AppBar title={t("programme_payments")} />
       {rows.loading && !rows.data ? (
         <CenterSpinner />
       ) : !list.length ? (
@@ -504,10 +518,6 @@ export function PaymentsScreen() {
   );
 }
 
-function SettingsCard({ children }: { children: React.ReactNode }) {
-  return <div style={{ marginBottom: 14, padding: 16, borderRadius: 10, background: "var(--vc-surface)" }}>{children}</div>;
-}
-
 function Toggle({ label, value, onChange }: { label: string; value: boolean; onChange: (v: boolean) => void }) {
   return (
     <button type="button" role="switch" aria-checked={value} onClick={() => onChange(!value)} style={{ width: "100%", display: "flex", alignItems: "center", padding: "10px 0", textAlign: "left" }}>
@@ -521,17 +531,18 @@ function Toggle({ label, value, onChange }: { label: string; value: boolean; onC
 
 function SelectBox({ label, value, options, onChange }: { label: string; value: string; options: Array<[string, string]>; onChange: (v: string) => void }) {
   return (
-    <label style={{ display: "block", position: "relative", marginBottom: 12, padding: "8px 14px", borderRadius: 8, border: `1px solid ${navyA(0.12)}`, background: "var(--vc-surface)" }}>
-      <span style={{ display: "block", fontSize: 12, fontWeight: 600, color: navyA(0.55) }}>{label}</span>
-      <select value={value} onChange={(e) => onChange(e.target.value)} style={{ width: "100%", appearance: "none", border: 0, outline: "none", background: "transparent", fontSize: 15, fontWeight: 700, color: "var(--vc-ink)", padding: "4px 0" }}>
-        {options.map(([v, l]) => (
-          <option key={v} value={v}>
-            {l}
-          </option>
-        ))}
-      </select>
-      <ArrowDown2 size={18} color={navyA(0.55)} style={{ position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }} />
-    </label>
+    <div style={{ marginBottom: 6 }}>
+      <Select label={label} value={value} options={options.map(([v, l]) => ({ value: v, label: l }))} onChange={onChange} />
+    </div>
+  );
+}
+
+function SettingsSection({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <section className="vita-settings-sec" style={{ marginBottom: 14, padding: 16, borderRadius: 10, background: "var(--vc-surface)" }}>
+      <h2 className="vita-web-only vita-settings-head">{title}</h2>
+      {children}
+    </section>
   );
 }
 
@@ -556,8 +567,8 @@ export function SettingsScreen() {
   return (
     <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
       <AppBar title={t("settings")} bubbles={false} />
-      <div style={{ flex: 1, overflowY: "auto", padding: "8px 20px calc(env(safe-area-inset-bottom) + 32px)" }}>
-        <button type="button" onClick={() => push("/account/my-profile")} style={{ width: "100%", display: "flex", alignItems: "center", gap: 12, padding: 14, marginBottom: 14, borderRadius: 10, background: "var(--vc-surface)", textAlign: "left" }}>
+      <div className="vita-settings" style={{ flex: 1, overflowY: "auto", padding: "8px 20px calc(env(safe-area-inset-bottom) + 32px)" }}>
+        <button type="button" className="vita-settings-profile vita-tap" onClick={() => push("/account/my-profile")} style={{ width: "100%", display: "flex", alignItems: "center", gap: 12, padding: 14, marginBottom: 14, borderRadius: 10, background: "var(--vc-surface)", textAlign: "left" }}>
           <Avatar url={p.photo} size={48} />
           <span style={{ flex: 1, minWidth: 0 }}>
             <span style={{ display: "block", fontSize: 16, fontWeight: 800, color: "var(--vc-ink)" }}>{name || t("account_menu")}</span>
@@ -565,47 +576,61 @@ export function SettingsScreen() {
           </span>
           <ArrowRight3 size={20} color={navyA(0.3)} />
         </button>
-        <SettingsCard>
-          <div style={{ fontSize: 16, fontWeight: 800, color: "var(--vc-navy)" }}>{t("language")}</div>
-          <p style={{ margin: "6px 0 12px", fontSize: 13, color: navyA(0.55) }}>{t("select_language")}</p>
-          <LanguageOptions />
-        </SettingsCard>
-        <SettingsCard>
-          <div style={{ fontSize: 14, fontWeight: 700, color: navyA(0.7), marginBottom: 8 }}>{t("Country")}</div>
-          <button type="button" onClick={() => setPicking(true)} style={{ width: "100%", display: "flex", alignItems: "center", padding: 16, borderRadius: 8, border: `1px solid ${navyA(0.12)}`, textAlign: "left" }}>
-            <span style={{ flex: 1, fontSize: 15, fontWeight: 700, color: "var(--vc-ink)" }}>{shownCountry}</span>
-            <ArrowDown2 size={18} color={navyA(0.55)} />
-          </button>
-        </SettingsCard>
-        <SettingsCard>
-          <SelectBox label="Glucose" value={glucose === "mg" ? "mg/dL" : "mmol/L"} options={[["mmol/L", "mmol/L"], ["mg/dL", "mg/dL"]]} onChange={(v) => setGlucose(v === "mmol/L" ? "mmol" : "mg")} />
-          <SelectBox label={t("ap_height")} value={heightUnit === "cm" ? "Cm" : "In"} options={[["Cm", "Cm"], ["In", "In"]]} onChange={(v) => setHeightUnit(v === "In" ? "in" : "cm")} />
-          <SelectBox label={t("hm_weight")} value={weightUnit === "kg" ? "Kg" : "lbs"} options={[["Kg", "Kg"], ["lbs", "lbs"]]} onChange={(v) => setWeightUnit(v === "lbs" ? "lbs" : "kg")} />
-          <SelectBox label="A1c" value={a1c === "percent" ? "Percent" : "Ac1 unit"} options={[["Percent", "Percent"], ["Ac1 unit", "Ac1 unit"]]} onChange={(v) => setA1c(v === "Percent" ? "percent" : "mmol")} />
-        </SettingsCard>
-        <SettingsCard>
-          <Toggle
-            label={t("message_notifications")}
-            value={messages}
-            onChange={(v) => {
-              setMessages(v);
-              toast(`${t("message_notifications")}: ${v}`);
-            }}
-          />
-          <div style={{ height: 1, marginLeft: 0, background: navyA(0.06) }} />
-          <Toggle
-            label={t("health_reports")}
-            value={reports}
-            onChange={(v) => {
-              setReports(v);
-              toast(`${t("health_reports")}: ${v}`);
-            }}
-          />
-        </SettingsCard>
-        <ActionButton full label={t("save_changes")} onClick={() => toast(t("settings_saved"))} />
-        <button type="button" onClick={() => void deleteAccount()} style={{ display: "block", margin: "16px auto 0", padding: 8, fontSize: 14, fontWeight: 700, color: "var(--vc-danger)" }}>
-          {t("delete_account")}
-        </button>
+        <div className="vita-settings-grid">
+          <div className="vita-settings-col">
+            <SettingsSection title={t("settings_region")}>
+              <div style={{ fontSize: 16, fontWeight: 800, color: "var(--vc-navy)" }}>{t("language")}</div>
+              <p style={{ margin: "6px 0 12px", fontSize: 13, color: navyA(0.55) }}>{t("select_language")}</p>
+              <LanguageOptions />
+              <div style={{ height: 14 }} />
+              <button type="button" className="vita-select-field" aria-haspopup="dialog" onClick={() => setPicking(true)}>
+                <span className="vita-select-text">
+                  <span className="vita-select-label">{t("Country")}</span>
+                  <span className="vita-select-value">{shownCountry}</span>
+                </span>
+                <ArrowDown2 size={18} color="currentColor" className="vita-select-chev" />
+              </button>
+            </SettingsSection>
+            <SettingsSection title={t("settings_notifications")}>
+              <Toggle
+                label={t("message_notifications")}
+                value={messages}
+                onChange={(v) => {
+                  setMessages(v);
+                  toast(`${t("message_notifications")}: ${v}`);
+                }}
+              />
+              <div style={{ height: 1, marginLeft: 0, background: navyA(0.06) }} />
+              <Toggle
+                label={t("health_reports")}
+                value={reports}
+                onChange={(v) => {
+                  setReports(v);
+                  toast(`${t("health_reports")}: ${v}`);
+                }}
+              />
+              <div style={{ height: 1, marginLeft: 0, background: navyA(0.06) }} />
+              <button type="button" onClick={() => push("/reminders/preferences")} style={{ width: "100%", minHeight: 48, display: "flex", alignItems: "center", padding: "10px 0", textAlign: "left" }}>
+                <span style={{ flex: 1, fontSize: 15, fontWeight: 700, color: "var(--vc-ink)" }}>{t("rp_open")}</span>
+                <ArrowRight3 size={20} color={navyA(0.3)} />
+              </button>
+            </SettingsSection>
+          </div>
+          <div className="vita-settings-col">
+            <SettingsSection title={t("settings_units")}>
+              <SelectBox label={t("settings_glucose")} value={glucose === "mg" ? "mg/dL" : "mmol/L"} options={[["mmol/L", "mmol/L"], ["mg/dL", "mg/dL"]]} onChange={(v) => setGlucose(v === "mmol/L" ? "mmol" : "mg")} />
+              <SelectBox label={t("ap_height")} value={heightUnit === "cm" ? "Cm" : "In"} options={[["Cm", "cm"], ["In", "in"]]} onChange={(v) => setHeightUnit(v === "In" ? "in" : "cm")} />
+              <SelectBox label={t("hm_weight")} value={weightUnit === "kg" ? "Kg" : "lbs"} options={[["Kg", "kg"], ["lbs", "lbs"]]} onChange={(v) => setWeightUnit(v === "lbs" ? "lbs" : "kg")} />
+              <SelectBox label="A1c" value={a1c === "percent" ? "Percent" : "Ac1 unit"} options={[["Percent", "%"], ["Ac1 unit", "mmol/mol"]]} onChange={(v) => setA1c(v === "Percent" ? "percent" : "mmol")} />
+            </SettingsSection>
+            <div className="vita-settings-actions">
+              <ActionButton full label={t("save_changes")} onClick={() => toast(t("settings_saved"))} />
+              <button type="button" onClick={() => void deleteAccount()} style={{ display: "block", margin: "16px auto 0", padding: 8, minHeight: 44, fontSize: 14, fontWeight: 700, color: "var(--vc-danger)" }}>
+                {t("delete_account")}
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
       <CountryPicker
         open={picking}
@@ -644,7 +669,7 @@ export function ContactScreen() {
     { icon: <Clock size={20} color="currentColor" />, label: t("contact_hours"), value: VITAWAY_CONTACT.hours },
   ];
   return (
-    <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
+    <div className="vita-page w-narrow" style={{ background: "var(--vc-canvas)" }}>
       <AppBar title={t("contact_us_title")} />
       <div style={{ flex: 1, overflowY: "auto", padding: "8px 20px calc(env(safe-area-inset-bottom) + 32px)" }}>
         <div style={{ display: "flex", justifyContent: "center" }}>
@@ -659,7 +684,7 @@ export function ContactScreen() {
               <>
                 <span style={{ width: 44, height: 44, borderRadius: "50%", flex: "none", display: "flex", alignItems: "center", justifyContent: "center", background: "var(--vc-tile-mint)", color: "var(--vc-navy)" }}>{r.icon}</span>
                 <span style={{ flex: 1, minWidth: 0 }}>
-                  <span style={{ display: "block", fontSize: 12, fontWeight: 600, color: navyA(0.5) }}>{r.label}</span>
+                  <span style={{ display: "block", fontSize: 13, fontWeight: 600, color: navyA(0.5) }}>{r.label}</span>
                   <span style={{ display: "block", marginTop: 2, fontSize: 14, fontWeight: 700, color: "var(--vc-navy)", whiteSpace: "pre-line" }}>{r.value}</span>
                 </span>
               </>
@@ -693,7 +718,7 @@ export function AboutScreen() {
     </div>
   );
   return (
-    <Page backdrop>
+    <Page backdrop width="narrow">
       <AppBar title={t("about_this_app")} />
       <div style={{ flex: 1, overflowY: "auto", padding: "8px 20px calc(env(safe-area-inset-bottom) + 32px)" }}>
         <Card>
@@ -718,7 +743,7 @@ export function AboutScreen() {
               {VITAWAY_CONTACT.phoneDisplay}
             </a>
           </div>
-          <div style={{ margin: "18px 0 10px", textAlign: "center", fontSize: 15, fontWeight: 800, color: "var(--vc-navy)" }}>{t("follow_us", undefined, "Follow Us")}</div>
+          <div style={{ margin: "18px 0 10px", textAlign: "center", fontSize: 15, fontWeight: 800, color: "var(--vc-navy)" }}>{t("follow_us")}</div>
           <SocialRow />
         </Card>
       </div>
@@ -753,7 +778,7 @@ export function CoachAvailabilityScreen() {
     }
   };
   return (
-    <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
+    <div className="vita-page w-narrow" style={{ background: "var(--vc-canvas)" }}>
       <AppBar title={t("set_availability")} />
       <div style={{ flex: 1, overflowY: "auto", padding: "8px 16px 20px" }}>
         <p style={{ margin: "0 4px 12px", fontSize: 14, fontWeight: 600, color: navyA(0.6) }}>{t("choose_availability")}</p>

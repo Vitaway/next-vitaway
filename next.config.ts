@@ -1,7 +1,48 @@
 import type { NextConfig } from "next";
 import { siteRedirects } from "./content/redirect-map";
 
+const apiRewriteBase = (process.env.PLUS_API_REWRITE || process.env.NEXT_PUBLIC_PLUS_API_URL || "")
+  .trim()
+  .replace(/\/$/, "");
+
 const nextConfig: NextConfig = {
+  distDir: process.env.NEXT_DIST_DIR || ".next",
+  poweredByHeader: false,
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: [
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          { key: "X-Frame-Options", value: "SAMEORIGIN" },
+          { key: "X-DNS-Prefetch-Control", value: "off" },
+          { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+          { key: "Strict-Transport-Security", value: "max-age=31536000; includeSubDomains" },
+        ],
+      },
+    ];
+  },
+  async rewrites() {
+    if (!apiRewriteBase) return [];
+    return [
+      { source: "/api/v1/:path*", destination: `${apiRewriteBase}/api/v1/:path*` },
+      { source: "/uploads/:path*", destination: `${apiRewriteBase}/uploads/:path*` },
+      // Legacy Flutter aliases the PWA still calls. Proxy the path as-is so the
+      // backend's alias middleware can rewrite it; needed for cookie sessions
+      // which only work same-origin (apiBase is empty on localhost).
+      { source: "/health-metrics", destination: `${apiRewriteBase}/health-metrics` },
+      { source: "/health-metrics/", destination: `${apiRewriteBase}/health-metrics/` },
+      { source: "/health-goals", destination: `${apiRewriteBase}/health-goals` },
+      { source: "/health-goals/:path*", destination: `${apiRewriteBase}/health-goals/:path*` },
+      // More legacy aliases the client screens call (local dev only: rewrites are off without PLUS_API_REWRITE /
+      // NEXT_PUBLIC_PLUS_API_URL). Pages win over these (afterFiles), so /app routes are unaffected.
+      ...["/me", "/medications", "/notifications", "/subscriptions", "/api/articles", "/api/rooms", "/api/user-reservations", "/api/visit-reports", "/api/ehr-meal-plans", "/transactions", "/coaches", "/progress-notes"].flatMap((p) => [
+        { source: p, destination: `${apiRewriteBase}${p}` },
+        { source: `${p}/:path*`, destination: `${apiRewriteBase}${p}/:path*` },
+      ]),
+    ];
+  },
   async redirects() {
     return siteRedirects.map(({ source, destination, permanent }) => ({
       source,
@@ -89,6 +130,12 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "care-api.vitaway.org",
+        pathname: "/**",
+      },
+      {
+        // TODO staging: revert to care-api.vitaway.org before production
+        protocol: "https",
+        hostname: "vitaway.keyypress.com",
         pathname: "/**",
       },
       {

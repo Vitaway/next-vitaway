@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { DocumentDownload } from "iconsax-react";
+import { DocumentDownload } from "@/lib/plus/icons";
 import { AppBar, CenterSpinner, EmptyState } from "./vita";
 
 type OpenArgs = { title: string; load: () => Promise<Blob>; filename?: string };
@@ -49,7 +49,7 @@ export function DocumentReaderProvider({ children }: { children: React.ReactNode
     <ReaderContext.Provider value={value}>
       {children}
       {state ? (
-        <div className="vita-page" style={{ position: "fixed", inset: 0, zIndex: 80, maxWidth: 480, margin: "0 auto", background: "var(--vc-canvas)" }}>
+        <div className="vita-page vita-doc-reader" style={{ position: "fixed", inset: 0, zIndex: 80, maxWidth: 480, margin: "0 auto", background: "var(--vc-canvas)" }}>
           <AppBar
             title={state.title}
             onBack={close}

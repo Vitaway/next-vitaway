@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { ClipboardList } from 'lucide-react';
+import { ClipboardText as ClipboardList } from "@/lib/plus/icons";
 import PressButton from '../buttons/press-button';
 import { useBooking } from './booking-context';
 

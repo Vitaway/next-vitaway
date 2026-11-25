@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft } from "@/lib/plus/icons";
 import { PreRegistrationPayload, VisitQuote } from '@/lib/api/types';
 import { appointmentService } from '@/lib/api';
 import { useAppointment } from '@/hooks';

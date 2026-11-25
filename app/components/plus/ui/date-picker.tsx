@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { MdChevronLeft, MdChevronRight } from "react-icons/md";
+import { MdChevronLeft, MdChevronRight } from "@/lib/plus/icons";
+import { RootPortal } from "./vita";
 
 /** widgets/vita_pickers.dart showVitaDatePicker: day, month and year boxes plus a calendar, month or year grid. */
 export type VitaDateMode = "day" | "month" | "year";
@@ -172,6 +173,7 @@ export function DatePickerModal({
   };
 
   return (
+    <RootPortal>
     <div className="vita-modal-scrim" onClick={onClose} role="presentation">
       <div
         role="dialog"
@@ -236,7 +238,7 @@ export function DatePickerModal({
             </div>
           ) : null}
         </div>
-        <p style={{ margin: "8px 0 0", textAlign: "center", fontSize: 12, color: "var(--vc-muted)" }}>
+        <p style={{ margin: "8px 0 0", textAlign: "center", fontSize: 13, color: "var(--vc-muted)" }}>
           {mode === "day" ? "Tap a day" : mode === "month" ? "Tap a month" : "Tap a year"}
         </p>
         <div style={{ display: "flex", justifyContent: "flex-end", gap: 4, paddingTop: 12 }}>
@@ -249,6 +251,7 @@ export function DatePickerModal({
         </div>
       </div>
     </div>
+    </RootPortal>
   );
 }
 
@@ -339,7 +342,7 @@ function DayGrid({
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", marginTop: 6 }}>
         {WEEKDAYS.map((day) => (
-          <div key={day} style={{ padding: "4px 0", textAlign: "center", fontSize: 11, color: "var(--vc-muted)" }}>
+          <div key={day} style={{ padding: "4px 0", textAlign: "center", fontSize: 13, color: "var(--vc-muted)" }}>
             {day}
           </div>
         ))}

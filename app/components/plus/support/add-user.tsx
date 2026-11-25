@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { SearchNormal1 } from "iconsax-react";
+import { SearchNormal1 } from "@/lib/plus/icons";
 import { useT } from "@/lib/plus/i18n";
 import { MobileApiError, asList, errorMessage, mobileRequest } from "@/lib/plus/client/api";
 import { invalidate } from "@/lib/plus/client/use-resource";
@@ -89,7 +89,7 @@ export function AddUserToRoomScreen({ roomId }: { roomId: string }) {
   };
 
   return (
-    <div className="vita-page" style={{ background: "var(--vc-canvas)", minHeight: "100dvh" }}>
+    <div className="vita-page w-narrow" style={{ background: "var(--vc-canvas)", minHeight: "100dvh" }}>
       <AppBar title={t("add_user_title")} />
       <div style={{ padding: "8px 20px 16px" }}>
         <AuthField hint={t("search_user")} icon={<SearchNormal1 size={18} color="currentColor" />} value={query} onChange={setQuery} autoFocus />
@@ -114,7 +114,7 @@ export function AddUserToRoomScreen({ roomId }: { roomId: string }) {
               <Avatar url={person.picture} size={46} />
               <span style={{ flex: 1, minWidth: 0 }}>
                 <span style={{ display: "block", fontSize: 15, fontWeight: 700, color: "var(--vc-navy)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{fullName(person)}</span>
-                <span style={{ display: "block", marginTop: 2, fontSize: 12, fontWeight: 600, color: navyA(0.45) }}>{person.type}</span>
+                <span style={{ display: "block", marginTop: 2, fontSize: 13, fontWeight: 600, color: navyA(0.45) }}>{person.type}</span>
               </span>
               <span style={{ width: 32, height: 32, borderRadius: "50%", background: "color-mix(in srgb, var(--vc-mint) 28%, transparent)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--vc-navy)", flex: "none" }} aria-hidden>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M12 5v14M5 12h14" /></svg>

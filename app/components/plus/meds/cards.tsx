@@ -1,13 +1,15 @@
 "use client";
 
-import { Clock, Health, TickSquare } from "iconsax-react";
+import { Clock, Health, TickSquare } from "@/lib/plus/icons";
 import { useTheme } from "@/lib/plus/theme";
+import { useLanguage } from "@/lib/plus/i18n";
 import {
   DOSE_COLORS,
   adherenceRowTimes,
   doseLabel,
   reminderTimes,
   scheduleLabel,
+  needsCareTeamCheck,
   ymd,
   type Medication,
   type MedicationAdherence,
@@ -22,6 +24,22 @@ function dMMM(value: string): string {
   const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(value);
   if (!match) return value;
   return `${Number(match[3])} ${SHORT_MONTHS[Number(match[2]) - 1]}`;
+}
+
+/** W7: amber chip until the care team confirms a medicine the member added. */
+export function CareTeamCheckChip({ medication }: { medication: Medication }) {
+  const { dark } = useTheme();
+  const { t } = useLanguage();
+  if (!needsCareTeamCheck(medication)) return null;
+  return (
+    <span
+      className="vita-chip"
+      data-testid="medicine-care-team-check"
+      style={{ background: dark ? "#3A2A0C" : "#FFF4DE", color: dark ? "#F5C36B" : "#9A5B00", whiteSpace: "nowrap" }}
+    >
+      {t("medicine_care_team_check")}
+    </span>
+  );
 }
 
 export function MedicationListCard({ medication, onClick }: { medication: Medication; onClick: () => void }) {
@@ -55,13 +73,18 @@ export function MedicationListCard({ medication, onClick }: { medication: Medica
             {medication.name} {doseLabel(medication)}
           </span>
           {medication.reminders_enabled ? (
-            <span style={{ padding: "4px 10px", borderRadius: 10, background: dark ? "#12352A" : "#E4F7E8", color: dark ? "#6FD3A6" : "#2F8F4E", fontWeight: 700, fontSize: 11 }}>
+            <span style={{ padding: "4px 10px", borderRadius: 10, background: dark ? "#12352A" : "#E4F7E8", color: dark ? "#6FD3A6" : "#2F8F4E", fontWeight: 700, fontSize: 13 }}>
               • Reminders
             </span>
           ) : null}
         </span>
         <span style={{ display: "block", marginTop: 4, color: "rgba(var(--vc-navy-rgb),0.55)", fontWeight: 600, fontSize: 13 }}>{scheduleLabel(medication)}</span>
-        <span style={{ display: "block", marginTop: 4, color: "rgba(var(--vc-navy-rgb),0.45)", fontWeight: 500, fontSize: 12 }}>{meta}</span>
+        <span style={{ display: "block", marginTop: 4, color: "rgba(var(--vc-navy-rgb),0.45)", fontWeight: 500, fontSize: 13 }}>{meta}</span>
+        {needsCareTeamCheck(medication) ? (
+          <span style={{ display: "block", marginTop: 8 }}>
+            <CareTeamCheckChip medication={medication} />
+          </span>
+        ) : null}
       </span>
     </button>
   );
@@ -78,8 +101,10 @@ export function DoseBadge({ slot, onClick }: { slot: MedicationSlot; onClick?: (
         ? `${slot.time} due`
         : slot.status === "missed"
           ? `${slot.time} missed`
-          : slot.time;
-  const style: React.CSSProperties = { padding: "5px 10px", borderRadius: 10, background: bg, color: fg, fontWeight: 700, fontSize: 12, display: "inline-block" };
+          : slot.status === "skipped"
+            ? `${slot.time} skipped`
+            : slot.time;
+  const style: React.CSSProperties = { padding: "5px 10px", borderRadius: 10, background: bg, color: fg, fontWeight: 700, fontSize: 13, display: "inline-block" };
   if (onClick) {
     return (
       <button type="button" style={style} onClick={onClick}>
@@ -177,7 +202,7 @@ export function AdherenceSummaryCard({
         <span style={{ width: 52, flex: "none" }} />
         {adherence.days.map((day) => (
           <span key={day} style={{ flex: 1, textAlign: "center" }}>
-            <span style={{ display: "block", fontSize: 11, fontWeight: day === today ? 800 : 600, color: `rgba(var(--vc-navy-rgb),${day === today ? 0.9 : 0.45})` }}>{dayLabel(day)}</span>
+            <span style={{ display: "block", fontSize: 13, fontWeight: day === today ? 800 : 600, color: `rgba(var(--vc-navy-rgb),${day === today ? 0.9 : 0.45})` }}>{dayLabel(day)}</span>
             {day === today ? <span style={{ display: "block", margin: "2px auto 0", height: 2, width: 28, background: "var(--vc-navy)" }} /> : <span style={{ display: "block", height: 4 }} />}
           </span>
         ))}
@@ -185,7 +210,7 @@ export function AdherenceSummaryCard({
       <div style={{ marginTop: 8, display: "flex", flexDirection: "column", gap: 8 }}>
         {rows.map((time) => (
           <div key={time} style={{ display: "flex", alignItems: "center" }}>
-            <span style={{ width: 52, flex: "none", fontSize: 12, fontWeight: 600, color: "rgba(var(--vc-navy-rgb),0.5)" }}>{rowLabel(time)}</span>
+            <span style={{ width: 52, flex: "none", fontSize: 13, fontWeight: 600, color: "rgba(var(--vc-navy-rgb),0.5)" }}>{rowLabel(time)}</span>
             {adherence.days.map((day) => (
               <span key={day} style={{ flex: 1, display: "flex", justifyContent: "center" }}>
                 <StatusDot status={statusFor(day, time)} />

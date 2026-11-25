@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Salad, Zap, Target, ShieldCheck } from 'lucide-react';
+import { Bowl as Salad, Flash as Zap, Target, ShieldTick as ShieldCheck } from "@/lib/plus/icons";
 import PressButton from '@/app/components/buttons/press-button';
 
 interface WelcomeStepProps {

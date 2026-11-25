@@ -1,14 +1,18 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { ArrowLeft, Camera, Copy, DocumentText, Flag, Forbidden, Gallery, GallerySlash, Message, Paperclip2, Refresh, Slash, Trash, Warning2 } from "iconsax-react";
-import { useT } from "@/lib/plus/i18n";
+import { ArrowLeft, Camera, Copy, DocumentText, Flag, Forbidden, Gallery, GallerySlash, InfoCircle, Message, Paperclip2, Refresh, ShieldTick, Slash, Trash, Warning2 } from "@/lib/plus/icons";
+import { useLanguage, useT } from "@/lib/plus/i18n";
+import { useCareTeam } from "@/lib/plus/client/care-team";
+import { ChatSidebar } from "./chat-sidebar";
 import { useMe } from "@/lib/plus/client/data";
 import { fetchUrlBlob, mediaUrl } from "@/lib/plus/client/api";
 import { hasText, messagePreview, roomPicture, senderName, stillDeletable, useChatRoom, useRoom, type ChatMessage, type ChatSender, type Room } from "@/lib/plus/client/chat";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { useBack } from "@/lib/plus/nav";
-import { ActionButton, Avatar, CircleButton, DotSpinner, Modal, useFeedback } from "../ui/vita";
+import { ActionButton, Avatar, CircleButton, DotSpinner, Modal, RootPortal, useFeedback } from "../ui/vita";
+import { ChatSafetyBanner, useEmergencyDial } from "../safety/safety-banners";
+import { matchSafetyWords } from "@/lib/plus/safety-words";
 
 const NAVY = "var(--vc-navy)";
 const navyA = (a: number) => `rgba(var(--vc-navy-rgb),${a})`;
@@ -80,7 +84,7 @@ function FileCard({ name, mine, onClick }: { name: string; mine: boolean; onClic
       </span>
       <span style={{ marginLeft: 10, minWidth: 0 }}>
         <span style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", fontSize: 13, fontWeight: 700, color: fg }}>{name}</span>
-        <span style={{ display: "block", marginTop: 2, fontSize: 11, color: mine ? "rgba(255,255,255,0.55)" : navyA(0.55) }}>{onClick ? `${ext} · Tap to open` : ext}</span>
+        <span style={{ display: "block", marginTop: 2, fontSize: 13, color: mine ? "rgba(255,255,255,0.55)" : navyA(0.55) }}>{onClick ? `${ext} · Tap to open` : ext}</span>
       </span>
     </div>
   );
@@ -104,7 +108,7 @@ function DaySeparator({ day }: { day: Date }) {
   return (
     <div style={{ display: "flex", alignItems: "center", padding: "14px 20px" }}>
       <span style={{ flex: 1, height: 1, background: LINE }} />
-      <span style={{ padding: "0 10px", fontSize: 11, fontWeight: 700, color: navyA(0.5) }}>{label}</span>
+      <span style={{ padding: "0 10px", fontSize: 13, fontWeight: 700, color: navyA(0.5) }}>{label}</span>
       <span style={{ flex: 1, height: 1, background: LINE }} />
     </div>
   );
@@ -228,8 +232,8 @@ function MessageRow({
             }}
             style={{ marginBottom: 4, padding: "6px 10px", borderRadius: 6, background: mine ? "rgba(255,255,255,0.1)" : "var(--vc-surface)", borderLeft: `3px solid ${ORANGE}`, cursor: "pointer" }}
           >
-            <div style={{ fontSize: 11, fontWeight: 800, color: mine ? "#fff" : ORANGE, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{message.replyTo.sender}</div>
-            <div style={{ marginTop: 2, fontSize: 12, lineHeight: 1.3, fontStyle: message.replyTo.deleted ? "italic" : "normal", color: mine ? "rgba(255,255,255,0.7)" : navyA(0.7), display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{message.replyTo.deleted ? "Message deleted" : message.replyTo.body}</div>
+            <div style={{ fontSize: 13, fontWeight: 800, color: mine ? "#fff" : ORANGE, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{message.replyTo.sender}</div>
+            <div style={{ marginTop: 2, fontSize: 13, lineHeight: 1.3, fontStyle: message.replyTo.deleted ? "italic" : "normal", color: mine ? "rgba(255,255,255,0.7)" : navyA(0.7), display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{message.replyTo.deleted ? "Message deleted" : message.replyTo.body}</div>
           </div>
         ) : null}
         {att && att.kind === "image" ? <AuthImage url={attachmentUrl} mine={mine} onClick={onOpenAttachment} /> : null}
@@ -245,12 +249,12 @@ function MessageRow({
   return (
     <div style={{ padding: `${tight ? 2 : 8}px 14px 2px`, background: flashing ? "color-mix(in srgb, var(--vc-action) 10%, transparent)" : "transparent", transition: "background 500ms", display: "flex", justifyContent: mine ? "flex-end" : "flex-start", alignItems: "flex-end" }} data-mid={message.id}>
       {!mine ? <span style={{ width: 30, marginRight: 4, flex: "none" }}>{showAvatar ? <Avatar url={message.sender.image} size={26} /> : null}</span> : null}
-      <div style={{ maxWidth: "74%", display: "flex", flexDirection: "column", alignItems: mine ? "flex-end" : "flex-start", minWidth: 0 }}>
+      <div className="vita-bubble-col" style={{ maxWidth: "74%", display: "flex", flexDirection: "column", alignItems: mine ? "flex-end" : "flex-start", minWidth: 0 }}>
         {showName ? (
           <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "0 0 4px 2px", maxWidth: "100%" }}>
-            <span style={{ fontSize: 11, fontWeight: 700, color: navyA(0.7), whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{senderName(message.sender)}</span>
+            <span style={{ fontSize: 13, fontWeight: 700, color: navyA(0.7), whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{senderName(message.sender)}</span>
             {message.sender.staff ? (
-              <span style={{ padding: "2px 6px", borderRadius: 4, background: "var(--vc-tile-mint)", display: "inline-flex", alignItems: "center", gap: 4, fontSize: 10, fontWeight: 700, color: NAVY }}>
+              <span style={{ padding: "2px 6px", borderRadius: 4, background: "var(--vc-tile-mint)", display: "inline-flex", alignItems: "center", gap: 4, fontSize: 13, fontWeight: 700, color: NAVY }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src="/plus-assets/logo.png" alt="" height={10} style={{ height: 10 }} />
                 Coach
@@ -271,13 +275,13 @@ function MessageRow({
             {message.reactions.map((r) => (
               <button key={r.emoji} type="button" onClick={() => onToggleReaction(r.emoji)} style={{ padding: "3px 7px", borderRadius: 999, background: r.mine ? "#E7F3F5" : "var(--vc-surface)", border: `1px solid ${r.mine ? "color-mix(in srgb, var(--vc-teal-ink) 40%, transparent)" : LINE}`, boxShadow: "0 1px 2px rgba(0,0,0,0.06)", display: "inline-flex", alignItems: "center", gap: 3 }}>
                 <span style={{ fontSize: 13 }}>{r.emoji}</span>
-                {r.count > 1 ? <span style={{ fontSize: 11, fontWeight: 700, color: r.mine ? "var(--vc-teal-ink)" : "var(--vc-body)" }}>{r.count}</span> : null}
+                {r.count > 1 ? <span style={{ fontSize: 13, fontWeight: 700, color: r.mine ? "var(--vc-teal-ink)" : "var(--vc-body)" }}>{r.count}</span> : null}
               </button>
             ))}
           </div>
         ) : null}
         <div style={{ display: "flex", alignItems: "center", gap: 4, padding: "3px 2px 0" }}>
-          <span style={{ fontSize: 11, fontWeight: message.failed ? 700 : 500, color: message.failed ? "var(--vc-danger)" : "var(--vc-faint)" }}>{label}</span>
+          <span style={{ fontSize: 13, fontWeight: message.failed ? 700 : 500, color: message.failed ? "var(--vc-danger)" : "var(--vc-faint)" }}>{label}</span>
           {mine ? (
             message.failed ? (
               <Warning2 size={13} color="var(--vc-danger)" />
@@ -316,7 +320,7 @@ export function ChatScreen({ roomId }: { roomId: string }) {
   const [replying, setReplying] = useState<ChatMessage | null>(null);
   const [flash, setFlash] = useState<number | null>(null);
   const [sendingFile, setSendingFile] = useState(false);
-  const [sheet, setSheet] = useState<null | { kind: "attach" } | { kind: "actions"; message: ChatMessage } | { kind: "failed"; message: ChatMessage } | { kind: "file"; file: File; image: boolean; preview: string | null; caption: string }>(null);
+  const [sheet, setSheet] = useState<null | { kind: "attach" } | { kind: "actions"; message: ChatMessage } | { kind: "failed"; message: ChatMessage } | { kind: "file"; file: File; image: boolean; preview: string | null; caption: string } | { kind: "safety" }>(null);
   const [viewer, setViewer] = useState<{ url: string; name: string } | null>(null);
   const scroller = useRef<HTMLDivElement>(null);
   const input = useRef<HTMLTextAreaElement>(null);
@@ -331,6 +335,13 @@ export function ChatScreen({ roomId }: { roomId: string }) {
   const title = room ? (isGroup ? room.name : `${room.other.first_name} ${room.other.last_name}`.trim()) : "";
   const avatarUrl = room ? (type === "normal" || !type ? roomPicture({ ...room, type: "normal" }) : roomPicture(room)) : "";
 
+  const { language } = useLanguage();
+  const team = useCareTeam();
+  // The care-team card for this person (role, licence, reply time), matched by name: rooms carry no account id.
+  const pro = !isGroup && title ? [...team.mine, ...team.onDuty].find((x) => x.name.trim().toLowerCase() === title.toLowerCase()) ?? null : null;
+  const roleLine = pro ? (language === "rw" && pro.role_label.rw ? pro.role_label.rw : pro.role_label.en) : room?.other.speciality || (isGroup ? "" : room?.careTeam ? t("chat_care_team") : "");
+  const eta = pro ? (language === "rw" && pro.eta.rw ? pro.eta.rw : pro.eta.en) : "";
+  const dial = useEmergencyDial();
   const me = (): ChatSender => ({ id: user?.id ?? 0, email: user?.email ?? "", first_name: user?.first_name ?? "", last_name: user?.last_name ?? "", image: user?.profile?.profile_picture ?? "", staff: (user?.user_type ?? "normal") !== "normal" });
   const isMine = (m: ChatMessage) => {
     if (m.pending) return true;
@@ -363,6 +374,9 @@ export function ChatScreen({ roomId }: { roomId: string }) {
     const replyTo = replying;
     setText("");
     setReplying(null);
+    // W6: warning-sign words (built-in list, pending CA-02). Members only. The message is still sent unchanged;
+    // the sheet points to the emergency screen. The care team sees a "Support needed" row on Today (never Urgent).
+    if (!isStaff && matchSafetyWords(body).matched) setSheet({ kind: "safety" });
     await chat.sendText(body, me(), replyTo);
   };
 
@@ -446,10 +460,11 @@ export function ChatScreen({ roomId }: { roomId: string }) {
 
   // Presence, as message.dart _Presence: typing, connecting, group, online.
   let presence: { label: string; dot: string } | null = null;
-  if (chat.typingName !== null) presence = { label: "typing…", dot: "#fff" };
-  else if (!chat.connected) presence = { label: "Connecting…", dot: "rgba(255,255,255,0.45)" };
-  else if (isGroup) presence = { label: "Group chat", dot: "rgba(255,255,255,0.45)" };
-  else if (chat.otherOnline) presence = { label: "Online", dot: "#2FBF71" };
+  if (chat.typingName !== null) presence = { label: t("chat_typing"), dot: "#2FBF71" };
+  else if (!chat.connected) presence = { label: t("chat_connecting"), dot: "currentColor" };
+  else if (isGroup) presence = { label: t("chat_group"), dot: "currentColor" };
+  else if (chat.otherOnline) presence = { label: t("chat_online"), dot: "#2FBF71" };
+  else if (eta) presence = { label: eta, dot: "currentColor" };
 
   const rows: React.ReactNode[] = [];
   const list = chat.messages;
@@ -501,30 +516,45 @@ export function ChatScreen({ roomId }: { roomId: string }) {
   const mineAction = actionMessage ? isMine(actionMessage) : false;
 
   return (
-    <div className="vita-page" style={{ background: "var(--vc-surface)", height: "100dvh", display: "flex", flexDirection: "column" }}>
-      <header className="vita-appbar" style={{ flex: "none" }}>
-        <div style={{ height: 64, display: "flex", alignItems: "center", padding: "0 12px 0 8px", gap: 10, position: "relative" }}>
+    <div className="vita-page vita-chat" style={{ background: "var(--vc-surface)", height: "100dvh" }}>
+      <ChatSidebar activeId={roomId} />
+      <div className="vita-chat-main">
+      <header className="vita-appbar vita-chat-head" style={{ flex: "none" }}>
+        <div className="vita-chat-head-row">
           <CircleButton label="Back" onClick={goBack}>
             <ArrowLeft size={18} color="currentColor" />
           </CircleButton>
-          <button type="button" onClick={() => room && push(`/chat/${roomId}/info`)} style={{ flex: 1, minWidth: 0, display: "flex", alignItems: "center", gap: 10, textAlign: "left", color: "#fff" }}>
-            <Avatar url={avatarUrl} size={38} />
-            <span style={{ minWidth: 0, flex: 1 }}>
-              <span style={{ display: "block", fontSize: 15, fontWeight: 800, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{title || "Chat"}</span>
-              {presence ? (
-                <span style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 2 }}>
-                  <span style={{ width: 7, height: 7, borderRadius: "50%", background: presence.dot }} />
-                  <span style={{ fontSize: 12, fontWeight: 600, color: "rgba(255,255,255,0.85)" }}>{presence.label}</span>
-                </span>
-              ) : null}
+          <button type="button" className="vita-chat-who" onClick={() => room && push(`/chat/${roomId}/info`)}>
+            <Avatar url={avatarUrl || pro?.avatar_url || ""} size={42} />
+            <span className="tx">
+              <span className="nm">
+                {title || t("chat_care_team")}
+                {pro?.verified ? <ShieldTick size={15} variant="Bold" color="#1D9E75" /> : null}
+              </span>
+              <span className="sub">
+                {roleLine ? <span>{roleLine}</span> : null}
+                {roleLine && presence ? <span aria-hidden>·</span> : null}
+                {presence ? (
+                  <span className="pres">
+                    <i style={{ background: presence.dot }} />
+                    {presence.label}
+                  </span>
+                ) : null}
+              </span>
             </span>
           </button>
+          {room ? (
+            <CircleButton label={t("chat_details")} onClick={() => push(`/chat/${roomId}/info`)}>
+              <InfoCircle size={18} color="currentColor" />
+            </CircleButton>
+          ) : null}
         </div>
       </header>
+      {(user?.user_type ?? "normal") === "normal" ? <ChatSafetyBanner /> : null}
       {!chat.connected && !chat.loading && chat.messages.length ? (
         <div style={{ background: "var(--vc-tile-peach)", padding: "8px 16px", display: "flex", alignItems: "center", gap: 10 }}>
           <DotSpinner small color={NAVY} />
-          <span style={{ fontSize: 12, fontWeight: 600, color: NAVY }}>Reconnecting. New messages will appear shortly.</span>
+          <span style={{ fontSize: 13, fontWeight: 600, color: NAVY }}>Reconnecting. New messages will appear shortly.</span>
         </div>
       ) : null}
       <div ref={scroller} style={{ flex: 1, overflowY: "auto", padding: "12px 0", overscrollBehavior: "contain" }}>
@@ -534,16 +564,23 @@ export function ChatScreen({ roomId }: { roomId: string }) {
             <span style={{ fontSize: 13, fontWeight: 600, color: navyA(0.6) }}>Loading messages</span>
           </div>
         ) : !chat.messages.length ? (
-          <div style={{ padding: "80px 32px 24px", textAlign: "center" }}>
-            {chat.error ? <Refresh size={36} color={navyA(0.3)} /> : <Message size={36} color={navyA(0.3)} />}
-            <div style={{ marginTop: 12, fontSize: 16, fontWeight: 800, color: NAVY }}>{chat.error ?? "No messages yet"}</div>
-            <div style={{ marginTop: 6, fontSize: 13, lineHeight: 1.4, color: navyA(0.55) }}>{chat.error ? "Pull down to try again." : "Say hello. Your care team will answer here."}</div>
-            {chat.error ? (
+          chat.error ? (
+            <div style={{ padding: "80px 32px 24px", textAlign: "center" }}>
+              <Refresh size={36} color={navyA(0.3)} />
+              <div style={{ marginTop: 12, fontSize: 16, fontWeight: 800, color: NAVY }}>{chat.error}</div>
               <div style={{ marginTop: 16 }}>
                 <ActionButton small tone="white" label={t("retry")} onClick={() => void chat.refresh()} icon={<Refresh size={14} color="currentColor" />} />
               </div>
-            ) : null}
-          </div>
+            </div>
+          ) : (
+            <div className="vita-chat-empty">
+              <Avatar url={avatarUrl || pro?.avatar_url || ""} size={72} />
+              <b>{title ? t("chat_empty_title", { name: title.split(" ")[0] }) : t("chat_empty_title_team")}</b>
+              {roleLine ? <span className="role">{roleLine}{pro?.verified && pro.council ? ` · ${t("chat_licence_ok", { council: pro.council })}` : ""}</span> : null}
+              <p>{eta ? t("chat_empty_eta", { eta }) : t("chat_empty_body")}</p>
+              <Message size={22} color={navyA(0.25)} />
+            </div>
+          )
         ) : (
           rows
         )}
@@ -553,7 +590,7 @@ export function ChatScreen({ roomId }: { roomId: string }) {
           <span style={{ padding: "8px 10px", borderRadius: 8, background: "var(--vc-surface)", border: `1px solid ${LINE}`, display: "inline-flex" }}>
             <DotSpinner small color={navyA(0.55)} />
           </span>
-          <span style={{ fontSize: 12, fontWeight: 600, color: navyA(0.5), whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{chat.typingName ? `${chat.typingName} is typing…` : "Typing…"}</span>
+          <span style={{ fontSize: 13, fontWeight: 600, color: navyA(0.5), whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{chat.typingName ? `${chat.typingName} is typing…` : "Typing…"}</span>
         </div>
       ) : null}
       <div style={{ background: "var(--vc-surface)", borderTop: `1px solid ${LINE}`, paddingBottom: "env(safe-area-inset-bottom)", flex: "none" }}>
@@ -561,15 +598,24 @@ export function ChatScreen({ roomId }: { roomId: string }) {
           <div style={{ margin: "10px 12px 0", padding: "8px 4px 8px 10px", borderRadius: 6, background: "var(--vc-canvas)", borderLeft: `3px solid ${ORANGE}`, display: "flex", alignItems: "center", gap: 8 }}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={ORANGE} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z" /></svg>
             <span style={{ flex: 1, minWidth: 0 }}>
-              <span style={{ display: "block", fontSize: 12, fontWeight: 800, color: NAVY }}>{`Replying to ${isMine(replying) ? "yourself" : senderName(replying.sender)}`}</span>
-              <span style={{ display: "block", fontSize: 12, color: navyA(0.6), whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{messagePreview(replying)}</span>
+              <span style={{ display: "block", fontSize: 13, fontWeight: 800, color: NAVY }}>{`Replying to ${isMine(replying) ? "yourself" : senderName(replying.sender)}`}</span>
+              <span style={{ display: "block", fontSize: 13, color: navyA(0.6), whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{messagePreview(replying)}</span>
             </span>
             <button type="button" aria-label="Cancel reply" onClick={() => setReplying(null)} style={{ padding: 8, color: NAVY }}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M6 6l12 12M18 6L6 18" /></svg>
             </button>
           </div>
         ) : null}
-        <div style={{ display: "flex", alignItems: "flex-end", gap: 8, padding: "10px 12px" }}>
+        {!chat.loading && !chat.messages.length && !chat.error && !isStaff ? (
+          <div className="vita-chat-quick" role="group" aria-label={t("chat_quick")}>
+            {[t("chat_q_hello"), t("chat_q_readings"), t("chat_q_visit"), t("chat_q_meds")].map((q) => (
+              <button key={q} type="button" onClick={() => { setText(q); input.current?.focus(); }}>
+                {q}
+              </button>
+            ))}
+          </div>
+        ) : null}
+        <div className="vita-chat-compose">
           <button type="button" aria-label="Add an attachment" disabled={sendingFile} onClick={() => setSheet({ kind: "attach" })} style={{ width: 44, height: 44, borderRadius: 6, border: `1px solid ${LINE}`, background: "var(--vc-surface)", display: "flex", alignItems: "center", justifyContent: "center", color: NAVY, flex: "none" }}>
             {sendingFile ? <DotSpinner small color={NAVY} /> : <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M12 5v14M5 12h14" /></svg>}
           </button>
@@ -596,6 +642,8 @@ export function ChatScreen({ roomId }: { roomId: string }) {
             <svg width="20" height="20" viewBox="0 0 24 24" fill="#fff" style={{ transform: "rotate(-28deg) translateX(2px)" }}><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" /></svg>
           </button>
         </div>
+      </div>
+
       </div>
 
       <input ref={photoInput} type="file" accept="image/*" hidden onChange={(e) => { pickFile(e.target.files?.[0], true); e.target.value = ""; }} />
@@ -631,6 +679,31 @@ export function ChatScreen({ roomId }: { roomId: string }) {
             {type === "community" && isStaff && !actionMessage.deleted ? <SheetRow danger icon={<Trash size={18} color="currentColor" />} label="Remove post" onClick={() => void runAction("remove", actionMessage)} /> : null}
           </>
         ) : null}
+      </Modal>
+
+      <Modal open={sheet?.kind === "safety"} title={t("chat_words_title")} onClose={() => setSheet(null)}>
+        <div data-testid="chat-safety-words-sheet">
+          <p style={{ margin: "0 0 14px", fontSize: 14, lineHeight: 1.45, color: "rgba(var(--vc-navy-rgb),0.8)" }}>{t("chat_words_body")}</p>
+          <a
+            href={`tel:${dial}`}
+            data-testid="chat-safety-call"
+            style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, width: "100%", padding: "13px 16px", borderRadius: 10, background: "#C62828", color: "#fff", fontSize: 15, fontWeight: 800, textDecoration: "none" }}
+          >
+            <Warning2 size={18} variant="Bold" color="currentColor" /> {t("chat_words_call", { number: dial })}
+          </a>
+          <button
+            type="button"
+            data-testid="chat-safety-emergency"
+            onClick={() => { setSheet(null); push("/emergency"); }}
+            style={{ marginTop: 10, width: "100%", padding: "12px 16px", borderRadius: 10, background: "var(--vc-danger-soft)", color: "#C62828", fontSize: 14, fontWeight: 800 }}
+          >
+            {t("chat_words_emergency")}
+          </button>
+          <button type="button" onClick={() => setSheet(null)} style={{ marginTop: 10, width: "100%", padding: "12px 16px", borderRadius: 10, background: "transparent", color: NAVY, fontSize: 14, fontWeight: 700, border: `1px solid ${LINE}` }}>
+            {t("chat_words_ok")}
+          </button>
+          <p style={{ margin: "12px 0 0", fontSize: 13, color: "rgba(var(--vc-navy-rgb),0.6)", textAlign: "center" }}>{t("chat_words_noted")}</p>
+        </div>
       </Modal>
 
       <Modal open={sheet?.kind === "failed"} title="Message not sent" onClose={() => setSheet(null)}>
@@ -673,6 +746,7 @@ export function ChatScreen({ roomId }: { roomId: string }) {
       </Modal>
 
       {viewer ? (
+        <RootPortal>
         <div style={{ position: "fixed", inset: 0, zIndex: 80, background: "#000", display: "flex", flexDirection: "column" }}>
           <div style={{ height: 56, display: "flex", alignItems: "center", gap: 12, padding: "env(safe-area-inset-top) 12px 0", color: "#fff" }}>
             <button type="button" aria-label="Back" onClick={() => setViewer(null)} style={{ padding: 8, color: "#fff" }}>
@@ -684,6 +758,7 @@ export function ChatScreen({ roomId }: { roomId: string }) {
             <AuthImage url={viewer.url} mine contain />
           </div>
         </div>
+        </RootPortal>
       ) : null}
     </div>
   );

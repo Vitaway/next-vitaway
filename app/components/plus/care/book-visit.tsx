@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Calendar1, Call, NoteText } from "iconsax-react";
+import { useSearchParams } from "next/navigation";
+import { Calendar1, Call, NoteText } from "@/lib/plus/icons";
 import { useMe } from "@/lib/plus/client/data";
 import { MobileApiError, mobileRequest } from "@/lib/plus/client/api";
 import { invalidate } from "@/lib/plus/client/use-resource";
@@ -63,6 +64,13 @@ export function BookVisitScreen() {
   const { toast } = useFeedback();
   const { user } = useMe();
   const name = `${user?.first_name ?? ""} ${user?.last_name ?? ""}`.trim();
+  // Opened from a care-team card: the officer is already chosen, so the form drops the details step.
+  const params = useSearchParams();
+  const officer = params.get("with")?.trim() || null;
+  const officerId = params.get("pro")?.trim() || null;
+  const officerRole = params.get("role")?.trim() || null;
+  const total = officer ? 2 : 3;
+  const last = total - 1;
   const [step, setStep] = useState(0);
   const [mode, setMode] = useState<"clinic" | "call">("clinic");
   const [day, setDay] = useState<Date | null>(null);
@@ -88,7 +96,7 @@ export function BookVisitScreen() {
     let alive = true;
     (async () => {
       try {
-        const body = await mobileRequest<Record<string, unknown>>("/api/v1/mobile/ehr/visit-availability");
+        const body = await mobileRequest<Record<string, unknown>>("/api/v1/mobile/ehr/visit-availability", officerId ? { query: { practitioner_id: officerId } } : undefined);
         if (!alive) return;
         const mapped: Record<string, Slot[]> = {};
         for (const [date, raw] of Object.entries(body ?? {})) {
@@ -112,7 +120,7 @@ export function BookVisitScreen() {
     return () => {
       alive = false;
     };
-  }, []);
+  }, [officerId]);
 
   const days = Object.keys(availability).sort().filter((k) => availability[k].some((s) => s.available)).map(parseDay);
   const offersFor = (d: Date) => availability[dateKey(d)] ?? [];
@@ -153,16 +161,16 @@ export function BookVisitScreen() {
     if (!day || !time) return toast("Pick a day and a time", { error: true });
     if (p.length < 8) return toast("Add a phone number the clinic can call", { error: true });
     const n = note.trim();
-    const message = [mode === "call" ? "On a call." : null, n || null, mode !== "call" && !n ? "Clinic visit requested from the app." : null].filter(Boolean).join(" ").trim();
+    const message = [mode === "call" ? "On a call." : null, n || null, mode !== "call" && !n && !officerId ? "Clinic visit requested from the app." : null].filter(Boolean).join(" ").trim();
     setSaving(true);
     try {
       await mobileRequest("/api/v1/mobile/ehr/visits", {
         method: "POST",
-        body: { appointment_date: dateKey(day), appointment_time: time, phone: p, message, name, ...(confirmNear ? { confirm_near: true } : {}) },
+        body: { appointment_date: dateKey(day), appointment_time: time, phone: p, message, name, ...(officerId ? { practitioner_id: officerId } : {}), ...(confirmNear ? { confirm_near: true } : {}) },
       });
       toast("Visit requested. The clinic will confirm it.");
       invalidate("appointments:");
-      replace("/appointments");
+      replace("/care");
       return;
     } catch (error) {
       if (!(error instanceof MobileApiError) || !error.status) {
@@ -199,14 +207,20 @@ export function BookVisitScreen() {
   const goNext = () => {
     if (step === 0) {
       if (!whenReady) return toast(day ? "Pick a time" : "Pick a day", { error: true });
+      if (officer) {
+        setStep(1);
+        void loadQuote();
+        return;
+      }
       return setStep(1);
     }
-    if (step === 1) {
+    if (step === 1 && !officer) {
       if (!detailsReady) return toast("Add a phone number the clinic can call", { error: true });
       setStep(2);
       void loadQuote();
       return;
     }
+    if (officer && !detailsReady) return toast("Add a phone number the clinic can call", { error: true });
     void submit(false);
   };
 
@@ -214,6 +228,7 @@ export function BookVisitScreen() {
     ? (quote.benefits as unknown[]).filter((b): b is Record<string, unknown> => Boolean(b) && typeof b === "object").map((b) => [String(b.name ?? "Service"), `Covered ${rwf(b.covered_amount)} · ${rwf(b.amount)}`] as [string, string])
     : [];
   const rows: Array<[string, string]> = [
+    ...(officer ? [["With", officerRole ? `${officer} · ${officerRole}` : officer] as [string, string]] : []),
     ["Visit", modeLabel],
     ["When", whenLabel],
     ...(name ? [["Name", name] as [string, string]] : []),
@@ -225,16 +240,25 @@ export function BookVisitScreen() {
   ];
 
   return (
-    <div className="vita-page" style={{ background: "var(--vc-canvas)" }}>
+    <div className="vita-page w-narrow" style={{ background: "var(--vc-canvas)" }}>
       <AppBar title="Book a visit" />
       <div style={{ padding: "4px 20px 0" }}>
-        <StepProgress step={step} total={3} />
+        <StepProgress step={step} total={total} />
       </div>
       <div key={step} className="vita-step-in" style={{ flex: 1, overflowY: "auto", padding: "18px 20px 16px" }}>
         {step === 0 ? (
           <>
             {h1("When should we see you?")}
             {sub("Pick a day and a time at least one hour from now.")}
+            {officer ? (
+              <div style={{ marginTop: 16, padding: "12px 14px", borderRadius: 10, background: "var(--vc-wash)", display: "flex", alignItems: "center", gap: 12 }}>
+                <span style={{ width: 40, height: 40, borderRadius: 999, background: "var(--vc-teal)", color: "#fff", display: "grid", placeItems: "center", fontWeight: 800, fontSize: 15 }}>{officer.replace(/^Dr\.?\s*/i, "").split(/\s+/).map((w) => w[0]).join("").slice(0, 2).toUpperCase()}</span>
+                <span style={{ minWidth: 0 }}>
+                  <span style={{ display: "block", fontSize: 15, fontWeight: 800, color: "var(--vc-navy)" }}>{officer}</span>
+                  {officerRole ? <span style={{ display: "block", fontSize: 13, fontWeight: 500, color: navyA(0.55) }}>{officerRole}</span> : null}
+                </span>
+              </div>
+            ) : null}
             <div style={{ display: "flex", gap: 10, marginTop: 20 }}>
               <ModeChip label="In clinic" selected={mode === "clinic"} onClick={() => setMode("clinic")} />
               <ModeChip label="On a call" selected={mode === "call"} onClick={() => setMode("call")} />
@@ -243,9 +267,9 @@ export function BookVisitScreen() {
             <DropdownField label="Day" required value={day ? fmtEEEcdMMM(day) : null} placeholder="Select a day" onClick={pickDay} />
             <div style={{ height: 14 }} />
             <DropdownField label="Time" required value={time} placeholder={!day ? "Pick a day first" : !slots.length ? "No times left today" : "Select a time"} enabled={Boolean(day) && slots.length > 0} onClick={pickTime} />
-            {day && !slots.length ? <p style={{ margin: "10px 0 0", fontSize: 12, fontWeight: 500, color: navyA(0.55) }}>Times need to be at least one hour from now.</p> : null}
+            {day && !slots.length ? <p style={{ margin: "10px 0 0", fontSize: 13, fontWeight: 500, color: navyA(0.55) }}>Times need to be at least one hour from now.</p> : null}
           </>
-        ) : step === 1 ? (
+        ) : step === 1 && !officer ? (
           <>
             {h1("A few details")}
             {sub("Name and phone are enough. The clinic uses these to confirm.")}
@@ -275,11 +299,18 @@ export function BookVisitScreen() {
                 </div>
               ))}
             </div>
+            {officer ? (
+              <div style={{ marginTop: 16 }}>
+                <AuthField label="Phone" required hint="Phone the clinic can call" icon={<Call size={20} color="currentColor" />} type="tel" inputMode="tel" value={phone} onChange={setPhone} autoComplete="tel" />
+                <div style={{ height: 14 }} />
+                <AuthField label="Note" hint="Anything we should know? (optional)" icon={<NoteText size={20} color="currentColor" />} multiline value={note} onChange={setNote} />
+              </div>
+            ) : null}
             {quoteLoading ? <p style={{ margin: "12px 0 0", fontSize: 13, color: navyA(0.55) }}>Working out the partner price…</p> : null}
             {existingVisit ? (
               <>
                 <p style={{ margin: "16px 0 12px", fontSize: 15, fontWeight: 700, lineHeight: 1.35, color: "var(--vc-navy)" }}>{`You already have a visit on ${existingVisit}.`}</p>
-                <ActionButton full tone="white" label="Reschedule" icon={<Calendar1 size={16} color="currentColor" />} disabled={saving} onClick={() => push("/appointments")} />
+                <ActionButton full tone="white" label="Reschedule" icon={<Calendar1 size={16} color="currentColor" />} disabled={saving} onClick={() => push("/care")} />
                 <div style={{ height: 8 }} />
                 <ActionButton full label="Book this time anyway" disabled={saving} onClick={() => void submit(true)} />
               </>
@@ -294,10 +325,10 @@ export function BookVisitScreen() {
         <div style={{ flex: 1, minWidth: 0 }}>
           <ActionButton
             full
-            label={step === 2 ? "Confirm booking" : "Continue"}
+            label={step === last ? "Confirm booking" : "Continue"}
             loading={saving}
             onClick={goNext}
-            icon={step === 2 ? <Calendar1 size={16} color="currentColor" /> : <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>}
+            icon={step === last ? <Calendar1 size={16} color="currentColor" /> : <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>}
           />
         </div>
       </div>

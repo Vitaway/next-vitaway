@@ -1,16 +1,21 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { Activity, Add, Alarm, Drop, Flag, Heart, Weight } from "iconsax-react";
-import { useT } from "@/lib/plus/i18n";
+import { useEffect, useMemo, useState } from "react";
+import { Activity, Add, Alarm, Drop, Flag, Heart, Weight } from "@/lib/plus/icons";
+import { useLanguage, useT, type Translate } from "@/lib/plus/i18n";
+import { BMI_BAND_LABEL_KEY, bmiViewFor, type BmiView } from "@/lib/plus/bmi";
 import { useMe, useMetrics } from "@/lib/plus/client/data";
 import { saveWeightGoal, useGoals } from "@/lib/plus/client/goals";
-import { bpCategoryOf, bpMetricsStatus, glucoseCategoryOf, glucoseMetricsStatus, latestByType, parseStamp, type HealthMetric } from "@/lib/plus/health";
+import { glucoseContextFromFullness, latestByType, parseStamp, type HealthMetric } from "@/lib/plus/health";
+import { bpStatus, glucoseStatus, type ClinicalConfig, type Lang } from "@/lib/plus/clinical-rules";
+import { useClinicalConfig } from "@/lib/plus/client/clinical-config";
 import { fmtLongDay, sameDay } from "@/lib/plus/format";
 import { currentMonth, currentWeek, currentYear, hasMetricReading } from "@/lib/plus/metric-series";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
+import { formatGlucose, formatGlucoseUnitBoth, useGlucoseUnit } from "@/lib/plus/units";
 import { ActionButton, AppBar, CenterSpinner, EmptyState, Modal, Tabs, useFeedback } from "../ui/vita";
 import MetricChart from "./metric-chart";
+import InsightsScreen, { InsightsPanel } from "./insights";
 
 type Range = "week" | "month" | "year";
 
@@ -32,19 +37,25 @@ function dateLabel(raw: string, t: (k: string) => string): string {
   return fmtLongDay(at);
 }
 
-function statusFor(metric: HealthMetric, bmi: number): { label: string; chip: string; color: string } {
+function statusFor(metric: HealthMetric, bmi: BmiView, t: Translate, clinical: ClinicalConfig, lang: Lang): { label: string; chip: string; color: string } {
   const faint = "rgba(var(--vc-navy-rgb),0.45)";
   if (metric.type === "bp" || metric.type === "glucose") {
-    const status = metric.type === "bp" ? bpMetricsStatus(bpCategoryOf(metric)) : glucoseMetricsStatus(glucoseCategoryOf(metric));
-    if (!status) return { label: "No reading yet", chip: "—", color: faint };
+    const mg = Math.round(Number.parseFloat(metric.latest_value) || 0);
+    const logged = metric.type === "bp" ? (metric.systolic ?? 0) > 0 : mg > 0;
+    if (!logged) return { label: t("no_reading_yet"), chip: "—", color: faint };
+    // Tracker v9.0 BL-012: approved CA-03/CA-04 bands only; otherwise neutral, no chip.
+    const status = metric.type === "bp" ? bpStatus(clinical, metric.systolic, metric.diastolic, lang) : glucoseStatus(clinical, mg, glucoseContextFromFullness(metric.fullness), lang);
+    if (!status) return { label: t("reading_care_team_review"), chip: "—", color: "rgba(var(--vc-navy-rgb),0.62)" };
     const color = status.tone === "ok" ? "var(--vc-navy)" : status.tone === "warn" ? "var(--vc-action)" : "var(--vc-danger)";
     return { label: status.label, chip: status.chip, color };
   }
-  if (bmi <= 0) return { label: "Add your height for BMI", chip: "—", color: faint };
-  if (bmi < 18.5) return { label: "Underweight range", chip: "Low", color: "var(--vc-action)" };
-  if (bmi <= 24.9) return { label: "Healthy BMI range", chip: "Normal", color: "var(--vc-navy)" };
-  if (bmi <= 29.9) return { label: "Overweight range", chip: "High", color: "var(--vc-action)" };
-  return { label: "Talk with your care team", chip: "High", color: "var(--vc-danger)" };
+  // BL-013: no adult category under 18 or when the age is unknown; neutral note instead.
+  if (!bmi.band) return { label: t(bmi.noteKey ?? "bmi_need_height"), chip: "—", color: "rgba(var(--vc-navy-rgb),0.55)" };
+  const label = t(BMI_BAND_LABEL_KEY[bmi.band]);
+  if (bmi.band === "underweight") return { label, chip: t("chip_low"), color: "var(--vc-action)" };
+  if (bmi.band === "healthy") return { label, chip: t("chip_normal"), color: "var(--vc-navy)" };
+  if (bmi.band === "overweight") return { label, chip: t("chip_high"), color: "var(--vc-action)" };
+  return { label, chip: t("chip_high"), color: "var(--vc-danger)" };
 }
 
 const big = { fontSize: 40, lineHeight: 1, fontWeight: 800 } as const;
@@ -59,25 +70,11 @@ function Legend({ color, label }: { color: string; label: string }) {
   );
 }
 
-function BpRangeBar({ systolic }: { systolic: number }) {
-  const t = Math.min(1, Math.max(0, (systolic - 90) / 90));
-  return (
-    <div>
-      <div style={{ position: "relative", height: 14 }}>
-        <div style={{ position: "absolute", left: 0, right: 0, top: 3, height: 8, borderRadius: 999, background: "linear-gradient(90deg, var(--vc-tile-mint), var(--vc-tile-sage), var(--vc-tile-peach), var(--vc-danger-soft))" }} />
-        {systolic > 0 ? <span style={{ position: "absolute", top: 0, left: `clamp(0px, calc(${t * 100}% - 7px), calc(100% - 14px))`, width: 14, height: 14, borderRadius: "50%", background: "#fff", border: "2px solid var(--vc-navy)", boxShadow: "0 2px 6px rgba(var(--vc-navy-rgb),0.18)" }} /> : null}
-      </div>
-      <div style={{ display: "flex", justifyContent: "space-between", marginTop: 6, fontSize: 10, fontWeight: 600, color: "rgba(var(--vc-navy-rgb),0.4)" }}>
-        <span>90</span>
-        <span>Normal to high</span>
-        <span>180</span>
-      </div>
-    </div>
-  );
-}
-
-function SummaryHero({ metric, bmi, avg, date }: { metric: HealthMetric; bmi: number; avg: number | null; date: string }) {
-  const status = statusFor(metric, bmi);
+function SummaryHero({ metric, bmi, avg, date }: { metric: HealthMetric; bmi: BmiView; avg: number | null; date: string }) {
+  const { t, language } = useLanguage();
+  const [glucoseUnit] = useGlucoseUnit();
+  const clinical = useClinicalConfig();
+  const status = statusFor(metric, bmi, t, clinical, language);
   const tint = metric.type === "glucose" ? "var(--vc-tile-peach)" : metric.type === "bp" ? "var(--vc-tile-lilac)" : metric.type === "weight" ? "var(--vc-tile-mint)" : "var(--vc-wash)";
   const icon = metric.type === "glucose" ? <Drop size={20} variant="Bold" color="currentColor" /> : metric.type === "bp" ? <Activity size={20} color="currentColor" /> : metric.type === "weight" ? <Weight size={20} color="currentColor" /> : <Heart size={20} variant="Bold" color="currentColor" />;
   return (
@@ -86,9 +83,9 @@ function SummaryHero({ metric, bmi, avg, date }: { metric: HealthMetric; bmi: nu
         <span style={{ width: 40, height: 40, borderRadius: 8, background: tint, color: "var(--vc-navy)", display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>{icon}</span>
         <div style={{ marginLeft: 12, flex: 1, minWidth: 0 }}>
           <div style={{ fontSize: 13, fontWeight: 700, color: "var(--vc-navy)" }}>{date}</div>
-          <div style={{ marginTop: 2, fontSize: 12, fontWeight: 600, color: status.color }}>{status.label}</div>
+          <div style={{ marginTop: 2, fontSize: 13, fontWeight: 600, color: status.color }}>{status.label}</div>
         </div>
-        <span style={{ padding: "6px 10px", borderRadius: 999, background: `color-mix(in srgb, ${status.color} 12%, transparent)`, fontSize: 11, fontWeight: 800, color: status.color }}>{status.chip}</span>
+        <span style={{ padding: "6px 10px", borderRadius: 999, background: `color-mix(in srgb, ${status.color} 12%, transparent)`, fontSize: 13, fontWeight: 800, color: status.color }}>{status.chip}</span>
       </div>
       <div style={{ marginTop: 16 }}>
         {metric.type === "bp" ? (
@@ -103,10 +100,7 @@ function SummaryHero({ metric, bmi, avg, date }: { metric: HealthMetric; bmi: nu
               <Legend color="var(--vc-navy)" label="SYS" />
               <Legend color="var(--vc-action)" label="DIA" />
               <span style={{ flex: 1 }} />
-              {avg !== null ? <span style={small(0.55)}>Week avg SYS {avg.toFixed(0)}</span> : null}
-            </div>
-            <div style={{ marginTop: 14 }}>
-              <BpRangeBar systolic={metric.systolic ?? 0} />
+              {avg !== null ? <span style={small(0.55)}>{t("week_avg_sys", { value: avg.toFixed(0) })}</span> : null}
             </div>
           </>
         ) : metric.type === "weight" ? (
@@ -116,11 +110,19 @@ function SummaryHero({ metric, bmi, avg, date }: { metric: HealthMetric; bmi: nu
               <span style={{ marginLeft: 8, paddingBottom: 6, ...small(0.45, 14) }}>kg</span>
               <span style={{ flex: 1 }} />
               <div style={{ textAlign: "right" }}>
-                <div style={{ fontSize: 11, fontWeight: 600, color: "rgba(var(--vc-navy-rgb),0.45)" }}>BMI</div>
-                <div style={{ fontSize: 22, fontWeight: 800, color: "var(--vc-navy)" }}>{bmi.toFixed(1)}</div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: "rgba(var(--vc-navy-rgb),0.45)" }}>{t("hm_bmi")}</div>
+                <div style={{ fontSize: 22, fontWeight: 800, color: "var(--vc-navy)" }}>{bmi.value === null ? "—" : bmi.value.toFixed(1)}</div>
               </div>
             </div>
-            {avg !== null ? <div style={{ marginTop: 10, ...small(0.55) }}>Week avg {avg.toFixed(1)} kg</div> : null}
+            {avg !== null ? <div style={{ marginTop: 10, ...small(0.55) }}>{t("week_avg_kg", { value: avg.toFixed(1) })}</div> : null}
+          </>
+        ) : metric.type === "glucose" ? (
+          <>
+            <div style={{ display: "flex", alignItems: "flex-end" }}>
+              <span style={{ ...big, color: "var(--vc-navy)" }}>{formatGlucose(Number.parseFloat(metric.latest_value) || 0, glucoseUnit)}</span>
+              <span style={{ marginLeft: 8, paddingBottom: 6, ...small(0.45, 14) }}>{formatGlucoseUnitBoth(Number.parseFloat(metric.latest_value) || 0, glucoseUnit)}</span>
+            </div>
+            {avg !== null ? <div style={{ marginTop: 10, ...small(0.55) }}>Week avg {formatGlucose(avg, glucoseUnit)} {formatGlucoseUnitBoth(avg, glucoseUnit)}</div> : null}
           </>
         ) : (
           <>
@@ -187,12 +189,18 @@ function SetGoalModal({ open, current, onClose }: { open: boolean; current: numb
 }
 
 export default function MetricDetailScreen({ type }: { type: string }) {
+  if (type === "activity" || type === "meds") return <InsightsScreen type={type} />;
+  return <ReadingDetail type={type} />;
+}
+
+function ReadingDetail({ type }: { type: string }) {
   const t = useT();
   const { push } = usePlusPaths();
   const { metrics, loading } = useMetrics();
   const { user } = useMe();
   const { goals, weightGoal } = useGoals();
   const [range, setRange] = useState<Range>("week");
+  const [rangeChosen, setRangeChosen] = useState(false);
   const [picked, setPicked] = useState<HealthMetric | null>(null);
   const [goalOpen, setGoalOpen] = useState(false);
   const base = latestByType(metrics)[type] ?? null;
@@ -202,6 +210,14 @@ export default function MetricDetailScreen({ type }: { type: string }) {
     if (range === "month") return currentMonth(metrics, type);
     return currentYear(metrics, type);
   }, [metrics, type, range]);
+
+  // Open on the first period that has readings, so the chart is never an empty week when there is history.
+  useEffect(() => {
+    if (rangeChosen || loading) return;
+    const has = (r: Range) => (r === "week" ? currentWeek(metrics, type).some((m) => m !== null && hasMetricReading(m)) : r === "month" ? currentMonth(metrics, type).length > 0 : currentYear(metrics, type).length > 0);
+    const first = (["week", "month", "year"] as Range[]).find(has);
+    if (first && first !== range) setRange(first);
+  }, [metrics, type, loading, rangeChosen, range]);
 
   const titleKey = `hm_${(base?.name ?? (type === "bp" ? "blood pressure" : type)).toLowerCase().replace(/ /g, "_")}`;
   const title = t(titleKey, undefined, base?.name ?? type);
@@ -216,7 +232,7 @@ export default function MetricDetailScreen({ type }: { type: string }) {
   }
   const weight = Number.parseFloat(selected.latest_value);
   const height = Number(user?.profile?.height ?? 0) || 0;
-  const bmi = Number.isFinite(weight) && height > 0 ? (weight / (height * height)) * 10000 : 0;
+  const bmi = bmiViewFor(weight, height, Number(user?.age ?? user?.profile?.age ?? 0) || 0);
   const hasGoal = goals.some((g) => g.type === "weight");
   const emptyCopy = range === "week" ? "No readings this week yet" : range === "year" ? "No readings this year yet" : t(type === "glucose" ? "hm_no_glucose_data_for_current_month" : type === "bp" ? "hm_no_blood_pressure_data_for_current_month" : "hm_no_weight_data_for_current_month");
   const addPath = type === "glucose" ? "/log/glucose" : type === "bp" ? "/log/bp" : type === "weight" ? "/log/weight" : null;
@@ -225,14 +241,15 @@ export default function MetricDetailScreen({ type }: { type: string }) {
   return (
     <div className="vita-page">
       <AppBar title={title} />
-      <div className="vita-scroll" style={{ padding: 0 }}>
+      <div className="vita-scroll vita-md" style={{ padding: 0 }}>
+        <div className="vita-md-main">
         <div style={{ padding: "12px 16px 0" }}>
-          <Tabs<Range> tabs={[{ value: "week", label: t("hm_week") }, { value: "month", label: t("hm_month") }, { value: "year", label: t("hm_year") }]} value={range} onChange={setRange} />
+          <Tabs<Range> tabs={[{ value: "week", label: t("hm_week") }, { value: "month", label: t("hm_month") }, { value: "year", label: t("hm_year") }]} value={range} onChange={(v) => { setRangeChosen(true); setRange(v); }} />
         </div>
         <div style={{ padding: "14px 16px 0" }}>
           <SummaryHero metric={selected} bmi={bmi} avg={weekAverage(type, metrics)} date={dateLabel(selected.last_updated, t)} />
         </div>
-        <div style={{ height: 280, padding: "8px 8px 0 4px" }}>
+        <div style={{ height: series.length ? 280 : 120, padding: "8px 8px 0 4px" }}>
           {series.length === 0 ? (
             <div style={{ height: "100%", display: "flex", alignItems: "center", justifyContent: "center", textAlign: "center", color: "rgba(var(--vc-navy-rgb),0.55)", fontWeight: 600 }}>{emptyCopy}</div>
           ) : (
@@ -258,7 +275,7 @@ export default function MetricDetailScreen({ type }: { type: string }) {
                   <div style={{ fontSize: 14, fontWeight: 500 }}>{selected.latest_value}</div>
                 </div>
                 <div style={{ width: 90 }}>
-                  <div style={{ fontSize: 12 }}>{Math.round(toGo * 10) / 10} Kg to go</div>
+                  <div style={{ fontSize: 13 }}>{Math.round(toGo * 10) / 10} Kg to go</div>
                   <div style={{ height: 1, background: "rgba(var(--vc-navy-rgb),0.65)" }} />
                 </div>
                 <div style={{ padding: 10, borderRadius: 6, border: "1px solid rgba(var(--vc-navy-rgb),0.15)" }}>
@@ -269,6 +286,13 @@ export default function MetricDetailScreen({ type }: { type: string }) {
             </button>
           </div>
         ) : null}
+        </div>
+        <div className="vita-md-side">
+        {type === "bp" || type === "glucose" || type === "weight" ? (
+          <div style={{ padding: "8px 16px 0" }}>
+            <InsightsPanel type={type} embedded />
+          </div>
+        ) : null}
         <div style={{ display: "flex", gap: 10, padding: "20px 16px 20px" }}>
           <div style={{ flex: 1, minWidth: 0 }}>
             <ActionButton full tone="teal" label={t("hm_add_measure")} icon={<Add size={18} color="currentColor" />} onClick={() => { if (addPath) push(addPath); }} />
@@ -276,6 +300,7 @@ export default function MetricDetailScreen({ type }: { type: string }) {
           <div style={{ flex: 1, minWidth: 0 }}>
             <ActionButton full tone="white" label={t("hm_add_reminder")} icon={<Alarm size={16} color="currentColor" />} onClick={() => push("/reminders/add")} />
           </div>
+        </div>
         </div>
       </div>
       {goalOpen ? <SetGoalModal open current={Number.parseFloat(selected.latest_value) || 0} onClose={() => setGoalOpen(false)} /> : null}
