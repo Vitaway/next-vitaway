@@ -383,7 +383,7 @@ export function HealthDetailsScreen() {
   const [saving, setSaving] = useState(false);
   useEffect(() => {
     if (!loaded && user) {
-      setGender(p.gender === "F" ? "F" : "M");
+      setGender(/^f/i.test(p.gender ?? "") ? "F" : "M");
       setHeight(heightKnown(p.height) ? Number(p.height) : 170);
       setAge(ageKnown(p.age) ? String(p.age) : "");
       setLoaded(true);

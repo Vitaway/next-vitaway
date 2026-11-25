@@ -9,6 +9,7 @@ import { displayName, useMe, useNotifications } from "@/lib/plus/client/data";
 import { useAccountActions } from "../account/shared";
 import { Photo, cx } from "../ui/vita";
 import { QUICK_ACTIONS, tabFor, useAppPath, useMainTabs } from "./dock";
+import { quickLogKindFor, useOpenQuickLog } from "./quick-log";
 import { Illu, NAV_ILLU } from "../ui/vita-icons";
 
 /** Closes a popover on outside click, Escape and route change. */
@@ -51,6 +52,7 @@ export default function TopBar({ supportBadge = false }: { supportBadge?: boolea
   const tabs = useMainTabs(supportBadge);
   const active = tabFor(path);
   const log = usePopover(path);
+  const openQuickLog = useOpenQuickLog();
   const me = usePopover(path);
   const name = displayName(user) || t("account_menu");
   const email = (user as { email?: string | null } | null | undefined)?.email ?? "";
@@ -103,7 +105,13 @@ export default function TopBar({ supportBadge = false }: { supportBadge?: boolea
                 <p className="vita-pop-head">{t("topbar_log_menu")}</p>
                 <div className="vita-pop-grid">
                   {QUICK_ACTIONS.map((action) => (
-                    <button key={action.path} type="button" role="menuitem" className="vita-pop-tile" onClick={() => push(action.path)}>
+                    <button key={action.path} type="button" role="menuitem" className="vita-pop-tile" onClick={() => {
+                      const kind = quickLogKindFor(action.path);
+                      if (kind) {
+                        log.setOpen(false);
+                        openQuickLog(kind);
+                      } else push(action.path);
+                    }}>
                       <span className="disc" style={{ background: action.tint }}>
                         {action.icon}
                       </span>

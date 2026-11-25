@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { usePlusPaths } from "./plus-paths";
+import { useQuickLog } from "./quick-log-context";
 
 let depth = 0;
 let lastPath: string | null = null;
@@ -28,12 +29,17 @@ export function NavigationTracker() {
 export function useBack(fallback = "/home") {
   const router = useRouter();
   const { replace } = usePlusPaths();
+  const quickLog = useQuickLog();
   return useCallback(() => {
+    if (quickLog) {
+      quickLog.close();
+      return;
+    }
     if (depth > 0) {
       depth = Math.max(0, depth - 2);
       router.back();
       return;
     }
     replace(fallback);
-  }, [router, replace, fallback]);
+  }, [router, replace, fallback, quickLog]);
 }

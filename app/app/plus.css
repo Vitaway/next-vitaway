@@ -2664,3 +2664,14 @@ button.vita-quiz-input { text-align: left; cursor: pointer; }
 @media (min-width: 1024px) {
   .vita-prof { display: grid; grid-template-columns: 340px minmax(0, 1fr); gap: 20px; align-items: start; max-width: 1040px; margin: 0 auto; width: 100%; padding: 24px 0 40px; }
 }
+
+/* ── 25 Nov 2026: Log menu opens as a small modal (desktop top bar) ────────────────────────── */
+.vita-modal.vita-ql { max-width: 460px; height: auto; max-height: min(720px, calc(100dvh - 32px)); border-radius: 20px; background: var(--vc-canvas); }
+.vita-ql .vita-page { flex: 1; min-height: 0; width: 100%; max-width: none; margin: 0; padding: 0; overflow-y: auto; background: var(--vc-canvas); }
+.vita-ql .vita-ql-head { position: sticky; top: 0; z-index: 3; flex: none; }
+.vita-ql .vita-ql-head .vita-circle-btn { width: 32px !important; height: 32px !important; }
+.vita-ql .vita-log-body { display: block !important; overflow: visible !important; padding: 0; flex: none !important; }
+.vita-ql .vita-log-aside { display: none !important; }
+.vita-ql .vita-log-main > div { max-width: none; }
+.vita-ql .vita-bottom-bar { position: sticky; bottom: 0; z-index: 2; padding: 10px 20px 16px !important; }
+.vita-ql .vita-bottom-bar .vita-btn.full { width: 100%; min-width: 0 !important; }

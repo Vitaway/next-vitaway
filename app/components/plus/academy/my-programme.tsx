@@ -227,7 +227,13 @@ export function MealPlanScreen({ courseId }: { courseId: string }) {
     <Page width="wide">
       <AppBar title={T.mealPlan} backTo="/articles" />
       <div className="ac-lib">
-        {!mp ? (
+        {menu.error && !mp ? (
+          <div className="ac-card" style={{ textAlign: "center", marginTop: 24 }}>
+            <h3 className="ac-h3">{T.mealPlan}</h3>
+            <p className="ac-muted">The 4-week meal plan opens when you join a programme with your care team.</p>
+            <a href="/app/programmes" className="ac-link">See programmes</a>
+          </div>
+        ) : !mp ? (
           <CenterSpinner />
         ) : (
           <>

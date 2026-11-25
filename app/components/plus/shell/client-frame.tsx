@@ -10,6 +10,7 @@ import StaffDoor from "../staff-door";
 import Dock, { DOCK_SCREENS, useAppPath } from "./dock";
 import WebFooter from "./web-footer";
 import TopBar from "./topbar";
+import { QuickLogProvider } from "./quick-log";
 import { useSupportBadge } from "@/lib/plus/client/support-badge";
 import { WebReminderScheduler } from "../reminders/web-reminder-scheduler";
 import { useT } from "@/lib/plus/i18n";
@@ -62,7 +63,11 @@ export default function ClientFrame({ children }: { children: React.ReactNode })
 
   const showDock = (DOCK_SCREENS as readonly string[]).includes(path);
 
-  return <AppShell path={path} showDock={showDock}>{children}</AppShell>;
+  return (
+    <QuickLogProvider>
+      <AppShell path={path} showDock={showDock}>{children}</AppShell>
+    </QuickLogProvider>
+  );
 }
 
 /** Tracks navigator.onLine so every screen gets the same offline notice (F23). */

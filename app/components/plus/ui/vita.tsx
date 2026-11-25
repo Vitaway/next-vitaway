@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import { ArrowLeft } from "@/lib/plus/icons";
 import { MdArrowForward } from "@/lib/plus/icons";
 import { useBack } from "@/lib/plus/nav";
+import { useQuickLog } from "@/lib/plus/quick-log-context";
 import { mediaUrl } from "@/lib/plus/client/api";
 import { useMe } from "@/lib/plus/client/data";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
@@ -101,9 +102,22 @@ export function AppBar({
   profile?: boolean;
 }) {
   const goBack = useBack(backTo);
+  const quickLog = useQuickLog();
   // The section's illustrated icon (same as the web top bar) sits left of the title, on every width.
   const section = tabFor(useAppPath());
   const sectionIcon = section ? NAV_ILLU[section] : undefined;
+  if (quickLog) {
+    // Inside the Log modal the bar is the modal header: title, any actions, and a close button.
+    return (
+      <div className="vita-modal-head vita-ql-head">
+        <h2>{title}</h2>
+        {actions}
+        <button type="button" className="vita-modal-close" aria-label="Close" onClick={quickLog.close}>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round"><path d="M6 6l12 12M18 6L6 18" /></svg>
+        </button>
+      </div>
+    );
+  }
   return (
     <header className="vita-appbar">
       {bubbles ? <AppBarBubbles /> : null}

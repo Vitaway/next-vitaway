@@ -11,6 +11,12 @@ import { stashCoach } from "./support";
 
 const navyA = (a: number) => `rgba(var(--vc-navy-rgb),${a})`;
 
+/** "health_coach" (a stored code) reads as "Health coach". */
+const nice = (v?: string | null) => {
+  const x = (v ?? "").trim();
+  return /^[a-z]+(_[a-z]+)+$/.test(x) ? x.replace(/_/g, " ").replace(/^./, (c) => c.toUpperCase()) : x;
+};
+
 /** find_coach.dart: every coach from /coaches/, in rows by speciality. */
 export function FindCoachScreen() {
   const t = useT();
@@ -34,7 +40,7 @@ export function FindCoachScreen() {
 
   const groups = new Map<string, Coach[]>([["Generalists", []]]);
   for (const coach of coaches ?? []) {
-    const key = coach.profile.speciality || "Generalists";
+    const key = nice(coach.profile.speciality) || "Generalists";
     groups.set(key, [...(groups.get(key) ?? []), coach]);
   }
   const rows = [...groups.entries()].filter(([, list]) => list.length > 0);
@@ -76,7 +82,7 @@ export function FindCoachScreen() {
                     <Photo url={coach.profile.profile_picture} style={{ width: 200, height: 160, objectFit: "cover", display: "block", borderRadius: 0 }} />
                     <span style={{ display: "block", padding: 8 }}>
                       <span style={{ display: "block", fontSize: 15, fontWeight: 600, color: "var(--vc-navy)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{`${coach.first_name} ${coach.last_name}`.trim()}</span>
-                      <span style={{ display: "block", marginTop: 2, fontSize: 14, color: navyA(0.55), whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{coach.profile.speciality || t("health_coach")}</span>
+                      <span style={{ display: "block", marginTop: 2, fontSize: 14, color: navyA(0.55), whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{nice(coach.profile.speciality) || t("health_coach")}</span>
                       <span style={{ display: "inline-block", marginTop: 4, padding: "2px 6px", borderRadius: 8, background: navyA(0.1), fontSize: 13, fontWeight: 500, color: "var(--vc-navy)" }}>{t("appointments")}</span>
                     </span>
                   </button>
