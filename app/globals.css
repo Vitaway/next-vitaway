@@ -303,3 +303,9 @@ a.press-btn--secondary-light:hover {
     min-height: 44px;
   }
 }
+
+/* Partners marquee: two identical halves, slide one half-width then loop seamlessly. */
+.partner-track { animation: partner-scroll 45s linear infinite; padding-right: 0; }
+.partner-marquee:hover .partner-track { animation-play-state: paused; }
+@keyframes partner-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) { .partner-track { animation: none; } .partner-marquee { overflow-x: auto; } }
