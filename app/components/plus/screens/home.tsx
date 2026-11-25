@@ -1,20 +1,19 @@
 "use client";
 
 import { cloneElement, isValidElement, useEffect, useMemo, useState } from "react";
-import { Activity, ArrowRight3, Book1, Call, Chart, Drop, Flash, MessageQuestion, Notification, Reserve, TickCircle, Weight } from "@/lib/plus/icons";
-import { useLanguage, type Translate } from "@/lib/plus/i18n";
+import { Activity, ArrowRight3, Call, Chart, Drop, Flash, MessageQuestion, Notification, Reserve, TickCircle, Weight } from "@/lib/plus/icons";
+import { useLanguage, useT, type Translate } from "@/lib/plus/i18n";
+import { RecommendedBlock, useAcademyHome } from "../academy/my-programme";
 import { BMI_HOME_CAPTION_KEY, bmiViewFor } from "@/lib/plus/bmi";
 import { usePlusPaths } from "@/lib/plus/plus-paths";
 import { useTheme } from "@/lib/plus/theme";
 import {
   appointmentStart,
   useAppointments,
-  useArticles,
   useMe,
   useMetrics,
   useNotifications,
   useSubscription,
-  type Article,
 } from "@/lib/plus/client/data";
 import { useCarePlan } from "@/lib/plus/client/care-plan";
 import { useTodayMedications } from "@/lib/plus/client/meds";
@@ -262,9 +261,9 @@ function SubscriptionBanner({ onClick }: { onClick: () => void }) {
   return <BannerShell onClick={onClick} tint="var(--vc-tile-peach)" ink="#E85A2E" icon={<Illu name="plan" size={30} />} title={t("home_subscribe_cta")} subtitle={t("choose_plan")} />;
 }
 
-function LearnSection({ onOpenLearn, onOpenArticle }: { onOpenLearn: () => void; onOpenArticle: (a: Article) => void }) {
-  const { t, language } = useLanguage();
-  const { articles, loading } = useArticles(language);
+function LearnSection({ onOpenLearn }: { onOpenLearn: () => void }) {
+  const t = useT();
+  const academy = useAcademyHome();
   return (
     <div>
       <button type="button" onClick={onOpenLearn} className="vita-tap" style={{ width: "100%", display: "flex", alignItems: "center", gap: 12, textAlign: "left", background: "var(--vc-tile-mint)", borderRadius: 10, padding: 14 }}>
@@ -277,39 +276,9 @@ function LearnSection({ onOpenLearn, onOpenArticle }: { onOpenLearn: () => void;
         </span>
         <ArrowRight3 size={22} color="rgba(var(--vc-navy-rgb),0.4)" />
       </button>
-      <div style={{ marginTop: 12 }}>
-        {loading ? (
-          <div style={{ height: 168, display: "flex", alignItems: "center", justifyContent: "center", color: "var(--vc-navy)" }}>
-            <DotSpinner />
-          </div>
-        ) : !articles.length ? (
-          <div style={{ padding: "22px 16px", background: "var(--vc-surface)", borderRadius: 10, border: "1px solid rgba(var(--vc-navy-rgb),0.08)", textAlign: "center" }}>
-            <Book1 size={28} color="rgba(var(--vc-navy-rgb),0.35)" />
-            <p style={{ margin: "8px 0 0", fontSize: 13, fontWeight: 600, color: "rgba(var(--vc-navy-rgb),0.55)" }}>{t("home_learn_empty")}</p>
-          </div>
-        ) : (
-          <div className="vita-hide-scroll" style={{ display: "flex", gap: 10, overflowX: "auto", margin: "0 -18px", padding: "0 18px" }}>
-            {articles.slice(0, 6).map((article) => (
-              <button
-                key={article.id}
-                type="button"
-                onClick={() => onOpenArticle(article)}
-                className="vita-tap"
-                style={{ width: 168, height: 178, flex: "none", textAlign: "left", background: "var(--vc-surface)", borderRadius: 10, border: "1px solid rgba(var(--vc-navy-rgb),0.08)", overflow: "hidden", display: "flex", flexDirection: "column" }}
-              >
-                <span style={{ height: 96, width: "100%", background: "var(--vc-tile-mint)", display: "block", flex: "none" }}>
-                  {article.image ? <Photo url={article.image} /> : null}
-                </span>
-                <span style={{ padding: "10px 12px" }}>
-                  <span style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", fontSize: 13, fontWeight: 800, lineHeight: 1.25, color: "var(--vc-ink)" }}>{article.title}</span>
-                  <span style={{ display: "block", marginTop: 6, fontSize: 13, fontWeight: 600, color: "rgba(var(--vc-navy-rgb),0.45)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                    {article.author?.trim() ? article.author : "Vitaway"}
-                  </span>
-                </span>
-              </button>
-            ))}
-          </div>
-        )}
+      {/* The same Academy cards as the Learn tab: video briefs and recipes picked for the member's programme. */}
+      <div className="vh-learn-cards">
+        <RecommendedBlock courseId={academy.data?.programme?.course_id ?? null} />
       </div>
     </div>
   );
@@ -706,8 +675,8 @@ export default function HomeScreen() {
       case "learn":
         return (
           <div key="learn" data-sec="learn">
-            <SectionHead title={t("learn_title")} action={t("view_all")} onAction={() => push("/articles")} style={{ margin: "24px 0 10px" }} />
-            <LearnSection onOpenLearn={() => push("/articles")} onOpenArticle={(a) => push(`/articles/${a.id}`)} />
+            <SectionHead title={t("learn_title")} action={t("view_all")} onAction={() => push("/learn")} style={{ margin: "24px 0 10px" }} />
+            <LearnSection onOpenLearn={() => push("/learn")} />
           </div>
         );
       default:
