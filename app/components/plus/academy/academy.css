@@ -42,7 +42,7 @@
 .ac-home { padding: 14px 16px 4px; }
 .ac-hero { border-radius: 22px; overflow: hidden; background: var(--ac-teal); color: #fff; box-shadow: 0 14px 34px rgba(0, 40, 46, 0.18); }
 .vita-root[data-theme="dark"] .ac-hero { background: #00343c; }
-.ac-hero-art { height: 128px; }
+.ac-hero-art { height: 128px; overflow: hidden; }
 .ac-hero-tx { padding: 16px 18px 18px; }
 .ac-hero-kicker { font-size: 13px; font-weight: 700; color: rgba(255, 255, 255, 0.75); }
 .ac-hero h2 { margin: 6px 0 4px; font-family: var(--vf-hand, inherit); font-weight: 400; font-size: 30px; line-height: 1.1; color: #fff; }
@@ -269,7 +269,8 @@
 @media (min-width: 768px) {
   .ac-home { padding: 4px 24px 8px; }
   .ac-hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); align-items: stretch; }
-  .ac-hero-art { height: auto; min-height: 220px; }
+  .ac-hero-art { position: relative; height: auto; min-height: 220px; max-height: 300px; overflow: hidden; }
+  .ac-hero-art .ac-art { position: absolute; inset: 0; }
   .ac-hero-tx { padding: 26px 28px; display: flex; flex-direction: column; justify-content: center; }
   .ac-hero h2 { font-size: 40px; }
   .ac-home-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; align-items: start; }
